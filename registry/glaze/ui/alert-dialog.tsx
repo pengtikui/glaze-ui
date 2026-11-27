@@ -30,29 +30,31 @@ export function AlertDialog({
       {trigger && <BaseAlertDialog.Trigger render={trigger} />}
       <BaseAlertDialog.Portal>
         <BaseAlertDialog.Backdrop className="glaze-dialog-backdrop fixed inset-0 z-50 bg-[#1B1F27]/38" />
-        <BaseAlertDialog.Popup className="glaze-dialog-popup fixed top-1/2 left-1/2 z-50 w-[calc(100vw-32px)] max-w-105 -translate-x-1/2 -translate-y-1/2 rounded-tile bg-white p-6 shadow-[0_24px_64px_rgba(18,58,92,0.18)] outline-none">
-          <BaseAlertDialog.Title className="font-glaze-display text-[19px] font-extrabold text-[#1B1F27]">
-            {title}
-          </BaseAlertDialog.Title>
-          <BaseAlertDialog.Description className="mt-2 text-[14px] leading-relaxed text-[#5B6170]">
-            {description}
-          </BaseAlertDialog.Description>
-          <div className="mt-6 flex items-center justify-end gap-2">
-            <BaseAlertDialog.Close
-              render={<Button variant="secondary">{cancelLabel}</Button>}
-            />
-            <BaseAlertDialog.Close
-              render={
-                <Button
-                  variant={danger ? 'danger' : 'primary'}
-                  onClick={onConfirm}
-                >
-                  {confirmLabel}
-                </Button>
-              }
-            />
-          </div>
-        </BaseAlertDialog.Popup>
+        <BaseAlertDialog.Viewport className="fixed inset-0 z-50 flex flex-col overflow-y-auto p-4">
+          <BaseAlertDialog.Popup className="glaze-dialog-popup m-auto w-full max-w-105 shrink-0 rounded-tile bg-white p-6 shadow-[0_24px_64px_rgba(18,58,92,0.18)] outline-none">
+            <BaseAlertDialog.Title className="font-glaze-display text-[19px] font-extrabold text-[#1B1F27]">
+              {title}
+            </BaseAlertDialog.Title>
+            <BaseAlertDialog.Description className="mt-2 text-[14px] leading-relaxed text-[#5B6170]">
+              {description}
+            </BaseAlertDialog.Description>
+            <div className="mt-6 flex items-center justify-end gap-2">
+              <BaseAlertDialog.Close
+                render={<Button variant="secondary">{cancelLabel}</Button>}
+              />
+              <BaseAlertDialog.Close
+                render={
+                  <Button
+                    variant={danger ? 'danger' : 'primary'}
+                    onClick={onConfirm}
+                  >
+                    {confirmLabel}
+                  </Button>
+                }
+              />
+            </div>
+          </BaseAlertDialog.Popup>
+        </BaseAlertDialog.Viewport>
       </BaseAlertDialog.Portal>
     </BaseAlertDialog.Root>
   )

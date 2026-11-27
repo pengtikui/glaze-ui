@@ -295,7 +295,6 @@ body {
 }
 
 .glaze-dialog-popup {
-  will-change: transform, opacity;
   transition:
     opacity var(--glaze-dur-base) var(--glaze-ease-standard),
     transform var(--glaze-dur-base) var(--glaze-ease-standard);
