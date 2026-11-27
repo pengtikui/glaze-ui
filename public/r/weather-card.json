@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "weather-card",
+  "type": "registry:block",
+  "title": "S17 天气实况卡 (WeatherCard)",
+  "description": "天气实况卡（S17 · 尺寸 S）— 城市 · 温度 · 体感湿度",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "monitoring",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/weather-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/weather-card.tsx",
+      "content": "import { CloudSun } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function WeatherCard({\n  city,\n  temp,\n  condition,\n  feelsLike,\n  tone = 'sky',\n}: {\n  city: string\n  temp: number\n  condition: string\n  feelsLike: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"truncate text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {city}\n        </span>\n        <CloudSun size={24} weight=\"duotone\" className=\"shrink-0\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"min-w-0\">\n        <div className=\"font-glaze-display text-[52px] leading-none font-extrabold tracking-[-0.03em]\">\n          {temp}°\n        </div>\n        <div className=\"mt-2 flex items-center justify-between gap-2 text-[12px]\" style={{ color: theme.soft }}>\n          <span className=\"shrink-0 font-semibold whitespace-nowrap\" style={{ color: theme.ink }}>\n            {condition}\n          </span>\n          <span className=\"truncate\">{feelsLike}</span>\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

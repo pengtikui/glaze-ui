@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chat-preview-card",
+  "type": "registry:block",
+  "title": "L12 实时会话预览卡 (ChatPreviewCard)",
+  "description": "实时会话预览卡（L12 · 尺寸 L）— 气泡对话 · 可直接发送回复",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/input",
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "controls",
+    "size-l"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/chat-preview-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/chat-preview-card.tsx",
+      "content": "import * as React from 'react'\nimport { PaperPlaneTilt } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { Input } from '@/components/ui/input'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport type { TileTone } from '@/lib/tokens'\n\nexport function ChatPreviewCard({\n  channel,\n  messages,\n  tone = 'white',\n}: {\n  channel: string\n  messages: { sender: string; text: string; mine?: boolean; time: string }[]\n  tone?: TileTone\n}) {\n  const [list, setList] = React.useState(messages)\n  const [draft, setDraft] = React.useState('')\n\n  const handleSend = () => {\n    if (!draft.trim()) return\n    setList((prev) => [...prev, { sender: '我', text: draft.trim(), mine: true, time: '刚刚' }])\n    setDraft('')\n  }\n\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"font-glaze-display text-[18px] font-extrabold\">{channel}</span>\n        <StatusPill status=\"normal\" label=\"3 人在线\" size=\"sm\" />\n      </div>\n      <div className=\"flex flex-1 flex-col gap-2.5 overflow-y-auto py-1\">\n        {list.slice(-4).map((m, i) => (\n          <div key={i} className={`flex flex-col ${m.mine ? 'items-end' : 'items-start'}`}>\n            <div\n              className=\"max-w-[82%] rounded-inner px-3.5 py-2 text-[13px] leading-snug\"\n              style={{\n                backgroundColor: m.mine ? '#1B1F27' : '#F2F3F5',\n                color: m.mine ? '#FFFFFF' : '#1B1F27',\n              }}\n            >\n              {m.text}\n            </div>\n            <span className=\"mt-1 px-1 text-[10px] text-[#8A90A0]\">\n              {m.sender} · {m.time}\n            </span>\n          </div>\n        ))}\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Input\n          inputSize=\"sm\"\n          value={draft}\n          onChange={(e) => setDraft(e.target.value)}\n          onKeyDown={(e) => e.key === 'Enter' && handleSend()}\n          placeholder=\"快速回复一条消息…\"\n        />\n        <Button size=\"icon\" variant=\"primary\" onClick={handleSend} aria-label=\"发送\">\n          <PaperPlaneTilt size={16} weight=\"fill\" />\n        </Button>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

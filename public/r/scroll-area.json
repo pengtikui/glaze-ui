@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area",
+  "type": "registry:ui",
+  "title": "ScrollArea (自定义滚动区)",
+  "description": "跨平台一致的细胶囊悬浮滚动条容器，悬停或滚动时柔和显现。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "navigation"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/scroll-area.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area'\nimport { cn } from 'cn'\n\nexport function ScrollArea({\n  className,\n  viewportClassName,\n  children,\n}: {\n  className?: string\n  viewportClassName?: string\n  children: React.ReactNode\n}) {\n  return (\n    <BaseScrollArea.Root className={cn('relative overflow-hidden', className)}>\n      <BaseScrollArea.Viewport\n        className={cn(\n          'h-full w-full overscroll-contain rounded-[inherit] outline-none',\n          viewportClassName,\n        )}\n      >\n        <BaseScrollArea.Content>{children}</BaseScrollArea.Content>\n      </BaseScrollArea.Viewport>\n      <BaseScrollArea.Scrollbar\n        orientation=\"vertical\"\n        className=\"m-1 flex w-1.5 justify-center rounded-full bg-transparent opacity-0 transition-opacity duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] data-hovering:opacity-100 data-scrolling:opacity-100\"\n      >\n        <BaseScrollArea.Thumb className=\"w-full rounded-full bg-[#CDD3DD]\" />\n      </BaseScrollArea.Scrollbar>\n    </BaseScrollArea.Root>\n  )\n}\n"
+    }
+  ]
+}

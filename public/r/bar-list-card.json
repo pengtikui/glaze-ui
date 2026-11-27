@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bar-list-card",
+  "type": "registry:block",
+  "title": "T1 条形排行卡 (BarListCard)",
+  "description": "条形排行卡（T1 · 尺寸 T）— 总指标 · 进度条排行列表",
+  "registryDependencies": [
+    "@glaze/progress",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "lists",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/bar-list-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/bar-list-card.tsx",
+      "content": "import { Progress } from '@/components/ui/progress'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface BarListItem {\n  label: string\n  value: string\n  percent: number\n}\n\nexport interface BarListCardProps {\n  label: string\n  bigValue: string | number\n  bigUnit?: string\n  subtitle: string\n  items: BarListItem[]\n  tone?: TileTone\n}\n\nexport function BarListCard({\n  label,\n  bigValue,\n  bigUnit,\n  subtitle,\n  items,\n  tone = 'lilac',\n}: BarListCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <span className=\"flex flex-col gap-0.5\">\n        <span className=\"font-glaze-display text-[56px] leading-14.5 font-extrabold tracking-[-0.03em]\">\n          {bigValue}\n          {bigUnit && <span className=\"text-[26px]\">{bigUnit}</span>}\n        </span>\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          {subtitle}\n        </span>\n      </span>\n      <div className=\"flex-1 flex flex-col justify-end gap-3.5\">\n        {items.map((item, i) => (\n          <div key={i} className=\"flex flex-col gap-1.5 text-[12px]\">\n            <span className=\"flex justify-between gap-2\">\n              <span className=\"truncate font-semibold\">{item.label}</span>\n              <span className=\"shrink-0 whitespace-nowrap\" style={{ color: theme.soft }}>{item.value}</span>\n            </span>\n            <Progress\n              value={item.percent}\n              trackColor={theme.track}\n              barColor={theme.accent}\n              height=\"md\"\n            />\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

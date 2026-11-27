@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button",
+  "type": "registry:ui",
+  "title": "Button (按钮)",
+  "description": "全圆胶囊按钮，提供 7 种语义与表面变体，独立使用时启用 0.97 按压缩放，作为浮层触发器时自动禁用缩放以防锚点抖动。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/button.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Button as BaseButton } from '@base-ui/react/button'\nimport { cn } from 'cn'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\nimport { PRESS_CLASS, useIsPopupTrigger } from '@/lib/motion'\n\nexport type ButtonVariant =\n  | 'primary'\n  | 'secondary'\n  | 'ghost'\n  | 'soft'\n  | 'danger'\n  | 'dark-surface'\n  | 'dark-on-coral'\nexport type ButtonSize = 'sm' | 'md' | 'lg' | 'icon'\n\nexport interface ButtonProps\n  extends Omit<React.ComponentPropsWithoutRef<typeof BaseButton>, 'className' | 'style'> {\n  variant?: ButtonVariant\n  size?: ButtonSize\n  hue?: Hue\n  /** Enable scale(0.97) tactile press feedback. Automatically disabled when used as a popup trigger. */\n  pressScale?: boolean\n  className?: string\n  style?: React.CSSProperties\n}\n\nexport const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\n  function Button(\n    {\n      variant = 'primary',\n      size = 'md',\n      hue = 'periwinkle',\n      pressScale = true,\n      className,\n      style,\n      disabled,\n      ...props\n    },\n    ref,\n  ) {\n    const isPopupTrigger = useIsPopupTrigger()\n    const enablePressScale = !disabled && pressScale && !isPopupTrigger\n\n    const palette = HUE_PALETTES[hue]\n    const softStyle: React.CSSProperties | undefined =\n      variant === 'soft'\n        ? { backgroundColor: palette[100], color: palette[700], ...style }\n        : style\n\n    return (\n      <BaseButton\n        ref={ref}\n        disabled={disabled}\n        className={cn(\n          'inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap select-none outline-none',\n          enablePressScale\n            ? PRESS_CLASS\n            : 'transition-[background-color,color,filter,box-shadow] duration-150 ease-[cubic-bezier(0.2,0,0,1)]',\n          'focus-visible:ring-2 focus-visible:ring-[#7B80EA] focus-visible:ring-offset-2',\n          'data-disabled:pointer-events-none data-disabled:opacity-45',\n          size === 'sm' && 'h-8 px-3.5 text-[12px]',\n          size === 'md' && 'h-11 px-5 text-[14px]',\n          size === 'lg' && 'h-12 px-6 text-[15px]',\n          size === 'icon' && 'h-10 w-10 p-0',\n          variant === 'primary' &&\n            'bg-[#1B1F27] text-white hover:bg-[#2B313D] data-popup-open:bg-[#2B313D]',\n          variant === 'secondary' &&\n            'bg-[#F2F3F5] text-[#1B1F27] hover:bg-[#E8EBF0] data-popup-open:bg-[#E8EBF0]',\n          variant === 'ghost' &&\n            'bg-transparent text-[#5B6170] hover:bg-[#F2F3F5] hover:text-[#1B1F27] data-popup-open:bg-[#F2F3F5] data-popup-open:text-[#1B1F27]',\n          variant === 'soft' &&\n            'hover:brightness-[0.96] data-popup-open:brightness-[0.96]',\n          variant === 'danger' &&\n            'bg-[#FDE5DC] text-[#A6360F] hover:bg-[#F7B39C]/70 data-popup-open:bg-[#F7B39C]/70',\n          variant === 'dark-surface' &&\n            'bg-white/15 text-white hover:bg-white/25 data-popup-open:bg-white/25',\n          variant === 'dark-on-coral' &&\n            'bg-[#5E1E0A] text-white hover:bg-[#491606] data-popup-open:bg-[#491606]',\n          className,\n        )}\n        style={softStyle}\n        {...props}\n      />\n    )\n  },\n)\n"
+    }
+  ]
+}

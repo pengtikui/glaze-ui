@@ -1,0 +1,166 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
+import { COMPONENT_CATEGORIES, COMPONENTS_LIST } from '@/docs/data/catalog'
+
+export interface TocItem {
+  id: string
+  label: string
+  depth?: number
+}
+
+export interface Props {
+  title?: string
+  description?: string
+  toc?: TocItem[]
+}
+
+const { title, description, toc = [] } = Astro.props
+const rawPath = Astro.url.pathname.replace(/\/+$/, '') || '/'
+
+const docEntries = (await getCollection('docs')).sort((a, b) => a.data.order - b.data.order)
+const docsNav = [
+  ...docEntries.map((entry) => ({
+    label: entry.data.navLabel || entry.data.title,
+    to: entry.id === 'index' ? '/docs' : `/docs/${entry.id}`,
+  })),
+  { label: `组件总览 (${COMPONENTS_LIST.length})`, to: '/docs/components' },
+]
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="min-h-screen bg-[#F2F4F8] text-[#1B1F27]">
+    <SiteHeaderIsland pathname={rawPath} docsNav={docsNav} showMobileMenuButton={true} client:load />
+
+    <div class="mx-auto flex max-w-[1440px] items-start gap-8 px-4 pt-8 pb-24 sm:px-6">
+      {/* Left Sticky Sidebar */}
+      <aside class="docs-sidebar-scroll sticky top-20 hidden max-h-[calc(100vh-96px)] w-[248px] shrink-0 overflow-y-auto pr-2 lg:block">
+        <div class="flex flex-col gap-6 pb-12">
+          <div class="flex flex-col gap-1">
+            <span class="px-3 text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
+              起步指南
+            </span>
+            {docsNav.map((item) => {
+              const active = rawPath === item.to
+              return (
+                <a
+                  href={item.to}
+                  class:list={[
+                    'rounded-[12px] px-3 py-1.5 text-[13px] no-underline transition-colors',
+                    active
+                      ? 'bg-white font-bold text-[#123A5C]'
+                      : 'font-medium text-[#5B6170] hover:bg-white/60 hover:text-[#1B1F27]',
+                  ]}
+                >
+                  {item.label}
+                </a>
+              )
+            })}
+          </div>
+
+          {COMPONENT_CATEGORIES.map((cat) => {
+            const items = COMPONENTS_LIST.filter((c) => c.category === cat.id)
+            return (
+              <div class="flex flex-col gap-0.5">
+                <span class="mb-1 px-3 text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
+                  {cat.title} ({items.length})
+                </span>
+                {items.map((c) => {
+                  const to = `/docs/components/${c.slug}`
+                  const active = rawPath === to
+                  return (
+                    <a
+                      href={to}
+                      class:list={[
+                        'flex items-center justify-between gap-2 rounded-[12px] px-3 py-1.5 text-[13px] no-underline transition-colors',
+                        active
+                          ? 'bg-white font-bold text-[#123A5C]'
+                          : 'font-medium text-[#5B6170] hover:bg-white/60 hover:text-[#1B1F27]',
+                      ]}
+                    >
+                      <span class="truncate">{c.title}</span>
+                      <span class="shrink-0 text-[11px] text-[#8A90A0]">{c.cnTitle}</span>
+                    </a>
+                  )
+                })}
+              </div>
+            )
+          })}
+        </div>
+      </aside>
+
+      {/* Center Main Content */}
+      <main class="min-w-0 flex-1">
+        <div class="mx-auto max-w-[840px]">
+          <slot />
+        </div>
+      </main>
+
+      {/* Right Sticky Table of Contents */}
+      {toc.length > 0 && (
+        <aside class="sticky top-20 hidden w-[210px] shrink-0 flex-col gap-5 xl:flex">
+          <div class="flex flex-col gap-1.5">
+            <span class="text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
+              本页目录
+            </span>
+            <nav id="docs-toc-nav" class="flex flex-col border-l border-[#E5E8EE]">
+              {toc.map((item, idx) => (
+                <a
+                  href={`#${item.id}`}
+                  data-toc-id={item.id}
+                  class:list={[
+                    'docs-toc-link -ml-px border-l-2 py-1.5 text-[12px] no-underline transition-colors',
+                    item.depth && item.depth >= 3 ? 'pl-5' : 'pl-3',
+                    idx === 0
+                      ? 'border-[#7B80EA] font-semibold text-[#123A5C]'
+                      : 'border-transparent text-[#6B7280] hover:border-[#CDD3DD] hover:text-[#1B1F27]',
+                  ]}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+          <slot name="toc-footer" />
+        </aside>
+      )}
+    </div>
+  </div>
+
+  {toc.length > 0 && (
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const links = Array.from(document.querySelectorAll('.docs-toc-link'))
+        if (!links.length) return
+        const ids = links.map((a) => a.getAttribute('data-toc-id')).filter(Boolean)
+        const targets = ids.map((id) => document.getElementById(id)).filter(Boolean)
+        if (!targets.length) return
+
+        const setActive = (id) => {
+          links.forEach((a) => {
+            const active = a.getAttribute('data-toc-id') === id
+            a.classList.toggle('border-[#7B80EA]', active)
+            a.classList.toggle('font-semibold', active)
+            a.classList.toggle('text-[#123A5C]', active)
+            a.classList.toggle('border-transparent', !active)
+            a.classList.toggle('text-[#6B7280]', !active)
+          })
+        }
+
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                setActive(entry.target.id)
+                break
+              }
+            }
+          },
+          { rootMargin: '-84px 0px -65% 0px', threshold: 0 },
+        )
+        targets.forEach((el) => obs.observe(el))
+      })
+    </script>
+  )}
+</BaseLayout>

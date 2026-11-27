@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "currency-card",
+  "type": "registry:block",
+  "title": "S29 汇率行情卡 (CurrencyCard)",
+  "description": "汇率行情卡（S29 · 尺寸 S）— 币种对 · 现价 · 涨跌胶囊",
+  "registryDependencies": [
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/currency-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/currency-card.tsx",
+      "content": "import { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Status, type TileTone } from '@/lib/tokens'\n\nexport function CurrencyCard({\n  pair,\n  rate,\n  change,\n  status = 'normal',\n  range,\n  tone = 'white',\n}: {\n  pair: string\n  rate: string\n  change: string\n  status?: Status\n  range: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"font-glaze-mono text-[13px] font-bold\" style={{ color: theme.soft }}>\n          {pair}\n        </span>\n        <StatusPill status={status} label={change} showDot={false} size=\"sm\" />\n      </div>\n      <div className=\"font-glaze-display text-[36px] leading-none font-extrabold tracking-[-0.02em]\">\n        {rate}\n      </div>\n      <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n        {range}\n      </span>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

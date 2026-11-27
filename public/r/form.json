@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form",
+  "type": "registry:ui",
+  "title": "Form (表单容器)",
+  "description": "原生约束验证与服务端错误信息统一分发容器，与 Field 无缝协作。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/form.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Form as BaseForm } from '@base-ui/react/form'\nimport { cn } from 'cn'\n\nexport function Form({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseForm>) {\n  return <BaseForm className={cn('flex w-full flex-col gap-4', className)} {...props} />\n}\n"
+    }
+  ]
+}

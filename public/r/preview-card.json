@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "preview-card",
+  "type": "registry:ui",
+  "title": "PreviewCard (悬停预览卡)",
+  "description": "悬停链接或实体标识时展示的富媒体摘要卡片，内置防误触延迟与平滑进退场。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion"
+  ],
+  "categories": [
+    "overlays"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/preview-card.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { PreviewCard as BasePreviewCard } from '@base-ui/react/preview-card'\nimport { cn } from 'cn'\nimport {\n  POPUP_SURFACE,\n  POPUP_TRANSITION_CLASS,\n  PopupTriggerScope,\n} from '@/lib/motion'\n\nexport interface PreviewCardProps {\n  trigger: React.ReactElement\n  children: React.ReactNode\n  side?: 'top' | 'bottom' | 'left' | 'right'\n  className?: string\n}\n\nexport function PreviewCard({\n  trigger,\n  children,\n  side = 'top',\n  className,\n}: PreviewCardProps) {\n  return (\n    <BasePreviewCard.Root>\n      <PopupTriggerScope>\n        <BasePreviewCard.Trigger delay={240} closeDelay={120} render={trigger} />\n      </PopupTriggerScope>\n      <BasePreviewCard.Portal>\n        <BasePreviewCard.Positioner side={side} sideOffset={8} className=\"z-50\">\n          <BasePreviewCard.Popup\n            className={cn(\n              POPUP_SURFACE,\n              POPUP_TRANSITION_CLASS,\n              'w-75 p-5',\n              className,\n            )}\n          >\n            {children}\n          </BasePreviewCard.Popup>\n        </BasePreviewCard.Positioner>\n      </BasePreviewCard.Portal>\n    </BasePreviewCard.Root>\n  )\n}\n"
+    }
+  ]
+}

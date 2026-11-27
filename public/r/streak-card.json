@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "streak-card",
+  "type": "registry:block",
+  "title": "S22 连续打卡卡 (StreakCard)",
+  "description": "连续打卡卡（S22 · 尺寸 S）— 天数 · 7 天完成点阵",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/streak-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/streak-card.tsx",
+      "content": "import { Fire } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function StreakCard({\n  label,\n  days,\n  week,\n  tone = 'peach',\n}: {\n  label: string\n  days: number\n  week: boolean[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const dayNames = ['一', '二', '三', '四', '五', '六', '日']\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <Fire size={20} weight=\"fill\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"flex items-baseline gap-1.5\">\n        <span className=\"font-glaze-display text-[48px] leading-none font-extrabold\">\n          {days}\n        </span>\n        <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n          天连续\n        </span>\n      </div>\n      <div className=\"grid grid-cols-7 gap-1\">\n        {week.slice(0, 7).map((done, i) => (\n          <div key={i} className=\"flex flex-col items-center gap-1\">\n            <span\n              className=\"h-3.5 w-3.5 rounded-full\"\n              style={{ backgroundColor: done ? theme.accent : theme.track }}\n            />\n            <span className=\"text-[10px]\" style={{ color: theme.soft }}>\n              {dayNames[i]}\n            </span>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

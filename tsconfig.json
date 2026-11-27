@@ -1,0 +1,22 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/components/ui": ["./registry/glaze/ui/index.ts"],
+      "@/components/ui/*": ["./registry/glaze/ui/*"],
+      "@/components/blocks": ["./registry/glaze/blocks/index.ts"],
+      "@/components/blocks/*": ["./registry/glaze/blocks/*"],
+      "@/lib/*": ["./registry/glaze/lib/*"],
+      "@/styles/*": ["./registry/glaze/styles/*"],
+      "@/registry/*": ["./registry/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "src/**/*", "registry/**/*"],
+  "exclude": ["dist", "node_modules"]
+}

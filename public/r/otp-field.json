@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "otp-field",
+  "type": "registry:ui",
+  "title": "OTPField (验证码输入框)",
+  "description": "基于 Base UI v1.9 OTPField 构建的一次性密码/验证码分段输入框，支持自动跳格与粘贴填充。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/otp-field.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { OTPField as BaseOTPField } from '@base-ui/react/otp-field'\nimport { cn } from 'cn'\n\nexport interface OTPFieldProps\n  extends Omit<React.ComponentPropsWithoutRef<typeof BaseOTPField.Root>, 'className' | 'length'> {\n  length?: number\n  separatorAt?: number\n  className?: string\n}\n\nexport function OTPField({\n  length = 6,\n  separatorAt = 3,\n  className,\n  ...props\n}: OTPFieldProps) {\n  return (\n    <BaseOTPField.Root\n      length={length}\n      className={cn('inline-flex items-center gap-2', className)}\n      {...props}\n    >\n      {Array.from({ length }).map((_, index) => (\n        <React.Fragment key={index}>\n          <BaseOTPField.Input\n            className={cn(\n              'h-12 w-11 rounded-2xl border-0 bg-[#F6F7F9] text-center font-glaze-display text-[18px] font-extrabold text-[#1B1F27] tabular-nums outline-none',\n              'transition-[background-color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n              'hover:bg-[#EEF0F4] focus:bg-white focus:ring-2 focus:ring-inset focus:ring-[#7B80EA]',\n              'data-filled:bg-[#E4E6FD]/60 data-filled:text-[#262B7A]',\n              'data-disabled:opacity-45',\n            )}\n          />\n          {separatorAt > 0 && index === separatorAt - 1 && index < length - 1 && (\n            <BaseOTPField.Separator className=\"px-0.5 text-[16px] font-bold text-[#CDD3DD]\">\n              ·\n            </BaseOTPField.Separator>\n          )}\n        </React.Fragment>\n      ))}\n    </BaseOTPField.Root>\n  )\n}\n"
+    }
+  ]
+}

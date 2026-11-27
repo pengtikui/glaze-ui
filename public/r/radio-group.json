@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group",
+  "type": "registry:ui",
+  "title": "RadioGroup (单选框组)",
+  "description": "支持方向键漫游焦点的无障碍单选组容器。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/radio-group.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group'\nimport { cn } from 'cn'\n\nexport function RadioGroup({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseRadioGroup>) {\n  return (\n    <BaseRadioGroup\n      className={cn('flex flex-col gap-2.5', className)}\n      {...props}\n    />\n  )\n}\n"
+    }
+  ]
+}

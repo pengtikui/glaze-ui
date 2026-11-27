@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fieldset",
+  "type": "registry:ui",
+  "title": "Fieldset (表单分组)",
+  "description": "将相关表单字段归类到带标题（FieldsetLegend）的 18px 圆角区块内。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/fieldset.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Fieldset as BaseFieldset } from '@base-ui/react/fieldset'\nimport { cn } from 'cn'\n\nexport function Fieldset({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseFieldset.Root>) {\n  return (\n    <BaseFieldset.Root\n      className={cn(\n        'flex w-full flex-col gap-4 rounded-inner bg-[#F6F7F9] p-5',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport function FieldsetLegend({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseFieldset.Legend>) {\n  return (\n    <BaseFieldset.Legend\n      className={cn('text-[15px] font-bold text-[#1B1F27]', className)}\n      {...props}\n    />\n  )\n}\n"
+    }
+  ]
+}

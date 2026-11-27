@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input",
+  "type": "registry:ui",
+  "title": "Input (输入框)",
+  "description": "基于 Base UI Input 的 44px 全圆胶囊单行输入框，支持前后缀图标与柔灰/纯白两种表面。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/input.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Input as BaseInput } from '@base-ui/react/input'\nimport { cn } from 'cn'\nimport { CONTROL_SOFT, CONTROL_WHITE, PILL_CONTROL } from '@/lib/motion'\n\nexport interface InputProps\n  extends Omit<React.ComponentPropsWithoutRef<typeof BaseInput>, 'className' | 'size'> {\n  leadingIcon?: React.ReactNode\n  trailingElement?: React.ReactNode\n  surface?: 'soft' | 'white'\n  inputSize?: 'sm' | 'md'\n  className?: string\n  wrapperClassName?: string\n}\n\nexport const Input = React.forwardRef<HTMLInputElement, InputProps>(\n  function Input(\n    {\n      leadingIcon,\n      trailingElement,\n      surface = 'soft',\n      inputSize = 'md',\n      className,\n      wrapperClassName,\n      ...props\n    },\n    ref,\n  ) {\n    const heightClass = inputSize === 'sm' ? 'h-9 text-[13px]' : 'h-11 text-[14px]'\n    const surfaceClass = surface === 'white' ? CONTROL_WHITE : CONTROL_SOFT\n\n    if (leadingIcon || trailingElement) {\n      return (\n        <div\n          className={cn(\n            'relative flex w-full items-center gap-2 px-4',\n            heightClass,\n            PILL_CONTROL,\n            surfaceClass,\n            wrapperClassName,\n          )}\n        >\n          {leadingIcon && (\n            <span className=\"shrink-0 text-[#8A90A0]\">{leadingIcon}</span>\n          )}\n          <BaseInput\n            ref={ref}\n            className={cn(\n              'h-full w-full bg-transparent text-[#1B1F27] outline-none placeholder:text-[#8A90A0] disabled:cursor-not-allowed disabled:opacity-50',\n              className,\n            )}\n            {...props}\n          />\n          {trailingElement && <div className=\"shrink-0\">{trailingElement}</div>}\n        </div>\n      )\n    }\n\n    return (\n      <BaseInput\n        ref={ref}\n        className={cn(\n          'w-full px-4 text-[#1B1F27] placeholder:text-[#8A90A0]',\n          heightClass,\n          PILL_CONTROL,\n          surfaceClass,\n          'data-invalid:ring-2 data-invalid:ring-inset data-invalid:ring-[#E5603B]',\n          'disabled:cursor-not-allowed disabled:opacity-50',\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n"
+    }
+  ]
+}

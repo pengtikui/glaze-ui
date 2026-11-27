@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "direction-provider",
+  "type": "registry:ui",
+  "title": "DirectionProvider (阅读方向提供器)",
+  "description": "直接透传 Base UI DirectionProvider，为 LTR / RTL 国际化界面提供统一方向上下文。",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "categories": [
+    "navigation"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/direction-provider.tsx",
+      "type": "registry:ui",
+      "content": "export { DirectionProvider } from '@base-ui/react/direction-provider'\n"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "type": "registry:ui",
+  "title": "Toast (3D 堆叠通知)",
+  "description": "基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持悬停展开、右滑/下滑手势关闭与 5 种语义状态。",
+  "dependencies": [
+    "@base-ui/react",
+    "@phosphor-icons/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion",
+    "@glaze/style",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "overlays"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/toast.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Toast as BaseToast } from '@base-ui/react/toast'\nimport {\n  CheckCircle,\n  Info,\n  Warning,\n  WarningCircle,\n  X,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { SEMANTIC_TOKENS, type Status } from '@/lib/tokens'\nimport { PRESS_CLASS } from '@/lib/motion'\n\nexport interface ToastData {\n  status?: Status\n}\n\nexport function ToastProvider({ children }: { children: React.ReactNode }) {\n  return (\n    <BaseToast.Provider limit={4} timeout={4200}>\n      {children}\n      <ToastViewport />\n    </BaseToast.Provider>\n  )\n}\n\nfunction ToastViewport() {\n  const { toasts } = BaseToast.useToastManager()\n\n  return (\n    <BaseToast.Portal>\n      <BaseToast.Viewport className=\"glaze-toast-viewport\">\n        {toasts.map((toast) => {\n          const data = (toast.data ?? {}) as ToastData\n          const status: Status = data.status ?? 'info'\n          const token = SEMANTIC_TOKENS[status]\n\n          const Icon =\n            status === 'normal'\n              ? CheckCircle\n              : status === 'warning'\n                ? Warning\n                : status === 'error'\n                  ? WarningCircle\n                  : Info\n\n          return (\n            <BaseToast.Root\n              key={toast.id}\n              toast={toast}\n              swipeDirection={['down', 'right']}\n              className=\"glaze-toast-root\"\n            >\n              <BaseToast.Content className=\"glaze-toast-content flex items-start gap-3\">\n                <span\n                  className=\"mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full\"\n                  style={{ backgroundColor: token.pillBg, color: token.ink }}\n                >\n                  <Icon size={17} weight=\"fill\" />\n                </span>\n                <div className=\"min-w-0 flex-1\">\n                  {toast.title && (\n                    <BaseToast.Title className=\"text-[14px] font-bold text-[#1B1F27]\">\n                      {toast.title}\n                    </BaseToast.Title>\n                  )}\n                  {toast.description && (\n                    <BaseToast.Description className=\"mt-0.5 text-[12px] leading-relaxed text-[#6B7280]\">\n                      {toast.description}\n                    </BaseToast.Description>\n                  )}\n                  {toast.actionProps && (\n                    <BaseToast.Action\n                      {...toast.actionProps}\n                      className={cn(\n                        'mt-2 inline-flex cursor-pointer items-center rounded-full bg-[#F2F3F5] px-3 py-1 text-[12px] font-semibold text-[#1B1F27] hover:bg-[#E8EBF0]',\n                        PRESS_CLASS,\n                      )}\n                    />\n                  )}\n                </div>\n                <BaseToast.Close\n                  aria-label=\"关闭通知\"\n                  className={cn(\n                    'inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#F2F3F5] hover:text-[#1B1F27]',\n                    PRESS_CLASS,\n                  )}\n                >\n                  <X size={14} weight=\"bold\" />\n                </BaseToast.Close>\n              </BaseToast.Content>\n            </BaseToast.Root>\n          )\n        })}\n      </BaseToast.Viewport>\n    </BaseToast.Portal>\n  )\n}\n\nexport interface NotifyOptions {\n  title: string\n  description?: string\n  status?: Status\n  actionLabel?: string\n  onAction?: () => void\n}\n\nexport function useToast() {\n  const manager = BaseToast.useToastManager()\n  return React.useMemo(() => {\n    const fn = (opts: NotifyOptions) =>\n      manager.add({\n        title: opts.title,\n        description: opts.description,\n        data: { status: opts.status ?? 'info' } satisfies ToastData,\n        actionProps: opts.actionLabel\n          ? { children: opts.actionLabel, onClick: opts.onAction }\n          : undefined,\n      })\n    return Object.assign(fn, {\n      notify: fn,\n      close: manager.close,\n    })\n  }, [manager])\n}\n"
+    }
+  ]
+}

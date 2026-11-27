@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "habit-tracker-card",
+  "type": "registry:block",
+  "title": "T11 习惯打卡矩阵 (HabitTrackerCard)",
+  "description": "习惯打卡矩阵（T11 · 尺寸 T）— 多习惯 × 7 日胶囊点阵",
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/habit-tracker-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/habit-tracker-card.tsx",
+      "content": "import { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function HabitTrackerCard({\n  title,\n  habits,\n  tone = 'mint',\n}: {\n  title: string\n  habits: { name: string; hue: Hue; days: boolean[] }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n        <span className=\"text-[11px] font-semibold\" style={{ color: theme.soft }}>\n          本周 7 天\n        </span>\n      </div>\n      <div className=\"flex flex-1 flex-col justify-between gap-3\">\n        {habits.map((h) => (\n          <div\n            key={h.name}\n            className=\"flex flex-col gap-1.5 rounded-2xl p-3\"\n            style={{\n              backgroundColor: theme.dark\n                ? 'rgba(255,255,255,0.1)'\n                : theme.bg === '#FFFFFF'\n                  ? '#F6F7F9'\n                  : 'rgba(255,255,255,0.65)',\n            }}\n          >\n            <div className=\"flex items-center justify-between gap-2 text-[13px] font-bold\" style={{ color: theme.ink }}>\n              <span className=\"truncate\">{h.name}</span>\n              <span className=\"shrink-0 text-[11px] whitespace-nowrap\" style={{ color: theme.soft }}>\n                {h.days.filter(Boolean).length}/7\n              </span>\n            </div>\n            <div className=\"grid grid-cols-7 gap-1\">\n              {h.days.slice(0, 7).map((done, i) => (\n                <span\n                  key={i}\n                  className=\"h-3 rounded-full\"\n                  style={{\n                    backgroundColor: done ? HUE_PALETTES[h.hue][500] : theme.track,\n                  }}\n                />\n              ))}\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "metric-comparison-table-card",
+  "type": "registry:block",
+  "title": "F12 多维指标对比表 (MetricComparisonTableCard)",
+  "description": "多维指标对比表（F12 · 尺寸 F）— 横向指标矩阵 · 最优值高亮",
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "layout",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/metric-comparison-table-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/metric-comparison-table-card.tsx",
+      "content": "import { Tile } from '@/components/ui/tile'\nimport type { TileTone } from '@/lib/tokens'\n\nexport function MetricComparisonTableCard({\n  title,\n  columns,\n  rows,\n  tone = 'white',\n}: {\n  title: string\n  columns: string[]\n  rows: { metric: string; values: string[]; bestIndex?: number }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n      <div className=\"overflow-x-auto\">\n        <table className=\"w-full min-w-140 border-collapse text-left text-[13px]\">\n          <thead>\n            <tr className=\"border-b border-[#EEF0F3] text-[12px] text-[#8A90A0]\">\n              <th className=\"py-2.5 pr-4 font-semibold whitespace-nowrap\">对比指标</th>\n              {columns.map((c) => (\n                <th key={c} className=\"px-3 py-2.5 font-semibold whitespace-nowrap\">\n                  {c}\n                </th>\n              ))}\n            </tr>\n          </thead>\n          <tbody>\n            {rows.map((r) => (\n              <tr key={r.metric} className=\"border-b border-[#EEF0F3] last:border-b-0\">\n                <td className=\"py-3 pr-4 font-semibold text-[#1B1F27] whitespace-nowrap\">{r.metric}</td>\n                {r.values.map((v, idx) => (\n                  <td key={idx} className=\"px-3 py-3 font-glaze-mono whitespace-nowrap\">\n                    {r.bestIndex === idx ? (\n                      <span className=\"inline-flex rounded-full bg-[#E2F5DA] px-2.5 py-0.5 font-bold text-[#2F6B28]\">\n                        {v}\n                      </span>\n                    ) : (\n                      <span className=\"text-[#5B6170]\">{v}</span>\n                    )}\n                  </td>\n                ))}\n              </tr>\n            ))}\n          </tbody>\n        </table>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

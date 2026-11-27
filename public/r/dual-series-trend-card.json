@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dual-series-trend-card",
+  "type": "registry:block",
+  "title": "W10 双曲线对比卡 (DualSeriesTrendCard)",
+  "description": "双曲线对比卡（W10 · 尺寸 W）— 实线/虚线双序列对比",
+  "registryDependencies": [
+    "@glaze/line-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/dual-series-trend-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/dual-series-trend-card.tsx",
+      "content": "import * as React from 'react'\nimport { LineChart } from '@/components/ui/line-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function DualSeriesTrendCard({\n  label,\n  seriesA,\n  seriesB,\n  tone = 'white',\n}: {\n  label: string\n  seriesA: { name: string; color: string; data: number[]; current: string }\n  seriesB: { name: string; color: string; data: number[]; current: string }\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const chartData = React.useMemo(() => {\n    const len = Math.max(seriesA.data.length, seriesB.data.length)\n    return Array.from({ length: len }, (_, i) => ({\n      idx: `P${i + 1}`,\n      a: seriesA.data[i],\n      b: seriesB.data[i],\n    }))\n  }, [seriesA.data, seriesB.data])\n\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex flex-wrap items-center justify-between gap-2\">\n        <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <div className=\"flex items-center gap-4 text-[12px]\">\n          <span className=\"inline-flex items-center gap-1.5 font-semibold\">\n            <span className=\"h-2 w-2 rounded-full\" style={{ backgroundColor: seriesA.color }} />\n            {seriesA.name} <strong className=\"font-glaze-display\">{seriesA.current}</strong>\n          </span>\n          <span className=\"inline-flex items-center gap-1.5 font-semibold\">\n            <span className=\"h-2 w-2 rounded-full\" style={{ backgroundColor: seriesB.color }} />\n            {seriesB.name} <strong className=\"font-glaze-display\">{seriesB.current}</strong>\n          </span>\n        </div>\n      </div>\n      <div className=\"h-24 w-full\">\n        <LineChart\n          data={chartData}\n          xKey=\"idx\"\n          series={[\n            { dataKey: 'a', label: seriesA.name, color: seriesA.color, strokeWidth: 2.5 },\n            { dataKey: 'b', label: seriesB.name, color: seriesB.color, strokeWidth: 2.5, dashed: true },\n          ]}\n          tone={tone}\n          height=\"100%\"\n          showGrid\n          showXAxis={false}\n          showYAxis={false}\n          margin={{ top: 8, right: 6, bottom: 2, left: 6 }}\n          className=\"h-full\"\n        />\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command-palette-bar-card",
+  "type": "registry:block",
+  "title": "F11 全局命令栏通栏卡 (CommandPaletteBarCard)",
+  "description": "全局命令栏通栏卡（F11 · 尺寸 F）— 深色命令输入 · 快捷指令胶囊",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/input",
+    "@glaze/motion",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "controls",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/command-palette-bar-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/command-palette-bar-card.tsx",
+      "content": "import * as React from 'react'\nimport { MagnifyingGlass } from '@phosphor-icons/react'\nimport { Input } from '@/components/ui/input'\nimport { Tile } from '@/components/ui/tile'\nimport { PRESS_CLASS } from '@/lib/motion'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function CommandPaletteBarCard({\n  placeholder = '输入指令、跳转到节点或搜索模块…',\n  quickActions,\n  onAction,\n  tone = 'ink',\n}: {\n  placeholder?: string\n  quickActions: { label: string; shortcut: string }[]\n  onAction?: (label: string) => void\n  tone?: TileTone\n}) {\n  const [val, setVal] = React.useState('')\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <div className=\"flex flex-col gap-3 md:flex-row md:items-center\">\n        <div className=\"min-w-0 flex-1\">\n          <Input\n            surface=\"white\"\n            value={val}\n            onChange={(e) => setVal(e.target.value)}\n            placeholder={placeholder}\n            leadingIcon={<MagnifyingGlass size={16} weight=\"bold\" />}\n            trailingElement={\n              <kbd className=\"rounded-full bg-[#F2F3F5] px-2.5 py-0.5 font-glaze-mono text-[11px] font-bold text-[#5B6170] whitespace-nowrap\">\n                ⌘ K\n              </kbd>\n            }\n          />\n        </div>\n        <div className=\"flex flex-wrap gap-2\">\n          {quickActions.map((a) => (\n            <button\n              key={a.label}\n              type=\"button\"\n              onClick={() => onAction?.(a.label)}\n              className={`inline-flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-semibold whitespace-nowrap hover:brightness-95 ${PRESS_CLASS}`}\n              style={{\n                backgroundColor: theme.dark\n                  ? 'rgba(255,255,255,0.12)'\n                  : theme.bg === '#FFFFFF'\n                    ? '#F2F3F5'\n                    : 'rgba(255,255,255,0.7)',\n                color: theme.ink,\n              }}\n            >\n              <span>{a.label}</span>\n              <span className=\"font-glaze-mono text-[10px]\" style={{ color: theme.soft }}>\n                {a.shortcut}\n              </span>\n            </button>\n          ))}\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

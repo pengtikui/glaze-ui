@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-group",
+  "type": "registry:ui",
+  "title": "CheckboxGroup (复选框组)",
+  "description": "管理多组 Checkbox 共享选中值数组，支持全选联动（parent checkbox）。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/checkbox-group.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { CheckboxGroup as BaseCheckboxGroup } from '@base-ui/react/checkbox-group'\nimport { cn } from 'cn'\n\nexport function CheckboxGroup({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseCheckboxGroup>) {\n  return (\n    <BaseCheckboxGroup\n      className={cn('flex flex-col gap-2.5', className)}\n      {...props}\n    />\n  )\n}\n"
+    }
+  ]
+}

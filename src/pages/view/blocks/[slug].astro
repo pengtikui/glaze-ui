@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { BLOCKS_LIST } from '@/docs/data/catalog'
+import { StandaloneBlockIsland } from '@/docs/islands/PageIslands'
+
+export async function getStaticPaths() {
+  return BLOCKS_LIST.map((block) => ({
+    params: { slug: block.slug },
+    props: { block },
+  }))
+}
+
+const { block } = Astro.props
+---
+
+<BaseLayout title={`${block.cnName} · Glaze Block`} description={`${block.code} ${block.componentName}`}>
+  <StandaloneBlockIsland slug={block.slug} client:only="react" />
+</BaseLayout>

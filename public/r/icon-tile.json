@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tile",
+  "type": "registry:ui",
+  "title": "IconTile (图标方砖)",
+  "description": "用于应用图标与列表前置标识的柔彩圆角方砖，可自动感知父级 Tile 深浅背景。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/icon-tile.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\nimport { useTileTheme } from '@/components/ui/tile'\n\nexport interface IconTileProps extends React.HTMLAttributes<HTMLDivElement> {\n  hue?: Hue | 'neutral' | 'dark' | 'dark-glass' | 'coral-solid'\n  size?: 'sm' | 'md' | 'lg' | 'xl'\n  radius?: 'icon' | 'app' | 'full'\n  badge?: number\n  badgeRingColor?: string\n}\n\nexport function IconTile({\n  hue = 'sky',\n  size = 'md',\n  radius = 'app',\n  badge,\n  badgeRingColor = '#FFFFFF',\n  className,\n  style,\n  children,\n  ...props\n}: IconTileProps) {\n  const tileTheme = useTileTheme()\n\n  const colors =\n    hue === 'neutral'\n      ? tileTheme.dark\n        ? { backgroundColor: 'rgba(255,255,255,0.16)', color: '#FFFFFF' }\n        : { backgroundColor: tileTheme.bg === '#FFFFFF' ? '#F2F3F5' : 'rgba(255,255,255,0.68)', color: tileTheme.ink }\n      : hue === 'dark' || hue === 'dark-glass'\n        ? { backgroundColor: 'rgba(255,255,255,0.16)', color: '#FFFFFF' }\n        : hue === 'coral-solid'\n          ? { backgroundColor: HUE_PALETTES.coral[500], color: '#FFFFFF' }\n          : {\n              backgroundColor:\n                HUE_PALETTES[hue][100] === tileTheme.bg\n                  ? 'rgba(255,255,255,0.68)'\n                  : HUE_PALETTES[hue][100],\n              color: HUE_PALETTES[hue][700],\n            }\n\n  return (\n    <div\n      className={cn(\n        'relative inline-flex shrink-0 items-center justify-center',\n        size === 'sm' && 'h-8 w-8 text-[15px]',\n        size === 'md' && 'h-10 w-10 text-[18px]',\n        size === 'lg' && 'h-12 w-12 text-[20px]',\n        size === 'xl' && 'h-14 w-14 text-[24px]',\n        radius === 'icon' && 'rounded-icon',\n        radius === 'app' && 'rounded-control',\n        radius === 'full' && 'rounded-full',\n        className,\n      )}\n      style={{ ...colors, ...style }}\n      {...props}\n    >\n      {children}\n      {badge !== undefined && badge > 0 && (\n        <span\n          className=\"absolute -top-1.5 -right-1.5 inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-[#E5603B] px-1 text-[10px] font-bold text-white tabular-nums\"\n          style={{ boxShadow: `0 0 0 2px ${badgeRingColor}` }}\n        >\n          {badge}\n        </span>\n      )}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

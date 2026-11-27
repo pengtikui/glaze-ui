@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "type": "registry:ui",
+  "title": "Accordion (手风琴折叠面板)",
+  "description": "18px 圆角折叠面板组，使用 Base UI --accordion-panel-height 变量驱动平滑高度展开。",
+  "dependencies": [
+    "@base-ui/react",
+    "@phosphor-icons/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style"
+  ],
+  "categories": [
+    "navigation"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/accordion.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Accordion as BaseAccordion } from '@base-ui/react/accordion'\nimport { CaretDown } from '@phosphor-icons/react'\nimport { cn } from 'cn'\n\nexport function Accordion({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseAccordion.Root>) {\n  return (\n    <BaseAccordion.Root\n      className={cn('flex w-full flex-col gap-2', className)}\n      {...props}\n    />\n  )\n}\n\nexport interface AccordionItemProps {\n  value: string\n  title: React.ReactNode\n  subtitle?: string\n  children: React.ReactNode\n  className?: string\n}\n\nexport function AccordionItem({\n  value,\n  title,\n  subtitle,\n  children,\n  className,\n}: AccordionItemProps) {\n  return (\n    <BaseAccordion.Item\n      value={value}\n      className={cn(\n        'overflow-hidden rounded-inner bg-[#F6F7F9] transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] data-open:bg-[#EEF0F5]',\n        className,\n      )}\n    >\n      <BaseAccordion.Header>\n        <BaseAccordion.Trigger className=\"group flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-3.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#7B80EA]\">\n          <div className=\"flex min-w-0 flex-col\">\n            <span className=\"text-[14px] font-bold text-[#1B1F27]\">{title}</span>\n            {subtitle && (\n              <span className=\"text-[12px] text-[#6B7280]\">{subtitle}</span>\n            )}\n          </div>\n          <CaretDown\n            size={16}\n            weight=\"bold\"\n            className=\"shrink-0 text-[#8A90A0] transition-[rotate] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-panel-open:rotate-180\"\n          />\n        </BaseAccordion.Trigger>\n      </BaseAccordion.Header>\n      <BaseAccordion.Panel className=\"h-(--accordion-panel-height) overflow-hidden text-[13px] leading-relaxed text-[#5B6170] transition-[height,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:h-0 data-ending-style:opacity-0 data-starting-style:h-0 data-starting-style:opacity-0\">\n        <div className=\"px-4 pb-4\">{children}</div>\n      </BaseAccordion.Panel>\n    </BaseAccordion.Item>\n  )\n}\n"
+    }
+  ]
+}

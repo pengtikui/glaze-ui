@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "type": "registry:ui",
+  "title": "Slider (滑块)",
+  "description": "单值与双端区间范围滑块，支持色相主题、步进与键盘精确微调。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/slider.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Slider as BaseSlider } from '@base-ui/react/slider'\nimport { cn } from 'cn'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\n\nexport interface SliderProps\n  extends Omit<React.ComponentPropsWithoutRef<typeof BaseSlider.Root>, 'className'> {\n  hue?: Hue | 'ink'\n  label?: string\n  showValue?: boolean\n  unit?: string\n  className?: string\n}\n\nexport function Slider({\n  hue = 'periwinkle',\n  label,\n  showValue = true,\n  unit = '',\n  className,\n  ...props\n}: SliderProps) {\n  const accent = hue === 'ink' ? '#1B1F27' : HUE_PALETTES[hue][500]\n  const isRange = Array.isArray(props.value ?? props.defaultValue)\n\n  return (\n    <BaseSlider.Root className={cn('flex w-full flex-col gap-2', className)} {...props}>\n      {(label || showValue) && (\n        <div className=\"flex items-center justify-between text-[13px]\">\n          {label ? (\n            <span className=\"font-semibold text-[#1B1F27]\">{label}</span>\n          ) : (\n            <span />\n          )}\n          {showValue && (\n            <BaseSlider.Value className=\"font-glaze-display font-bold text-[#1B1F27] tabular-nums\">\n              {(formattedValues) =>\n                formattedValues.length > 1\n                  ? `${formattedValues[0]}${unit} – ${formattedValues[1]}${unit}`\n                  : `${formattedValues[0]}${unit}`\n              }\n            </BaseSlider.Value>\n          )}\n        </div>\n      )}\n      <BaseSlider.Control className=\"relative flex h-6 w-full touch-none items-center select-none\">\n        <BaseSlider.Track className=\"relative h-2 w-full rounded-full bg-[#E8EBF0]\">\n          <BaseSlider.Indicator\n            className=\"h-full rounded-full\"\n            style={{ backgroundColor: accent }}\n          />\n          {isRange ? (\n            <>\n              <BaseSlider.Thumb\n                index={0}\n                className=\"h-5 w-5 cursor-grab rounded-full border-2 border-white bg-[#1B1F27] shadow-[0_2px_6px_rgba(16,24,40,0.22)] outline-none transition-[scale] duration-150 ease-[cubic-bezier(0.2,0,0,1)] hover:scale-110 active:scale-95 active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-[#7B80EA]\"\n              />\n              <BaseSlider.Thumb\n                index={1}\n                className=\"h-5 w-5 cursor-grab rounded-full border-2 border-white bg-[#1B1F27] shadow-[0_2px_6px_rgba(16,24,40,0.22)] outline-none transition-[scale] duration-150 ease-[cubic-bezier(0.2,0,0,1)] hover:scale-110 active:scale-95 active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-[#7B80EA]\"\n              />\n            </>\n          ) : (\n            <BaseSlider.Thumb className=\"h-5 w-5 cursor-grab rounded-full border-2 border-white bg-[#1B1F27] shadow-[0_2px_6px_rgba(16,24,40,0.22)] outline-none transition-[scale] duration-150 ease-[cubic-bezier(0.2,0,0,1)] hover:scale-110 active:scale-95 active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-[#7B80EA]\" />\n          )}\n        </BaseSlider.Track>\n      </BaseSlider.Control>\n    </BaseSlider.Root>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radar-skill-card",
+  "type": "registry:block",
+  "title": "L6 六维雷达评分卡 (RadarSkillCard)",
+  "description": "六维雷达评分卡（L6 · 尺寸 L）— 多边形网格 · 6 维能力评估",
+  "registryDependencies": [
+    "@glaze/radar-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-l"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/radar-skill-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/radar-skill-card.tsx",
+      "content": "import { RadarChart } from '@/components/ui/radar-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function RadarSkillCard({\n  title,\n  subtitle,\n  axes,\n  color = '#7B80EA',\n  tone = 'white',\n}: {\n  title: string\n  subtitle: string\n  axes: { label: string; value: number }[]\n  color?: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-2\">\n      <div>\n        <div className=\"font-glaze-display text-[20px] font-extrabold\">{title}</div>\n        <div className=\"text-[13px]\" style={{ color: theme.soft }}>{subtitle}</div>\n      </div>\n      <div className=\"min-h-62.5 flex-1 w-full\">\n        <RadarChart\n          data={axes}\n          angleKey=\"label\"\n          series={[{ dataKey: 'value', label: title, color }]}\n          tone={tone}\n          height=\"100%\"\n          outerRadius=\"74%\"\n          className=\"h-full\"\n        />\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

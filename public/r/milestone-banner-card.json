@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "milestone-banner-card",
+  "type": "registry:block",
+  "title": "W22 里程碑进度横幅 (MilestoneBannerCard)",
+  "description": "里程碑进度横幅（W22 · 尺寸 W）— 版本号 · 进度条 · 负责人头像",
+  "registryDependencies": [
+    "@glaze/avatar",
+    "@glaze/progress",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/milestone-banner-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/milestone-banner-card.tsx",
+      "content": "import { Avatar } from '@/components/ui/avatar'\nimport { Progress } from '@/components/ui/progress'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function MilestoneBannerCard({\n  version,\n  title,\n  progress,\n  dueDate,\n  owners,\n  tone = 'mint',\n}: {\n  version: string\n  title: string\n  progress: number\n  dueDate: string\n  owners: { initials: string; hue: Hue }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-start justify-between gap-3\">\n        <div className=\"min-w-0 flex-1\">\n          <span\n            className=\"inline-block rounded-full px-2.5 py-0.5 font-glaze-mono text-[11px] font-bold whitespace-nowrap\"\n            style={{ backgroundColor: theme.track, color: theme.ink }}\n          >\n            {version}\n          </span>\n          <div className=\"mt-1.5 truncate font-glaze-display text-[20px] font-extrabold\">{title}</div>\n        </div>\n        <div className=\"flex shrink-0 -space-x-2\">\n          {owners.map((o, i) => (\n            <Avatar\n              key={i}\n              fallback={o.initials}\n              hue={o.hue}\n              size=\"sm\"\n              ringWidth={2}\n              ringColor={theme.bg}\n            />\n          ))}\n        </div>\n      </div>\n      <div className=\"flex flex-col gap-1.5\">\n        <Progress value={progress} barColor={theme.accent} trackColor={theme.track} />\n        <div className=\"flex justify-between text-[12px]\" style={{ color: theme.soft }}>\n          <span>已完成 {progress}%</span>\n          <span>目标交付：{dueDate}</span>\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

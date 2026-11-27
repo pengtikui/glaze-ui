@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "uptime-strip-card",
+  "type": "registry:block",
+  "title": "W11 30 日 SLA 状态条 (UptimeStripCard)",
+  "description": "30 日 SLA 状态条（W11 · 尺寸 W）— 30 根可用性绿条 · Tooltip",
+  "registryDependencies": [
+    "@glaze/status-dot",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens",
+    "@glaze/tooltip"
+  ],
+  "categories": [
+    "blocks",
+    "monitoring",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/uptime-strip-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/uptime-strip-card.tsx",
+      "content": "import { StatusDot } from '@/components/ui/status-dot'\nimport { Tile } from '@/components/ui/tile'\nimport { Tooltip } from '@/components/ui/tooltip'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function UptimeStripCard({\n  service,\n  uptimePct = '99.98%',\n  days,\n  tone = 'white',\n}: {\n  service: string\n  uptimePct?: string\n  days: ('ok' | 'warn' | 'down')[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <div className=\"flex min-w-0 items-center gap-2\">\n          <StatusDot status=\"normal\" mode=\"ripple\" />\n          <span className=\"truncate font-glaze-display text-[17px] font-extrabold\">{service}</span>\n        </div>\n        <span\n          className=\"shrink-0 font-glaze-display text-[20px] font-extrabold whitespace-nowrap\"\n          style={{ color: theme.dark ? '#93DAD3' : '#2F6B28' }}\n        >\n          {uptimePct}\n        </span>\n      </div>\n      <div className=\"flex h-11 items-end gap-0.75\">\n        {days.map((d, i) => (\n          <Tooltip\n            key={i}\n            content={`第 ${i + 1} 天 · ${d === 'ok' ? '正常运行' : d === 'warn' ? '短暂抖动' : '异常中断'}`}\n          >\n            <div\n              className=\"h-full flex-1 rounded-full transition-opacity hover:opacity-80\"\n              style={{\n                backgroundColor:\n                  d === 'ok' ? '#49A851' : d === 'warn' ? '#E3A33B' : '#E5603B',\n              }}\n            />\n          </Tooltip>\n        ))}\n      </div>\n      <div className=\"flex justify-between text-[11px]\" style={{ color: theme.soft }}>\n        <span>30 天前</span>\n        <span>最近 30 天 SLA 可用性监控</span>\n        <span>今天</span>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

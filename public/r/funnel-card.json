@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "funnel-card",
+  "type": "registry:block",
+  "title": "T14 转化漏斗竖卡 (FunnelCard)",
+  "description": "转化漏斗竖卡（T14 · 尺寸 T）— 4 阶段递减宽条 · 转化率",
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/funnel-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/funnel-card.tsx",
+      "content": "import { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function FunnelCard({\n  title,\n  steps,\n  tone = 'periwinkle',\n}: {\n  title: string\n  steps: { label: string; count: string; pct: number }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n      <div className=\"flex flex-1 flex-col justify-between gap-3\">\n        {steps.map((s) => (\n          <div key={s.label} className=\"flex flex-col gap-1.5\">\n            <div className=\"flex items-center justify-between gap-2 text-[12px]\">\n              <span className=\"truncate font-semibold\" style={{ color: theme.ink }}>\n                {s.label}\n              </span>\n              <span className=\"shrink-0 font-glaze-mono font-bold whitespace-nowrap\" style={{ color: theme.soft }}>\n                {s.count} · {s.pct}%\n              </span>\n            </div>\n            <div\n              className=\"h-6 w-full overflow-hidden rounded-icon\"\n              style={{ backgroundColor: theme.track }}\n            >\n              <div\n                className=\"h-full rounded-icon\"\n                style={{ width: `${s.pct}%`, backgroundColor: theme.accent }}\n              />\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

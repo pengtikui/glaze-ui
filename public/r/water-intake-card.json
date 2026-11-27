@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "water-intake-card",
+  "type": "registry:block",
+  "title": "S31 饮水记录卡 (WaterIntakeCard)",
+  "description": "饮水记录卡（S31 · 尺寸 S）— 杯数统计 · 点击 +1 交互",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/water-intake-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/water-intake-card.tsx",
+      "content": "import * as React from 'react'\nimport { Drop } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function WaterIntakeCard({\n  initialCups = 5,\n  goal = 8,\n  tone = 'sky',\n}: {\n  initialCups?: number\n  goal?: number\n  tone?: TileTone\n}) {\n  const [cups, setCups] = React.useState(initialCups)\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          今日饮水\n        </span>\n        <Drop size={18} weight=\"fill\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"flex items-baseline gap-1\">\n        <span className=\"font-glaze-display text-[44px] leading-none font-extrabold\">\n          {cups}\n        </span>\n        <span className=\"text-[15px] font-semibold\" style={{ color: theme.soft }}>\n          / {goal} 杯\n        </span>\n      </div>\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"text-[12px] whitespace-nowrap\" style={{ color: theme.soft }}>\n          {cups * 250} ml\n        </span>\n        <Button\n          size=\"sm\"\n          variant={theme.dark ? 'dark-surface' : 'primary'}\n          onClick={() => setCups((c) => (c >= goal ? 0 : c + 1))}\n        >\n          {cups >= goal ? '重置' : '+1 杯'}\n        </Button>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

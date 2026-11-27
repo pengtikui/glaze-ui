@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kpi-strip-card",
+  "type": "registry:block",
+  "title": "F5 4 列核心 KPI 指标带 (KpiStripCard)",
+  "description": "4 列核心 KPI 指标带（F5 · 尺寸 F）— 4 列通栏大数字与环比",
+  "registryDependencies": [
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/kpi-strip-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/kpi-strip-card.tsx",
+      "content": "import { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport type { Status, TileTone } from '@/lib/tokens'\n\nexport function KpiStripCard({\n  metrics,\n  tone = 'white',\n}: {\n  metrics: { label: string; value: string; delta: string; status: Status; sub: string }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"f\" tone={tone}>\n      <div className=\"grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4\">\n        {metrics.slice(0, 4).map((m, i) => (\n          <div\n            key={m.label}\n            className={i > 0 ? 'lg:border-l lg:border-[#EEF0F3] lg:pl-6' : ''}\n          >\n            <div className=\"flex items-center justify-between gap-2\">\n              <span className=\"text-[13px] font-medium text-[#6B7280]\">{m.label}</span>\n              <StatusPill status={m.status} label={m.delta} showDot={false} size=\"sm\" />\n            </div>\n            <div className=\"mt-2 font-glaze-display text-[36px] leading-none font-extrabold tracking-[-0.03em] text-[#1B1F27]\">\n              {m.value}\n            </div>\n            <div className=\"mt-1.5 text-[12px] text-[#8A90A0]\">{m.sub}</div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

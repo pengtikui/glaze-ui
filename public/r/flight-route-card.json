@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "flight-route-card",
+  "type": "registry:block",
+  "title": "W14 航班行程卡 (FlightRouteCard)",
+  "description": "航班行程卡（W14 · 尺寸 W）— 三字码 · 虚线航迹 · 登机口",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/flight-route-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/flight-route-card.tsx",
+      "content": "import { AirplaneTilt } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function FlightRouteCard({\n  flightNo,\n  fromCode,\n  fromCity,\n  toCode,\n  toCity,\n  departTime,\n  arriveTime,\n  gate,\n  tone = 'sky-dark',\n}: {\n  flightNo: string\n  fromCode: string\n  fromCity: string\n  toCode: string\n  toCity: string\n  departTime: string\n  arriveTime: string\n  gate: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between text-[12px]\" style={{ color: theme.soft }}>\n        <span className=\"font-glaze-mono font-bold\" style={{ color: theme.ink }}>\n          {flightNo}\n        </span>\n        <span>登机口 {gate}</span>\n      </div>\n      <div className=\"flex items-center justify-between gap-4\">\n        <div className=\"shrink-0\">\n          <div className=\"font-glaze-display text-[30px] leading-none font-extrabold\">\n            {fromCode}\n          </div>\n          <div className=\"mt-1 text-[12px] whitespace-nowrap\" style={{ color: theme.soft }}>\n            {fromCity} · {departTime}\n          </div>\n        </div>\n        <div className=\"flex flex-1 items-center gap-2\">\n          <div className=\"h-px flex-1 border-t border-dashed\" style={{ borderColor: theme.divider }} />\n          <AirplaneTilt size={20} weight=\"fill\" className=\"shrink-0\" style={{ color: theme.accent }} />\n          <div className=\"h-px flex-1 border-t border-dashed\" style={{ borderColor: theme.divider }} />\n        </div>\n        <div className=\"shrink-0 text-right\">\n          <div className=\"font-glaze-display text-[30px] leading-none font-extrabold\">\n            {toCode}\n          </div>\n          <div className=\"mt-1 text-[12px] whitespace-nowrap\" style={{ color: theme.soft }}>\n            {toCity} · {arriveTime}\n          </div>\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

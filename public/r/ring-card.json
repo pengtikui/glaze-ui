@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ring-card",
+  "type": "registry:block",
+  "title": "S4 环形进度卡 (RingCard)",
+  "description": "环形进度卡（S4 · 尺寸 S）— 标签 · 环形图 · 说明",
+  "registryDependencies": [
+    "@glaze/radial-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/ring-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/ring-card.tsx",
+      "content": "import { GaugeChart } from '@/components/ui/radial-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface RingCardProps {\n  label: string\n  numerator: number\n  denominator: number\n  description: string\n  tone?: TileTone\n}\n\nexport function RingCard({\n  label,\n  numerator,\n  denominator,\n  description,\n  tone = 'rose',\n}: RingCardProps) {\n  const theme = TILE_THEMES[tone]\n  const pct = denominator > 0 ? Math.round((numerator / denominator) * 100) : 0\n\n  return (\n    <Tile\n      size=\"s\"\n      tone={tone}\n      className=\"flex-row items-center justify-between gap-3\"\n    >\n      <span className=\"flex min-w-0 flex-1 flex-col justify-between self-stretch\">\n        <span className=\"truncate text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <span className=\"flex min-w-0 flex-col gap-0.5\">\n          <span className=\"font-glaze-display text-[30px] leading-9 font-extrabold whitespace-nowrap\">\n            {numerator}\n            <span className=\"text-[17px]\" style={{ opacity: 0.55 }}>\n              /{denominator}\n            </span>\n          </span>\n          <span className=\"truncate text-[13px]\" style={{ color: theme.soft }}>\n            {description}\n          </span>\n        </span>\n      </span>\n      <GaugeChart\n        value={pct}\n        max={100}\n        label={label}\n        valueText={`${pct}%`}\n        variant=\"ring\"\n        color={theme.accent}\n        trackColor={theme.track}\n        tone={tone}\n        width={96}\n        height={96}\n        barSize={11}\n      />\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

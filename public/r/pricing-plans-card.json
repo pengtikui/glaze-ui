@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pricing-plans-card",
+  "type": "registry:block",
+  "title": "F6 三档定价方案卡 (PricingPlansCard)",
+  "description": "三档定价方案卡（F6 · 尺寸 F）— 3 栏方案对比 · 推荐高亮",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/hue-tag",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "layout",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/pricing-plans-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/pricing-plans-card.tsx",
+      "content": "import { Check } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function PricingPlansCard({\n  plans,\n  onSelect,\n  tone = 'white',\n}: {\n  plans: {\n    id: string\n    name: string\n    price: string\n    period: string\n    badge?: string\n    hue: Hue\n    features: string[]\n    highlighted?: boolean\n  }[]\n  onSelect?: (id: string) => void\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"f\" tone={tone}>\n      <div className=\"grid grid-cols-1 gap-4 md:grid-cols-3\">\n        {plans.slice(0, 3).map((p) => (\n          <div\n            key={p.id}\n            className=\"flex flex-col justify-between gap-5 rounded-[22px] p-5\"\n            style={{\n              backgroundColor: p.highlighted ? HUE_PALETTES[p.hue][100] : '#F6F7F9',\n              color: p.highlighted ? HUE_PALETTES[p.hue][900] : '#1B1F27',\n            }}\n          >\n            <div>\n              <div className=\"flex items-center justify-between\">\n                <span className=\"font-glaze-display text-[18px] font-extrabold\">{p.name}</span>\n                {p.badge && (\n                  <HueTag hue={p.hue} tone={p.highlighted ? 'solid' : 'soft'} size=\"sm\">\n                    {p.badge}\n                  </HueTag>\n                )}\n              </div>\n              <div className=\"mt-3 flex items-baseline gap-1\">\n                <span className=\"font-glaze-display text-[38px] leading-none font-extrabold\">\n                  {p.price}\n                </span>\n                <span className=\"text-[13px] opacity-70\">{p.period}</span>\n              </div>\n              <ul className=\"mt-4 flex flex-col gap-2\">\n                {p.features.map((f) => (\n                  <li key={f} className=\"flex items-center gap-2 text-[13px]\">\n                    <Check size={14} weight=\"bold\" />\n                    <span>{f}</span>\n                  </li>\n                ))}\n              </ul>\n            </div>\n            <Button\n              variant={p.highlighted ? 'primary' : 'secondary'}\n              onClick={() => onSelect?.(p.id)}\n              className=\"w-full\"\n            >\n              选择 {p.name}\n            </Button>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

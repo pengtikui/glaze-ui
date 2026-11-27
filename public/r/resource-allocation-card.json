@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "resource-allocation-card",
+  "type": "registry:block",
+  "title": "F10 资源分摊通栏卡 (ResourceAllocationCard)",
+  "description": "资源分摊通栏卡（F10 · 尺寸 F）— 堆叠占比条 · 4 部门配额与头像",
+  "registryDependencies": [
+    "@glaze/avatar",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "layout",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/resource-allocation-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/resource-allocation-card.tsx",
+      "content": "import { Avatar } from '@/components/ui/avatar'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function ResourceAllocationCard({\n  title,\n  teams,\n  tone = 'white',\n}: {\n  title: string\n  teams: { name: string; share: number; hue: Hue; members: string[]; quota: string }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n        <span className=\"text-[12px] text-[#6B7280]\">按集群配额加权</span>\n      </div>\n      <div className=\"flex h-3.5 w-full overflow-hidden rounded-full bg-[#F2F3F5]\">\n        {teams.map((t) => (\n          <div\n            key={t.name}\n            style={{ width: `${t.share}%`, backgroundColor: HUE_PALETTES[t.hue][500] }}\n          />\n        ))}\n      </div>\n      <div className=\"grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4\">\n        {teams.map((t) => (\n          <div\n            key={t.name}\n            className=\"flex items-center justify-between rounded-inner bg-[#F6F7F9] px-4 py-3\"\n          >\n            <div>\n              <div className=\"flex items-center gap-1.5 text-[13px] font-bold\">\n                <span\n                  className=\"h-2.5 w-2.5 rounded-full\"\n                  style={{ backgroundColor: HUE_PALETTES[t.hue][500] }}\n                />\n                {t.name}\n              </div>\n              <div className=\"mt-0.5 text-[12px] text-[#6B7280]\">\n                {t.quota} · {t.share}%\n              </div>\n            </div>\n            <div className=\"flex -space-x-2\">\n              {t.members.map((m, idx) => (\n                <Avatar key={idx} fallback={m} hue={t.hue} size=\"xs\" className=\"ring-2 ring-white\" />\n              ))}\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

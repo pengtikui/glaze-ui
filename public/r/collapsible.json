@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "collapsible",
+  "type": "registry:ui",
+  "title": "Collapsible (单块折叠区)",
+  "description": "独立可控的展开/收起内容区域，内置平滑高度过渡与标题副文插槽。",
+  "dependencies": [
+    "@base-ui/react",
+    "@phosphor-icons/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style"
+  ],
+  "categories": [
+    "navigation"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/collapsible.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible'\nimport { CaretDown } from '@phosphor-icons/react'\nimport { cn } from 'cn'\n\nexport function Collapsible({\n  title,\n  badge,\n  defaultOpen = false,\n  children,\n  className,\n}: {\n  title: React.ReactNode\n  badge?: React.ReactNode\n  defaultOpen?: boolean\n  children: React.ReactNode\n  className?: string\n}) {\n  return (\n    <BaseCollapsible.Root\n      defaultOpen={defaultOpen}\n      className={cn('rounded-inner bg-[#F6F7F9] p-4', className)}\n    >\n      <BaseCollapsible.Trigger className=\"group flex w-full cursor-pointer items-center justify-between gap-2 text-left outline-none\">\n        <div className=\"flex items-center gap-2\">\n          <span className=\"text-[14px] font-bold text-[#1B1F27]\">{title}</span>\n          {badge}\n        </div>\n        <CaretDown\n          size={16}\n          weight=\"bold\"\n          className=\"text-[#8A90A0] transition-[rotate] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-panel-open:rotate-180\"\n        />\n      </BaseCollapsible.Trigger>\n      <BaseCollapsible.Panel className=\"h-(--collapsible-panel-height) overflow-hidden transition-[height,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:h-0 data-ending-style:opacity-0 data-starting-style:h-0 data-starting-style:opacity-0\">\n        <div className=\"pt-3 text-[13px] leading-relaxed text-[#5B6170]\">\n          {children}\n        </div>\n      </BaseCollapsible.Panel>\n    </BaseCollapsible.Root>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+---
+import { getEntry, render } from 'astro:content'
+import DocsLayout from '@/layouts/DocsLayout.astro'
+
+const entry = await getEntry('docs', 'index')
+if (!entry) {
+  throw new Error('Missing src/content/docs/index.md')
+}
+
+const { Content, headings } = await render(entry)
+const toc = headings
+  .filter((h) => h.depth >= 2 && h.depth <= 3)
+  .map((h) => ({ id: h.slug, label: h.text, depth: h.depth }))
+---
+
+<DocsLayout title={`${entry.data.title} · Glaze UI`} description={entry.data.description} toc={toc}>
+  <article class="flex flex-col gap-7">
+    <header class="flex flex-col gap-2">
+      <h1 class="m-0 font-glaze-display text-[34px] leading-10 font-extrabold tracking-[-0.02em] text-[#123A5C]">
+        {entry.data.title}
+      </h1>
+      <p class="m-0 text-[15px] text-[#5B6170]">{entry.data.description}</p>
+    </header>
+
+    <div class="docs-prose">
+      <Content />
+    </div>
+  </article>
+</DocsLayout>

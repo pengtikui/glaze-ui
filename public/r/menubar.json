@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menubar",
+  "type": "registry:ui",
+  "title": "Menubar (应用菜单栏)",
+  "description": "桌面应用风格的顶部水平菜单栏，支持悬停无缝切换相邻下拉菜单。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion",
+    "@glaze/style"
+  ],
+  "categories": [
+    "selection"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/menubar.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Menubar as BaseMenubar } from '@base-ui/react/menubar'\nimport { Menu as BaseMenu } from '@base-ui/react/menu'\nimport { cn } from 'cn'\nimport {\n  POPUP_SURFACE,\n  POPUP_TRANSITION_CLASS,\n} from '@/lib/motion'\n\nexport function Menubar({\n  className,\n  children,\n}: {\n  className?: string\n  children: React.ReactNode\n}) {\n  return (\n    <BaseMenubar\n      className={cn(\n        'inline-flex items-center gap-1 rounded-full bg-[#F2F3F5] p-1',\n        className,\n      )}\n    >\n      {children}\n    </BaseMenubar>\n  )\n}\n\nexport const MenubarMenu = BaseMenu.Root\n\nexport function MenubarTrigger({\n  className,\n  children,\n}: {\n  className?: string\n  children: React.ReactNode\n}) {\n  return (\n    <BaseMenu.Trigger\n      className={cn(\n        'inline-flex h-8 cursor-pointer items-center rounded-full px-3.5 text-[13px] font-semibold text-[#1B1F27] select-none outline-none transition-[background-color,color,box-shadow] duration-150 ease-[cubic-bezier(0.2,0,0,1)] hover:bg-white data-popup-open:bg-white data-popup-open:shadow-[0_1px_3px_rgba(16,24,40,0.08)]',\n        className,\n      )}\n    >\n      {children}\n    </BaseMenu.Trigger>\n  )\n}\n\nexport function MenubarContent({ children }: { children: React.ReactNode }) {\n  return (\n    <BaseMenu.Portal>\n      <BaseMenu.Positioner sideOffset={8} align=\"start\" className=\"z-50\">\n        <BaseMenu.Popup\n          className={cn(\n            POPUP_SURFACE,\n            POPUP_TRANSITION_CLASS,\n            'min-w-45 p-1.5',\n          )}\n        >\n          {children}\n        </BaseMenu.Popup>\n      </BaseMenu.Positioner>\n    </BaseMenu.Portal>\n  )\n}\n\nexport function MenubarItem({\n  children,\n  shortcut,\n  onClick,\n}: {\n  children: React.ReactNode\n  shortcut?: string\n  onClick?: () => void\n}) {\n  return (\n    <BaseMenu.Item\n      onClick={onClick}\n      className=\"flex cursor-pointer items-center justify-between gap-4 rounded-[12px] px-3 py-2 text-[13px] font-medium text-[#1B1F27] outline-none transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)] data-highlighted:bg-[#F2F3F5]\"\n    >\n      <span>{children}</span>\n      {shortcut && (\n        <span className=\"font-glaze-mono text-[11px] text-[#8A90A0]\">{shortcut}</span>\n      )}\n    </BaseMenu.Item>\n  )\n}\n"
+    }
+  ]
+}

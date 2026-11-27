@@ -1,0 +1,95 @@
+# Glaze（釉） Design System
+
+> 基于 Base UI 1.9、Tailwind CSS v4 与 Recharts v3 的无障碍设计系统与 shadcn Registry. 58 single-file UI components (39 Base UI 1.9 + 9 design primitives + 10 Recharts v3 charts), 112 independently installable business blocks, and 6 full-page demos published as a shadcn Registry.
+
+## Quick CLI Reference
+
+- Repository: https://github.com/pengtikui/glaze-ui
+- Registry URL Template: `https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/r/{name}.json`
+- Registry Manifest: `https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/r/registry.json` (or `/r/registry.json`)
+- Full Consolidated AI Reference: `https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/llms-full.txt` (or `/llms-full.txt`)
+- Install Base Theme & Tokens: `npx shadcn@latest add @glaze/style`
+- Install Any Component or Block: `npx shadcn@latest add @glaze/<name>`
+
+## Core Documentation
+
+- [Getting Started & Registry Setup](/llms/getting-started.md): Configure `components.json`, install `@glaze/style`, and wrap providers.
+- [Design Foundations & Strict Rules](/llms/foundations.md): Canvas, shadowless cards, capsule radii, 9 pastel hues, 4-col dense grid, Base UI v1.9 conventions, CSS-first motion rules.
+- [112 Business Blocks Catalog](/llms/blocks.md): Complete index of S/W/T/L/F cards with registry slugs.
+- [6 Standalone Business Demos](/llms/demos.md): Full-page real-world dashboards and their standalone preview routes.
+
+## Components — Primitives & Layout (布局与设计原语)
+
+- [Grid (四列密集栅格)](/llms/components/grid.md): Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手机 1 列，支持预览列数覆盖。
+- [Tile (釉面卡片容器)](/llms/components/tile.md): 无描边、无阴影的核心卡片容器，内置 9 组柔彩 + 4 组深色 + 纯白 14 种主题，通过 Context 向子图表与图标传递色彩。
+- [StatusPill (语义状态胶囊)](/llms/components/status-pill.md): 用于展示正常 / 注意 / 异常 / 信息 / 停用 5 种语义状态的胶囊徽章，可选呼吸状态点。
+- [HueTag (柔彩色相标签)](/llms/components/hue-tag.md): 基于 9 组 Glaze 柔彩色板的轻量标签，支持 xs / sm / md 尺寸与浅/深变体。
+- [StatusDot (语义状态点)](/llms/components/status-dot.md): 展示实时在线/告警状态的圆点指示器，支持 CSS 涟漪扩散（normal）与呼吸闪烁（warning/error）动画。
+- [CountBadge (数字角标)](/llms/components/count-badge.md): 紧凑的等宽数字计数徽章，支持 9 组色相自动配色。
+- [IconTile (图标方砖)](/llms/components/icon-tile.md): 用于应用图标与列表前置标识的柔彩圆角方砖，可自动感知父级 Tile 深浅背景。
+- [Textarea (多行文本域)](/llms/components/textarea.md): 采用 18px 圆角（rounded-inner）与柔灰底色（#F6F7F9）的多行输入框。
+- [SegmentedControl (分段控制器)](/llms/components/segmented-control.md): 基于 Base UI Tabs 封装的胶囊分段切换器，内置平滑纯 CSS 滑动指示块。
+
+## Components — Forms & Inputs (表单与输入)
+
+- [Button (按钮)](/llms/components/button.md): 全圆胶囊按钮，提供 7 种语义与表面变体，独立使用时启用 0.97 按压缩放，作为浮层触发器时自动禁用缩放以防锚点抖动。
+- [Input (输入框)](/llms/components/input.md): 基于 Base UI Input 的 44px 全圆胶囊单行输入框，支持前后缀图标与柔灰/纯白两种表面。
+- [NumberField (数字步进框)](/llms/components/number-field.md): 支持键盘微调、拖动增减（Scrub）、范围限制与单位后缀的无障碍数值输入控件。
+- [OTPField (验证码输入框)](/llms/components/otp-field.md): 基于 Base UI v1.9 OTPField 构建的一次性密码/验证码分段输入框，支持自动跳格与粘贴填充。
+- [Checkbox (复选框)](/llms/components/checkbox.md): 支持选中、未选中与半选（indeterminate）状态，内置描述文案与按压反馈。
+- [CheckboxGroup (复选框组)](/llms/components/checkbox-group.md): 管理多组 Checkbox 共享选中值数组，支持全选联动（parent checkbox）。
+- [Radio (单选框)](/llms/components/radio.md): 配合 RadioGroup 使用的单项选择控件，带有清晰圆点指示与标签描述。
+- [RadioGroup (单选框组)](/llms/components/radio-group.md): 支持方向键漫游焦点的无障碍单选组容器。
+- [Switch (开关)](/llms/components/switch.md): 即时生效的胶囊开关控件，采用 200ms 纯 CSS 滑块过渡，支持 9 组色相自定义激活色。
+- [Slider (滑块)](/llms/components/slider.md): 单值与双端区间范围滑块，支持色相主题、步进与键盘精确微调。
+- [Toggle (切换按钮)](/llms/components/toggle.md): 带有按下（pressed）状态的双态胶囊按钮，适用于工具栏格式化、收藏、置顶等操作。
+- [ToggleGroup (切换按钮组)](/llms/components/toggle-group.md): 协调一组 Toggle 的单选或多选状态，内置柔灰胶囊轨道容器。
+- [Field (表单字段)](/llms/components/field.md): 自动关联 Label、Control、Description 与 Error 的无障碍表单字段容器。
+- [Fieldset (表单分组)](/llms/components/fieldset.md): 将相关表单字段归类到带标题（FieldsetLegend）的 18px 圆角区块内。
+- [Form (表单容器)](/llms/components/form.md): 原生约束验证与服务端错误信息统一分发容器，与 Field 无缝协作。
+
+## Components — Selection & Menus (选择与命令)
+
+- [Select (下拉选择器)](/llms/components/select.md): 全圆胶囊触发器 + 20px 圆角浮层，支持选项分组、副标题说明与快速键盘检索。
+- [Combobox (可搜索组合框)](/llms/components/combobox.md): 支持实时过滤与自定义元信息的单选 Combobox 与多选胶囊标签 MultiCombobox。
+- [Autocomplete (自动补全输入)](/llms/components/autocomplete.md): 允许自由输入同时提供实时建议列表的命令/搜索自动补全控件。
+- [Menu (下拉菜单)](/llms/components/menu.md): 支持图标、快捷键提示、分组分隔线与危险操作高亮的命令菜单。通过 PopupTriggerScope 自动稳定触发按钮。
+- [ContextMenu (右键上下文菜单)](/llms/components/context-menu.md): 在指针右键位置弹出的操作菜单，支持图标、快捷键与危险操作着色。
+- [Menubar (应用菜单栏)](/llms/components/menubar.md): 桌面应用风格的顶部水平菜单栏，支持悬停无缝切换相邻下拉菜单。
+- [NavigationMenu (导航菜单)](/llms/components/navigation-menu.md): 带下拉图文面板的站点级水平导航菜单，支持平滑焦点移动与无障碍键盘导航。
+
+## Components — Overlays & Feedback (浮层与反馈)
+
+- [Dialog (模态对话框)](/llms/components/dialog.md): 28px 圆角模态对话框，采用 200ms 纯 CSS 进场与 150ms 退场，禁用昂贵 backdrop-blur 确保高刷流畅。
+- [AlertDialog (高风险确认框)](/llms/components/alert-dialog.md): 用于删除、重置等不可逆操作的强制确认对话框，禁用点击遮罩意外关闭。
+- [Drawer (抽屉面板)](/llms/components/drawer.md): 基于 Base UI v1.9 Drawer 的侧边/底部滑动抽屉，支持手势拖拽关闭与 300ms/220ms 分级节拍。
+- [Popover (气泡卡片)](/llms/components/popover.md): 点击触发的交互式浮层面板，可包含表单、筛选器与快捷操作。
+- [PreviewCard (悬停预览卡)](/llms/components/preview-card.md): 悬停链接或实体标识时展示的富媒体摘要卡片，内置防误触延迟与平滑进退场。
+- [Tooltip (文字提示)](/llms/components/tooltip.md): 轻量化深色浮层提示，配合 TooltipProvider 实现多提示间零延迟连续切换。
+- [Toast (3D 堆叠通知)](/llms/components/toast.md): 基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持悬停展开、右滑/下滑手势关闭与 5 种语义状态。
+- [Progress (进度条)](/llms/components/progress.md): 支持常规线性进度条（Progress）与多段彩色占比进度条（SegmentedProgress）。
+- [Meter (语义计量条)](/llms/components/meter.md): 用于展示容量/配额/预算等区间占比，可按阈值自动切换正常/注意/异常语义颜色。
+- [Avatar (头像与头像组)](/llms/components/avatar.md): 支持图片加载降级文字缩写、9 组柔彩底色与叠放人数溢出提示的 AvatarGroup。
+
+## Components — Navigation & Structure (导航与结构)
+
+- [Tabs (标签页)](/llms/components/tabs.md): 全圆胶囊标签页容器，内置纯 CSS 200ms 水平滑动背景指示器与完整键盘焦点管理。
+- [Accordion (手风琴折叠面板)](/llms/components/accordion.md): 18px 圆角折叠面板组，使用 Base UI --accordion-panel-height 变量驱动平滑高度展开。
+- [Collapsible (单块折叠区)](/llms/components/collapsible.md): 独立可控的展开/收起内容区域，内置平滑高度过渡与标题副文插槽。
+- [Toolbar (工具栏)](/llms/components/toolbar.md): 集成按钮、分组、分隔线与链接的胶囊操作工具栏，支持左右方向键漫游焦点。
+- [ScrollArea (自定义滚动区)](/llms/components/scroll-area.md): 跨平台一致的细胶囊悬浮滚动条容器，悬停或滚动时柔和显现。
+- [Separator (分隔线)](/llms/components/separator.md): 语义化水平或垂直分割线（role="separator"），支持常规与柔浅色调。
+- [DirectionProvider (阅读方向提供器)](/llms/components/direction-provider.md): 直接透传 Base UI DirectionProvider，为 LTR / RTL 国际化界面提供统一方向上下文。
+
+## Components — Charts & DataViz (数据可视化图表)
+
+- [Chart (图表主题与容器)](/llms/components/chart.md): Glaze 图表核心基础设施，自动读取父级 Tile 深浅背景色板，提供 ChartContainer、ChartTooltip、ChartLegend 与配色解析器。
+- [AreaChart (面积趋势图)](/llms/components/area-chart.md): 支持单/多序列渐变填充、堆叠模式、交互图例筛选与悬浮提示的面积图组件。
+- [LineChart (折线对比图)](/llms/components/line-chart.md): 支持实线/虚线、参考基线（referenceLine）、多曲线对比与平滑曲线插值。
+- [BarChart (柱状与条形图)](/llms/components/bar-chart.md): 支持竖向分组柱状、堆叠柱状与横向圆角条形排行的多功能 BarChart。
+- [PieChart (饼图与环形图)](/llms/components/pie-chart.md): 内置 PieChart 与中心指标卡槽 DonutChart，自动应用 Glaze 分类色板与悬停提示。
+- [RadarChart (多维雷达图)](/llms/components/radar-chart.md): 支持单/双方案对比的多边形或同心圆网格雷达评分图。
+- [RadialChart (径向环与仪表盘)](/llms/components/radial-chart.md): 包含多环径向进度 RadialChart 与半圆弧形仪表盘 GaugeChart。
+- [ScatterChart (散点与气泡图)](/llms/components/scatter-chart.md): 支持多分组 X/Y 坐标分布与 Z 轴气泡半径映射的散点图表。
+- [ComposedChart (双轴组合图表)](/llms/components/composed-chart.md): 在同一画布融合柱状、面积与折线并支持左右双 Y 轴的综合分析图表。
+- [SparkChart (嵌入式微图表)](/llms/components/spark-chart.md): 专为小格卡片设计的零轴线超轻微趋势图，支持 area / line / bar 三种形态。

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea",
+  "type": "registry:ui",
+  "title": "Textarea (多行文本域)",
+  "description": "采用 18px 圆角（rounded-inner）与柔灰底色（#F6F7F9）的多行输入框。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/textarea.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\nimport { BOX_CONTROL, CONTROL_SOFT, CONTROL_WHITE } from '@/lib/motion'\n\nexport interface TextareaProps\n  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {\n  surface?: 'soft' | 'white'\n}\n\nexport const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(\n  function Textarea({ surface = 'soft', className, ...props }, ref) {\n    return (\n      <textarea\n        ref={ref}\n        className={cn(\n          'min-h-24 w-full resize-y px-4 py-3 text-[14px] text-[#1B1F27] placeholder:text-[#8A90A0]',\n          BOX_CONTROL,\n          surface === 'white' ? CONTROL_WHITE : CONTROL_SOFT,\n          'disabled:cursor-not-allowed disabled:opacity-50',\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n"
+    }
+  ]
+}

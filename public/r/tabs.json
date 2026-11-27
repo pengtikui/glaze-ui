@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs",
+  "type": "registry:ui",
+  "title": "Tabs (标签页)",
+  "description": "全圆胶囊标签页容器，内置纯 CSS 200ms 水平滑动背景指示器与完整键盘焦点管理。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "navigation"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/tabs.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Tabs as BaseTabs } from '@base-ui/react/tabs'\nimport { cn } from 'cn'\n\nexport function Tabs({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseTabs.Root>) {\n  return (\n    <BaseTabs.Root\n      className={cn('flex flex-col gap-4', className)}\n      {...props}\n    />\n  )\n}\n\nexport function TabsList({\n  className,\n  children,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseTabs.List>) {\n  return (\n    <BaseTabs.List\n      className={cn(\n        'relative isolate inline-flex w-fit items-center gap-1 rounded-full bg-[#F2F3F5] p-1',\n        className,\n      )}\n      {...props}\n    >\n      {children}\n      <BaseTabs.Indicator\n        className={cn(\n          'pointer-events-none absolute top-0 left-0 z-0 rounded-full bg-white shadow-[0_1px_3px_rgba(16,24,40,0.08)]',\n          'h-(--active-tab-height) w-(--active-tab-width)',\n          '[transform:translate3d(var(--active-tab-left),var(--active-tab-top),0)]',\n          'will-change-[transform,width] transition-[transform,width,height] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n        )}\n      />\n    </BaseTabs.List>\n  )\n}\n\nexport function TabsTrigger({\n  className,\n  children,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseTabs.Tab>) {\n  return (\n    <BaseTabs.Tab\n      className={cn(\n        'relative z-10 inline-flex h-8 cursor-pointer items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold whitespace-nowrap select-none outline-none',\n        'transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n        'text-[#5B6170] hover:text-[#1B1F27] data-active:text-[#1B1F27]',\n        'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </BaseTabs.Tab>\n  )\n}\n\nexport function TabsContent({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseTabs.Panel>) {\n  return <BaseTabs.Panel className={cn('outline-none', className)} {...props} />\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle",
+  "type": "registry:ui",
+  "title": "Toggle (切换按钮)",
+  "description": "带有按下（pressed）状态的双态胶囊按钮，适用于工具栏格式化、收藏、置顶等操作。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/toggle.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Toggle as BaseToggle } from '@base-ui/react/toggle'\nimport { cn } from 'cn'\nimport { PRESS_CLASS, useIsPopupTrigger } from '@/lib/motion'\n\nexport interface ToggleProps\n  extends Omit<React.ComponentPropsWithoutRef<typeof BaseToggle>, 'className'> {\n  size?: 'sm' | 'md'\n  pressScale?: boolean\n  className?: string\n}\n\nexport const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(\n  function Toggle({ size = 'md', pressScale = true, className, disabled, ...props }, ref) {\n    const isPopupTrigger = useIsPopupTrigger()\n    const enablePressScale = !disabled && pressScale && !isPopupTrigger\n\n    return (\n      <BaseToggle\n        ref={ref}\n        disabled={disabled}\n        className={cn(\n          'inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap select-none outline-none',\n          enablePressScale\n            ? PRESS_CLASS\n            : 'transition-[background-color,color] duration-150 ease-[cubic-bezier(0.2,0,0,1)]',\n          'bg-[#F2F3F5] text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27]',\n          'data-pressed:bg-[#1B1F27] data-pressed:text-white',\n          'focus-visible:ring-2 focus-visible:ring-[#7B80EA] focus-visible:ring-offset-2',\n          'data-disabled:pointer-events-none data-disabled:opacity-45',\n          size === 'sm' ? 'h-8 px-3 text-[12px]' : 'h-10 px-4 text-[13px]',\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n"
+    }
+  ]
+}

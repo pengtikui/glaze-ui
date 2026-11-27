@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "steps-card",
+  "type": "registry:block",
+  "title": "W3 步骤流程横卡 (StepsCard)",
+  "description": "步骤流程横卡（W3 · 尺寸 W）— 编号进度 · 当前激活步骤",
+  "registryDependencies": [
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/steps-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/steps-card.tsx",
+      "content": "import { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface StepsCardProps {\n  title: string\n  steps: string[]\n  /** 0-based index of the current active step */\n  currentStep: number\n  tone?: TileTone\n}\n\nexport function StepsCard({\n  title,\n  steps,\n  currentStep,\n  tone = 'aqua',\n}: StepsCardProps) {\n  const theme = TILE_THEMES[tone]\n  const activeHex =\n    tone in HUE_PALETTES ? HUE_PALETTES[tone as Hue][500] : theme.accent\n  const doneHex =\n    tone in HUE_PALETTES ? HUE_PALETTES[tone as Hue][700] : theme.soft\n\n  return (\n    <Tile size=\"w\" tone={tone}>\n      <div className=\"flex items-baseline justify-between gap-2\">\n        <span className=\"text-[17px] font-bold\">{title}</span>\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          第 {currentStep + 1} 步 / 共 {steps.length} 步\n        </span>\n      </div>\n      <div\n        className=\"grid\"\n        style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}\n      >\n        {steps.map((name, i) => {\n          const done = i < currentStep\n          const cur = i === currentStep\n          const isLast = i === steps.length - 1\n          return (\n            <span\n              key={i}\n              className=\"relative flex flex-col items-center gap-2.5\"\n            >\n              {!isLast && (\n                <span\n                  aria-hidden=\"true\"\n                  className=\"absolute left-1/2 -right-1/2 top-3.25 h-0.75\"\n                  style={{\n                    backgroundColor: done ? doneHex : theme.divider,\n                  }}\n                />\n              )}\n              <span\n                className=\"relative flex items-center justify-center w-7 h-7 rounded-full text-[12px] font-bold\"\n                style={{\n                  backgroundColor: done\n                    ? doneHex\n                    : cur\n                      ? activeHex\n                      : theme.bg === '#FFFFFF'\n                        ? '#F2F3F5'\n                        : '#FFFFFF',\n                  color: done || cur ? '#FFFFFF' : doneHex,\n                  boxShadow: cur ? `0 0 0 5px ${activeHex}40` : 'none',\n                }}\n              >\n                {done ? '✓' : i + 1}\n              </span>\n              <span\n                className=\"max-w-full truncate text-center text-[13px]\"\n                style={{\n                  fontWeight: cur ? 700 : 500,\n                  color: i <= currentStep ? theme.ink : theme.soft,\n                }}\n              >\n                {name}\n              </span>\n            </span>\n          )\n        })}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

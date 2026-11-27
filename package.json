@@ -1,0 +1,39 @@
+{
+  "name": "glaze-ui",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Glaze Design System — shadcn Registry, Base UI 1.9 components, 112 blocks, docs site & AI Agent reference",
+  "homepage": "https://github.com/pengtikui/glaze-ui",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pengtikui/glaze-ui.git"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "pnpm run build:registry && astro build",
+    "build:registry": "node scripts/build-registry.mjs",
+    "preview": "astro preview",
+    "typecheck": "astro sync && astro check && tsc --noEmit"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.9.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "cn": "^0.5.2",
+    "motion": "^14.14.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "recharts": "^3.11.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/react": "^7.1.9",
+    "@tailwindcss/vite": "^4.1.8",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "astro": "^7.4.13",
+    "shiki": "^4.6.0",
+    "tailwindcss": "^4.1.8",
+    "typescript": "^5.8.3"
+  }
+}

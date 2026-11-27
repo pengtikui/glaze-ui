@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tile",
+  "type": "registry:ui",
+  "title": "Tile (釉面卡片容器)",
+  "description": "无描边、无阴影的核心卡片容器，内置 9 组柔彩 + 4 组深色 + 纯白 14 种主题，通过 Context 向子图表与图标传递色彩。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/tile.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\nimport {\n  TILE_THEMES,\n  type TileSize,\n  type TileTheme,\n  type TileTone,\n} from '@/lib/tokens'\n\nconst TileContext = React.createContext<TileTheme>(TILE_THEMES.white)\n\nexport function useTileTheme() {\n  return React.useContext(TileContext)\n}\n\nexport interface TileProps extends React.HTMLAttributes<HTMLDivElement> {\n  tone?: TileTone\n  size?: TileSize\n  interactive?: boolean\n  padding?: 'default' | 'compact' | 'none'\n  href?: string\n}\n\nconst SIZE_CLASSES: Record<TileSize, string> = {\n  s: 'glaze-size-s',\n  w: 'glaze-size-w',\n  t: 'glaze-size-t',\n  l: 'glaze-size-l',\n  f: 'glaze-size-f',\n}\n\nexport const Tile = React.forwardRef<HTMLDivElement, TileProps>(\n  function Tile(\n    {\n      tone = 'white',\n      size = 's',\n      interactive = false,\n      padding = 'default',\n      href,\n      className,\n      style,\n      onClick,\n      children,\n      ...props\n    },\n    ref,\n  ) {\n    const theme = TILE_THEMES[tone]\n\n    const handleClick: React.MouseEventHandler<HTMLDivElement> | undefined =\n      href || onClick\n        ? (e) => {\n            onClick?.(e)\n            if (href && !e.defaultPrevented) {\n              window.open(href, '_blank', 'noopener,noreferrer')\n            }\n          }\n        : undefined\n\n    return (\n      <TileContext.Provider value={theme}>\n        <div\n          ref={ref}\n          data-tone={tone}\n          data-size={size}\n          onClick={handleClick}\n          className={cn(\n            'relative flex flex-col justify-between overflow-hidden rounded-tile contain-[layout_style]',\n            SIZE_CLASSES[size],\n            padding === 'default' && 'p-6',\n            padding === 'compact' && 'p-5',\n            padding === 'none' && 'p-0',\n            (interactive || Boolean(href)) &&\n              'cursor-pointer transition-[translate,filter] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:brightness-[0.985]',\n            className,\n          )}\n          style={{\n            backgroundColor: theme.bg,\n            color: theme.ink,\n            ...style,\n          }}\n          {...props}\n        >\n          {children}\n        </div>\n      </TileContext.Provider>\n    )\n  },\n)\n"
+    }
+  ]
+}

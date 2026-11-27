@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "event-timeline-card",
+  "type": "registry:block",
+  "title": "T2 事件时间线卡 (EventTimelineCard)",
+  "description": "事件时间线卡（T2 · 尺寸 T）— 时间戳 · 状态点 · 事件描述",
+  "registryDependencies": [
+    "@glaze/status-dot",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "lists",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/event-timeline-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/event-timeline-card.tsx",
+      "content": "import { StatusDot } from '@/components/ui/status-dot'\nimport { Tile } from '@/components/ui/tile'\nimport { SEMANTIC_TOKENS, type Status, type TileTone } from '@/lib/tokens'\n\nexport interface TimelineEvent {\n  id?: string\n  text: string\n  time: string\n  status?: Status\n  color?: string\n}\n\nexport interface EventTimelineCardProps {\n  title: string\n  subtitle?: string\n  events: TimelineEvent[]\n  tone?: TileTone\n}\n\nexport function EventTimelineCard({\n  title,\n  subtitle = '今天',\n  events,\n  tone = 'white',\n}: EventTimelineCardProps) {\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4.5\">\n      <div className=\"flex items-baseline justify-between gap-2\">\n        <span className=\"text-[17px] font-bold\">{title}</span>\n        <span className=\"text-[12px] text-[#6B7280]\">{subtitle}</span>\n      </div>\n      <div className=\"flex flex-col\">\n        {events.map((ev, i) => {\n          const isLast = i === events.length - 1\n          const dotColor =\n            ev.color ?? SEMANTIC_TOKENS[ev.status ?? 'normal'].dot\n          return (\n            <div\n              key={ev.id ?? i}\n              className=\"relative flex gap-3 pb-4 last:pb-0\"\n            >\n              {!isLast && (\n                <span\n                  aria-hidden=\"true\"\n                  className=\"absolute left-1 top-3 bottom-0 w-0.5 bg-[#EEF0F3]\"\n                />\n              )}\n              <StatusDot\n                color={dotColor}\n                size=\"md\"\n                className=\"relative mt-1\"\n              />\n              <span className=\"flex flex-col gap-0.5 min-w-0\">\n                <span className=\"text-[13px] font-semibold leading-5 truncate\">\n                  {ev.text}\n                </span>\n                <span className=\"text-[12px] text-[#6B7280]\">{ev.time}</span>\n              </span>\n            </div>\n          )\n        })}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

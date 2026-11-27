@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trend-card",
+  "type": "registry:block",
+  "title": "S9 趋势折线卡 (TrendCard)",
+  "description": "趋势折线卡（S9 · 尺寸 S）— 数值 · 环比胶囊 · 迷你曲线",
+  "registryDependencies": [
+    "@glaze/spark-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/trend-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/trend-card.tsx",
+      "content": "import { SparkChart } from '@/components/ui/spark-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { SEMANTIC_TOKENS, TILE_THEMES, type Status, type TileTone } from '@/lib/tokens'\n\nexport interface TrendCardProps {\n  label: string\n  value: string | number\n  unit?: string\n  delta: string\n  deltaStatus?: Status\n  points?: number[]\n  tone?: TileTone\n  strokeColor?: string\n}\n\nexport function TrendCard({\n  label,\n  value,\n  unit,\n  delta,\n  deltaStatus = 'normal',\n  points = [75, 70, 78, 60, 48, 55, 36, 42, 22, 26],\n  tone = 'white',\n  strokeColor,\n}: TrendCardProps) {\n  const theme = TILE_THEMES[tone]\n  const pill = SEMANTIC_TOKENS[deltaStatus]\n\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span\n        className=\"flex items-center justify-between text-[14px] font-medium\"\n        style={{ color: theme.soft }}\n      >\n        <span>{label}</span>\n        <span\n          className=\"rounded-full px-2 py-0.5 text-[12px] font-semibold\"\n          style={{ backgroundColor: pill.pillBg, color: pill.ink }}\n        >\n          {delta}\n        </span>\n      </span>\n      <span className=\"flex items-baseline gap-1.5\">\n        <span className=\"font-glaze-display text-[44px] leading-11.5 font-extrabold tracking-[-0.03em]\">\n          {value}\n        </span>\n        {unit && (\n          <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n            {unit}\n          </span>\n        )}\n      </span>\n      <SparkChart\n        data={points}\n        variant=\"line\"\n        color={strokeColor ?? theme.accent}\n        label={label}\n        unit={unit}\n        tone={tone}\n        height={36}\n      />\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-dot",
+  "type": "registry:ui",
+  "title": "StatusDot (语义状态点)",
+  "description": "展示实时在线/告警状态的圆点指示器，支持 CSS 涟漪扩散（normal）与呼吸闪烁（warning/error）动画。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/status-dot.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\nimport { SEMANTIC_TOKENS, type Status } from '@/lib/tokens'\n\nexport interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {\n  status?: Status\n  color?: string\n  mode?: 'static' | 'ripple' | 'blink'\n  animated?: boolean\n  size?: number | 'sm' | 'md' | 'lg'\n}\n\nexport function StatusDot({\n  status = 'normal',\n  color,\n  mode,\n  animated = false,\n  size = 8,\n  className,\n  ...props\n}: StatusDotProps) {\n  const dotColor = color ?? SEMANTIC_TOKENS[status].dot\n  const effectiveMode = mode ?? (animated ? 'ripple' : 'static')\n  const px = size === 'sm' ? 7 : size === 'md' ? 9 : size === 'lg' ? 12 : size\n  return (\n    <span\n      className={cn('relative inline-flex shrink-0 items-center justify-center', className)}\n      style={{ width: px, height: px }}\n      {...props}\n    >\n      {effectiveMode === 'ripple' && (\n        <span\n          className=\"animate-glaze-ripple absolute inset-0 rounded-full\"\n          style={{ backgroundColor: dotColor }}\n        />\n      )}\n      <span\n        className={cn(\n          'relative rounded-full',\n          effectiveMode === 'blink' && 'animate-glaze-blink',\n        )}\n        style={{ width: px, height: px, backgroundColor: dotColor }}\n      />\n    </span>\n  )\n}\n"
+    }
+  ]
+}

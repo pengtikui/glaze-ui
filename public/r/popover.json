@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "type": "registry:ui",
+  "title": "Popover (气泡卡片)",
+  "description": "点击触发的交互式浮层面板，可包含表单、筛选器与快捷操作。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion",
+    "@glaze/style"
+  ],
+  "categories": [
+    "overlays"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/popover.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Popover as BasePopover } from '@base-ui/react/popover'\nimport { cn } from 'cn'\nimport {\n  POPUP_SURFACE,\n  POPUP_TRANSITION_CLASS,\n  PopupTriggerScope,\n} from '@/lib/motion'\n\nexport interface PopoverProps {\n  trigger: React.ReactElement\n  title?: string\n  description?: string\n  children?: React.ReactNode\n  side?: 'top' | 'bottom' | 'left' | 'right'\n  align?: 'start' | 'center' | 'end'\n  className?: string\n}\n\nexport function Popover({\n  trigger,\n  title,\n  description,\n  children,\n  side = 'bottom',\n  align = 'center',\n  className,\n}: PopoverProps) {\n  return (\n    <BasePopover.Root>\n      <PopupTriggerScope>\n        <BasePopover.Trigger render={trigger} />\n      </PopupTriggerScope>\n      <BasePopover.Portal>\n        <BasePopover.Positioner side={side} align={align} sideOffset={8} className=\"z-50\">\n          <BasePopover.Popup\n            className={cn(\n              POPUP_SURFACE,\n              POPUP_TRANSITION_CLASS,\n              'w-75 p-5',\n              className,\n            )}\n          >\n            {title && (\n              <BasePopover.Title className=\"font-glaze-display text-[15px] font-bold text-[#1B1F27]\">\n                {title}\n              </BasePopover.Title>\n            )}\n            {description && (\n              <BasePopover.Description className=\"mt-1 text-[13px] leading-relaxed text-[#6B7280]\">\n                {description}\n              </BasePopover.Description>\n            )}\n            {children && <div className={title || description ? 'mt-3.5' : ''}>{children}</div>}\n          </BasePopover.Popup>\n        </BasePopover.Positioner>\n      </BasePopover.Portal>\n    </BasePopover.Root>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-launcher-card",
+  "type": "registry:block",
+  "title": "W2 应用发射台卡 (AppLauncherCard)",
+  "description": "应用发射台卡（W2 · 尺寸 W）— 8 宫格彩色应用入口",
+  "registryDependencies": [
+    "@glaze/icon-tile",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "controls",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/app-launcher-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/app-launcher-card.tsx",
+      "content": "import * as React from 'react'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface AppLauncherItem {\n  id: string\n  name: string\n  mark: React.ReactNode\n  hue: Hue\n  badge?: number\n  href?: string\n  onClick?: () => void\n}\n\nexport interface AppLauncherCardProps {\n  title: string\n  summary: string\n  apps: AppLauncherItem[]\n  tone?: TileTone\n}\n\nexport function AppLauncherCard({\n  title,\n  summary,\n  apps,\n  tone = 'white',\n}: AppLauncherCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone}>\n      <div className=\"flex items-baseline justify-between gap-2\">\n        <span className=\"truncate text-[17px] font-bold\">{title}</span>\n        <span className=\"shrink-0 text-[13px] whitespace-nowrap\" style={{ color: theme.soft }}>\n          {summary}\n        </span>\n      </div>\n      <div className=\"grid grid-cols-4 sm:grid-cols-8 gap-2.5\">\n        {apps.slice(0, 8).map((app) => (\n          <button\n            key={app.id}\n            type=\"button\"\n            onClick={app.onClick}\n            className=\"group flex flex-col items-center gap-2 border-0 bg-transparent p-0 cursor-pointer glaze-focus rounded-2xl\"\n          >\n            <IconTile\n              hue={app.hue}\n              size=\"lg\"\n              badge={app.badge}\n              badgeRingColor={theme.bg}\n              className=\"text-[20px] transition-transform duration-150 group-hover:scale-105 group-active:scale-95\"\n            >\n              {app.mark}\n            </IconTile>\n            <span\n              className=\"max-w-full truncate text-[11px] font-medium whitespace-nowrap\"\n              style={{ color: theme.soft }}\n            >\n              {app.name}\n            </span>\n          </button>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "phase-timeline-card",
+  "type": "registry:block",
+  "title": "F3 阶段时间轴通栏卡 (PhaseTimelineCard)",
+  "description": "阶段时间轴通栏卡（F3 · 尺寸 F）— 横向里程碑节点连线",
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "layout",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/phase-timeline-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/phase-timeline-card.tsx",
+      "content": "import { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface PhaseItem {\n  name: string\n  date: string\n  state: 'done' | 'cur' | 'todo'\n}\n\nexport interface PhaseTimelineCardProps {\n  title: string\n  subtitle: string\n  phases: PhaseItem[]\n  tone?: TileTone\n}\n\nexport function PhaseTimelineCard({\n  title,\n  subtitle,\n  phases,\n  tone = 'mint',\n}: PhaseTimelineCardProps) {\n  const theme = TILE_THEMES[tone]\n  const curIdx = phases.findIndex((p) => p.state === 'cur')\n  const doneCount = phases.filter((p) => p.state === 'done').length\n  const progressSteps = curIdx >= 0 ? curIdx : Math.max(0, doneCount - 1)\n  const totalGaps = Math.max(phases.length - 1, 1)\n  const edgePct = 100 / (phases.length * 2)\n  const fillPct = ((100 - edgePct * 2) * progressSteps) / totalGaps\n\n  return (\n    <Tile size=\"f\" tone={tone} className=\"justify-start gap-7\">\n      <div className=\"flex flex-wrap items-baseline justify-between gap-2\">\n        <span className=\"font-glaze-display text-[22px] font-extrabold\">\n          {title}\n        </span>\n        <span className=\"text-[14px]\" style={{ color: theme.soft }}>\n          {subtitle}\n        </span>\n      </div>\n\n      <div\n        className=\"relative grid\"\n        style={{ gridTemplateColumns: `repeat(${phases.length}, minmax(0, 1fr))` }}\n      >\n        {/* Background track */}\n        <span\n          aria-hidden=\"true\"\n          className=\"absolute top-2.25 h-1 rounded-xs\"\n          style={{\n            left: `${edgePct}%`,\n            right: `${edgePct}%`,\n            backgroundColor: theme.track,\n          }}\n        />\n        {/* Active progress track */}\n        <span\n          aria-hidden=\"true\"\n          className=\"absolute top-2.25 h-1 rounded-xs transition-all duration-300\"\n          style={{\n            left: `${edgePct}%`,\n            width: `${fillPct}%`,\n            backgroundColor: theme.accent,\n          }}\n        />\n        {phases.map((p, i) => {\n          const isCur = p.state === 'cur'\n          const isTodo = p.state === 'todo'\n          return (\n            <span\n              key={i}\n              className=\"relative flex flex-col items-center gap-3 text-center\"\n            >\n              <span\n                className=\"w-5.5 h-5.5 rounded-full border-[3px]\"\n                style={{\n                  backgroundColor: isTodo\n                    ? theme.bg\n                    : isCur\n                      ? '#FFFFFF'\n                      : theme.accent,\n                  borderColor: isTodo ? `${theme.ink}40` : theme.accent,\n                  boxShadow: isCur ? `0 0 0 6px ${theme.accent}40` : 'none',\n                }}\n              />\n              <span className=\"flex flex-col gap-0.5\">\n                <span\n                  className=\"text-[14px]\"\n                  style={{ fontWeight: isCur ? 700 : 500 }}\n                >\n                  {p.name}\n                </span>\n                <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n                  {p.date}\n                </span>\n              </span>\n            </span>\n          )\n        })}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

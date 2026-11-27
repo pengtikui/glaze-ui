@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "quota-card",
+  "type": "registry:block",
+  "title": "S21 配额消耗卡 (QuotaCard)",
+  "description": "配额消耗卡（S21 · 尺寸 S）— 已用/总量 · 进度 · 重置日",
+  "registryDependencies": [
+    "@glaze/progress",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/quota-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/quota-card.tsx",
+      "content": "import { Progress } from '@/components/ui/progress'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function QuotaCard({\n  label,\n  used,\n  total,\n  unit,\n  resetNote,\n  tone = 'periwinkle',\n}: {\n  label: string\n  used: number\n  total: number\n  unit: string\n  resetNote: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const pct = Math.round((used / total) * 100)\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <span className=\"text-[12px] font-bold\" style={{ color: theme.accent }}>\n          {pct}%\n        </span>\n      </div>\n      <div>\n        <div className=\"font-glaze-display text-[32px] leading-none font-extrabold\">\n          {used.toLocaleString()}\n        </div>\n        <div className=\"mt-1 text-[12px]\" style={{ color: theme.soft }}>\n          / {total.toLocaleString()} {unit}\n        </div>\n      </div>\n      <div className=\"flex flex-col gap-1.5\">\n        <Progress value={pct} barColor={theme.accent} trackColor={theme.track} />\n        <span className=\"text-[11px]\" style={{ color: theme.soft }}>\n          {resetNote}\n        </span>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "quote-card",
+  "type": "registry:block",
+  "title": "S24 每日金句卡 (QuoteCard)",
+  "description": "每日金句卡（S24 · 尺寸 S）— 标签 · 引语 · 署名",
+  "registryDependencies": [
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/quote-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/quote-card.tsx",
+      "content": "import { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function QuoteCard({\n  quote,\n  author,\n  tag = '每日一句',\n  tone = 'lilac',\n}: {\n  quote: string\n  author: string\n  tag?: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <span className=\"text-[12px] font-bold tracking-wide\" style={{ color: theme.soft }}>\n        {tag}\n      </span>\n      <p className=\"m-0 line-clamp-3 text-[15px] leading-snug font-bold\" style={{ color: theme.ink }}>\n        “{quote}”\n      </p>\n      <span className=\"truncate text-[12px]\" style={{ color: theme.soft }}>\n        — {author}\n      </span>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

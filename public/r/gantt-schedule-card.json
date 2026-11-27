@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "gantt-schedule-card",
+  "type": "registry:block",
+  "title": "F8 甘特排期通栏卡 (GanttScheduleCard)",
+  "description": "甘特排期通栏卡（F8 · 尺寸 F）— 多泳道时间条 · 负责人",
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "layout",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/gantt-schedule-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/gantt-schedule-card.tsx",
+      "content": "import { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function GanttScheduleCard({\n  title,\n  weeks,\n  lanes,\n  tone = 'white',\n}: {\n  title: string\n  weeks: string[]\n  lanes: { name: string; owner: string; startPct: number; widthPct: number; hue: Hue }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <div className=\"flex items-center justify-between gap-4\">\n        <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n      </div>\n      <div className=\"flex flex-col gap-3\">\n        <div className=\"hidden items-center gap-4 sm:flex\">\n          <div className=\"w-36 shrink-0 text-[11px] font-semibold text-[#8A90A0]\">工作项</div>\n          <div\n            className=\"grid flex-1 text-[11px] font-semibold text-[#8A90A0]\"\n            style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}\n          >\n            {weeks.map((w) => (\n              <span key={w} className=\"px-2\">{w}</span>\n            ))}\n          </div>\n        </div>\n        {lanes.map((lane) => (\n          <div key={lane.name} className=\"flex items-center gap-4\">\n            <div className=\"w-36 shrink-0\">\n              <div className=\"truncate text-[13px] font-bold text-[#1B1F27]\">{lane.name}</div>\n              <div className=\"truncate text-[11px] text-[#8A90A0]\">{lane.owner}</div>\n            </div>\n            <div className=\"relative h-8 flex-1 overflow-hidden rounded-full bg-[#F6F7F9]\">\n              <div\n                className=\"absolute top-1 bottom-1 flex items-center overflow-hidden rounded-full px-3 text-[11px] font-bold\"\n                style={{\n                  left: `${lane.startPct}%`,\n                  width: `${lane.widthPct}%`,\n                  backgroundColor: HUE_PALETTES[lane.hue][100],\n                  color: HUE_PALETTES[lane.hue][700],\n                }}\n              >\n                <span className=\"truncate\">{lane.name}</span>\n              </div>\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

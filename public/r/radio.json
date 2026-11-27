@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio",
+  "type": "registry:ui",
+  "title": "Radio (单选框)",
+  "description": "配合 RadioGroup 使用的单项选择控件，带有清晰圆点指示与标签描述。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/radio.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Radio as BaseRadio } from '@base-ui/react/radio'\nimport { cn } from 'cn'\n\nexport interface RadioProps\n  extends Omit<React.ComponentPropsWithoutRef<typeof BaseRadio.Root>, 'className'> {\n  label?: React.ReactNode\n  description?: string\n  card?: boolean\n  className?: string\n}\n\nexport function Radio({\n  label,\n  description,\n  card = false,\n  className,\n  ...props\n}: RadioProps) {\n  const indicator = (\n    <BaseRadio.Root\n      className={cn(\n        'relative box-border inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full border-[1.5px] p-0 outline-none',\n        'transition-[transform,border-color,background-color] duration-150 ease-[cubic-bezier(0.2,0,0,1)] active:[transform:scale(0.95)]',\n        'border-[#CDD3DD] bg-white hover:border-[#8A90A0]',\n        'data-checked:border-[#1B1F27] data-checked:bg-[#1B1F27]',\n        'focus-visible:ring-2 focus-visible:ring-[#7B80EA] focus-visible:ring-offset-2',\n        'data-disabled:pointer-events-none data-disabled:opacity-45',\n        className,\n      )}\n      {...props}\n    >\n      <BaseRadio.Indicator className=\"pointer-events-none h-2 w-2 rounded-full bg-white transition-[opacity,transform] duration-150 ease-[cubic-bezier(0.2,0,0,1)] data-ending-style:[transform:scale(0.4)] data-ending-style:opacity-0 data-starting-style:[transform:scale(0.4)] data-starting-style:opacity-0\" />\n    </BaseRadio.Root>\n  )\n\n  if (!label) return indicator\n\n  return (\n    <label\n      className={cn(\n        'inline-flex cursor-pointer gap-2.5 select-none',\n        description ? 'items-start' : 'items-center',\n        card &&\n          'w-full rounded-inner bg-[#F6F7F9] px-4 py-3 transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#EEF0F4] has-data-checked:bg-[#E4E6FD]/65 has-data-checked:ring-2 has-data-checked:ring-inset has-data-checked:ring-[#7B80EA]',\n      )}\n    >\n      <span className=\"inline-flex h-5 shrink-0 items-center\">{indicator}</span>\n      <span className=\"flex flex-col gap-0.5\">\n        <span className=\"text-[14px] leading-5 font-medium text-[#1B1F27]\">\n          {label}\n        </span>\n        {description && (\n          <span className=\"text-[12px] leading-4 text-[#6B7280]\">{description}</span>\n        )}\n      </span>\n    </label>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "revenue-breakdown-card",
+  "type": "registry:block",
+  "title": "L11 收入构成大卡 (RevenueBreakdownCard)",
+  "description": "收入构成大卡（L11 · 尺寸 L）— 总营收 · 堆叠条 · 分渠道",
+  "registryDependencies": [
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-l"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/revenue-breakdown-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/revenue-breakdown-card.tsx",
+      "content": "import { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function RevenueBreakdownCard({\n  title,\n  total,\n  delta,\n  channels,\n  tone = 'white',\n}: {\n  title: string\n  total: string\n  delta: string\n  channels: { name: string; amount: string; pct: number; hue: Hue }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-4\">\n      <div className=\"flex items-start justify-between\">\n        <div>\n          <div className=\"text-[13px] font-semibold text-[#6B7280]\">{title}</div>\n          <div className=\"mt-1 font-glaze-display text-[40px] leading-none font-extrabold tracking-[-0.03em]\">\n            {total}\n          </div>\n        </div>\n        <StatusPill status=\"normal\" label={delta} showDot={false} />\n      </div>\n      <div className=\"flex h-3 w-full overflow-hidden rounded-full bg-[#F2F3F5]\">\n        {channels.map((c) => (\n          <div\n            key={c.name}\n            style={{ width: `${c.pct}%`, backgroundColor: HUE_PALETTES[c.hue][500] }}\n          />\n        ))}\n      </div>\n      <div className=\"flex flex-col gap-3\">\n        {channels.map((c) => (\n          <div key={c.name} className=\"flex items-center justify-between gap-2 text-[13px]\">\n            <div className=\"flex min-w-0 items-center gap-2\">\n              <span\n                className=\"h-2.5 w-2.5 shrink-0 rounded-full\"\n                style={{ backgroundColor: HUE_PALETTES[c.hue][500] }}\n              />\n              <span className=\"truncate font-semibold text-[#1B1F27]\">{c.name}</span>\n            </div>\n            <div className=\"flex shrink-0 items-center gap-3 whitespace-nowrap\">\n              <span className=\"font-glaze-display font-extrabold\">{c.amount}</span>\n              <span className=\"w-10 text-right font-glaze-mono text-[12px] text-[#6B7280]\">\n                {c.pct}%\n              </span>\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

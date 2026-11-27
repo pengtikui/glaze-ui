@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "demo-personal-os",
+  "type": "registry:block",
+  "title": "Demo 05 · 个人效率与数字生活 OS",
+  "description": "整合番茄钟、交互待办清单、习惯打卡矩阵、日历议程、心率饮水与灵感速记的个人数字生活仪表盘。",
+  "registryDependencies": [
+    "@glaze/audio-now-playing-card",
+    "@glaze/chat-preview-card",
+    "@glaze/checklist-card",
+    "@glaze/clock-card",
+    "@glaze/flight-route-card",
+    "@glaze/gallery-mosaic-card",
+    "@glaze/grid",
+    "@glaze/habit-tracker-card",
+    "@glaze/health-pulse-card",
+    "@glaze/mini-calendar-day-card",
+    "@glaze/pomodoro-card",
+    "@glaze/profile-summary-card",
+    "@glaze/quick-note-card",
+    "@glaze/quote-card",
+    "@glaze/streak-card",
+    "@glaze/style",
+    "@glaze/water-intake-card"
+  ],
+  "categories": [
+    "demos"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/demos/personal-os-demo.tsx",
+      "type": "registry:page",
+      "target": "components/demos/personal-os-demo.tsx",
+      "content": "import { AudioNowPlayingCard } from '@/components/blocks/audio-now-playing-card'\nimport { ChatPreviewCard } from '@/components/blocks/chat-preview-card'\nimport { ChecklistCard } from '@/components/blocks/checklist-card'\nimport { ClockCard } from '@/components/blocks/clock-card'\nimport { FlightRouteCard } from '@/components/blocks/flight-route-card'\nimport { GalleryMosaicCard } from '@/components/blocks/gallery-mosaic-card'\nimport { HabitTrackerCard } from '@/components/blocks/habit-tracker-card'\nimport { HealthPulseCard } from '@/components/blocks/health-pulse-card'\nimport { MiniCalendarDayCard } from '@/components/blocks/mini-calendar-day-card'\nimport { PomodoroCard } from '@/components/blocks/pomodoro-card'\nimport { ProfileSummaryCard } from '@/components/blocks/profile-summary-card'\nimport { QuickNoteCard } from '@/components/blocks/quick-note-card'\nimport { QuoteCard } from '@/components/blocks/quote-card'\nimport { StreakCard } from '@/components/blocks/streak-card'\nimport { WaterIntakeCard } from '@/components/blocks/water-intake-card'\nimport { Grid } from '@/components/ui/grid'\n\nexport function PersonalOsDemoPage() {\n  return (\n    <div className=\"flex flex-col gap-8\">\n      <header className=\"flex flex-col gap-1.5\">\n        <span className=\"text-[12px] font-semibold tracking-[0.06em] text-[#6B7280]\">\n          DEMO 05 · PERSONAL OS · 个人效率与数字生活仪表盘\n        </span>\n        <h1 className=\"m-0 font-glaze-display text-[36px] sm:text-[40px] leading-11 font-extrabold tracking-[-0.02em] text-[#123A5C]\">\n          早安，今天有 3 件重要小事\n        </h1>\n        <p className=\"m-0 text-[15px] text-[#5B6170]\">\n          专注番茄钟、健康习惯、出行航班与灵感速记同屏聚合\n        </p>\n      </header>\n\n      <Grid>\n        <MiniCalendarDayCard\n          tone=\"rose\"\n          month=\"十一月\"\n          day={27}\n          weekday=\"星期五\"\n          eventsCount={3}\n        />\n        <ClockCard tone=\"white\" weekday=\"上海 · 周五\" live />\n        <WaterIntakeCard tone=\"sky\" initialCups={5} goal={8} />\n        <HealthPulseCard tone=\"rose\" bpm={64} zone=\"今日状态极佳 · 恢复良好\" />\n\n        <PomodoroCard\n          tone=\"coral\"\n          task=\"深度写作：设计系统动效规范章节\"\n          minutes={25}\n        />\n        <FlightRouteCard\n          tone=\"sky-dark\"\n          flightNo=\"MU 5109\"\n          fromCode=\"SHA\"\n          fromCity=\"上海虹桥\"\n          toCode=\"PEK\"\n          toCity=\"北京首都\"\n          departTime=\"14:30\"\n          arriveTime=\"16:45\"\n          gate=\"T2 · B18\"\n        />\n\n        <ChecklistCard\n          tone=\"white\"\n          title=\"今日优先清单\"\n          items={[\n            { id: 'c1', label: '完成设计系统 2.0 验收截图', checked: true, tag: '工作', hue: 'periwinkle' },\n            { id: 'c2', label: '预订下周北京差旅酒店', checked: true, tag: '出行', hue: 'sky' },\n            { id: 'c3', label: '整理 11 月阅读笔记与摘录', checked: false, tag: '学习', hue: 'mint' },\n            { id: 'c4', label: '晚间 5 公里轻松跑', checked: false, tag: '运动', hue: 'peach' },\n            { id: 'c5', label: '给家里老人寄送体检报告', checked: false, tag: '生活', hue: 'rose' },\n          ]}\n        />\n\n        <HabitTrackerCard\n          tone=\"mint\"\n          title=\"本周习惯打卡\"\n          habits={[\n            { name: '晨间阅读 30 分钟', hue: 'mint', days: [true, true, true, true, true, false, false] },\n            { name: '午后冥想呼吸', hue: 'aqua', days: [true, false, true, true, true, false, false] },\n            { name: '晚间无手机阅读', hue: 'periwinkle', days: [true, true, false, true, true, false, false] },\n            { name: '核心力量训练', hue: 'peach', days: [true, false, true, false, true, false, false] },\n          ]}\n        />\n\n        <GalleryMosaicCard\n          tone=\"white\"\n          title=\"近期摄影与灵感收藏\"\n          count=\"1,248 张\"\n          albums={[\n            { title: '京都秋日', items: '86 张 · 胶片', hue: 'coral' },\n            { title: '建筑光影', items: '142 张 · 极简', hue: 'sky' },\n            { title: '界面灵感', items: '214 张 · Glaze', hue: 'periwinkle' },\n            { title: '咖啡地图', items: '39 家 · 上海', hue: 'peach' },\n          ]}\n        />\n\n        <ProfileSummaryCard\n          tone=\"white\"\n          name=\"林一 · Design Engineer\"\n          role=\"上海 · 专注组件库与交互动效\"\n          initials=\"林\"\n          hue=\"periwinkle\"\n          status=\"normal\"\n          statusLabel=\"专注写作中\"\n          stats={[\n            { label: '本周专注', value: '18.5h' },\n            { label: '阅读完本', value: '2 本' },\n            { label: '跑步里程', value: '24 km' },\n          ]}\n        />\n\n        <QuickNoteCard\n          tone=\"lemon\"\n          title=\"随手灵感便签\"\n          tag=\"可编辑\"\n          initialText=\"下一版组件库可以考虑补充快捷键面板与暗色模式完整映射，并保持 220ms 统一轻柔阻尼手感。\"\n        />\n\n        <StreakCard\n          tone=\"peach\"\n          label=\"早起打卡\"\n          days={19}\n          week={[true, true, true, true, true, true, false]}\n        />\n        <AudioNowPlayingCard\n          tone=\"lilac-dark\"\n          track=\"Lo-Fi Rainy Desk\"\n          artist=\"白噪音 · 专注歌单\"\n        />\n\n        <ChatPreviewCard\n          tone=\"white\"\n          channel=\"家庭群 · 周末聚餐\"\n          messages={[\n            { sender: '妈妈', text: '这周六晚上回家吃火锅吗？买了新鲜牛羊肉', time: '10:12' },\n            { sender: '妹妹', text: '我带一盒刚烤好的焦糖布丁回去！', time: '10:15' },\n            { sender: '我', text: '太棒了，我下午五点半准时到家～', mine: true, time: '10:18' },\n          ]}\n        />\n\n        <QuoteCard\n          tone=\"lilac\"\n          tag=\"今日摘录\"\n          quote=\"少即是多，但更好的少胜过简单的少。\"\n          author=\"Dieter Rams\"\n        />\n        <StreakCard\n          tone=\"aqua\"\n          label=\"英语听力\"\n          days={42}\n          week={[true, true, true, false, true, true, true]}\n        />\n      </Grid>\n    </div>\n  )\n}\n"
+    }
+  ]
+}

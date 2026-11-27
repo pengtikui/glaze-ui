@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "quick-action-grid-card",
+  "type": "registry:block",
+  "title": "S36 2×2 快捷网格卡 (QuickActionGridCard)",
+  "description": "2×2 快捷网格卡（S36 · 尺寸 S）— 4 个高密度快捷按钮",
+  "registryDependencies": [
+    "@glaze/icon-tile",
+    "@glaze/motion",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "controls",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/quick-action-grid-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/quick-action-grid-card.tsx",
+      "content": "import * as React from 'react'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { Tile } from '@/components/ui/tile'\nimport { PRESS_CLASS } from '@/lib/motion'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function QuickActionGridCard({\n  label,\n  actions,\n  tone = 'white',\n}: {\n  label: string\n  actions: { id: string; label: string; icon: React.ReactNode; hue: Hue; onClick?: () => void }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} padding=\"compact\" className=\"justify-between gap-2\">\n      <span className=\"truncate text-[13px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <div className=\"grid flex-1 grid-cols-2 grid-rows-2 gap-1.5\">\n        {actions.slice(0, 4).map((a) => (\n          <button\n            key={a.id}\n            type=\"button\"\n            onClick={a.onClick}\n            className={`flex min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-[14px] px-2 py-1.5 text-[11px] font-semibold outline-none hover:brightness-95 ${PRESS_CLASS}`}\n            style={{\n              backgroundColor: theme.dark\n                ? 'rgba(255,255,255,0.12)'\n                : HUE_PALETTES[a.hue][50],\n              color: theme.dark ? '#FFFFFF' : HUE_PALETTES[a.hue][700],\n            }}\n          >\n            <IconTile\n              hue={theme.dark ? 'dark-glass' : a.hue}\n              size=\"sm\"\n              radius=\"icon\"\n              className=\"h-6 w-6 text-[13px]\"\n            >\n              {a.icon}\n            </IconTile>\n            <span className=\"w-full truncate text-center\">{a.label}</span>\n          </button>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

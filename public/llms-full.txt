@@ -1,0 +1,1316 @@
+# Glaze（釉） — Complete AI Agent Reference (llms-full.txt)
+
+# Glaze UI — Getting Started & Registry Setup
+
+Glaze is an accessible React 19 design system built on **Base UI 1.9** (`@base-ui/react`), **Tailwind CSS v4**, **Recharts v3**, **Phosphor Icons** (`@phosphor-icons/react`), and **shadcn/ui Registry**.
+
+## 1. Configure `components.json`
+
+Add the `@glaze` registry namespace to your project's `components.json`:
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "glaze",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "css": "src/styles/glaze.css",
+    "baseColor": "slate",
+    "cssVariables": true
+  },
+  "iconLibrary": "phosphor",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {
+    "@glaze": "https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/r/{name}.json"
+  }
+}
+```
+
+## 2. Install Base Style & Tokens
+
+```bash
+npx shadcn@latest add @glaze/style
+```
+
+Import the generated stylesheet in your app entry (e.g., `src/main.tsx`):
+
+```tsx
+import './styles/glaze.css'
+```
+
+Wrap your app root with `TooltipProvider` and `ToastProvider` (plus optional `IconContext.Provider` from `@phosphor-icons/react`):
+
+```tsx
+import { IconContext } from '@phosphor-icons/react'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { ToastProvider } from '@/components/ui/toast'
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <IconContext.Provider value={{ weight: 'regular' }}>
+      <TooltipProvider delay={160}>
+        <ToastProvider>{children}</ToastProvider>
+      </TooltipProvider>
+    </IconContext.Provider>
+  )
+}
+```
+
+## 3. Install Components, Blocks, or Full Demos
+
+```bash
+# Install UI primitives
+npx shadcn@latest add @glaze/button @glaze/dialog @glaze/select @glaze/bar-chart
+
+# Install ready-made business cards (112 available)
+npx shadcn@latest add @glaze/status-card @glaze/area-trend-card @glaze/data-table-card
+
+# Install a complete demo page (6 available)
+npx shadcn@latest add @glaze/demo-homelab
+```
+
+---
+
+# Glaze Design Foundations & Strict Rules for AI Agents
+
+## Canvas & Card Rules (CRITICAL)
+- Page canvas background MUST be `#F2F4F8` (`--glaze-canvas`).
+- Cards (`<Tile>`) have **NO border and NO box-shadow** on the canvas; elevation is created purely by surface contrast (white `#FFFFFF` or pastel tone against `#F2F4F8`).
+- Border radius scale:
+  - `rounded-tile` (`28px`): `Tile`, `Dialog`, `Drawer`
+  - `rounded-overlay` (`20px`): floating popups (`Menu`, `Select`, `Popover`, `Combobox`, `ContextMenu`, `Toast`)
+  - `rounded-inner` (`18px`): multiline & nested surfaces (`Textarea`, `Fieldset`, `Accordion`, `Collapsible`)
+  - `rounded-full`: ALL single-line controls (`Button`, `Input`, `Select`, `Combobox`, `Autocomplete`, `NumberField`, `Switch`, `Toggle`, `Tabs`, `SegmentedControl`, `Menubar`, `Toolbar`) at standard `44px` height (`h-11`), soft background `#F6F7F9`, borderless by default.
+
+## Color Tokens
+- **9 Pastel Hue Families** (`Hue`): `sky`, `mint`, `peach`, `lilac`, `rose`, `lemon`, `aqua`, `periwinkle`, `coral` — each with 6 shades: `50, 100, 300, 500, 700, 900`.
+- **14 Tile Tones** (`TileTone`): `white` + 9 pastel hues + 4 dark focus tones (`sky-dark`, `lilac-dark`, `aqua-dark`, `ink`).
+- **5 Semantic Statuses** (`Status`): `normal` (mint), `warning` (peach), `error` (coral), `info` (sky), `disabled` (neutral).
+
+## Base UI v1.9 Conventions (DO NOT USE RADIX PATTERNS)
+- **NEVER** pass `asChild` (that is Radix UI). Base UI uses the `render` prop (e.g., `<BaseDialog.Trigger render={<Button>Open</Button>} />`) or Glaze's explicit `trigger={<Button>Open</Button>}` prop.
+- Import directly from single component files: `@/components/ui/button`, `@/components/ui/tile`, `@/lib/tokens`, `@/lib/motion`.
+- Utility class merger is `import { cn } from 'cn'` (`shadcn-ui/cn`).
+- Icons come from `@phosphor-icons/react`.
+
+## 4-Column Dense Bento Grid
+- Use `<Grid>` (`.glaze-grid`: 4 cols desktop, 2 cols tablet, 1 col mobile, 16px gap, `grid-auto-flow: row dense`).
+- Tile sizes:
+  - `s` (1×1, min 200px)
+  - `w` (2×1, min 200px)
+  - `t` (1×2, min 416px)
+  - `l` (2×2, min 416px)
+  - `f` (full-width 4×auto)
+
+## Motion Rules (CSS-First, GPU-Composited)
+- NEVER use `backdrop-blur` on modal/drawer backdrops.
+- `PRESS_SCALE` (`0.97`) is ONLY for standalone compact actions (`Button`, `Toggle`, `Checkbox`, `Radio`, `ToolbarButton`). NEVER scale popup triggers, `Select`, `Tabs`, `Switch`, or `Tile`.
+- Duration tiers: Fast `150ms/120ms` (popups & press), Base `200ms/150ms` (tabs, switch, dialog, accordion), Emphasized `300ms/220ms` (drawer) & `360ms` (3D stacked toast).
+
+---
+
+# Glaze 6 Full-Page Business Demos
+
+Each demo can be viewed standalone at `/view/demos/<slug>` (outside the docs frame) or installed via shadcn CLI.
+
+| # | Title | Standalone Route | Registry CLI | Description |
+| --- | --- | --- | --- | --- |
+| 01 | 家庭内网总控中心 (`HomelabDemoPage`) | `/view/demos/homelab` | `npx shadcn@latest add @glaze/demo-homelab` | 管理物理主机、群晖 NAS、Docker 容器、应用发射台、硬件温度与家庭网络拓扑的内网总控仪表盘。 |
+| 02 | 研发协作工作台 (`WorkspaceDemoPage`) | `/view/demos/workspace` | `npx shadcn@latest add @glaze/demo-workspace` | 覆盖迭代里程碑、CI/CD 部署状态、双列迷你看板、甘特排期、团队贡献榜与代码热力图的研发协作中心。 |
+| 03 | 全屋智能家居中控 (`SmartHomeDemoPage`) | `/view/demos/smart-home` | `npx shadcn@latest add @glaze/demo-smart-home` | 面向大屏平板与桌面的智能家居控制中心，集成房间传感器矩阵、空调温控、灯光滑块与全屋场景一键联动。 |
+| 04 | SaaS 营收与财务驾驶舱 (`AnalyticsDemoPage`) | `/view/demos/analytics` | `npx shadcn@latest add @glaze/demo-analytics` | 融合 Recharts v3 交互式多视图趋势、全年双轴组合分析、转化漏斗、收入构成与多维指标对比的经营分析大屏。 |
+| 05 | 个人效率与数字生活 OS (`PersonalOsDemoPage`) | `/view/demos/personal-os` | `npx shadcn@latest add @glaze/demo-personal-os` | 整合番茄钟、交互待办清单、习惯打卡矩阵、日历议程、心率饮水与灵感速记的个人数字生活仪表盘。 |
+| 06 | 云原生运维与可观测性中心 (`CloudOpsDemoPage`) | `/view/demos/cloud-ops` | `npx shadcn@latest add @glaze/demo-cloud-ops` | 展示全站 30 日 SLA 状态、集群资源三环监控、告警事件日志、散点延迟分布与全局命令栏的 SRE 运维中心。 |
+
+---
+
+# Glaze 112 Business Blocks Catalog
+
+Every block is independently installable via `npx shadcn@latest add @glaze/<slug>` and imports cleanly from `@/components/blocks/<slug>`.
+
+| Code | Component | Registry Name | Size | Domain | Slots / Structure |
+| --- | --- | --- | --- | --- | --- |
+| S1 | `StatusCard` | `@glaze/status-card` | S | monitoring | 状态卡 — 标签 · 状态大字 · 呼吸点 |
+| S2 | `MetricCard` | `@glaze/metric-card` | S | metrics | 单一指标卡 — 标签 · 主数字 · 单位 · 图标 |
+| S3 | `ProgressCard` | `@glaze/progress-card` | S | metrics | 进度条卡 — 标签 · 数值 · 线性进度条 |
+| S4 | `RingCard` | `@glaze/ring-card` | S | metrics | 环形进度卡 — 标签 · 环形图 · 说明 |
+| S5 | `MetricBarsCard` | `@glaze/metric-bars-card` | S | metrics | 微柱指标卡 — 标签 · 数值 · 7 天迷你柱 |
+| S6 | `DotMatrixCard` | `@glaze/dot-matrix-card` | S | metrics | 点阵占比卡 — 标签 · 24 点阵 · 统计 |
+| S7 | `GaugeCard` | `@glaze/gauge-card` | S | monitoring | 仪表盘卡 — 标签 · 弧形表盘 · 百分比 |
+| S8 | `QuickEntryCard` | `@glaze/quick-entry-card` | S | controls | 快捷入口卡 — 图标底 · 标题 · 跳转箭头 |
+| S9 | `TrendCard` | `@glaze/trend-card` | S | metrics | 趋势折线卡 — 数值 · 环比胶囊 · 迷你曲线 |
+| S10 | `CompareCard` | `@glaze/compare-card` | S | metrics | 对比进度小卡 — 两项数值对比条 · 差值 |
+| S11 | `CountdownCard` | `@glaze/countdown-card` | S | productivity | 倒计时卡 — 事件名 · 剩余天数 · 进度格 |
+| S12 | `SwitchCard` | `@glaze/switch-card` | S | controls | 开关控制卡 — 图标 · 实时 Switch 开关 |
+| S13 | `MembersCard` | `@glaze/members-card` | S | lists | 成员叠放卡 — 人数 · 头像组 · 活跃说明 |
+| S14 | `ClockCard` | `@glaze/clock-card` | S | productivity | 实时时钟卡 — 城市 · 实时时间 · 日期 |
+| S15 | `NotificationCard` | `@glaze/notification-card` | S | lists | 通知提醒卡 — 图标 · 未读角标 · 最新预览 |
+| S16 | `GraphicMetricCard` | `@glaze/graphic-metric-card` | S | metrics | 图形化指标卡 — 背景几何装饰 · 数值 |
+| S17 | `WeatherCard` | `@glaze/weather-card` | S | monitoring | 天气实况卡 — 城市 · 温度 · 体感湿度 |
+| S18 | `BatteryCard` | `@glaze/battery-card` | S | monitoring | 电量分段卡 — 设备 · 5 段电芯 · 剩余时长 |
+| S19 | `TemperatureCard` | `@glaze/temperature-card` | S | controls | 温控调节卡 — 房间 · 可交互 ± 调温 |
+| S20 | `SpeedCard` | `@glaze/speed-card` | S | monitoring | 半圆速度表卡 — 弧形速度盘 · 数值单位 |
+| S21 | `QuotaCard` | `@glaze/quota-card` | S | metrics | 配额消耗卡 — 已用/总量 · 进度 · 重置日 |
+| S22 | `StreakCard` | `@glaze/streak-card` | S | productivity | 连续打卡卡 — 天数 · 7 天完成点阵 |
+| S23 | `RatingCard` | `@glaze/rating-card` | S | metrics | 星级评分卡 — 大数字评分 · 五星 · 评价数 |
+| S24 | `QuoteCard` | `@glaze/quote-card` | S | productivity | 每日金句卡 — 标签 · 引语 · 署名 |
+| S25 | `QrCard` | `@glaze/qr-card` | S | controls | 二维码名片卡 — 标题 · 矢量 QR · 扫码说明 |
+| S26 | `KeyShortcutCard` | `@glaze/key-shortcut-card` | S | controls | 快捷键指南卡 — 按键组合键帽 · 功能说明 |
+| S27 | `SliderControlCard` | `@glaze/slider-control-card` | S | controls | 滑块控制卡 — 实时数值 · 嵌入式 Slider |
+| S28 | `MiniCalendarDayCard` | `@glaze/mini-calendar-day-card` | S | productivity | 撕页日历卡 — 月份胶囊 · 超大日期 · 日程数 |
+| S29 | `CurrencyCard` | `@glaze/currency-card` | S | metrics | 汇率行情卡 — 币种对 · 现价 · 涨跌胶囊 |
+| S30 | `HealthPulseCard` | `@glaze/health-pulse-card` | S | monitoring | 心率脉搏卡 — BPM 大数字 · 心电折线 |
+| S31 | `WaterIntakeCard` | `@glaze/water-intake-card` | S | productivity | 饮水记录卡 — 杯数统计 · 点击 +1 交互 |
+| S32 | `AudioNowPlayingCard` | `@glaze/audio-now-playing-card` | S | controls | 迷你播放器卡 — 均衡器 · 曲目 · 播停按钮 |
+| S33 | `SignalStrengthCard` | `@glaze/signal-strength-card` | S | monitoring | 信号强度卡 — SSID · 4 格信号柱 · 延迟 |
+| S34 | `DiskTempCard` | `@glaze/disk-temp-card` | S | monitoring | 硬件温度计卡 — 温度 · 竖条温度计 · 设备 |
+| S35 | `TagCloudCard` | `@glaze/tag-cloud-card` | S | lists | 标签云小卡 — 标题 · 多色 HueTag 集合 |
+| S36 | `QuickActionGridCard` | `@glaze/quick-action-grid-card` | S | controls | 2×2 快捷网格卡 — 4 个高密度快捷按钮 |
+| S37 | `SparkAreaCard` | `@glaze/spark-area-card` | S | charts | 面积微趋势小卡 — KPI · 环比胶囊 · 渐变面积微图 |
+| S38 | `RadialScoreCard` | `@glaze/radial-score-card` | S | charts | 径向评分小卡 — 多环径向进度 · 中心得分 |
+| W1 | `AreaTrendCard` | `@glaze/area-trend-card` | W | charts | 面积趋势卡 — 标题 · 现值 · 面积折线 |
+| W2 | `AppLauncherCard` | `@glaze/app-launcher-card` | W | controls | 应用发射台卡 — 8 宫格彩色应用入口 |
+| W3 | `StepsCard` | `@glaze/steps-card` | W | productivity | 步骤流程横卡 — 编号进度 · 当前激活步骤 |
+| W4 | `ObjectDetailCard` | `@glaze/object-detail-card` | W | monitoring | 对象详情卡 — 图标 · 标题 · 属性键值 |
+| W5 | `MultiMetricCard` | `@glaze/multi-metric-card` | W | metrics | 多指标横排卡 — 3 列并排大指标 |
+| W6 | `HeatmapCard` | `@glaze/heatmap-card` | W | charts | 贡献热力图卡 — 7×24 活跃色阶方块矩阵 |
+| W7 | `AlertBannerCard` | `@glaze/alert-banner-card` | W | monitoring | 告警横幅卡 — 标题 · 说明 · 动作按钮 |
+| W8 | `DistributionBarCard` | `@glaze/distribution-bar-card` | W | metrics | 分段分布条卡 — 堆叠彩色比例条 · 图例 |
+| W9 | `MediaPlayerCard` | `@glaze/media-player-card` | W | controls | 宽格媒体播放器 — 封面 · 播停切歌 · 进度条 |
+| W10 | `DualSeriesTrendCard` | `@glaze/dual-series-trend-card` | W | charts | 双曲线对比卡 — 实线/虚线双序列对比 |
+| W11 | `UptimeStripCard` | `@glaze/uptime-strip-card` | W | monitoring | 30 日 SLA 状态条 — 30 根可用性绿条 · Tooltip |
+| W12 | `ProfileSummaryCard` | `@glaze/profile-summary-card` | W | lists | 人物名片摘要卡 — 头像 · 职位 · 状态 · 3 指标 |
+| W13 | `QuickSearchCard` | `@glaze/quick-search-card` | W | controls | 嵌入式搜索卡 — 全圆搜索框 · 热门关键词胶囊 |
+| W14 | `FlightRouteCard` | `@glaze/flight-route-card` | W | productivity | 航班行程卡 — 三字码 · 虚线航迹 · 登机口 |
+| W15 | `WeatherForecastCard` | `@glaze/weather-forecast-card` | W | monitoring | 5 日天气预报卡 — 5 天最高/最低温与降水率 |
+| W16 | `ServerResourceCard` | `@glaze/server-resource-card` | W | monitoring | 三环资源监控卡 — CPU / RAM / Disk 并排环图 |
+| W17 | `BudgetMeterCard` | `@glaze/budget-meter-card` | W | metrics | 月度预算计量卡 — 自动语义 Meter · 分类标签 |
+| W18 | `PomodoroCard` | `@glaze/pomodoro-card` | W | productivity | 番茄专注钟卡 — 可运行倒计时 · 开始/重置 |
+| W19 | `QuickNoteCard` | `@glaze/quick-note-card` | W | productivity | 灵感速记便签卡 — 可编辑文本区 · 字数统计 |
+| W20 | `DeviceControlStripCard` | `@glaze/device-control-strip-card` | W | controls | 三设备联动控制条 — 3 组可切换智能设备开关 |
+| W21 | `SparkMetricRowCard` | `@glaze/spark-metric-row-card` | W | metrics | 三列微柱 KPI 带 — 3 组紧凑 KPI + 迷你柱图 |
+| W22 | `MilestoneBannerCard` | `@glaze/milestone-banner-card` | W | productivity | 里程碑进度横幅 — 版本号 · 进度条 · 负责人头像 |
+| W23 | `CodeDeployCard` | `@glaze/code-deploy-card` | W | monitoring | CI/CD 部署状态卡 — 仓库 · 分支 · SHA · 构建耗时 |
+| W24 | `NotificationDigestCard` | `@glaze/notification-digest-card` | W | lists | 消息摘要通知卡 — 未读数 · 分类标签 · 最新预览 |
+| W25 | `StackedAreaTrendCard` | `@glaze/stacked-area-trend-card` | W | charts | 堆叠面积趋势宽卡 — 多端流量堆叠面积 · 可点击图例 |
+| W26 | `HorizontalBarRankCard` | `@glaze/horizontal-bar-rank-card` | W | charts | 横向条形排行宽卡 — 横向圆角条形图 · 悬停提示 |
+| W27 | `TargetLineCard` | `@glaze/target-line-card` | W | charts | 目标基线折线宽卡 — 带参考红线折线 · 状态徽章 |
+| T1 | `BarListCard` | `@glaze/bar-list-card` | T | lists | 条形排行卡 — 总指标 · 进度条排行列表 |
+| T2 | `EventTimelineCard` | `@glaze/event-timeline-card` | T | lists | 事件时间线卡 — 时间戳 · 状态点 · 事件描述 |
+| T3 | `VerticalBarsCard` | `@glaze/vertical-bars-card` | T | charts | 竖柱趋势竖卡 — 大数字 · 多月竖柱 |
+| T4 | `RankListCard` | `@glaze/rank-list-card` | T | lists | 数值榜单卡 — 名次 · 名称 · 比例条 |
+| T5 | `ChecklistCard` | `@glaze/checklist-card` | T | productivity | 交互待办清单 — 真实 Checkbox · 完成统计 |
+| T6 | `LeaderboardCard` | `@glaze/leaderboard-card` | T | lists | 贡献排行榜 — 名次徽章 · 头像 · 得分 |
+| T7 | `FileListCard` | `@glaze/file-list-card` | T | lists | 最近文件列表 — 文件类型图标 · 体积时间 |
+| T8 | `ScheduleAgendaCard` | `@glaze/schedule-agenda-card` | T | productivity | 今日议程日程 — 色条 · 时间 · 会议地点 |
+| T9 | `DiskPartitionsCard` | `@glaze/disk-partitions-card` | T | monitoring | 磁盘分区容量 — 多卷 Meter · 挂载路径 |
+| T10 | `ContactListCard` | `@glaze/contact-list-card` | T | lists | 值班联系人卡 — 头像 · 角色 · 在线呼吸点 |
+| T11 | `HabitTrackerCard` | `@glaze/habit-tracker-card` | T | productivity | 习惯打卡矩阵 — 多习惯 × 7 日胶囊点阵 |
+| T12 | `PriceTickerCard` | `@glaze/price-ticker-card` | T | metrics | 自选行情列表 — 代码 · 现价 · 涨跌胶囊 |
+| T13 | `QuickSettingsCard` | `@glaze/quick-settings-card` | T | controls | 偏好开关面板 — 多项真实 Switch 偏好项 |
+| T14 | `FunnelCard` | `@glaze/funnel-card` | T | charts | 转化漏斗竖卡 — 4 阶段递减宽条 · 转化率 |
+| T15 | `RadialGoalsCard` | `@glaze/radial-goals-card` | T | charts | 多环目标达成竖卡 — 3 环径向进度 · 目标明细行 |
+| T16 | `StackedColumnCard` | `@glaze/stacked-column-card` | T | charts | 堆叠柱状分布竖卡 — 总指标 · 多状态堆叠竖柱 |
+| L1 | `HeroMetricCard` | `@glaze/hero-metric-card` | L | metrics | 主指标英雄大卡 — 深色聚焦 · 趋势线 · 3 副指标 |
+| L2 | `DonutChartCard` | `@glaze/donut-chart-card` | L | charts | 环形占比图 — 多段圆环 · 中心汇总 · 图例 |
+| L3 | `ItemListCard` | `@glaze/item-list-card` | L | lists | 明细列表大卡 — 图标 · 标题 · 状态胶囊列表 |
+| L4 | `CalendarCard` | `@glaze/calendar-card` | L | productivity | 交互日历大卡 — 月份切换 · 事件标记 · 日期选择 |
+| L5 | `GroupedBarChartCard` | `@glaze/grouped-bar-chart-card` | L | charts | 分组对比柱图 — 双色并排分组柱状图 |
+| L6 | `RadarSkillCard` | `@glaze/radar-skill-card` | L | charts | 六维雷达评分卡 — 多边形网格 · 6 维能力评估 |
+| L7 | `KanbanMiniCard` | `@glaze/kanban-mini-card` | L | productivity | 双列迷你看板 — 泳道计数 · 任务卡片组 |
+| L8 | `ActivityFeedCard` | `@glaze/activity-feed-card` | L | lists | 实时动态信息流 — 头像 · 动作目标 · 时间 |
+| L9 | `ServerRackCard` | `@glaze/server-rack-card` | L | monitoring | 机架刀片监控卡 — 深色机柜 · 状态灯 · 负载条 |
+| L10 | `FloorPlanSensorCard` | `@glaze/floor-plan-sensor-card` | L | monitoring | 房间传感器矩阵 — 4 房间温湿度与灯光状态 |
+| L11 | `RevenueBreakdownCard` | `@glaze/revenue-breakdown-card` | L | metrics | 收入构成大卡 — 总营收 · 堆叠条 · 分渠道 |
+| L12 | `ChatPreviewCard` | `@glaze/chat-preview-card` | L | controls | 实时会话预览卡 — 气泡对话 · 可直接发送回复 |
+| L13 | `GalleryMosaicCard` | `@glaze/gallery-mosaic-card` | L | lists | 相册拼图大卡 — 2×2 柔彩色块相册封面 |
+| L14 | `IncidentLogCard` | `@glaze/incident-log-card` | L | monitoring | 告警事件日志大卡 — 事件编号 · 影响服务 · 状态 |
+| L15 | `ComposedRevenueCard` | `@glaze/composed-revenue-card` | L | charts | 双轴组合分析大卡 — 堆叠柱状 + 折线双 Y 轴 |
+| L16 | `ScatterBubbleCard` | `@glaze/scatter-bubble-card` | L | charts | 散点气泡分布大卡 — 多组 X/Y 散点 · Z 轴气泡映射 |
+| L17 | `MultiRadarCompareCard` | `@glaze/multi-radar-compare-card` | L | charts | 双方案雷达对比大卡 — 双序列对比 · 多边形/同心圆切换 |
+| F1 | `DataTableCard` | `@glaze/data-table-card` | F | layout | 数据表格通栏卡 — 分组标签 · 头像 · 进度条 · 状态 |
+| F2 | `HierarchyCard` | `@glaze/hierarchy-card` | F | layout | 层级架构通栏卡 — 根节点 · 多分支节点树 |
+| F3 | `PhaseTimelineCard` | `@glaze/phase-timeline-card` | F | layout | 阶段时间轴通栏卡 — 横向里程碑节点连线 |
+| F4 | `DistributionBusCard` | `@glaze/distribution-bus-card` | F | layout | 分布总线通栏卡 — 横向占比分布与节点明细 |
+| F5 | `KpiStripCard` | `@glaze/kpi-strip-card` | F | metrics | 4 列核心 KPI 指标带 — 4 列通栏大数字与环比 |
+| F6 | `PricingPlansCard` | `@glaze/pricing-plans-card` | F | layout | 三档定价方案卡 — 3 栏方案对比 · 推荐高亮 |
+| F7 | `ServiceStatusMatrixCard` | `@glaze/service-status-matrix-card` | F | monitoring | 全站服务状态矩阵 — 多服务可用性条与状态胶囊 |
+| F8 | `GanttScheduleCard` | `@glaze/gantt-schedule-card` | F | layout | 甘特排期通栏卡 — 多泳道时间条 · 负责人 |
+| F9 | `ReleaseChangelogCard` | `@glaze/release-changelog-card` | F | layout | 版本发布记录卡 — 3 列版本卡片 · 亮点列表 |
+| F10 | `ResourceAllocationCard` | `@glaze/resource-allocation-card` | F | layout | 资源分摊通栏卡 — 堆叠占比条 · 4 部门配额与头像 |
+| F11 | `CommandPaletteBarCard` | `@glaze/command-palette-bar-card` | F | controls | 全局命令栏通栏卡 — 深色命令输入 · 快捷指令胶囊 |
+| F12 | `MetricComparisonTableCard` | `@glaze/metric-comparison-table-card` | F | layout | 多维指标对比表 — 横向指标矩阵 · 最优值高亮 |
+| F13 | `InteractiveAnalyticsCard` | `@glaze/interactive-analytics-card` | F | charts | 交互式多视图趋势通栏卡 — 面积/折线/柱状即时切换 · 3 KPI 摘要带 |
+| F14 | `ComposedOverviewCard` | `@glaze/composed-overview-card` | F | charts | 全年经营组合双轴通栏卡 — 12 月柱状 + 面积 + 折线双轴全景 |
+
+---
+
+# UI Components API Reference (58 Components)
+
+## Grid (四列密集栅格) — `@glaze/grid`
+
+Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手机 1 列，支持预览列数覆盖。
+- Install: `npx shadcn@latest add @glaze/grid`
+- Import: `import { Grid } from '@/components/ui/grid'`
+- Registry Deps: @glaze/style
+
+**Grid Props:**
+- `forceCols: 4 | 2 | 1` — Force preview column count (used by responsive grid demos)
+
+## Tile (釉面卡片容器) — `@glaze/tile`
+
+无描边、无阴影的核心卡片容器，内置 9 组柔彩 + 4 组深色 + 纯白 14 种主题，通过 Context 向子图表与图标传递色彩。
+- Install: `npx shadcn@latest add @glaze/tile`
+- Import: `import { useTileTheme, Tile } from '@/components/ui/tile'`
+- Registry Deps: @glaze/style, @glaze/tokens
+
+**Tile Props:**
+- `tone: TileTone` = 'white'
+- `size: TileSize` = 's'
+- `interactive: boolean` = false
+- `padding: 'default' | 'compact' | 'none'` = 'default'
+- `href: string`
+
+**Data Attributes:** `data-tone` (当前卡片色调（white | sky | mint | ... | ink）), `data-size` (当前卡片栅格尺寸（s | w | t | l | f）)
+
+## StatusPill (语义状态胶囊) — `@glaze/status-pill`
+
+用于展示正常 / 注意 / 异常 / 信息 / 停用 5 种语义状态的胶囊徽章，可选呼吸状态点。
+- Install: `npx shadcn@latest add @glaze/status-pill`
+- Import: `import { StatusPill } from '@/components/ui/status-pill'`
+- Registry Deps: @glaze/tokens
+
+**StatusPill Props:**
+- `status: Status` (required)
+- `label: string`
+- `showDot: boolean` = true
+- `size: 'sm' | 'md'` = 'md'
+
+## HueTag (柔彩色相标签) — `@glaze/hue-tag`
+
+基于 9 组 Glaze 柔彩色板的轻量标签，支持 xs / sm / md 尺寸与浅/深变体。
+- Install: `npx shadcn@latest add @glaze/hue-tag`
+- Import: `import { HueTag } from '@/components/ui/hue-tag'`
+- Registry Deps: @glaze/tokens
+
+**HueTag Props:**
+- `hue: Hue` = 'periwinkle'
+- `tone: 'soft' | 'solid' | 'neutral'` = 'soft'
+- `size: 'xs' | 'sm' | 'md'` = 'md'
+
+## StatusDot (语义状态点) — `@glaze/status-dot`
+
+展示实时在线/告警状态的圆点指示器，支持 CSS 涟漪扩散（normal）与呼吸闪烁（warning/error）动画。
+- Install: `npx shadcn@latest add @glaze/status-dot`
+- Import: `import { StatusDot } from '@/components/ui/status-dot'`
+- Registry Deps: @glaze/style, @glaze/tokens
+
+**StatusDot Props:**
+- `status: Status` = 'normal'
+- `color: string`
+- `mode: 'static' | 'ripple' | 'blink'`
+- `animated: boolean` = false
+- `size: number | 'sm' | 'md' | 'lg'` = 8
+
+## CountBadge (数字角标) — `@glaze/count-badge`
+
+紧凑的等宽数字计数徽章，支持 9 组色相自动配色。
+- Install: `npx shadcn@latest add @glaze/count-badge`
+- Import: `import { CountBadge } from '@/components/ui/count-badge'`
+- Registry Deps: @glaze/tokens
+
+**CountBadge Props:**
+- `count: number | string` (required)
+- `hue: Hue | 'ink' | 'neutral'` = 'coral'
+
+## IconTile (图标方砖) — `@glaze/icon-tile`
+
+用于应用图标与列表前置标识的柔彩圆角方砖，可自动感知父级 Tile 深浅背景。
+- Install: `npx shadcn@latest add @glaze/icon-tile`
+- Import: `import { IconTile } from '@/components/ui/icon-tile'`
+- Registry Deps: @glaze/style, @glaze/tile, @glaze/tokens
+
+**IconTile Props:**
+- `hue: Hue | 'neutral' | 'dark' | 'dark-glass' | 'coral-solid'` = 'sky'
+- `size: 'sm' | 'md' | 'lg' | 'xl'` = 'md'
+- `radius: 'icon' | 'app' | 'full'` = 'app'
+- `badge: number`
+- `badgeRingColor: string` = '#FFFFFF'
+
+## Textarea (多行文本域) — `@glaze/textarea`
+
+采用 18px 圆角（rounded-inner）与柔灰底色（#F6F7F9）的多行输入框。
+- Install: `npx shadcn@latest add @glaze/textarea`
+- Import: `import { Textarea } from '@/components/ui/textarea'`
+- Registry Deps: @glaze/motion
+
+**Textarea Props:**
+- `surface: 'soft' | 'white'` = 'soft'
+
+## SegmentedControl (分段控制器) — `@glaze/segmented-control`
+
+基于 Base UI Tabs 封装的胶囊分段切换器，内置平滑纯 CSS 滑动指示块。
+- Install: `npx shadcn@latest add @glaze/segmented-control`
+- Import: `import { SegmentedControl } from '@/components/ui/segmented-control'`
+- Base UI: `@base-ui/react/tabs` (https://base-ui.com/react/components/tabs)
+
+**SegmentedControl Props:**
+- `options: SegmentedOption<T>[]` (required)
+- `value: T` (required)
+- `onValueChange: (val: T) => void` (required)
+- `size: 'sm' | 'md'` = 'md'
+- `dark: boolean` = false
+- `ariaLabel: string`
+- `listClassName: string`
+- `className: string`
+
+**Data Attributes:** `data-active` (当前选中的分段项), `data-disabled` (禁用状态的分段项)
+
+## Button (按钮) — `@glaze/button`
+
+全圆胶囊按钮，提供 7 种语义与表面变体，独立使用时启用 0.97 按压缩放，作为浮层触发器时自动禁用缩放以防锚点抖动。
+- Install: `npx shadcn@latest add @glaze/button`
+- Import: `import { Button } from '@/components/ui/button'`
+- Base UI: `@base-ui/react/button` (https://base-ui.com/react/components/button)
+- Registry Deps: @glaze/motion, @glaze/tokens
+
+**Button Props:**
+- `variant: ButtonVariant` = 'primary'
+- `size: ButtonSize` = 'md'
+- `hue: Hue` = 'periwinkle'
+- `pressScale: boolean` = true — Enable scale(0.97) tactile press feedback. Automatically disabled when used as a popup trigger.
+- `className: string`
+- `style: React.CSSProperties`
+
+**Data Attributes:** `data-disabled` (按钮处于禁用态时添加), `data-popup-open` (当按钮作为浮层触发器且浮层打开时添加)
+
+## Input (输入框) — `@glaze/input`
+
+基于 Base UI Input 的 44px 全圆胶囊单行输入框，支持前后缀图标与柔灰/纯白两种表面。
+- Install: `npx shadcn@latest add @glaze/input`
+- Import: `import { Input } from '@/components/ui/input'`
+- Base UI: `@base-ui/react/input` (https://base-ui.com/react/components/input)
+- Registry Deps: @glaze/motion
+
+**Input Props:**
+- `leadingIcon: React.ReactNode`
+- `trailingElement: React.ReactNode`
+- `surface: 'soft' | 'white'` = 'soft'
+- `inputSize: 'sm' | 'md'` = 'md'
+- `className: string`
+- `wrapperClassName: string`
+
+**Data Attributes:** `data-disabled` (输入框禁用态), `data-focused` (获得焦点时添加), `data-invalid` (在 Field 校验失败时添加)
+
+## NumberField (数字步进框) — `@glaze/number-field`
+
+支持键盘微调、拖动增减（Scrub）、范围限制与单位后缀的无障碍数值输入控件。
+- Install: `npx shadcn@latest add @glaze/number-field`
+- Import: `import { NumberField } from '@/components/ui/number-field'`
+- Base UI: `@base-ui/react/number-field` (https://base-ui.com/react/components/number-field)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**NumberField Props:**
+- `label: string`
+- `unit: string`
+- `surface: 'soft' | 'white'` = 'soft'
+- `className: string`
+
+**Data Attributes:** `data-disabled` (禁用态), `data-scrubbing` (正在通过指针拖动调节数值)
+
+## OTPField (验证码输入框) — `@glaze/otp-field`
+
+基于 Base UI v1.9 OTPField 构建的一次性密码/验证码分段输入框，支持自动跳格与粘贴填充。
+- Install: `npx shadcn@latest add @glaze/otp-field`
+- Import: `import { OTPField } from '@/components/ui/otp-field'`
+- Base UI: `@base-ui/react/otp-field` (https://base-ui.com/react/components/otp-field)
+- Registry Deps: @glaze/style
+
+**OTPField Props:**
+- `length: number` = 6
+- `separatorAt: number` = 3
+- `className: string`
+
+**Data Attributes:** `data-filled` (该槽位已输入字符), `data-focused` (该槽位处于聚焦激活态)
+
+## Checkbox (复选框) — `@glaze/checkbox`
+
+支持选中、未选中与半选（indeterminate）状态，内置描述文案与按压反馈。
+- Install: `npx shadcn@latest add @glaze/checkbox`
+- Import: `import { Checkbox } from '@/components/ui/checkbox'`
+- Base UI: `@base-ui/react/checkbox` (https://base-ui.com/react/components/checkbox)
+
+**Checkbox Props:**
+- `label: React.ReactNode`
+- `description: string`
+- `className: string`
+
+**Data Attributes:** `data-checked` (已选中状态), `data-unchecked` (未选中状态), `data-indeterminate` (半选状态), `data-disabled` (禁用状态)
+
+## CheckboxGroup (复选框组) — `@glaze/checkbox-group`
+
+管理多组 Checkbox 共享选中值数组，支持全选联动（parent checkbox）。
+- Install: `npx shadcn@latest add @glaze/checkbox-group`
+- Import: `import { CheckboxGroup } from '@/components/ui/checkbox-group'`
+- Base UI: `@base-ui/react/checkbox-group` (https://base-ui.com/react/components/checkbox-group)
+
+**Data Attributes:** `data-disabled` (整组禁用状态)
+
+## Radio (单选框) — `@glaze/radio`
+
+配合 RadioGroup 使用的单项选择控件，带有清晰圆点指示与标签描述。
+- Install: `npx shadcn@latest add @glaze/radio`
+- Import: `import { Radio } from '@/components/ui/radio'`
+- Base UI: `@base-ui/react/radio` (https://base-ui.com/react/components/radio)
+- Registry Deps: @glaze/style
+
+**Radio Props:**
+- `label: React.ReactNode`
+- `description: string`
+- `card: boolean` = false
+- `className: string`
+
+**Data Attributes:** `data-checked` (选中状态), `data-unchecked` (未选中状态), `data-disabled` (禁用状态)
+
+## RadioGroup (单选框组) — `@glaze/radio-group`
+
+支持方向键漫游焦点的无障碍单选组容器。
+- Install: `npx shadcn@latest add @glaze/radio-group`
+- Import: `import { RadioGroup } from '@/components/ui/radio-group'`
+- Base UI: `@base-ui/react/radio-group` (https://base-ui.com/react/components/radio-group)
+
+**Data Attributes:** `data-disabled` (整组禁用状态)
+
+## Switch (开关) — `@glaze/switch`
+
+即时生效的胶囊开关控件，采用 200ms 纯 CSS 滑块过渡，支持 9 组色相自定义激活色。
+- Install: `npx shadcn@latest add @glaze/switch`
+- Import: `import { Switch } from '@/components/ui/switch'`
+- Base UI: `@base-ui/react/switch` (https://base-ui.com/react/components/switch)
+- Registry Deps: @glaze/tokens
+
+**Switch Props:**
+- `hue: Hue | 'ink'` = 'mint'
+- `size: 'sm' | 'md'` = 'md'
+- `className: string`
+
+**Data Attributes:** `data-checked` (开启状态), `data-unchecked` (关闭状态), `data-disabled` (禁用状态)
+
+## Slider (滑块) — `@glaze/slider`
+
+单值与双端区间范围滑块，支持色相主题、步进与键盘精确微调。
+- Install: `npx shadcn@latest add @glaze/slider`
+- Import: `import { Slider } from '@/components/ui/slider'`
+- Base UI: `@base-ui/react/slider` (https://base-ui.com/react/components/slider)
+- Registry Deps: @glaze/style, @glaze/tokens
+
+**Slider Props:**
+- `hue: Hue | 'ink'` = 'periwinkle'
+- `label: string`
+- `showValue: boolean` = true
+- `unit: string` = ''
+- `className: string`
+
+**Data Attributes:** `data-dragging` (正在拖拽滑块), `data-disabled` (禁用状态)
+
+## Toggle (切换按钮) — `@glaze/toggle`
+
+带有按下（pressed）状态的双态胶囊按钮，适用于工具栏格式化、收藏、置顶等操作。
+- Install: `npx shadcn@latest add @glaze/toggle`
+- Import: `import { Toggle } from '@/components/ui/toggle'`
+- Base UI: `@base-ui/react/toggle` (https://base-ui.com/react/components/toggle)
+- Registry Deps: @glaze/motion
+
+**Toggle Props:**
+- `size: 'sm' | 'md'` = 'md'
+- `pressScale: boolean` = true
+- `className: string`
+
+**Data Attributes:** `data-pressed` (按钮处于激活按下态), `data-disabled` (禁用状态)
+
+## ToggleGroup (切换按钮组) — `@glaze/toggle-group`
+
+协调一组 Toggle 的单选或多选状态，内置柔灰胶囊轨道容器。
+- Install: `npx shadcn@latest add @glaze/toggle-group`
+- Import: `import { ToggleGroup } from '@/components/ui/toggle-group'`
+- Base UI: `@base-ui/react/toggle-group` (https://base-ui.com/react/components/toggle-group)
+
+**Data Attributes:** `data-multiple` (允许同时选中多项)
+
+## Field (表单字段) — `@glaze/field`
+
+自动关联 Label、Control、Description 与 Error 的无障碍表单字段容器。
+- Install: `npx shadcn@latest add @glaze/field`
+- Import: `import { Field, FieldLabel, FieldDescription, FieldError, FieldControl } from '@/components/ui/field'`
+- Base UI: `@base-ui/react/field` (https://base-ui.com/react/components/field)
+
+**Data Attributes:** `data-invalid` (字段校验未通过), `data-valid` (字段校验通过), `data-dirty` (字段值已变更), `data-touched` (字段已失焦触碰)
+
+## Fieldset (表单分组) — `@glaze/fieldset`
+
+将相关表单字段归类到带标题（FieldsetLegend）的 18px 圆角区块内。
+- Install: `npx shadcn@latest add @glaze/fieldset`
+- Import: `import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset'`
+- Base UI: `@base-ui/react/fieldset` (https://base-ui.com/react/components/fieldset)
+- Registry Deps: @glaze/style
+
+**Data Attributes:** `data-disabled` (整组禁用态)
+
+## Form (表单容器) — `@glaze/form`
+
+原生约束验证与服务端错误信息统一分发容器，与 Field 无缝协作。
+- Install: `npx shadcn@latest add @glaze/form`
+- Import: `import { Form } from '@/components/ui/form'`
+- Base UI: `@base-ui/react/form` (https://base-ui.com/react/components/form)
+
+## Select (下拉选择器) — `@glaze/select`
+
+全圆胶囊触发器 + 20px 圆角浮层，支持选项分组、副标题说明与快速键盘检索。
+- Install: `npx shadcn@latest add @glaze/select`
+- Import: `import { Select } from '@/components/ui/select'`
+- Base UI: `@base-ui/react/select` (https://base-ui.com/react/components/select)
+- Registry Deps: @glaze/motion
+
+**Select Props:**
+- `options: SelectOption[]` (required)
+- `value: string`
+- `defaultValue: string`
+- `onValueChange: (value: string) => void`
+- `placeholder: string` = '请选择'
+- `disabled: boolean` = false
+- `size: 'sm' | 'md'` = 'md'
+- `surface: 'soft' | 'white'` = 'soft'
+- `className: string`
+
+**Data Attributes:** `data-popup-open` (下拉列表处于展开状态), `data-highlighted` (当前键盘/悬停高亮选项), `data-selected` (当前已选中选项), `data-starting-style` (浮层进场初始帧), `data-ending-style` (浮层退场结束帧)
+
+## Combobox (可搜索组合框) — `@glaze/combobox`
+
+支持实时过滤与自定义元信息的单选 Combobox 与多选胶囊标签 MultiCombobox。
+- Install: `npx shadcn@latest add @glaze/combobox`
+- Import: `import { Combobox, MultiCombobox } from '@/components/ui/combobox'`
+- Base UI: `@base-ui/react/combobox` (https://base-ui.com/react/components/combobox)
+- Registry Deps: @glaze/motion
+
+**Combobox Props:**
+- `items: ComboboxOption[]` (required)
+- `value: ComboboxOption | null`
+- `onValueChange: (val: ComboboxOption | null) => void`
+- `placeholder: string` = '搜索并选择…'
+- `emptyText: string` = '没有匹配的结果'
+- `surface: 'soft' | 'white'` = 'soft'
+- `className: string`
+
+**MultiCombobox Props:**
+- `items: ComboboxOption[]` (required)
+- `value: ComboboxOption[]` (required)
+- `onValueChange: (val: ComboboxOption[]) => void` (required)
+- `placeholder: string` = '添加标签…'
+- `surface: 'soft' | 'white'` = 'soft'
+- `className: string`
+
+**Data Attributes:** `data-popup-open` (选项面板展开态), `data-highlighted` (高亮选项), `data-selected` (已选选项)
+
+## Autocomplete (自动补全输入) — `@glaze/autocomplete`
+
+允许自由输入同时提供实时建议列表的命令/搜索自动补全控件。
+- Install: `npx shadcn@latest add @glaze/autocomplete`
+- Import: `import { Autocomplete } from '@/components/ui/autocomplete'`
+- Base UI: `@base-ui/react/autocomplete` (https://base-ui.com/react/components/autocomplete)
+- Registry Deps: @glaze/motion
+
+**Autocomplete Props:**
+- `items: string[]` (required)
+- `value: string`
+- `onValueChange: (val: string) => void`
+- `placeholder: string` = '输入关键字自动补全…'
+- `surface: 'soft' | 'white'` = 'soft'
+- `className: string`
+
+**Data Attributes:** `data-popup-open` (建议列表展开态), `data-highlighted` (高亮建议项)
+
+## Menu (下拉菜单) — `@glaze/menu`
+
+支持图标、快捷键提示、分组分隔线与危险操作高亮的命令菜单。通过 PopupTriggerScope 自动稳定触发按钮。
+- Install: `npx shadcn@latest add @glaze/menu`
+- Import: `import { Menu } from '@/components/ui/menu'`
+- Base UI: `@base-ui/react/menu` (https://base-ui.com/react/components/menu)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**Menu Props:**
+- `trigger: React.ReactElement` (required)
+- `items: MenuItemConfig[]` (required)
+- `align: 'start' | 'center' | 'end'` = 'end'
+- `side: 'top' | 'bottom' | 'left' | 'right'` = 'bottom'
+
+**Data Attributes:** `data-popup-open` (菜单展开态), `data-highlighted` (当前焦点菜单项), `data-starting-style` (浮层进场帧), `data-ending-style` (浮层退场帧)
+
+## ContextMenu (右键上下文菜单) — `@glaze/context-menu`
+
+在指针右键位置弹出的操作菜单，支持图标、快捷键与危险操作着色。
+- Install: `npx shadcn@latest add @glaze/context-menu`
+- Import: `import { ContextMenu } from '@/components/ui/context-menu'`
+- Base UI: `@base-ui/react/context-menu` (https://base-ui.com/react/components/context-menu)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**ContextMenu Props:**
+- `items: ContextMenuItemConfig[]` (required)
+- `children: React.ReactNode` (required)
+- `className: string`
+
+**Data Attributes:** `data-popup-open` (上下文菜单展开态), `data-highlighted` (高亮菜单项)
+
+## Menubar (应用菜单栏) — `@glaze/menubar`
+
+桌面应用风格的顶部水平菜单栏，支持悬停无缝切换相邻下拉菜单。
+- Install: `npx shadcn@latest add @glaze/menubar`
+- Import: `import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from '@/components/ui/menubar'`
+- Base UI: `@base-ui/react/menubar` (https://base-ui.com/react/components/menubar)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**Menubar Props:**
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**MenubarTrigger Props:**
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**MenubarContent Props:**
+- `children: React.ReactNode` (required)
+
+**MenubarItem Props:**
+- `children: React.ReactNode` (required)
+- `shortcut: string`
+- `onClick: () => void`
+
+**Data Attributes:** `data-popup-open` (当前激活菜单触发器), `data-instant` (菜单之间快速切换时消除过渡延迟)
+
+## NavigationMenu (导航菜单) — `@glaze/navigation-menu`
+
+带下拉图文面板的站点级水平导航菜单，支持平滑焦点移动与无障碍键盘导航。
+- Install: `npx shadcn@latest add @glaze/navigation-menu`
+- Import: `import { NavigationMenu } from '@/components/ui/navigation-menu'`
+- Base UI: `@base-ui/react/navigation-menu` (https://base-ui.com/react/components/navigation-menu)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**NavigationMenu Props:**
+- `menus: NavMenuItem[]` (required)
+- `className: string`
+
+**Data Attributes:** `data-popup-open` (导航面板展开态), `data-active` (当前激活导航链接)
+
+## Dialog (模态对话框) — `@glaze/dialog`
+
+28px 圆角模态对话框，采用 200ms 纯 CSS 进场与 150ms 退场，禁用昂贵 backdrop-blur 确保高刷流畅。
+- Install: `npx shadcn@latest add @glaze/dialog`
+- Import: `import { DialogClose, Dialog } from '@/components/ui/dialog'`
+- Base UI: `@base-ui/react/dialog` (https://base-ui.com/react/components/dialog)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**Dialog Props:**
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `trigger: React.ReactElement`
+- `title: React.ReactNode` (required)
+- `description: React.ReactNode`
+- `children: React.ReactNode`
+- `footer: React.ReactNode`
+- `maxWidth: string` = '480px'
+
+**Data Attributes:** `data-open` (对话框已打开), `data-starting-style` (进场动画起点), `data-ending-style` (退场动画终点)
+
+## AlertDialog (高风险确认框) — `@glaze/alert-dialog`
+
+用于删除、重置等不可逆操作的强制确认对话框，禁用点击遮罩意外关闭。
+- Install: `npx shadcn@latest add @glaze/alert-dialog`
+- Import: `import { AlertDialog } from '@/components/ui/alert-dialog'`
+- Base UI: `@base-ui/react/alert-dialog` (https://base-ui.com/react/components/alert-dialog)
+- Registry Deps: @glaze/button, @glaze/style
+
+**AlertDialog Props:**
+- `trigger: React.ReactElement`
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `title: string` (required)
+- `description: string` (required)
+- `confirmLabel: string` = '确认执行'
+- `cancelLabel: string` = '取消'
+- `danger: boolean` = true
+- `onConfirm: () => void`
+
+**Data Attributes:** `data-open` (确认框已打开), `data-starting-style` (进场动画起点), `data-ending-style` (退场动画终点)
+
+## Drawer (抽屉面板) — `@glaze/drawer`
+
+基于 Base UI v1.9 Drawer 的侧边/底部滑动抽屉，支持手势拖拽关闭与 300ms/220ms 分级节拍。
+- Install: `npx shadcn@latest add @glaze/drawer`
+- Import: `import { Drawer } from '@/components/ui/drawer'`
+- Base UI: `@base-ui/react/drawer` (https://base-ui.com/react/components/drawer)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**Drawer Props:**
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `trigger: React.ReactElement`
+- `title: React.ReactNode` (required)
+- `description: React.ReactNode`
+- `side: 'right' | 'bottom'` = 'right'
+- `children: React.ReactNode`
+- `footer: React.ReactNode`
+
+**Data Attributes:** `data-side` (滑出方向（right | bottom）), `data-swiping` (用户正在拖动关闭抽屉), `data-starting-style` (进场初始位置), `data-ending-style` (退场目标位置)
+
+## Popover (气泡卡片) — `@glaze/popover`
+
+点击触发的交互式浮层面板，可包含表单、筛选器与快捷操作。
+- Install: `npx shadcn@latest add @glaze/popover`
+- Import: `import { Popover } from '@/components/ui/popover'`
+- Base UI: `@base-ui/react/popover` (https://base-ui.com/react/components/popover)
+- Registry Deps: @glaze/motion, @glaze/style
+
+**Popover Props:**
+- `trigger: React.ReactElement` (required)
+- `title: string`
+- `description: string`
+- `children: React.ReactNode`
+- `side: 'top' | 'bottom' | 'left' | 'right'` = 'bottom'
+- `align: 'start' | 'center' | 'end'` = 'center'
+- `className: string`
+
+**Data Attributes:** `data-open` (气泡处于打开态), `data-side` (实际弹出方向（top | bottom | left | right）), `data-starting-style` (进场起点), `data-ending-style` (退场终点)
+
+## PreviewCard (悬停预览卡) — `@glaze/preview-card`
+
+悬停链接或实体标识时展示的富媒体摘要卡片，内置防误触延迟与平滑进退场。
+- Install: `npx shadcn@latest add @glaze/preview-card`
+- Import: `import { PreviewCard } from '@/components/ui/preview-card'`
+- Base UI: `@base-ui/react/preview-card` (https://base-ui.com/react/components/preview-card)
+- Registry Deps: @glaze/motion
+
+**PreviewCard Props:**
+- `trigger: React.ReactElement` (required)
+- `children: React.ReactNode` (required)
+- `side: 'top' | 'bottom' | 'left' | 'right'` = 'top'
+- `className: string`
+
+**Data Attributes:** `data-open` (预览卡处于展开态), `data-starting-style` (进场起点), `data-ending-style` (退场终点)
+
+## Tooltip (文字提示) — `@glaze/tooltip`
+
+轻量化深色浮层提示，配合 TooltipProvider 实现多提示间零延迟连续切换。
+- Install: `npx shadcn@latest add @glaze/tooltip`
+- Import: `import { TooltipProvider, Tooltip } from '@/components/ui/tooltip'`
+- Base UI: `@base-ui/react/tooltip` (https://base-ui.com/react/components/tooltip)
+- Registry Deps: @glaze/motion
+
+**Tooltip Props:**
+- `content: React.ReactNode` (required)
+- `children: React.ReactElement` (required)
+- `side: 'top' | 'bottom' | 'left' | 'right'` = 'top'
+- `delay: number` = 180
+
+**Data Attributes:** `data-open` (提示可见), `data-instant` (连续悬停切换时跳过延迟)
+
+## Toast (3D 堆叠通知) — `@glaze/toast`
+
+基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持悬停展开、右滑/下滑手势关闭与 5 种语义状态。
+- Install: `npx shadcn@latest add @glaze/toast`
+- Import: `import { ToastProvider, useToast } from '@/components/ui/toast'`
+- Base UI: `@base-ui/react/toast` (https://base-ui.com/react/components/toast)
+- Registry Deps: @glaze/motion, @glaze/style, @glaze/tokens
+
+**ToastProvider Props:**
+- `children: React.ReactNode` (required)
+
+**Data Attributes:** `data-expanded` (通知堆叠处于展开态), `data-behind` (处于非最前方的折叠内容), `data-swiping` (正在滑动关闭), `data-limited` (超出最大显示数量被隐藏)
+
+## Progress (进度条) — `@glaze/progress`
+
+支持常规线性进度条（Progress）与多段彩色占比进度条（SegmentedProgress）。
+- Install: `npx shadcn@latest add @glaze/progress`
+- Import: `import { Progress, SegmentedProgress } from '@/components/ui/progress'`
+- Base UI: `@base-ui/react/progress` (https://base-ui.com/react/components/progress)
+- Registry Deps: @glaze/style, @glaze/tokens
+
+**Progress Props:**
+- `value: number | null` (required)
+- `max: number` = 100
+- `hue: Hue | 'ink'` = 'periwinkle'
+- `variant: 'linear' | 'ring'` = 'linear'
+- `height: 'sm' | 'md' | 'lg'` = 'md'
+- `size: number` = 64
+- `strokeWidth: number` = 7
+- `label: string`
+- `showValue: boolean` = false
+- `trackColor: string`
+- `barColor: string`
+- `className: string`
+
+**SegmentedProgress Props:**
+- `segments: { value?: number; percent?: number; color: string; label?: string }[]` (required)
+- `height: number | 'sm' | 'md' | 'lg'` = 10
+- `gap: number` = 4
+- `className: string`
+
+**Data Attributes:** `data-complete` (进度达到 100%), `data-indeterminate` (不确定进度态)
+
+## Meter (语义计量条) — `@glaze/meter`
+
+用于展示容量/配额/预算等区间占比，可按阈值自动切换正常/注意/异常语义颜色。
+- Install: `npx shadcn@latest add @glaze/meter`
+- Import: `import { Meter } from '@/components/ui/meter'`
+- Base UI: `@base-ui/react/meter` (https://base-ui.com/react/components/meter)
+- Registry Deps: @glaze/style, @glaze/tokens
+
+**Meter Props:**
+- `value: number` (required)
+- `min: number` = 0
+- `max: number` = 100
+- `label: string`
+- `valueLabel: string`
+- `hue: Hue | 'auto'` = 'auto'
+- `className: string`
+
+## Avatar (头像与头像组) — `@glaze/avatar`
+
+支持图片加载降级文字缩写、9 组柔彩底色与叠放人数溢出提示的 AvatarGroup。
+- Install: `npx shadcn@latest add @glaze/avatar`
+- Import: `import { Avatar, AvatarGroup } from '@/components/ui/avatar'`
+- Base UI: `@base-ui/react/avatar` (https://base-ui.com/react/components/avatar)
+- Registry Deps: @glaze/tokens
+
+**Avatar Props:**
+- `src: string`
+- `alt: string` = ''
+- `fallback: string` (required)
+- `hue: Hue` = 'periwinkle'
+- `size: 'xs' | 'sm' | 'md' | 'lg'` = 'md'
+- `ringWidth: number` = 0
+- `ringColor: string` = '#FFFFFF'
+- `className: string`
+
+**AvatarGroup Props:**
+- `items: AvatarGroupItem[]` (required)
+- `size: 'xs' | 'sm' | 'md' | 'lg'` = 'sm'
+- `ringColor: string` = '#FFFFFF'
+- `overflowBg: string` = '#F2F3F5'
+- `overflowFg: string` = '#5B6170'
+- `max: number`
+- `className: string`
+
+## Tabs (标签页) — `@glaze/tabs`
+
+全圆胶囊标签页容器，内置纯 CSS 200ms 水平滑动背景指示器与完整键盘焦点管理。
+- Install: `npx shadcn@latest add @glaze/tabs`
+- Import: `import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'`
+- Base UI: `@base-ui/react/tabs` (https://base-ui.com/react/components/tabs)
+
+**Data Attributes:** `data-active` (当前激活的标签触发器), `data-orientation` (排列方向（horizontal | vertical）)
+
+## Accordion (手风琴折叠面板) — `@glaze/accordion`
+
+18px 圆角折叠面板组，使用 Base UI --accordion-panel-height 变量驱动平滑高度展开。
+- Install: `npx shadcn@latest add @glaze/accordion`
+- Import: `import { Accordion, AccordionItem } from '@/components/ui/accordion'`
+- Base UI: `@base-ui/react/accordion` (https://base-ui.com/react/components/accordion)
+- Registry Deps: @glaze/style
+
+**AccordionItem Props:**
+- `value: string` (required)
+- `title: React.ReactNode` (required)
+- `subtitle: string`
+- `children: React.ReactNode` (required)
+- `className: string`
+
+**Data Attributes:** `data-open` (面板处于展开态), `data-panel-open` (触发器对应面板已展开), `data-disabled` (面板项被禁用)
+
+## Collapsible (单块折叠区) — `@glaze/collapsible`
+
+独立可控的展开/收起内容区域，内置平滑高度过渡与标题副文插槽。
+- Install: `npx shadcn@latest add @glaze/collapsible`
+- Import: `import { Collapsible } from '@/components/ui/collapsible'`
+- Base UI: `@base-ui/react/collapsible` (https://base-ui.com/react/components/collapsible)
+- Registry Deps: @glaze/style
+
+**Collapsible Props:**
+- `title: React.ReactNode` (required)
+- `badge: React.ReactNode`
+- `defaultOpen: boolean` = false
+- `children: React.ReactNode` (required)
+- `className: string`
+
+**Data Attributes:** `data-open` (处于展开态), `data-panel-open` (触发器关联面板已展开)
+
+## Toolbar (工具栏) — `@glaze/toolbar`
+
+集成按钮、分组、分隔线与链接的胶囊操作工具栏，支持左右方向键漫游焦点。
+- Install: `npx shadcn@latest add @glaze/toolbar`
+- Import: `import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, ToolbarLink } from '@/components/ui/toolbar'`
+- Base UI: `@base-ui/react/toolbar` (https://base-ui.com/react/components/toolbar)
+- Registry Deps: @glaze/motion
+
+**Data Attributes:** `data-orientation` (排列方向)
+
+## ScrollArea (自定义滚动区) — `@glaze/scroll-area`
+
+跨平台一致的细胶囊悬浮滚动条容器，悬停或滚动时柔和显现。
+- Install: `npx shadcn@latest add @glaze/scroll-area`
+- Import: `import { ScrollArea } from '@/components/ui/scroll-area'`
+- Base UI: `@base-ui/react/scroll-area` (https://base-ui.com/react/components/scroll-area)
+
+**ScrollArea Props:**
+- `className: string`
+- `viewportClassName: string`
+- `children: React.ReactNode` (required)
+
+**Data Attributes:** `data-hovering` (指针悬停在滚动区上方), `data-scrolling` (正在发生滚动)
+
+## Separator (分隔线) — `@glaze/separator`
+
+语义化水平或垂直分割线（role="separator"），支持常规与柔浅色调。
+- Install: `npx shadcn@latest add @glaze/separator`
+- Import: `import { Separator } from '@/components/ui/separator'`
+- Base UI: `@base-ui/react/separator` (https://base-ui.com/react/components/separator)
+
+**Data Attributes:** `data-orientation` (horizontal | vertical)
+
+## DirectionProvider (阅读方向提供器) — `@glaze/direction-provider`
+
+直接透传 Base UI DirectionProvider，为 LTR / RTL 国际化界面提供统一方向上下文。
+- Install: `npx shadcn@latest add @glaze/direction-provider`
+- Import: `import { DirectionProvider } from '@/components/ui/direction-provider'`
+- Base UI: `@base-ui/react/direction-provider` (https://base-ui.com/react/components/direction-provider)
+
+## Chart (图表主题与容器) — `@glaze/chart`
+
+Glaze 图表核心基础设施，自动读取父级 Tile 深浅背景色板，提供 ChartContainer、ChartTooltip、ChartLegend 与配色解析器。
+- Install: `npx shadcn@latest add @glaze/chart`
+- Import: `import { CHART_ANIMATION_DURATION, CHART_ANIMATION_EASING, getChartTheme, useChartTheme, resolveSeriesColor, useChart, ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend } from '@/components/ui/chart'`
+- Registry Deps: @glaze/style, @glaze/tile, @glaze/tokens
+
+**ChartContainer Props:**
+- `config: ChartConfig` = {}
+- `tone: TileTone`
+- `height: number | string`
+- `minHeight: number`
+- `responsive: boolean` = true
+- `children: React.ReactElement | React.ReactNode` (required)
+
+**ChartTooltipContent Props:**
+- `active: boolean`
+- `payload: readonly TooltipPayloadEntry[]`
+- `label: string | number`
+- `indicator: 'dot' | 'line' | 'dashed'` = 'dot'
+- `surface: 'white' | 'ink'` = 'white'
+- `compact: boolean` = false
+- `hideLabel: boolean` = false
+- `hideIndicator: boolean` = false
+- `unit: string`
+- `labelFormatter: (label: React.ReactNode, payload?: readonly TooltipPayloadEntry[]) => React.ReactNode`
+- `valueFormatter: (value: number | string, name?: string, item?: unknown) => React.ReactNode`
+- `className: string`
+
+**ChartLegend Props:**
+- `items: ChartLegendItem[]` (required)
+- `hiddenKeys: ReadonlySet<string>`
+- `onToggleKey: (key: string) => void`
+- `align: 'left' | 'center' | 'right'` = 'left'
+- `tone: TileTone`
+- `className: string`
+
+## AreaChart (面积趋势图) — `@glaze/area-chart`
+
+支持单/多序列渐变填充、堆叠模式、交互图例筛选与悬浮提示的面积图组件。
+- Install: `npx shadcn@latest add @glaze/area-chart`
+- Import: `import { AreaChart } from '@/components/ui/area-chart'`
+- Registry Deps: @glaze/chart, @glaze/tokens
+
+**AreaChart Props:**
+- `data: readonly object[]` (required)
+- `xKey: string` (required)
+- `series: AreaSeries[]` (required)
+- `config: ChartConfig`
+- `tone: TileTone`
+- `height: number | string` = 220
+- `curve: 'monotone' | 'natural' | 'linear' | 'step' | 'stepAfter'` = 'monotone'
+- `stacked: boolean` = false
+- `gradient: boolean` = true
+- `showGrid: boolean` = true
+- `showXAxis: boolean` = true
+- `showYAxis: boolean` = false
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = false
+- `interactiveLegend: boolean` = true
+- `showDots: boolean` = false
+- `referenceLine: { y: number; label?: string; color?: string }`
+- `xAxisTicks: (string | number)[]`
+- `xTickFormatter: (value: unknown) => string`
+- `yTickFormatter: (value: unknown) => string`
+- `valueFormatter: (value: number | string, name?: string) => React.ReactNode`
+- `labelFormatter: (label: React.ReactNode) => React.ReactNode`
+- `yDomain: [number | 'auto' | 'dataMin' | 'dataMax', number | 'auto' | 'dataMin' | 'dataMax']`
+- `yAxisWidth: number | 'auto'` = 'auto'
+- `margin: { top?: number; right?: number; bottom?: number; left?: number }`
+- `animate: boolean` = true
+- `className: string`
+
+## LineChart (折线对比图) — `@glaze/line-chart`
+
+支持实线/虚线、参考基线（referenceLine）、多曲线对比与平滑曲线插值。
+- Install: `npx shadcn@latest add @glaze/line-chart`
+- Import: `import { LineChart } from '@/components/ui/line-chart'`
+- Registry Deps: @glaze/chart, @glaze/tokens
+
+**LineChart Props:**
+- `data: readonly object[]` (required)
+- `xKey: string` (required)
+- `series: LineSeries[]` (required)
+- `config: ChartConfig`
+- `tone: TileTone`
+- `height: number | string` = 220
+- `curve: 'monotone' | 'natural' | 'linear' | 'step' | 'stepAfter'` = 'monotone'
+- `showGrid: boolean` = true
+- `showXAxis: boolean` = true
+- `showYAxis: boolean` = false
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = false
+- `interactiveLegend: boolean` = true
+- `showDots: boolean` = false
+- `connectNulls: boolean` = true
+- `referenceLine: { y: number; label?: string; color?: string }`
+- `xAxisTicks: (string | number)[]`
+- `xTickFormatter: (value: unknown) => string`
+- `yTickFormatter: (value: unknown) => string`
+- `valueFormatter: (value: number | string, name?: string) => React.ReactNode`
+- `labelFormatter: (label: React.ReactNode) => React.ReactNode`
+- `yDomain: [number | 'auto' | 'dataMin' | 'dataMax', number | 'auto' | 'dataMin' | 'dataMax']`
+- `yAxisWidth: number | 'auto'` = 'auto'
+- `margin: { top?: number; right?: number; bottom?: number; left?: number }`
+- `animate: boolean` = true
+- `className: string`
+
+## BarChart (柱状与条形图) — `@glaze/bar-chart`
+
+支持竖向分组柱状、堆叠柱状与横向圆角条形排行的多功能 BarChart。
+- Install: `npx shadcn@latest add @glaze/bar-chart`
+- Import: `import { BarChart } from '@/components/ui/bar-chart'`
+- Registry Deps: @glaze/chart, @glaze/tokens
+
+**BarChart Props:**
+- `data: readonly object[]` (required)
+- `xKey: string` (required)
+- `series: BarSeries[]` (required)
+- `config: ChartConfig`
+- `tone: TileTone`
+- `height: number | string` = 220
+- `orientation: 'vertical' | 'horizontal'` = 'vertical' — 'vertical' renders upright columns; 'horizontal' renders left-to-right bars
+- `stacked: boolean` = false
+- `barSize: number`
+- `barGap: number` = 6
+- `barCategoryGap: number | string` = '22%'
+- `radius: number | [number, number, number, number]`
+- `highlightKey: string` — Boolean property on each data item to highlight that bar (other bars use mutedColor)
+- `highlightIndex: number` — Index of a single bar to highlight (other bars use mutedColor)
+- `showGrid: boolean` = true
+- `showXAxis: boolean` = true
+- `showYAxis: boolean` = false
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = false
+- `interactiveLegend: boolean` = true
+- `referenceLine: { value: number; label?: string; color?: string }`
+- `xTickFormatter: (value: unknown) => string`
+- `yTickFormatter: (value: unknown) => string`
+- `valueFormatter: (value: number | string, name?: string) => React.ReactNode`
+- `labelFormatter: (label: React.ReactNode) => React.ReactNode`
+- `yAxisWidth: number | 'auto'` = 'auto'
+- `margin: { top?: number; right?: number; bottom?: number; left?: number }`
+- `animate: boolean` = true
+- `className: string`
+
+## PieChart (饼图与环形图) — `@glaze/pie-chart`
+
+内置 PieChart 与中心指标卡槽 DonutChart，自动应用 Glaze 分类色板与悬停提示。
+- Install: `npx shadcn@latest add @glaze/pie-chart`
+- Import: `import { PieChart, DonutChart } from '@/components/ui/pie-chart'`
+- Registry Deps: @glaze/chart, @glaze/style, @glaze/tokens
+
+**PieChart Props:**
+- `data: PieChartItem[]` (required)
+- `variant: 'donut' | 'pie'` = 'donut'
+- `tone: TileTone`
+- `height: number | string` = 220
+- `innerRadius: number | string`
+- `outerRadius: number | string` = '88%'
+- `paddingAngle: number`
+- `cornerRadius: number`
+- `centerValue: React.ReactNode`
+- `centerLabel: React.ReactNode`
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = false
+- `valueFormatter: (value: number | string, name?: string) => React.ReactNode`
+- `animate: boolean` = true
+- `className: string`
+
+## RadarChart (多维雷达图) — `@glaze/radar-chart`
+
+支持单/双方案对比的多边形或同心圆网格雷达评分图。
+- Install: `npx shadcn@latest add @glaze/radar-chart`
+- Import: `import { RadarChart } from '@/components/ui/radar-chart'`
+- Registry Deps: @glaze/chart, @glaze/tokens
+
+**RadarChart Props:**
+- `data: readonly object[]` (required)
+- `angleKey: string` (required)
+- `series: RadarSeries[]` (required)
+- `config: ChartConfig`
+- `tone: TileTone`
+- `height: number | string` = 240
+- `domain: [number, number]` = [0, 100]
+- `gridType: 'polygon' | 'circle'` = 'polygon'
+- `outerRadius: number | string` = '74%'
+- `showGrid: boolean` = true
+- `showRadiusAxis: boolean` = false
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = false
+- `interactiveLegend: boolean` = true
+- `valueFormatter: (value: number | string, name?: string) => React.ReactNode`
+- `animate: boolean` = true
+- `className: string`
+
+## RadialChart (径向环与仪表盘) — `@glaze/radial-chart`
+
+包含多环径向进度 RadialChart 与半圆弧形仪表盘 GaugeChart。
+- Install: `npx shadcn@latest add @glaze/radial-chart`
+- Import: `import { RadialChart, GaugeChart } from '@/components/ui/radial-chart'`
+- Registry Deps: @glaze/chart, @glaze/style, @glaze/tokens
+
+**RadialChart Props:**
+- `data: RadialChartItem[]` (required)
+- `max: number` = 100
+- `tone: TileTone`
+- `height: number | string` = 220
+- `startAngle: number` = 90
+- `endAngle: number` = -270
+- `innerRadius: number | string` = '36%'
+- `outerRadius: number | string` = '92%'
+- `barSize: number` = 12
+- `centerValue: React.ReactNode`
+- `centerLabel: React.ReactNode`
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = false
+- `valueFormatter: (value: number | string, name?: string) => React.ReactNode`
+- `animate: boolean` = true
+- `className: string`
+
+**GaugeChart Props:**
+- `value: number` (required)
+- `max: number` = 100
+- `label: string` = '数值'
+- `valueText: React.ReactNode`
+- `unit: string`
+- `subLabel: React.ReactNode`
+- `variant: 'semicircle' | 'ring'` = 'semicircle'
+- `color: string`
+- `hue: Hue`
+- `trackColor: string`
+- `tone: TileTone`
+- `width: number`
+- `height: number`
+- `barSize: number`
+- `showTooltip: boolean` = false
+- `animate: boolean` = true
+- `className: string`
+
+## ScatterChart (散点与气泡图) — `@glaze/scatter-chart`
+
+支持多分组 X/Y 坐标分布与 Z 轴气泡半径映射的散点图表。
+- Install: `npx shadcn@latest add @glaze/scatter-chart`
+- Import: `import { ScatterChart } from '@/components/ui/scatter-chart'`
+- Registry Deps: @glaze/chart, @glaze/tokens
+
+**ScatterChart Props:**
+- `series: ScatterSeries[]` (required)
+- `xKey: string` (required)
+- `yKey: string` (required)
+- `zKey: string`
+- `xLabel: string`
+- `yLabel: string`
+- `xUnit: string`
+- `yUnit: string`
+- `zRange: [number, number]` = [48, 280]
+- `tone: TileTone`
+- `height: number | string` = 220
+- `showGrid: boolean` = true
+- `showXAxis: boolean` = true
+- `showYAxis: boolean` = true
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = true
+- `interactiveLegend: boolean` = true
+- `xTickFormatter: (value: unknown) => string`
+- `yTickFormatter: (value: unknown) => string`
+- `yAxisWidth: number | 'auto'` = 'auto'
+- `animate: boolean` = true
+- `className: string`
+
+## ComposedChart (双轴组合图表) — `@glaze/composed-chart`
+
+在同一画布融合柱状、面积与折线并支持左右双 Y 轴的综合分析图表。
+- Install: `npx shadcn@latest add @glaze/composed-chart`
+- Import: `import { ComposedChart } from '@/components/ui/composed-chart'`
+- Registry Deps: @glaze/chart, @glaze/tokens
+
+**ComposedChart Props:**
+- `data: readonly object[]` (required)
+- `xKey: string` (required)
+- `series: ComposedSeries[]` (required)
+- `config: ChartConfig`
+- `tone: TileTone`
+- `height: number | string` = 240
+- `curve: 'monotone' | 'natural' | 'linear'` = 'monotone'
+- `showGrid: boolean` = true
+- `showXAxis: boolean` = true
+- `showYAxis: boolean` = true
+- `showTooltip: boolean` = true
+- `showLegend: boolean` = true
+- `interactiveLegend: boolean` = true
+- `xTickFormatter: (value: unknown) => string`
+- `leftYTickFormatter: (value: unknown) => string`
+- `rightYTickFormatter: (value: unknown) => string`
+- `valueFormatter: (value: number | string, name?: string) => React.ReactNode`
+- `leftYAxisWidth: number | 'auto'` = 'auto'
+- `rightYAxisWidth: number | 'auto'` = 'auto'
+- `animate: boolean` = true
+- `className: string`
+
+## SparkChart (嵌入式微图表) — `@glaze/spark-chart`
+
+专为小格卡片设计的零轴线超轻微趋势图，支持 area / line / bar 三种形态。
+- Install: `npx shadcn@latest add @glaze/spark-chart`
+- Import: `import { SparkChart } from '@/components/ui/spark-chart'`
+- Registry Deps: @glaze/chart, @glaze/tokens
+
+**SparkChart Props:**
+- `data: SparkChartDataItem[]` (required)
+- `variant: 'line' | 'area' | 'bar'` = 'line'
+- `color: string`
+- `hue: Hue`
+- `mutedColor: string`
+- `highlightLast: boolean` = true
+- `curve: 'monotone' | 'natural' | 'linear'` = 'monotone'
+- `strokeWidth: number` = 2.4
+- `height: number | string` = 36
+- `label: string` = '数值'
+- `unit: string`
+- `showTooltip: boolean` = true
+- `valueFormatter: (value: number | string) => React.ReactNode`
+- `tone: TileTone`
+- `animate: boolean` = true
+- `className: string`

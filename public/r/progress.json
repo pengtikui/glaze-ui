@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress",
+  "type": "registry:ui",
+  "title": "Progress (进度条)",
+  "description": "支持常规线性进度条（Progress）与多段彩色占比进度条（SegmentedProgress）。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "overlays"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/progress.tsx",
+      "type": "registry:ui",
+      "content": "import { Progress as BaseProgress } from '@base-ui/react/progress'\nimport { cn } from 'cn'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\n\nexport interface ProgressProps {\n  value: number | null\n  max?: number\n  hue?: Hue | 'ink'\n  variant?: 'linear' | 'ring'\n  height?: 'sm' | 'md' | 'lg'\n  size?: number\n  strokeWidth?: number\n  label?: string\n  showValue?: boolean\n  trackColor?: string\n  barColor?: string\n  className?: string\n}\n\nexport function Progress({\n  value,\n  max = 100,\n  hue = 'periwinkle',\n  variant = 'linear',\n  height = 'md',\n  size = 64,\n  strokeWidth = 7,\n  label,\n  showValue = false,\n  trackColor,\n  barColor,\n  className,\n}: ProgressProps) {\n  const accent =\n    barColor ?? (hue === 'ink' ? '#1B1F27' : HUE_PALETTES[hue][500])\n  const pct = value === null ? 0 : Math.min(100, Math.max(0, (value / max) * 100))\n\n  if (variant === 'ring') {\n    const r = (size - strokeWidth) / 2\n    const circ = 2 * Math.PI * r\n    const offset = circ - (pct / 100) * circ\n\n    return (\n      <BaseProgress.Root\n        value={value}\n        max={max}\n        className={cn('relative inline-flex items-center justify-center', className)}\n        style={{ width: size, height: size }}\n      >\n        <svg width={size} height={size} className=\"-rotate-90\">\n          <circle\n            cx={size / 2}\n            cy={size / 2}\n            r={r}\n            fill=\"none\"\n            stroke={trackColor ?? 'rgba(27,31,39,0.1)'}\n            strokeWidth={strokeWidth}\n          />\n          <circle\n            cx={size / 2}\n            cy={size / 2}\n            r={r}\n            fill=\"none\"\n            stroke={accent}\n            strokeWidth={strokeWidth}\n            strokeLinecap=\"round\"\n            strokeDasharray={circ}\n            strokeDashoffset={offset}\n            className=\"transition-[stroke-dashoffset] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]\"\n          />\n        </svg>\n        {showValue && (\n          <BaseProgress.Value className=\"absolute font-glaze-display text-[13px] font-extrabold tabular-nums\">\n            {() => `${Math.round(pct)}%`}\n          </BaseProgress.Value>\n        )}\n      </BaseProgress.Root>\n    )\n  }\n\n  return (\n    <BaseProgress.Root\n      value={value}\n      max={max}\n      className={cn('flex w-full flex-col gap-1.5', className)}\n    >\n      {(label || showValue) && (\n        <div className=\"flex items-center justify-between text-[13px]\">\n          {label ? (\n            <BaseProgress.Label className=\"font-semibold text-[#1B1F27]\">\n              {label}\n            </BaseProgress.Label>\n          ) : (\n            <span />\n          )}\n          {showValue && (\n            <BaseProgress.Value className=\"font-glaze-display font-bold text-[#1B1F27] tabular-nums\">\n              {() => (value === null ? '进行中' : `${Math.round(pct)}%`)}\n            </BaseProgress.Value>\n          )}\n        </div>\n      )}\n      <BaseProgress.Track\n        className={cn(\n          'w-full overflow-hidden rounded-full',\n          height === 'sm' && 'h-1.5',\n          height === 'md' && 'h-2.5',\n          height === 'lg' && 'h-3.5',\n        )}\n        style={{ backgroundColor: trackColor ?? '#ECECF4' }}\n      >\n        <BaseProgress.Indicator\n          className=\"h-full rounded-full transition-[width] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]\"\n          style={{ backgroundColor: accent }}\n        />\n      </BaseProgress.Track>\n    </BaseProgress.Root>\n  )\n}\n\nexport function SegmentedProgress({\n  segments,\n  height = 10,\n  gap = 4,\n  className,\n}: {\n  segments: { value?: number; percent?: number; color: string; label?: string }[]\n  height?: number | 'sm' | 'md' | 'lg'\n  gap?: number\n  className?: string\n}) {\n  const total = segments.reduce((sum, s) => sum + (s.percent ?? s.value ?? 0), 0) || 100\n  const px = height === 'sm' ? 6 : height === 'md' ? 10 : height === 'lg' ? 14 : height\n  return (\n    <div\n      className={cn('flex w-full overflow-hidden rounded-full', className)}\n      style={{ height: px, gap }}\n    >\n      {segments.map((seg, i) => {\n        const w = ((seg.percent ?? seg.value ?? 0) / total) * 100\n        return (\n          <div\n            key={i}\n            title={seg.label}\n            className=\"h-full rounded-full transition-[width] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]\"\n            style={{ width: `${w}%`, backgroundColor: seg.color }}\n          />\n        )\n      })}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

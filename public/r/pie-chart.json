@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pie-chart",
+  "type": "registry:ui",
+  "title": "PieChart (饼图与环形图)",
+  "description": "内置 PieChart 与中心指标卡槽 DonutChart，自动应用 Glaze 分类色板与悬停提示。",
+  "dependencies": [
+    "cn",
+    "recharts"
+  ],
+  "registryDependencies": [
+    "@glaze/chart",
+    "@glaze/style",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "charts"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/pie-chart.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport {\n  Pie,\n  PieChart as RechartsPieChart,\n} from 'recharts'\nimport { cn } from 'cn'\nimport { DATAVIZ_PALETTES, HUE_PALETTES, type Hue, type TileTone } from '@/lib/tokens'\nimport {\n  CHART_ANIMATION_DURATION,\n  CHART_ANIMATION_EASING,\n  ChartContainer,\n  ChartLegend,\n  ChartTooltip,\n  ChartTooltipContent,\n  useChartTheme,\n  type ChartConfig,\n} from '@/components/ui/chart'\n\nexport interface PieChartItem {\n  name: string\n  value: number\n  color?: string\n  hue?: Hue\n  display?: string\n}\n\nexport interface PieChartProps {\n  data: PieChartItem[]\n  variant?: 'donut' | 'pie'\n  tone?: TileTone\n  height?: number | string\n  innerRadius?: number | string\n  outerRadius?: number | string\n  paddingAngle?: number\n  cornerRadius?: number\n  centerValue?: React.ReactNode\n  centerLabel?: React.ReactNode\n  showTooltip?: boolean\n  showLegend?: boolean\n  valueFormatter?: (value: number | string, name?: string) => React.ReactNode\n  animate?: boolean\n  className?: string\n}\n\nexport function PieChart({\n  data,\n  variant = 'donut',\n  tone,\n  height = 220,\n  innerRadius,\n  outerRadius = '88%',\n  paddingAngle,\n  cornerRadius,\n  centerValue,\n  centerLabel,\n  showTooltip = true,\n  showLegend = false,\n  valueFormatter,\n  animate = true,\n  className,\n}: PieChartProps) {\n  const theme = useChartTheme(tone)\n  const isDonut = variant === 'donut'\n\n  const resolvedData = React.useMemo(\n    () =>\n      data.map((item, idx) => ({\n        ...item,\n        fill:\n          item.color ??\n          (item.hue ? HUE_PALETTES[item.hue][500] : undefined) ??\n          DATAVIZ_PALETTES.categorical[idx % DATAVIZ_PALETTES.categorical.length],\n      })),\n    [data],\n  )\n\n  const config = React.useMemo<ChartConfig>(() => {\n    const out: ChartConfig = {}\n    resolvedData.forEach((d) => {\n      out[d.name] = { label: d.name, color: d.fill }\n    })\n    return out\n  }, [resolvedData])\n\n  return (\n    <div className={cn('flex w-full min-w-0 flex-col gap-3', className)}>\n      <div className=\"relative w-full\" style={{ height }}>\n        <ChartContainer config={config} tone={tone} height=\"100%\">\n          <RechartsPieChart>\n            {showTooltip && (\n              <ChartTooltip\n                content={(tooltipProps) => (\n                  <ChartTooltipContent\n                    active={tooltipProps.active}\n                    payload={tooltipProps.payload}\n                    label={tooltipProps.label}\n                    hideLabel\n                    valueFormatter={valueFormatter}\n                  />\n                )}\n              />\n            )}\n            <Pie\n              data={resolvedData}\n              dataKey=\"value\"\n              nameKey=\"name\"\n              cx=\"50%\"\n              cy=\"50%\"\n              startAngle={90}\n              endAngle={-270}\n              innerRadius={innerRadius ?? (isDonut ? '65%' : 0)}\n              outerRadius={outerRadius}\n              paddingAngle={paddingAngle ?? (isDonut ? 3 : 1.5)}\n              cornerRadius={cornerRadius ?? (isDonut ? 6 : 3)}\n              stroke=\"none\"\n              isAnimationActive={animate}\n              animationDuration={CHART_ANIMATION_DURATION}\n              animationEasing={CHART_ANIMATION_EASING}\n            />\n          </RechartsPieChart>\n        </ChartContainer>\n\n        {isDonut && (centerValue !== undefined || centerLabel !== undefined) && (\n          <div className=\"pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center\">\n            {centerValue !== undefined && (\n              <span\n                className=\"font-glaze-display text-[28px] leading-8 font-extrabold tracking-[-0.02em]\"\n                style={{ color: theme.tile.ink }}\n              >\n                {centerValue}\n              </span>\n            )}\n            {centerLabel !== undefined && (\n              <span className=\"mt-0.5 text-[12px] font-medium\" style={{ color: theme.axisColor }}>\n                {centerLabel}\n              </span>\n            )}\n          </div>\n        )}\n      </div>\n\n      {showLegend && (\n        <ChartLegend\n          tone={tone}\n          align=\"center\"\n          items={resolvedData.map((d) => ({\n            key: d.name,\n            label: d.name,\n            color: d.fill,\n          }))}\n        />\n      )}\n    </div>\n  )\n}\n\nexport function DonutChart(props: Omit<PieChartProps, 'variant'>) {\n  return <PieChart {...props} variant=\"donut\" />\n}\n"
+    }
+  ]
+}

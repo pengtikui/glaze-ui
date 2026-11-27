@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "notification-digest-card",
+  "type": "registry:block",
+  "title": "W24 消息摘要通知卡 (NotificationDigestCard)",
+  "description": "消息摘要通知卡（W24 · 尺寸 W）— 未读数 · 分类标签 · 最新预览",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/count-badge",
+    "@glaze/hue-tag",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "lists",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/notification-digest-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/notification-digest-card.tsx",
+      "content": "import { Bell } from '@phosphor-icons/react'\nimport { CountBadge } from '@/components/ui/count-badge'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport function NotificationDigestCard({\n  title = '消息摘要',\n  unreadCount,\n  categories,\n  latest,\n  tone = 'white',\n}: {\n  title?: string\n  unreadCount: number\n  categories: { label: string; count: number; hue: Hue }[]\n  latest: string\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <div className=\"flex items-center gap-2\">\n          <Bell size={18} weight=\"duotone\" className=\"text-[#7B80EA]\" />\n          <span className=\"font-glaze-display text-[16px] font-extrabold\">{title}</span>\n        </div>\n        <CountBadge count={unreadCount} hue=\"coral\" />\n      </div>\n      <div className=\"flex flex-wrap gap-2\">\n        {categories.map((c) => (\n          <HueTag key={c.label} hue={c.hue} size=\"sm\">\n            {c.label} · {c.count}\n          </HueTag>\n        ))}\n      </div>\n      <p className=\"truncate rounded-[12px] bg-[#F6F7F9] px-3 py-2 text-[12px] text-[#5B6170]\">\n        最新：{latest}\n      </p>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

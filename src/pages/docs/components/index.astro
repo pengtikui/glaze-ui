@@ -1,0 +1,14 @@
+---
+import DocsLayout from '@/layouts/DocsLayout.astro'
+import { COMPONENT_CATEGORIES } from '@/docs/data/catalog'
+import { ComponentsIndexIsland } from '@/docs/islands/PageIslands'
+
+const toc = COMPONENT_CATEGORIES.map((c) => ({
+  id: `cat-${c.id}`,
+  label: c.title,
+}))
+---
+
+<DocsLayout title="组件目录 · Glaze UI" description="58 个 Base UI 1.9 与 Recharts v3 组件" toc={toc}>
+  <ComponentsIndexIsland client:load />
+</DocsLayout>

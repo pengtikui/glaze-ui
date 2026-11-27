@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator",
+  "type": "registry:ui",
+  "title": "Separator (分隔线)",
+  "description": "语义化水平或垂直分割线（role=\"separator\"），支持常规与柔浅色调。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "navigation"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/separator.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Separator as BaseSeparator } from '@base-ui/react/separator'\nimport { cn } from 'cn'\n\nexport function Separator({\n  orientation = 'horizontal',\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseSeparator>) {\n  return (\n    <BaseSeparator\n      orientation={orientation}\n      className={cn(\n        'shrink-0 bg-[#E8EBF0]',\n        orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n"
+    }
+  ]
+}

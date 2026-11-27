@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scatter-bubble-card",
+  "type": "registry:block",
+  "title": "L16 散点气泡分布大卡 (ScatterBubbleCard)",
+  "description": "散点气泡分布大卡（L16 · 尺寸 L）— 多组 X/Y 散点 · Z 轴气泡映射",
+  "registryDependencies": [
+    "@glaze/hue-tag",
+    "@glaze/scatter-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-l"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/scatter-bubble-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/scatter-bubble-card.tsx",
+      "content": "import { HueTag } from '@/components/ui/hue-tag'\nimport { ScatterChart, type ScatterSeries } from '@/components/ui/scatter-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface ScatterBubbleCardProps {\n  title: string\n  subtitle?: string\n  badge?: string\n  badgeHue?: Hue\n  series: ScatterSeries[]\n  xKey: string\n  yKey: string\n  zKey?: string\n  xLabel?: string\n  yLabel?: string\n  xUnit?: string\n  yUnit?: string\n  tone?: TileTone\n}\n\nexport function ScatterBubbleCard({\n  title,\n  subtitle,\n  badge,\n  badgeHue = 'aqua',\n  series,\n  xKey,\n  yKey,\n  zKey,\n  xLabel,\n  yLabel,\n  xUnit,\n  yUnit,\n  tone = 'white',\n}: ScatterBubbleCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex items-start justify-between gap-2\">\n        <div className=\"min-w-0\">\n          <div className=\"truncate font-glaze-display text-[20px] font-extrabold\">{title}</div>\n          {subtitle && (\n            <div className=\"mt-0.5 truncate text-[13px]\" style={{ color: theme.soft }}>\n              {subtitle}\n            </div>\n          )}\n        </div>\n        {badge && (\n          <HueTag hue={badgeHue} size=\"sm\" className=\"shrink-0\">\n            {badge}\n          </HueTag>\n        )}\n      </div>\n      <div className=\"min-h-68 flex-1 w-full\">\n        <ScatterChart\n          series={series}\n          xKey={xKey}\n          yKey={yKey}\n          zKey={zKey}\n          xLabel={xLabel}\n          yLabel={yLabel}\n          xUnit={xUnit}\n          yUnit={yUnit}\n          tone={tone}\n          height={270}\n        />\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

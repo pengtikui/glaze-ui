@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "floor-plan-sensor-card",
+  "type": "registry:block",
+  "title": "L10 房间传感器矩阵 (FloorPlanSensorCard)",
+  "description": "房间传感器矩阵（L10 · 尺寸 L）— 4 房间温湿度与灯光状态",
+  "registryDependencies": [
+    "@glaze/hue-tag",
+    "@glaze/status-dot",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "monitoring",
+    "size-l"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/floor-plan-sensor-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/floor-plan-sensor-card.tsx",
+      "content": "import { HueTag } from '@/components/ui/hue-tag'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function FloorPlanSensorCard({\n  title,\n  rooms,\n  tone = 'aqua',\n}: {\n  title: string\n  rooms: { name: string; temp: string; humidity: string; lightOn: boolean; hue: Hue }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-4\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n        <span className=\"text-[12px] font-semibold\" style={{ color: theme.soft }}>\n          全屋 {rooms.length} 区域传感器\n        </span>\n      </div>\n      <div className=\"grid flex-1 grid-cols-2 gap-3\">\n        {rooms.slice(0, 4).map((r) => (\n          <div\n            key={r.name}\n            className=\"flex min-w-0 flex-col justify-between rounded-overlay p-4\"\n            style={{\n              backgroundColor: theme.dark\n                ? 'rgba(255,255,255,0.1)'\n                : theme.bg === '#FFFFFF'\n                  ? '#F6F7F9'\n                  : 'rgba(255,255,255,0.75)',\n              color: theme.ink,\n            }}\n          >\n            <div className=\"flex items-center justify-between gap-2\">\n              <span className=\"truncate font-bold\">{r.name}</span>\n              <StatusDot status={r.lightOn ? 'normal' : 'disabled'} />\n            </div>\n            <div className=\"font-glaze-display text-[30px] leading-none font-extrabold whitespace-nowrap\">\n              {r.temp}\n            </div>\n            <div className=\"flex items-center justify-between gap-2 text-[12px]\" style={{ color: theme.soft }}>\n              <span className=\"whitespace-nowrap\">湿度 {r.humidity}</span>\n              <HueTag hue={r.hue} size=\"sm\" className=\"shrink-0\">\n                {r.lightOn ? '灯光开' : '待机'}\n              </HueTag>\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

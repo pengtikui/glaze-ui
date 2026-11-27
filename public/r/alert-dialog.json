@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert-dialog",
+  "type": "registry:ui",
+  "title": "AlertDialog (高风险确认框)",
+  "description": "用于删除、重置等不可逆操作的强制确认对话框，禁用点击遮罩意外关闭。",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/style"
+  ],
+  "categories": [
+    "overlays"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/alert-dialog.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog'\nimport { Button } from '@/components/ui/button'\n\nexport interface AlertDialogProps {\n  trigger?: React.ReactElement\n  open?: boolean\n  onOpenChange?: (open: boolean) => void\n  title: string\n  description: string\n  confirmLabel?: string\n  cancelLabel?: string\n  danger?: boolean\n  onConfirm?: () => void\n}\n\nexport function AlertDialog({\n  trigger,\n  open,\n  onOpenChange,\n  title,\n  description,\n  confirmLabel = '确认执行',\n  cancelLabel = '取消',\n  danger = true,\n  onConfirm,\n}: AlertDialogProps) {\n  return (\n    <BaseAlertDialog.Root open={open} onOpenChange={onOpenChange}>\n      {trigger && <BaseAlertDialog.Trigger render={trigger} />}\n      <BaseAlertDialog.Portal>\n        <BaseAlertDialog.Backdrop className=\"glaze-dialog-backdrop fixed inset-0 z-50 bg-[#1B1F27]/38\" />\n        <BaseAlertDialog.Popup className=\"glaze-dialog-popup fixed top-1/2 left-1/2 z-50 w-[calc(100vw-32px)] max-w-105 -translate-x-1/2 -translate-y-1/2 rounded-tile bg-white p-6 shadow-[0_24px_64px_rgba(18,58,92,0.18)] outline-none\">\n          <BaseAlertDialog.Title className=\"font-glaze-display text-[19px] font-extrabold text-[#1B1F27]\">\n            {title}\n          </BaseAlertDialog.Title>\n          <BaseAlertDialog.Description className=\"mt-2 text-[14px] leading-relaxed text-[#5B6170]\">\n            {description}\n          </BaseAlertDialog.Description>\n          <div className=\"mt-6 flex items-center justify-end gap-2\">\n            <BaseAlertDialog.Close\n              render={<Button variant=\"secondary\">{cancelLabel}</Button>}\n            />\n            <BaseAlertDialog.Close\n              render={\n                <Button\n                  variant={danger ? 'danger' : 'primary'}\n                  onClick={onConfirm}\n                >\n                  {confirmLabel}\n                </Button>\n              }\n            />\n          </div>\n        </BaseAlertDialog.Popup>\n      </BaseAlertDialog.Portal>\n    </BaseAlertDialog.Root>\n  )\n}\n"
+    }
+  ]
+}

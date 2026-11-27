@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "donut-chart-card",
+  "type": "registry:block",
+  "title": "L2 环形占比图 (DonutChartCard)",
+  "description": "环形占比图（L2 · 尺寸 L）— 多段圆环 · 中心汇总 · 图例",
+  "registryDependencies": [
+    "@glaze/pie-chart",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-l"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/donut-chart-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/donut-chart-card.tsx",
+      "content": "import { PieChart } from '@/components/ui/pie-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface DonutSegment {\n  name: string\n  value: number\n  color: string\n  display?: string\n}\n\nexport interface DonutChartCardProps {\n  title: string\n  subtitle?: string\n  totalLabel?: string\n  totalValue?: string\n  segments: DonutSegment[]\n  tone?: TileTone\n}\n\nexport function DonutChartCard({\n  title,\n  subtitle,\n  totalLabel = '合计',\n  totalValue,\n  segments,\n  tone = 'white',\n}: DonutChartCardProps) {\n  const theme = TILE_THEMES[tone]\n  const total = segments.reduce((s, x) => s + x.value, 0)\n  const arcs = segments.map((seg) => {\n    const frac = total > 0 ? seg.value / total : 0\n    return {\n      ...seg,\n      pct: Math.round(frac * 100),\n    }\n  })\n\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-start gap-5\">\n      <div className=\"flex items-baseline justify-between gap-2\">\n        <span className=\"text-[17px] font-bold\">{title}</span>\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          {subtitle ?? `${segments.length} 类`}\n        </span>\n      </div>\n      <div className=\"flex-1 flex flex-col sm:flex-row items-center gap-7 sm:gap-9\">\n        <div className=\"w-45 shrink-0\">\n          <PieChart\n            variant=\"donut\"\n            data={segments}\n            tone={tone}\n            height={180}\n            innerRadius=\"64%\"\n            outerRadius=\"92%\"\n            paddingAngle={3}\n            cornerRadius={6}\n            centerValue={totalValue ?? total.toLocaleString('en-US')}\n            centerLabel={totalLabel}\n            valueFormatter={(val, name) => {\n              const found = arcs.find((a) => a.name === name)\n              return found ? `${found.display ?? val} (${found.pct}%)` : val\n            }}\n          />\n        </div>\n\n        <div className=\"min-w-0 flex-1 w-full flex flex-col\">\n          {arcs.map((g, i) => (\n            <div\n              key={i}\n              className=\"flex items-center gap-2.5 min-h-11 text-[14px]\"\n              style={{ borderTop: i === 0 ? 'none' : `1px solid ${theme.divider}` }}\n            >\n              <span\n                className=\"w-2.5 h-2.5 rounded-full shrink-0\"\n                style={{ backgroundColor: g.color }}\n              />\n              <span className=\"min-w-0 flex-1 truncate\">{g.name}</span>\n              <span className=\"shrink-0 font-semibold whitespace-nowrap\">\n                {g.display ?? g.value.toLocaleString('en-US')}\n              </span>\n              <span className=\"w-11 shrink-0 text-right whitespace-nowrap\" style={{ color: theme.soft }}>\n                {g.pct}%\n              </span>\n            </div>\n          ))}\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

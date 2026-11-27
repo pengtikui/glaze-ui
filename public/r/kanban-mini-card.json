@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kanban-mini-card",
+  "type": "registry:block",
+  "title": "L7 双列迷你看板 (KanbanMiniCard)",
+  "description": "双列迷你看板（L7 · 尺寸 L）— 泳道计数 · 任务卡片组",
+  "registryDependencies": [
+    "@glaze/hue-tag",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-l"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/kanban-mini-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/kanban-mini-card.tsx",
+      "content": "import { HueTag } from '@/components/ui/hue-tag'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport function KanbanMiniCard({\n  title,\n  columns,\n  tone = 'white',\n}: {\n  title: string\n  columns: {\n    name: string\n    hue: Hue\n    cards: { title: string; tag: string; owner: string }[]\n  }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n      <div className=\"grid flex-1 grid-cols-2 gap-3\">\n        {columns.slice(0, 2).map((col) => (\n          <div key={col.name} className=\"flex flex-col gap-2.5 rounded-overlay bg-[#F6F7F9] p-3.5\">\n            <div className=\"flex items-center justify-between\">\n              <HueTag hue={col.hue} size=\"sm\">\n                {col.name}\n              </HueTag>\n              <span className=\"font-glaze-mono text-[11px] font-bold text-[#8A90A0]\">\n                {col.cards.length}\n              </span>\n            </div>\n            <div className=\"flex flex-col gap-2\">\n              {col.cards.map((c) => (\n                <div key={c.title} className=\"rounded-control bg-white p-3\">\n                  <div className=\"text-[13px] font-bold text-[#1B1F27]\">{c.title}</div>\n                  <div className=\"mt-2 flex items-center justify-between text-[11px] text-[#6B7280]\">\n                    <span>{c.tag}</span>\n                    <span className=\"font-semibold text-[#1B1F27]\">{c.owner}</span>\n                  </div>\n                </div>\n              ))}\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar",
+  "type": "registry:ui",
+  "title": "Avatar (头像与头像组)",
+  "description": "支持图片加载降级文字缩写、9 组柔彩底色与叠放人数溢出提示的 AvatarGroup。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "overlays"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/avatar.tsx",
+      "type": "registry:ui",
+      "content": "import { Avatar as BaseAvatar } from '@base-ui/react/avatar'\nimport { cn } from 'cn'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\n\nexport interface AvatarProps {\n  src?: string\n  alt?: string\n  fallback: string\n  hue?: Hue\n  size?: 'xs' | 'sm' | 'md' | 'lg'\n  ringWidth?: number\n  ringColor?: string\n  className?: string\n}\n\nconst AVATAR_SIZES = {\n  xs: 'h-6 w-6 text-[10px]',\n  sm: 'h-8 w-8 text-[12px]',\n  md: 'h-10 w-10 text-[14px]',\n  lg: 'h-12 w-12 text-[16px]',\n}\n\nexport function Avatar({\n  src,\n  alt = '',\n  fallback,\n  hue = 'periwinkle',\n  size = 'md',\n  ringWidth = 0,\n  ringColor = '#FFFFFF',\n  className,\n}: AvatarProps) {\n  const palette = HUE_PALETTES[hue]\n  return (\n    <BaseAvatar.Root\n      className={cn(\n        'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-bold select-none',\n        AVATAR_SIZES[size],\n        className,\n      )}\n      style={{\n        backgroundColor: palette[100],\n        color: palette[700],\n        boxShadow: ringWidth > 0 ? `0 0 0 ${ringWidth}px ${ringColor}` : undefined,\n      }}\n    >\n      {src && (\n        <BaseAvatar.Image\n          src={src}\n          alt={alt}\n          className=\"h-full w-full object-cover\"\n        />\n      )}\n      <BaseAvatar.Fallback className=\"flex h-full w-full items-center justify-center\">\n        {fallback}\n      </BaseAvatar.Fallback>\n    </BaseAvatar.Root>\n  )\n}\n\nexport interface AvatarGroupItem {\n  label: string\n  hue: Hue\n  src?: string\n}\n\nexport function AvatarGroup({\n  items,\n  size = 'sm',\n  ringColor = '#FFFFFF',\n  overflowBg = '#F2F3F5',\n  overflowFg = '#5B6170',\n  max,\n  className,\n}: {\n  items: AvatarGroupItem[]\n  size?: 'xs' | 'sm' | 'md' | 'lg'\n  ringColor?: string\n  overflowBg?: string\n  overflowFg?: string\n  max?: number\n  className?: string\n}) {\n  const visible = max ? items.slice(0, max) : items\n  const extra = max && items.length > max ? items.length - max : 0\n\n  return (\n    <div className={cn('flex items-center -space-x-2', className)}>\n      {visible.map((item, idx) => (\n        <Avatar\n          key={`${item.label}-${idx}`}\n          src={item.src}\n          fallback={item.label}\n          hue={item.hue}\n          size={size}\n          ringWidth={2}\n          ringColor={ringColor}\n        />\n      ))}\n      {extra > 0 && (\n        <span\n          className={cn(\n            'relative inline-flex shrink-0 items-center justify-center rounded-full font-bold',\n            AVATAR_SIZES[size],\n          )}\n          style={{\n            backgroundColor: overflowBg,\n            color: overflowFg,\n            boxShadow: `0 0 0 2px ${ringColor}`,\n          }}\n        >\n          +{extra}\n        </span>\n      )}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

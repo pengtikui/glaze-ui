@@ -1,0 +1,10 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
+import { BlocksIndexIsland } from '@/docs/islands/PageIslands'
+---
+
+<BaseLayout title="业务卡片 (112) · Glaze UI" description="112 张可独立安装的 Glaze 业务卡片模块">
+  <SiteHeaderIsland pathname="/blocks" client:load />
+  <BlocksIndexIsland client:only="react" />
+</BaseLayout>

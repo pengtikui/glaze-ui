@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "media-player-card",
+  "type": "registry:block",
+  "title": "W9 宽格媒体播放器 (MediaPlayerCard)",
+  "description": "宽格媒体播放器（W9 · 尺寸 W）— 封面 · 播停切歌 · 进度条",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/motion",
+    "@glaze/progress",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "controls",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/media-player-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/media-player-card.tsx",
+      "content": "import * as React from 'react'\nimport { MusicNotes, Pause, Play, SkipBack, SkipForward } from '@phosphor-icons/react'\nimport { Progress } from '@/components/ui/progress'\nimport { Tile } from '@/components/ui/tile'\nimport { PRESS_CLASS } from '@/lib/motion'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function MediaPlayerCard({\n  title,\n  artist,\n  duration = '03:42',\n  progress = 64,\n  tone = 'lilac-dark',\n}: {\n  title: string\n  artist: string\n  duration?: string\n  progress?: number\n  tone?: TileTone\n}) {\n  const [playing, setPlaying] = React.useState(true)\n  const theme = TILE_THEMES[tone]\n  const ctrlBg = theme.dark ? 'rgba(255,255,255,0.14)' : theme.bg === '#FFFFFF' ? '#F2F3F5' : 'rgba(255,255,255,0.72)'\n  const playBg = theme.dark ? '#FFFFFF' : theme.ink\n  const playFg = theme.dark ? '#1B1F27' : '#FFFFFF'\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between gap-4\">\n        <div className=\"flex min-w-0 flex-1 items-center gap-3.5\">\n          <div\n            className=\"flex h-12 w-12 shrink-0 items-center justify-center rounded-control\"\n            style={{ backgroundColor: theme.track }}\n          >\n            <MusicNotes size={22} weight=\"fill\" style={{ color: theme.accent }} />\n          </div>\n          <div className=\"min-w-0 flex-1\">\n            <div className=\"truncate font-glaze-display text-[17px] font-extrabold\">{title}</div>\n            <div className=\"truncate text-[12px]\" style={{ color: theme.soft }}>\n              {artist}\n            </div>\n          </div>\n        </div>\n        <div className=\"flex shrink-0 items-center gap-1.5\">\n          <button\n            type=\"button\"\n            aria-label=\"上一首\"\n            className={`inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full hover:brightness-95 ${PRESS_CLASS}`}\n            style={{ backgroundColor: ctrlBg, color: theme.ink }}\n          >\n            <SkipBack size={14} weight=\"fill\" />\n          </button>\n          <button\n            type=\"button\"\n            aria-label={playing ? '暂停' : '播放'}\n            onClick={() => setPlaying((p) => !p)}\n            className={`inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full hover:opacity-90 ${PRESS_CLASS}`}\n            style={{ backgroundColor: playBg, color: playFg }}\n          >\n            {playing ? <Pause size={15} weight=\"fill\" /> : <Play size={15} weight=\"fill\" />}\n          </button>\n          <button\n            type=\"button\"\n            aria-label=\"下一首\"\n            className={`inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full hover:brightness-95 ${PRESS_CLASS}`}\n            style={{ backgroundColor: ctrlBg, color: theme.ink }}\n          >\n            <SkipForward size={14} weight=\"fill\" />\n          </button>\n        </div>\n      </div>\n      <div className=\"flex flex-col gap-1.5\">\n        <Progress value={progress} barColor={theme.accent} trackColor={theme.track} />\n        <div className=\"flex justify-between font-glaze-mono text-[11px]\" style={{ color: theme.soft }}>\n          <span>02:21</span>\n          <span>{duration}</span>\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

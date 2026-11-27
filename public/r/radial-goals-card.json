@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radial-goals-card",
+  "type": "registry:block",
+  "title": "T15 多环目标达成竖卡 (RadialGoalsCard)",
+  "description": "多环目标达成竖卡（T15 · 尺寸 T）— 3 环径向进度 · 目标明细行",
+  "registryDependencies": [
+    "@glaze/radial-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/radial-goals-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/radial-goals-card.tsx",
+      "content": "import { RadialChart, type RadialChartItem } from '@/components/ui/radial-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface RadialGoalItem extends RadialChartItem {\n  detail?: string\n}\n\nexport interface RadialGoalsCardProps {\n  title: string\n  subtitle?: string\n  centerValue: string\n  centerLabel?: string\n  goals: RadialGoalItem[]\n  tone?: TileTone\n}\n\nexport function RadialGoalsCard({\n  title,\n  subtitle = '季度 OKR',\n  centerValue,\n  centerLabel = '总达成率',\n  goals,\n  tone = 'white',\n}: RadialGoalsCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex items-baseline justify-between gap-2\">\n        <span className=\"truncate text-[17px] font-bold\">{title}</span>\n        <span className=\"shrink-0 text-[12px]\" style={{ color: theme.soft }}>\n          {subtitle}\n        </span>\n      </div>\n      <RadialChart\n        data={goals}\n        tone={tone}\n        height={196}\n        innerRadius=\"36%\"\n        outerRadius=\"94%\"\n        barSize={12}\n        centerValue={centerValue}\n        centerLabel={centerLabel}\n      />\n      <div className=\"flex flex-col gap-2.5\">\n        {goals.map((g, idx) => {\n          const c = g.color ?? (g.hue ? HUE_PALETTES[g.hue][500] : theme.accent)\n          return (\n            <div\n              key={g.name}\n              className=\"flex items-center justify-between gap-2 pt-2 text-[13px]\"\n              style={{ borderTop: idx === 0 ? 'none' : `1px solid ${theme.divider}` }}\n            >\n              <div className=\"flex min-w-0 items-center gap-2\">\n                <span className=\"h-2.5 w-2.5 shrink-0 rounded-full\" style={{ backgroundColor: c }} />\n                <span className=\"truncate font-semibold\">{g.name}</span>\n              </div>\n              <div className=\"flex shrink-0 items-baseline gap-1.5 whitespace-nowrap\">\n                {g.detail && (\n                  <span className=\"text-[11px]\" style={{ color: theme.soft }}>\n                    {g.detail}\n                  </span>\n                )}\n                <span className=\"font-glaze-display font-extrabold\">{g.value}%</span>\n              </div>\n            </div>\n          )\n        })}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

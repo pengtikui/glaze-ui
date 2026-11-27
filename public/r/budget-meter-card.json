@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "budget-meter-card",
+  "type": "registry:block",
+  "title": "W17 月度预算计量卡 (BudgetMeterCard)",
+  "description": "月度预算计量卡（W17 · 尺寸 W）— 自动语义 Meter · 分类标签",
+  "registryDependencies": [
+    "@glaze/hue-tag",
+    "@glaze/meter",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/budget-meter-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/budget-meter-card.tsx",
+      "content": "import { HueTag } from '@/components/ui/hue-tag'\nimport { Meter } from '@/components/ui/meter'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function BudgetMeterCard({\n  label,\n  spent,\n  budget,\n  categories,\n  tone = 'white',\n}: {\n  label: string\n  spent: number\n  budget: number\n  categories: { name: string; amount: string; hue: Hue }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-baseline justify-between\">\n        <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <div className=\"font-glaze-display text-[22px] font-extrabold\">\n          ¥{spent.toLocaleString()}{' '}\n          <span className=\"text-[13px] font-medium text-[#8A90A0]\">\n            / ¥{budget.toLocaleString()}\n          </span>\n        </div>\n      </div>\n      <Meter value={spent} max={budget} valueLabel={`${Math.round((spent / budget) * 100)}% 已用`} />\n      <div className=\"flex flex-wrap gap-2\">\n        {categories.map((c) => (\n          <HueTag key={c.name} hue={c.hue} size=\"sm\">\n            {c.name} {c.amount}\n          </HueTag>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

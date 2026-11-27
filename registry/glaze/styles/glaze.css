@@ -1,0 +1,483 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Plus Jakarta Sans", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-tile: 28px;
+  --radius-overlay: 20px;
+  --radius-inner: 18px;
+  --radius-control: 14px;
+  --radius-item: 12px;
+  --radius-icon: 10px;
+}
+
+:root {
+  /* Neutrals */
+  --glaze-canvas: #F2F4F8;
+  --glaze-n0: #FFFFFF;
+  --glaze-n25: #F6F7F9;
+  --glaze-n50: #F2F3F5;
+  --glaze-n100: #E8EBF0;
+  --glaze-n150: #EEF0F3;
+  --glaze-n300: #CDD3DD;
+  --glaze-n500: #8A90A0;
+  --glaze-n600: #6B7280;
+  --glaze-n700: #5B6170;
+  --glaze-n900: #1B1F27;
+
+  /* Sky */
+  --glaze-sky-50: #EEF7FD;
+  --glaze-sky-100: #DDF0FB;
+  --glaze-sky-300: #A9D6F3;
+  --glaze-sky-500: #4A9BD8;
+  --glaze-sky-700: #24557F;
+  --glaze-sky-900: #123A5C;
+
+  /* Mint */
+  --glaze-mint-50: #F1FAEC;
+  --glaze-mint-100: #E2F5DA;
+  --glaze-mint-300: #B2DE9F;
+  --glaze-mint-500: #49A851;
+  --glaze-mint-700: #2F6B28;
+  --glaze-mint-900: #173F12;
+
+  /* Peach */
+  --glaze-peach-50: #FEF6EA;
+  --glaze-peach-100: #FBEBD4;
+  --glaze-peach-300: #F5C995;
+  --glaze-peach-500: #E3A33B;
+  --glaze-peach-700: #8A4B12;
+  --glaze-peach-900: #4D2306;
+
+  /* Lilac */
+  --glaze-lilac-50: #FAF1FB;
+  --glaze-lilac-100: #F4E3F6;
+  --glaze-lilac-300: #DDB4E2;
+  --glaze-lilac-500: #A970D6;
+  --glaze-lilac-700: #6A2D70;
+  --glaze-lilac-900: #42104A;
+
+  /* Rose */
+  --glaze-rose-50: #FDF1F4;
+  --glaze-rose-100: #FBE3E8;
+  --glaze-rose-300: #F2AEBE;
+  --glaze-rose-500: #E0607E;
+  --glaze-rose-700: #8C2440;
+  --glaze-rose-900: #561228;
+
+  /* Lemon */
+  --glaze-lemon-50: #FEFBEA;
+  --glaze-lemon-100: #FBF3C9;
+  --glaze-lemon-300: #F2DE7C;
+  --glaze-lemon-500: #D4B21E;
+  --glaze-lemon-700: #6E5A06;
+  --glaze-lemon-900: #3E3200;
+
+  /* Aqua */
+  --glaze-aqua-50: #EDF9F8;
+  --glaze-aqua-100: #D5F2EF;
+  --glaze-aqua-300: #93DAD3;
+  --glaze-aqua-500: #2FA79B;
+  --glaze-aqua-700: #17625B;
+  --glaze-aqua-900: #0B3D38;
+
+  /* Periwinkle */
+  --glaze-periwinkle-50: #F3F4FE;
+  --glaze-periwinkle-100: #E4E6FD;
+  --glaze-periwinkle-300: #B5BAF6;
+  --glaze-periwinkle-500: #7B80EA;
+  --glaze-periwinkle-700: #4A4FB8;
+  --glaze-periwinkle-900: #262B7A;
+
+  /* Coral */
+  --glaze-coral-50: #FEF2EE;
+  --glaze-coral-100: #FDE5DC;
+  --glaze-coral-300: #F7B39C;
+  --glaze-coral-500: #E5603B;
+  --glaze-coral-700: #A6360F;
+  --glaze-coral-900: #5E1E0A;
+
+  /* Elevation */
+  --glaze-shadow-subtle: 0 1px 2px rgba(16, 24, 40, 0.08);
+  --glaze-shadow-overlay: 0 10px 28px rgba(18, 58, 92, 0.1), 0 1px 4px rgba(18, 58, 92, 0.05);
+
+  /* Motion Tiers (CSS-first, GPU-composited) */
+  --glaze-dur-exit: 120ms;
+  --glaze-dur-fast: 150ms;
+  --glaze-dur-base: 200ms;
+  --glaze-dur-modal-exit: 150ms;
+  --glaze-dur-drawer-in: 300ms;
+  --glaze-dur-drawer-out: 220ms;
+  --glaze-dur-toast: 360ms;
+  --glaze-ease-crisp: cubic-bezier(0.2, 0, 0, 1);
+  --glaze-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--glaze-canvas);
+  color: var(--glaze-n900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Base UI Portal Root Isolation */
+#root {
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+/* Glaze Grid System — Artboard 02 Spec */
+.glaze-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: minmax(200px, auto);
+  grid-auto-flow: row dense;
+  gap: 16px;
+}
+
+.glaze-size-s {
+  grid-column: span 1;
+  grid-row: span 1;
+  min-height: 200px;
+}
+.glaze-size-w {
+  grid-column: span 2;
+  grid-row: span 1;
+  min-height: 200px;
+}
+.glaze-size-t {
+  grid-column: span 1;
+  grid-row: span 2;
+  min-height: 416px;
+}
+.glaze-size-l {
+  grid-column: span 2;
+  grid-row: span 2;
+  min-height: 416px;
+}
+.glaze-size-f {
+  grid-column: 1 / -1;
+  grid-row: auto;
+}
+
+@media (max-width: 1023px) {
+  .glaze-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .glaze-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(160px, auto);
+  }
+  .glaze-size-w,
+  .glaze-size-l {
+    grid-column: auto;
+  }
+  .glaze-size-t,
+  .glaze-size-l {
+    grid-row: auto;
+  }
+}
+
+/* Forced viewport preview modes for Grid Showcase */
+.glaze-grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+.glaze-grid-cols-1 {
+  grid-template-columns: 1fr !important;
+  grid-auto-rows: minmax(160px, auto) !important;
+}
+.glaze-grid-cols-1 .glaze-size-w,
+.glaze-grid-cols-1 .glaze-size-l {
+  grid-column: auto !important;
+}
+.glaze-grid-cols-1 .glaze-size-t,
+.glaze-grid-cols-1 .glaze-size-l {
+  grid-row: auto !important;
+}
+
+/* Status Dot Animations from Artboard 01 */
+@keyframes glaze-ripple {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@keyframes glaze-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.animate-glaze-ripple {
+  animation: glaze-ripple 2.4s ease-out infinite;
+}
+
+.animate-glaze-blink {
+  animation: glaze-blink 1.4s ease-in-out infinite;
+}
+
+/* Display typography helper */
+.font-glaze-display {
+  font-family: var(--font-display);
+}
+.font-glaze-mono {
+  font-family: var(--font-mono);
+}
+
+/* Crisp focus ring */
+.glaze-focus:focus-visible {
+  outline: 2px solid var(--glaze-periwinkle-500);
+  outline-offset: 2px;
+}
+
+/* ================================================================
+   Pure-CSS GPU-Composited Overlay & Modal Transitions
+   ================================================================ */
+.glaze-popup {
+  transform-origin: var(--transform-origin);
+  will-change: transform, opacity;
+  transition:
+    opacity var(--glaze-dur-fast) var(--glaze-ease-crisp),
+    transform var(--glaze-dur-fast) var(--glaze-ease-crisp);
+}
+
+.glaze-popup[data-starting-style] {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.glaze-popup[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.96);
+  transition-duration: var(--glaze-dur-exit);
+}
+
+.glaze-popup[data-instant] {
+  transition-duration: 0ms;
+}
+
+.glaze-dialog-backdrop {
+  transition: opacity var(--glaze-dur-base) var(--glaze-ease-standard);
+}
+
+.glaze-dialog-backdrop[data-starting-style] {
+  opacity: 0;
+}
+
+.glaze-dialog-backdrop[data-ending-style] {
+  opacity: 0;
+  transition-duration: var(--glaze-dur-modal-exit);
+}
+
+.glaze-dialog-popup {
+  will-change: transform, opacity;
+  transition:
+    opacity var(--glaze-dur-base) var(--glaze-ease-standard),
+    transform var(--glaze-dur-base) var(--glaze-ease-standard);
+}
+
+.glaze-dialog-popup[data-starting-style] {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0) scale(0.96);
+}
+
+.glaze-dialog-popup[data-ending-style] {
+  opacity: 0;
+  transform: translate3d(0, 6px, 0) scale(0.96);
+  transition-duration: var(--glaze-dur-modal-exit);
+}
+
+.glaze-drawer-backdrop {
+  transition: opacity var(--glaze-dur-drawer-in) var(--glaze-ease-standard);
+}
+
+.glaze-drawer-backdrop[data-starting-style] {
+  opacity: 0;
+}
+
+.glaze-drawer-backdrop[data-ending-style] {
+  opacity: 0;
+  transition-duration: var(--glaze-dur-drawer-out);
+}
+
+.glaze-drawer-popup {
+  will-change: transform, opacity;
+  transition:
+    transform var(--glaze-dur-drawer-in) var(--glaze-ease-standard),
+    opacity var(--glaze-dur-drawer-in) var(--glaze-ease-standard);
+}
+
+.glaze-drawer-popup[data-side='right'] {
+  transform: translate3d(var(--drawer-swipe-movement-x, 0px), 0, 0);
+}
+
+.glaze-drawer-popup[data-side='bottom'] {
+  transform: translate3d(0, var(--drawer-swipe-movement-y, 0px), 0);
+}
+
+.glaze-drawer-popup[data-side='right'][data-starting-style],
+.glaze-drawer-popup[data-side='right'][data-ending-style] {
+  opacity: 0;
+  transform: translate3d(calc(100% + 20px), 0, 0);
+}
+
+.glaze-drawer-popup[data-side='bottom'][data-starting-style],
+.glaze-drawer-popup[data-side='bottom'][data-ending-style] {
+  opacity: 0;
+  transform: translate3d(0, calc(100% + 20px), 0);
+}
+
+.glaze-drawer-popup[data-ending-style] {
+  transition-duration: var(--glaze-dur-drawer-out);
+}
+
+.glaze-drawer-popup[data-swiping] {
+  transition: none;
+}
+
+/* ================================================================
+   Base UI Authentic Stacked Toast Styles (GPU-composited)
+   ================================================================ */
+.glaze-toast-viewport {
+  position: fixed;
+  z-index: 60;
+  right: 24px;
+  bottom: 24px;
+  width: min(360px, calc(100vw - 32px));
+  outline: none;
+}
+
+.glaze-toast-root {
+  --gap: 12px;
+  --peek: 12px;
+  --scale: calc(max(0, 1 - (var(--toast-index) * 0.06)));
+  --shrink: calc(1 - var(--scale));
+  --height: var(--toast-frontmost-height, var(--toast-height));
+  --offset-y: calc(
+    var(--toast-offset-y) * -1 + (var(--toast-index) * var(--gap) * -1) +
+      var(--toast-swipe-movement-y)
+  );
+
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 20px;
+  border: 1px solid rgba(232, 235, 240, 0.95);
+  background: #FFFFFF;
+  padding: 14px 16px;
+  box-shadow: 0 12px 32px rgba(18, 58, 92, 0.11), 0 2px 6px rgba(18, 58, 92, 0.05);
+  z-index: calc(1000 - var(--toast-index));
+  transform-origin: bottom center;
+  height: var(--height);
+  user-select: none;
+  will-change: transform, opacity;
+  transform: translate3d(
+      var(--toast-swipe-movement-x),
+      calc(
+        var(--toast-swipe-movement-y) - (var(--toast-index) * var(--peek)) -
+          (var(--shrink) * var(--height))
+      ),
+      0
+    )
+    scale(var(--scale));
+  transition:
+    transform var(--glaze-dur-toast) var(--glaze-ease-standard),
+    opacity var(--glaze-dur-toast) var(--glaze-ease-standard),
+    height var(--glaze-dur-toast) var(--glaze-ease-standard);
+}
+
+/* Fill vertical gap between expanded toasts so hover never flickers */
+.glaze-toast-root::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: calc(var(--gap) + 2px);
+}
+
+.glaze-toast-root[data-expanded] {
+  height: var(--toast-height);
+  transform: translate3d(var(--toast-swipe-movement-x), var(--offset-y), 0) scale(1);
+}
+
+.glaze-toast-root[data-starting-style] {
+  opacity: 0;
+  transform: translate3d(0, 120%, 0) scale(0.96);
+}
+
+.glaze-toast-root[data-limited] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glaze-toast-root[data-ending-style] {
+  opacity: 0;
+}
+
+.glaze-toast-root[data-ending-style]:not([data-limited]):not([data-swipe-direction]) {
+  transform: translate3d(0, 120%, 0) scale(0.96);
+}
+
+.glaze-toast-root[data-ending-style][data-swipe-direction='down'] {
+  transform: translate3d(
+    var(--toast-swipe-movement-x),
+    calc(var(--toast-swipe-movement-y) + 140%),
+    0
+  );
+}
+
+.glaze-toast-root[data-ending-style][data-swipe-direction='right'] {
+  transform: translate3d(
+    calc(var(--toast-swipe-movement-x) + 140%),
+    var(--offset-y),
+    0
+  );
+}
+
+.glaze-toast-root[data-swiping] {
+  transition: none;
+}
+
+.glaze-toast-content {
+  transition: opacity 240ms var(--glaze-ease-standard);
+  overflow: hidden;
+}
+
+.glaze-toast-content[data-behind] {
+  opacity: 0;
+}
+
+.glaze-toast-content[data-expanded] {
+  opacity: 1;
+}
+

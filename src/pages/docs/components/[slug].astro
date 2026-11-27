@@ -1,0 +1,176 @@
+---
+import DocsLayout, { type TocItem } from '@/layouts/DocsLayout.astro'
+import { ApiReference } from '@/docs/components/ApiReference'
+import { COMPONENT_CATEGORIES, COMPONENTS_LIST } from '@/docs/data/catalog'
+import { COMPONENT_DEMOS } from '@/docs/examples/component-demos'
+import { CliCommandIsland, CodeBlockIsland } from '@/docs/islands/CodeIslands'
+import { ComponentDemoIsland, CopyMarkdownButtonIsland } from '@/docs/islands/PageIslands'
+import { highlightCode } from '@/docs/lib/shiki'
+
+export async function getStaticPaths() {
+  return COMPONENTS_LIST.map((comp, idx) => ({
+    params: { slug: comp.slug },
+    props: {
+      comp,
+      prev: idx > 0 ? COMPONENTS_LIST[idx - 1] : null,
+      next: idx < COMPONENTS_LIST.length - 1 ? COMPONENTS_LIST[idx + 1] : null,
+    },
+  }))
+}
+
+const { comp, prev, next } = Astro.props
+const cat = COMPONENT_CATEGORIES.find((c) => c.id === comp.category)
+const demo = COMPONENT_DEMOS[comp.slug]
+
+const importCode = `import { ${comp.api.exportedComponents.join(', ') || comp.title} } from '@/components/ui/${comp.slug}'`
+const [importHtml, sourceHtml, demoCodeHtml] = await Promise.all([
+  highlightCode(importCode, 'tsx'),
+  highlightCode(comp.sourceCode, 'tsx'),
+  demo ? highlightCode(demo.code, 'tsx') : Promise.resolve(undefined),
+])
+
+const toc: TocItem[] = [
+  { id: 'preview', label: '预览' },
+  { id: 'installation', label: '安装' },
+  { id: 'usage', label: '源码' },
+  { id: 'api-reference', label: 'API' },
+  ...(comp.dataAttributes.length > 0 ? [{ id: 'data-attributes', label: 'Data Attributes' }] : []),
+  ...(comp.cssVars.length > 0 ? [{ id: 'css-variables', label: 'CSS Variables' }] : []),
+  { id: 'registry-dependencies', label: '依赖' },
+]
+---
+
+<DocsLayout title={`${comp.title} · Glaze UI`} description={comp.description} toc={toc}>
+  <article class="flex flex-col gap-9">
+    <header class="flex flex-col gap-2.5">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5 text-[12px] text-[#6B7280]">
+          <a href="/docs/components" class="font-medium text-[#6B7280] no-underline hover:text-[#123A5C]">
+            组件
+          </a>
+          <span>/</span>
+          <span>{cat?.title}</span>
+          <span>/</span>
+          <span class="font-semibold text-[#1B1F27]">{comp.title}</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-1.5">
+          <CopyMarkdownButtonIsland slug={comp.slug} variant="pill" client:load />
+          <a
+            href={`/r/${comp.slug}.json`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-[#5B6170] no-underline hover:bg-[#E8EBF0] hover:text-[#1B1F27]"
+          >
+            <span>JSON ↗</span>
+          </a>
+          {comp.baseUiUrl && (
+            <a
+              href={comp.baseUiUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1 rounded-full bg-[#E4E6FD] px-3 py-1 text-[12px] font-semibold text-[#262B7A] no-underline hover:opacity-85"
+            >
+              <span>Base UI ↗</span>
+            </a>
+          )}
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-baseline gap-2.5">
+        <h1 class="m-0 font-glaze-display text-[34px] leading-10 font-extrabold tracking-[-0.02em] text-[#123A5C]">
+          {comp.title}
+        </h1>
+        <span class="text-[17px] font-bold text-[#6B7280]">{comp.cnTitle}</span>
+        <span class="inline-flex items-center rounded-full bg-[#E4E6FD] px-2.5 py-0.5 font-glaze-mono text-[11px] font-bold text-[#262B7A]">
+          @glaze/{comp.slug}
+        </span>
+      </div>
+
+      <p class="m-0 text-[14px] text-[#5B6170]">{comp.description}</p>
+    </header>
+
+    <section id="preview">
+      {demo && (
+        <ComponentDemoIsland slug={comp.slug} highlightedCodeHtml={demoCodeHtml} client:only="react" />
+      )}
+    </section>
+
+    <section id="installation" class="flex flex-col gap-3">
+      <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
+        安装
+      </h2>
+      <CliCommandIsland command={`shadcn@latest add @glaze/${comp.slug}`} client:load />
+    </section>
+
+    <section id="usage" class="flex flex-col gap-3">
+      <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
+        导入与源码
+      </h2>
+      <CodeBlockIsland
+        code={importCode}
+        highlightedHtml={importHtml}
+        language="tsx"
+        filename="import"
+        client:load
+      />
+      <CodeBlockIsland
+        code={comp.sourceCode}
+        highlightedHtml={sourceHtml}
+        language="tsx"
+        filename={`components/ui/${comp.slug}.tsx`}
+        maxHeight={380}
+        client:load
+      />
+    </section>
+
+    <ApiReference component={comp} />
+
+    <nav class="grid grid-cols-1 gap-3 border-t border-[#E5E8EE] pt-6 sm:grid-cols-2">
+      {prev ? (
+        <a
+          href={`/docs/components/${prev.slug}`}
+          class="flex items-center gap-3 rounded-[18px] bg-white px-4 py-3.5 no-underline transition-transform hover:-translate-y-0.5"
+        >
+          <span class="text-[#6B7280]">←</span>
+          <span class="font-glaze-display text-[15px] font-extrabold text-[#123A5C]">
+            {prev.title}
+          </span>
+        </a>
+      ) : (
+        <div />
+      )}
+      {next && (
+        <a
+          href={`/docs/components/${next.slug}`}
+          class="flex items-center justify-end gap-3 rounded-[18px] bg-white px-4 py-3.5 text-right no-underline transition-transform hover:-translate-y-0.5"
+        >
+          <span class="font-glaze-display text-[15px] font-extrabold text-[#123A5C]">
+            {next.title}
+          </span>
+          <span class="text-[#6B7280]">→</span>
+        </a>
+      )}
+    </nav>
+  </article>
+
+  <div slot="toc-footer" class="flex flex-col gap-1 border-t border-[#E5E8EE] pt-3">
+    <CopyMarkdownButtonIsland slug={comp.slug} variant="link" client:load />
+    <a
+      href={`/r/${comp.slug}.json`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center gap-1.5 py-1 text-[12px] font-medium text-[#5B6170] no-underline hover:text-[#123A5C]"
+    >
+      <span>Registry JSON ↗</span>
+    </a>
+    <a
+      href={`/llms/components/${comp.slug}.md`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center gap-1.5 py-1 text-[12px] font-medium text-[#5B6170] no-underline hover:text-[#123A5C]"
+    >
+      <span>打开 .md ↗</span>
+    </a>
+  </div>
+</DocsLayout>

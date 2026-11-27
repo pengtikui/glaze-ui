@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-pill",
+  "type": "registry:ui",
+  "title": "StatusPill (语义状态胶囊)",
+  "description": "用于展示正常 / 注意 / 异常 / 信息 / 停用 5 种语义状态的胶囊徽章，可选呼吸状态点。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/status-pill.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\nimport { SEMANTIC_TOKENS, type Status } from '@/lib/tokens'\n\nexport interface StatusPillProps extends React.HTMLAttributes<HTMLSpanElement> {\n  status: Status\n  label?: string\n  showDot?: boolean\n  size?: 'sm' | 'md'\n}\n\nexport function StatusPill({\n  status,\n  label,\n  showDot = true,\n  size = 'md',\n  className,\n  children,\n  ...props\n}: StatusPillProps) {\n  const token = SEMANTIC_TOKENS[status]\n  return (\n    <span\n      className={cn(\n        'inline-flex shrink-0 items-center gap-1.5 rounded-full font-semibold whitespace-nowrap select-none',\n        size === 'sm' ? 'px-2.5 py-0.5 text-[11px]' : 'px-3 py-1 text-[12px]',\n        className,\n      )}\n      style={{ backgroundColor: token.pillBg, color: token.ink }}\n      {...props}\n    >\n      {showDot && (\n        <span\n          className=\"h-1.5 w-1.5 shrink-0 rounded-full\"\n          style={{ backgroundColor: token.dot }}\n        />\n      )}\n      {children ?? label ?? token.label}\n    </span>\n  )\n}\n"
+    }
+  ]
+}

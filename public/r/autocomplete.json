@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "autocomplete",
+  "type": "registry:ui",
+  "title": "Autocomplete (自动补全输入)",
+  "description": "允许自由输入同时提供实时建议列表的命令/搜索自动补全控件。",
+  "dependencies": [
+    "@base-ui/react",
+    "@phosphor-icons/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion"
+  ],
+  "categories": [
+    "selection"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/autocomplete.tsx",
+      "type": "registry:ui",
+      "content": "import { Autocomplete as BaseAutocomplete } from '@base-ui/react/autocomplete'\nimport { MagnifyingGlass } from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport {\n  CONTROL_SOFT,\n  CONTROL_WHITE,\n  PILL_CONTROL,\n  POPUP_SURFACE,\n  POPUP_TRANSITION_CLASS,\n} from '@/lib/motion'\n\nexport interface AutocompleteProps {\n  items: string[]\n  value?: string\n  onValueChange?: (val: string) => void\n  placeholder?: string\n  surface?: 'soft' | 'white'\n  className?: string\n}\n\nexport function Autocomplete({\n  items,\n  value,\n  onValueChange,\n  placeholder = '输入关键字自动补全…',\n  surface = 'soft',\n  className,\n}: AutocompleteProps) {\n  return (\n    <BaseAutocomplete.Root items={items} value={value} onValueChange={onValueChange}>\n      <div\n        className={cn(\n          'relative flex h-11 w-full items-center gap-2 px-4',\n          PILL_CONTROL,\n          surface === 'white' ? CONTROL_WHITE : CONTROL_SOFT,\n          className,\n        )}\n      >\n        <MagnifyingGlass size={15} className=\"shrink-0 text-[#8A90A0]\" />\n        <BaseAutocomplete.Input\n          placeholder={placeholder}\n          className=\"h-full w-full bg-transparent text-[14px] text-[#1B1F27] outline-none placeholder:text-[#8A90A0]\"\n        />\n      </div>\n\n      <BaseAutocomplete.Portal>\n        <BaseAutocomplete.Positioner sideOffset={8} className=\"z-50\">\n          <BaseAutocomplete.Popup\n            className={cn(\n              POPUP_SURFACE,\n              POPUP_TRANSITION_CLASS,\n              'w-(--anchor-width) overflow-hidden p-1.5',\n            )}\n          >\n            <BaseAutocomplete.Empty className=\"px-3 py-4 text-center text-[13px] text-[#8A90A0] empty:hidden\">\n              无匹配建议\n            </BaseAutocomplete.Empty>\n            <BaseAutocomplete.List className=\"max-h-55 overflow-y-auto\">\n              {(item: string) => (\n                <BaseAutocomplete.Item\n                  key={item}\n                  value={item}\n                  className=\"cursor-pointer rounded-[12px] px-3 py-2 text-[14px] text-[#1B1F27] select-none outline-none transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)] data-highlighted:bg-[#F2F3F5]\"\n                >\n                  {item}\n                </BaseAutocomplete.Item>\n              )}\n            </BaseAutocomplete.List>\n          </BaseAutocomplete.Popup>\n        </BaseAutocomplete.Positioner>\n      </BaseAutocomplete.Portal>\n    </BaseAutocomplete.Root>\n  )\n}\n"
+    }
+  ]
+}

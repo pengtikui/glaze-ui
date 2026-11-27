@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "segmented-control",
+  "type": "registry:ui",
+  "title": "SegmentedControl (分段控制器)",
+  "description": "基于 Base UI Tabs 封装的胶囊分段切换器，内置平滑纯 CSS 滑动指示块。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/segmented-control.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Tabs as BaseTabs } from '@base-ui/react/tabs'\nimport { cn } from 'cn'\n\nexport interface SegmentedOption<T extends string = string> {\n  value: T\n  label: string\n  icon?: React.ReactNode\n  badge?: string | number\n}\n\nexport function SegmentedControl<T extends string = string>({\n  options,\n  value,\n  onValueChange,\n  size = 'md',\n  dark = false,\n  ariaLabel,\n  listClassName,\n  className,\n}: {\n  options: SegmentedOption<T>[]\n  value: T\n  onValueChange: (val: T) => void\n  size?: 'sm' | 'md'\n  dark?: boolean\n  ariaLabel?: string\n  listClassName?: string\n  className?: string\n}) {\n  return (\n    <BaseTabs.Root\n      value={value}\n      onValueChange={(v) => onValueChange(v as T)}\n      className={cn('inline-flex', className)}\n    >\n      <BaseTabs.List\n        aria-label={ariaLabel}\n        className={cn(\n          'relative isolate inline-flex items-center rounded-full p-1',\n          dark ? 'bg-white/12' : 'bg-[#F2F3F5]',\n          listClassName,\n        )}\n      >\n        {options.map((opt) => (\n          <BaseTabs.Tab\n            key={opt.value}\n            value={opt.value}\n            className={cn(\n              'relative z-10 inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap select-none outline-none',\n              'transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n              size === 'sm'\n                ? 'h-7 px-3 text-[12px]'\n                : 'h-8 px-4 text-[13px]',\n              dark\n                ? 'text-white/75 hover:text-white data-active:text-[#1B1F27]'\n                : 'text-[#5B6170] hover:text-[#1B1F27] data-active:text-[#1B1F27]',\n            )}\n          >\n            {opt.icon}\n            <span>{opt.label}</span>\n            {opt.badge !== undefined && (\n              <span className=\"rounded-full bg-[#F2F3F5] px-1.5 py-0.5 text-[10px] font-bold text-[#5B6170]\">\n                {opt.badge}\n              </span>\n            )}\n          </BaseTabs.Tab>\n        ))}\n        <BaseTabs.Indicator\n          className={cn(\n            'pointer-events-none absolute top-0 left-0 z-0 rounded-full bg-white shadow-[0_1px_3px_rgba(16,24,40,0.08)]',\n            'h-(--active-tab-height) w-(--active-tab-width)',\n            '[transform:translate3d(var(--active-tab-left),var(--active-tab-top),0)]',\n            'will-change-[transform,width] transition-[transform,width,height] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n          )}\n        />\n      </BaseTabs.List>\n    </BaseTabs.Root>\n  )\n}\n"
+    }
+  ]
+}

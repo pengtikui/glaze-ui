@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "speed-card",
+  "type": "registry:block",
+  "title": "S20 半圆速度表卡 (SpeedCard)",
+  "description": "半圆速度表卡（S20 · 尺寸 S）— 弧形速度盘 · 数值单位",
+  "registryDependencies": [
+    "@glaze/radial-chart",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "monitoring",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/speed-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/speed-card.tsx",
+      "content": "import { GaugeChart } from '@/components/ui/radial-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function SpeedCard({\n  label,\n  value,\n  max,\n  unit,\n  sub,\n  tone = 'white',\n}: {\n  label: string\n  value: number\n  max: number\n  unit: string\n  sub?: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <div className=\"flex flex-col items-center\">\n        <GaugeChart\n          value={value}\n          max={max}\n          label={label}\n          valueText={value}\n          unit={unit}\n          variant=\"semicircle\"\n          color={theme.accent}\n          trackColor={theme.track}\n          tone={tone}\n          width={136}\n          height={78}\n          barSize={10}\n        />\n      </div>\n      {sub && (\n        <span className=\"text-center text-[12px]\" style={{ color: theme.soft }}>\n          {sub}\n        </span>\n      )}\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

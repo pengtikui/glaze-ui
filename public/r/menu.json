@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menu",
+  "type": "registry:ui",
+  "title": "Menu (下拉菜单)",
+  "description": "支持图标、快捷键提示、分组分隔线与危险操作高亮的命令菜单。通过 PopupTriggerScope 自动稳定触发按钮。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion",
+    "@glaze/style"
+  ],
+  "categories": [
+    "selection"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/menu.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Menu as BaseMenu } from '@base-ui/react/menu'\nimport { cn } from 'cn'\nimport {\n  POPUP_SURFACE,\n  POPUP_TRANSITION_CLASS,\n  PopupTriggerScope,\n} from '@/lib/motion'\n\nexport interface MenuItemConfig {\n  id: string\n  label: string\n  icon?: React.ReactNode\n  shortcut?: string\n  danger?: boolean\n  disabled?: boolean\n  separatorBefore?: boolean\n  onSelect?: () => void\n}\n\nexport interface MenuProps {\n  trigger: React.ReactElement\n  items: MenuItemConfig[]\n  align?: 'start' | 'center' | 'end'\n  side?: 'top' | 'bottom' | 'left' | 'right'\n}\n\nexport function Menu({\n  trigger,\n  items,\n  align = 'end',\n  side = 'bottom',\n}: MenuProps) {\n  return (\n    <BaseMenu.Root>\n      <PopupTriggerScope>\n        <BaseMenu.Trigger render={trigger} />\n      </PopupTriggerScope>\n      <BaseMenu.Portal>\n        <BaseMenu.Positioner align={align} side={side} sideOffset={8} className=\"z-50\">\n          <BaseMenu.Popup\n            className={cn(\n              POPUP_SURFACE,\n              POPUP_TRANSITION_CLASS,\n              'min-w-50 p-1.5',\n            )}\n          >\n            {items.map((item) => (\n              <React.Fragment key={item.id}>\n                {item.separatorBefore && (\n                  <BaseMenu.Separator className=\"my-1 h-px bg-[#EEF0F3]\" />\n                )}\n                <BaseMenu.Item\n                  disabled={item.disabled}\n                  onClick={item.onSelect}\n                  className={cn(\n                    'flex cursor-pointer items-center justify-between gap-3 rounded-[12px] px-3 py-2 text-[13px] font-medium select-none outline-none',\n                    'transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)]',\n                    item.danger\n                      ? 'text-[#A6360F] data-highlighted:bg-[#FDE5DC]'\n                      : 'text-[#1B1F27] data-highlighted:bg-[#F2F3F5]',\n                    'data-disabled:pointer-events-none data-disabled:opacity-40',\n                  )}\n                >\n                  <span className=\"flex items-center gap-2\">\n                    {item.icon && <span className=\"opacity-75\">{item.icon}</span>}\n                    {item.label}\n                  </span>\n                  {item.shortcut && (\n                    <span className=\"font-glaze-mono text-[11px] text-[#8A90A0]\">\n                      {item.shortcut}\n                    </span>\n                  )}\n                </BaseMenu.Item>\n              </React.Fragment>\n            ))}\n          </BaseMenu.Popup>\n        </BaseMenu.Positioner>\n      </BaseMenu.Portal>\n    </BaseMenu.Root>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spark-metric-row-card",
+  "type": "registry:block",
+  "title": "W21 三列微柱 KPI 带 (SparkMetricRowCard)",
+  "description": "三列微柱 KPI 带（W21 · 尺寸 W）— 3 组紧凑 KPI + 迷你柱图",
+  "registryDependencies": [
+    "@glaze/spark-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/spark-metric-row-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/spark-metric-row-card.tsx",
+      "content": "import { SparkChart } from '@/components/ui/spark-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function SparkMetricRowCard({\n  items,\n  tone = 'white',\n}: {\n  items: { label: string; value: string; delta: string; bars: number[]; hue: Hue }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-center\">\n      <div className=\"grid grid-cols-3 divide-x divide-[#EEF0F3]\">\n        {items.slice(0, 3).map((it, idx) => (\n          <div\n            key={it.label}\n            className={idx === 0 ? 'pr-4' : idx === 1 ? 'px-4' : 'pl-4'}\n          >\n            <div className=\"text-[12px] text-[#6B7280]\">{it.label}</div>\n            <div className=\"mt-1 font-glaze-display text-[26px] leading-none font-extrabold\">\n              {it.value}\n            </div>\n            <div className=\"mt-1 text-[11px] font-semibold\" style={{ color: HUE_PALETTES[it.hue][700] }}>\n              {it.delta}\n            </div>\n            <div className=\"mt-2.5\">\n              <SparkChart\n                data={it.bars}\n                variant=\"bar\"\n                hue={it.hue}\n                label={it.label}\n                tone={tone}\n                height={30}\n              />\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

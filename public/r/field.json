@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field",
+  "type": "registry:ui",
+  "title": "Field (表单字段)",
+  "description": "自动关联 Label、Control、Description 与 Error 的无障碍表单字段容器。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "categories": [
+    "inputs"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/field.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Field as BaseField } from '@base-ui/react/field'\nimport { cn } from 'cn'\n\nexport function Field({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseField.Root>) {\n  return (\n    <BaseField.Root\n      className={cn('flex w-full flex-col gap-1.5', className)}\n      {...props}\n    />\n  )\n}\n\nexport function FieldLabel({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseField.Label>) {\n  return (\n    <BaseField.Label\n      className={cn('text-[13px] font-semibold text-[#1B1F27]', className)}\n      {...props}\n    />\n  )\n}\n\nexport function FieldDescription({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseField.Description>) {\n  return (\n    <BaseField.Description\n      className={cn('text-[12px] text-[#6B7280]', className)}\n      {...props}\n    />\n  )\n}\n\nexport function FieldError({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseField.Error>) {\n  return (\n    <BaseField.Error\n      className={cn('text-[12px] font-medium text-[#A6360F]', className)}\n      {...props}\n    />\n  )\n}\n\nexport const FieldControl = BaseField.Control\n"
+    }
+  ]
+}

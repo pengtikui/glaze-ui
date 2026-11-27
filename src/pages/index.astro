@@ -1,0 +1,168 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
+import { CliCommandIsland } from '@/docs/islands/CodeIslands'
+import { HomeBentoIsland } from '@/docs/islands/HomeBentoIsland'
+import { COMPONENT_CATEGORIES, COMPONENTS_LIST, DEMOS_LIST } from '@/docs/data/catalog'
+import { TILE_THEMES, type TileTone } from '@/lib/tokens'
+---
+
+<BaseLayout title="Glaze · Base UI 组件库与 shadcn Registry 文档">
+  <div class="min-h-screen bg-[#F2F4F8] text-[#1B1F27]">
+    <SiteHeaderIsland pathname="/" client:load />
+
+    <main class="mx-auto flex max-w-[1280px] flex-col gap-14 px-4 pt-12 pb-24 sm:px-6">
+      {/* Hero */}
+      <section class="flex flex-col items-start gap-5">
+        <div class="flex flex-col gap-2">
+          <h1 class="m-0 font-glaze-display text-[42px] leading-[1.1] font-extrabold tracking-[-0.03em] text-[#123A5C] sm:text-[54px]">
+            Glaze UI
+          </h1>
+          <p class="m-0 text-[16px] text-[#5B6170]">
+            Base UI 1.9 · Tailwind v4 · Recharts v3 · shadcn Registry · Astro Markdown Docs
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <a
+            href="/docs/installation"
+            class="inline-flex h-12 items-center gap-2 rounded-full bg-[#123A5C] px-6 text-[14px] font-semibold text-white no-underline transition-transform hover:bg-[#194A73] active:scale-[0.97]"
+          >
+            <span>开始使用</span>
+            <span aria-hidden="true">→</span>
+          </a>
+          <a
+            href="/docs/components"
+            class="inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#E8EBF0]"
+          >
+            <span>组件 ({COMPONENTS_LIST.length})</span>
+          </a>
+          <a
+            href="/blocks"
+            class="inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#E8EBF0]"
+          >
+            <span>卡片 (112)</span>
+          </a>
+          <a
+            href="/docs/ai-agent"
+            class="inline-flex h-12 items-center gap-2 rounded-full bg-[#E4E6FD] px-5 text-[14px] font-semibold text-[#262B7A] no-underline transition-opacity hover:opacity-90"
+          >
+            <span>AI Agent</span>
+          </a>
+        </div>
+
+        <div class="w-full max-w-lg">
+          <CliCommandIsland command="shadcn@latest add @glaze/style" client:load />
+        </div>
+      </section>
+
+      {/* Preview Grid */}
+      <section class="flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-2">
+          <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
+            卡片预览
+          </h2>
+          <a href="/blocks" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
+            <span>全部 112 张 →</span>
+          </a>
+        </div>
+
+        <HomeBentoIsland client:only="react" />
+      </section>
+
+      {/* Demos */}
+      <section class="flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-2">
+          <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
+            示例 Demo
+          </h2>
+          <a href="/demos" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
+            <span>全部 Demo →</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {DEMOS_LIST.map((demo) => {
+            const theme = TILE_THEMES[(demo.tone as TileTone) || 'sky']
+            return (
+              <div class="flex flex-col justify-between gap-4 rounded-tile bg-white p-5">
+                <div class="flex items-center justify-between gap-2">
+                  <span
+                    class="rounded-full px-2.5 py-0.5 font-glaze-mono text-[11px] font-bold"
+                    style={`background-color: ${theme.bg}; color: ${theme.ink};`}
+                  >
+                    {demo.index} · {demo.badge}
+                  </span>
+                  <a
+                    href={`/view/demos/${demo.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 rounded-full bg-[#F2F3F5] px-3 py-1 text-[12px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#1B1F27] hover:text-white"
+                  >
+                    <span>独立打开 ↗</span>
+                  </a>
+                </div>
+                <div class="flex items-baseline justify-between gap-2">
+                  <h3 class="m-0 font-glaze-display text-[18px] font-extrabold text-[#1B1F27]">
+                    {demo.title}
+                  </h3>
+                  <span class="font-glaze-mono text-[11px] text-[#8A90A0]">
+                    @glaze/{demo.registryName}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* Component Categories */}
+      <section class="flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-2">
+          <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
+            组件分类
+          </h2>
+          <a href="/docs/components" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
+            <span>全部 {COMPONENTS_LIST.length} 个 →</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {COMPONENT_CATEGORIES.map((cat) => {
+            const items = COMPONENTS_LIST.filter((c) => c.category === cat.id)
+            return (
+              <div class="flex flex-col gap-3 rounded-tile bg-white p-5">
+                <div class="flex items-center justify-between">
+                  <h3 class="m-0 font-glaze-display text-[17px] font-extrabold text-[#1B1F27]">
+                    {cat.title}
+                  </h3>
+                  <span class="inline-flex items-center rounded-full bg-[#E4E6FD] px-2.5 py-0.5 text-[11px] font-bold text-[#262B7A]">
+                    {items.length}
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  {items.slice(0, 8).map((c) => (
+                    <a
+                      href={`/docs/components/${c.slug}`}
+                      class="rounded-full bg-[#F6F7F9] px-2.5 py-1 text-[12px] font-medium text-[#1B1F27] no-underline transition-colors hover:bg-[#E4E6FD] hover:text-[#262B7A]"
+                    >
+                      {c.title}
+                    </a>
+                  ))}
+                  {items.length > 8 && (
+                    <a
+                      href="/docs/components"
+                      class="rounded-full bg-[#F2F3F5] px-2.5 py-1 text-[12px] font-semibold text-[#5B6170] no-underline"
+                    >
+                      +{items.length - 8}
+                    </a>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+    </main>
+  </div>
+</BaseLayout>

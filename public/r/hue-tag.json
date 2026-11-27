@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hue-tag",
+  "type": "registry:ui",
+  "title": "HueTag (柔彩色相标签)",
+  "description": "基于 9 组 Glaze 柔彩色板的轻量标签，支持 xs / sm / md 尺寸与浅/深变体。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/hue-tag.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\n\nexport interface HueTagProps extends React.HTMLAttributes<HTMLSpanElement> {\n  hue?: Hue\n  tone?: 'soft' | 'solid' | 'neutral'\n  size?: 'xs' | 'sm' | 'md'\n}\n\nexport function HueTag({\n  hue = 'periwinkle',\n  tone = 'soft',\n  size = 'md',\n  className,\n  style,\n  children,\n  ...props\n}: HueTagProps) {\n  const palette = HUE_PALETTES[hue]\n  const colors =\n    tone === 'neutral'\n      ? { backgroundColor: '#F2F3F5', color: '#5B6170' }\n      : tone === 'solid'\n        ? { backgroundColor: palette[500], color: '#FFFFFF' }\n        : { backgroundColor: palette[100], color: palette[700] }\n\n  return (\n    <span\n      className={cn(\n        'inline-flex items-center gap-1 rounded-full font-semibold whitespace-nowrap select-none',\n        size === 'xs' && 'px-2 py-0.5 text-[10px]',\n        size === 'sm' && 'px-2.5 py-0.5 text-[11px]',\n        size === 'md' && 'px-3 py-1 text-[12px]',\n        className,\n      )}\n      style={{ ...colors, ...style }}\n      {...props}\n    >\n      {children}\n    </span>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "vertical-bars-card",
+  "type": "registry:block",
+  "title": "T3 竖柱趋势竖卡 (VerticalBarsCard)",
+  "description": "竖柱趋势竖卡（T3 · 尺寸 T）— 大数字 · 多月竖柱",
+  "registryDependencies": [
+    "@glaze/bar-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/vertical-bars-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/vertical-bars-card.tsx",
+      "content": "import { BarChart } from '@/components/ui/bar-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface VerticalBarItem {\n  label: string\n  value: number\n  highlight?: boolean\n}\n\nexport interface VerticalBarsCardProps {\n  label: string\n  totalValue: string | number\n  unit?: string\n  bars: VerticalBarItem[]\n  tone?: TileTone\n}\n\nexport function VerticalBarsCard({\n  label,\n  totalValue,\n  unit,\n  bars,\n  tone = 'peach',\n}: VerticalBarsCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <span className=\"flex items-baseline gap-1.5\">\n        <span className=\"font-glaze-display text-[48px] leading-12.5 font-extrabold tracking-[-0.03em]\">\n          {totalValue}\n        </span>\n        {unit && (\n          <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n            {unit}\n          </span>\n        )}\n      </span>\n      <div className=\"min-h-48 flex-1 w-full\">\n        <BarChart\n          data={bars}\n          xKey=\"label\"\n          series={[\n            {\n              dataKey: 'value',\n              label,\n              color: theme.accent,\n              mutedColor: theme.track,\n              unit,\n            },\n          ]}\n          highlightKey=\"highlight\"\n          tone={tone}\n          height=\"100%\"\n          showGrid={false}\n          showXAxis\n          showYAxis={false}\n          barCategoryGap=\"18%\"\n          radius={[8, 8, 4, 4]}\n          margin={{ top: 6, right: 2, bottom: 0, left: 2 }}\n          className=\"h-full\"\n        />\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

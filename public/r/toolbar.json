@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toolbar",
+  "type": "registry:ui",
+  "title": "Toolbar (工具栏)",
+  "description": "集成按钮、分组、分隔线与链接的胶囊操作工具栏，支持左右方向键漫游焦点。",
+  "dependencies": [
+    "@base-ui/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/motion"
+  ],
+  "categories": [
+    "navigation"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/toolbar.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Toolbar as BaseToolbar } from '@base-ui/react/toolbar'\nimport { cn } from 'cn'\nimport { PRESS_CLASS } from '@/lib/motion'\n\nexport function Toolbar({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseToolbar.Root>) {\n  return (\n    <BaseToolbar.Root\n      className={cn(\n        'inline-flex flex-wrap items-center gap-1 rounded-full bg-[#F2F3F5] p-1.5',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport function ToolbarButton({\n  className,\n  active,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseToolbar.Button> & {\n  active?: boolean\n}) {\n  return (\n    <BaseToolbar.Button\n      className={cn(\n        'inline-flex h-8 cursor-pointer items-center justify-center gap-1.5 rounded-full px-3 text-[13px] font-semibold outline-none',\n        PRESS_CLASS,\n        active\n          ? 'bg-[#1B1F27] text-white'\n          : 'text-[#5B6170] hover:bg-white hover:text-[#1B1F27]',\n        'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n        'data-disabled:pointer-events-none data-disabled:opacity-40',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport function ToolbarGroup({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseToolbar.Group>) {\n  return (\n    <BaseToolbar.Group\n      className={cn('inline-flex items-center gap-1', className)}\n      {...props}\n    />\n  )\n}\n\nexport function ToolbarSeparator({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseToolbar.Separator>) {\n  return (\n    <BaseToolbar.Separator\n      className={cn('mx-1 h-4 w-px bg-[#CDD3DD]', className)}\n      {...props}\n    />\n  )\n}\n\nexport function ToolbarLink({\n  className,\n  ...props\n}: React.ComponentPropsWithoutRef<typeof BaseToolbar.Link>) {\n  return (\n    <BaseToolbar.Link\n      className={cn(\n        'inline-flex h-8 items-center rounded-full px-3 text-[13px] font-semibold text-[#4A4FB8] transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)] hover:bg-[#E4E6FD]',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n"
+    }
+  ]
+}

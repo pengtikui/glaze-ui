@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress-card",
+  "type": "registry:block",
+  "title": "S3 进度条卡 (ProgressCard)",
+  "description": "进度条卡（S3 · 尺寸 S）— 标签 · 数值 · 线性进度条",
+  "registryDependencies": [
+    "@glaze/progress",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "metrics",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/progress-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/progress-card.tsx",
+      "content": "import { Progress } from '@/components/ui/progress'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface ProgressCardProps {\n  label: string\n  percent: number\n  description: string\n  tone?: TileTone\n}\n\nexport function ProgressCard({\n  label,\n  percent,\n  description,\n  tone = 'peach',\n}: ProgressCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <span className=\"flex items-baseline gap-1\">\n        <span className=\"font-glaze-display text-[44px] leading-11.5 font-extrabold tracking-[-0.03em]\">\n          {percent}\n        </span>\n        <span className=\"text-[18px] font-bold\">%</span>\n      </span>\n      <span className=\"flex flex-col gap-2\">\n        <Progress\n          value={percent}\n          trackColor={theme.track}\n          barColor={theme.accent}\n          height=\"md\"\n        />\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          {description}\n        </span>\n      </span>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

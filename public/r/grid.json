@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "grid",
+  "type": "registry:ui",
+  "title": "Grid (四列密集栅格)",
+  "description": "Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手机 1 列，支持预览列数覆盖。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/style"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/grid.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\n\nexport interface GridProps extends React.HTMLAttributes<HTMLDivElement> {\n  /** Force preview column count (used by responsive grid demos) */\n  forceCols?: 4 | 2 | 1\n}\n\nexport function Grid({\n  forceCols,\n  className,\n  children,\n  ...props\n}: GridProps) {\n  return (\n    <div\n      className={cn(\n        'glaze-grid',\n        forceCols === 2 && 'glaze-grid-cols-2',\n        forceCols === 1 && 'glaze-grid-cols-1',\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

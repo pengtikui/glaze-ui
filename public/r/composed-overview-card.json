@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "composed-overview-card",
+  "type": "registry:block",
+  "title": "F14 全年经营组合双轴通栏卡 (ComposedOverviewCard)",
+  "description": "全年经营组合双轴通栏卡（F14 · 尺寸 F）— 12 月柱状 + 面积 + 折线双轴全景",
+  "registryDependencies": [
+    "@glaze/composed-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/composed-overview-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/composed-overview-card.tsx",
+      "content": "import { ComposedChart, type ComposedSeries } from '@/components/ui/composed-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface ComposedOverviewCardProps {\n  title: string\n  subtitle?: string\n  highlights: { label: string; value: string; hue?: Hue }[]\n  data: readonly object[]\n  xKey: string\n  series: ComposedSeries[]\n  leftYTickFormatter?: (value: unknown) => string\n  rightYTickFormatter?: (value: unknown) => string\n  tone?: TileTone\n}\n\nexport function ComposedOverviewCard({\n  title,\n  subtitle,\n  highlights,\n  data,\n  xKey,\n  series,\n  leftYTickFormatter,\n  rightYTickFormatter,\n  tone = 'white',\n}: ComposedOverviewCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-5\">\n      <div className=\"flex flex-wrap items-end justify-between gap-4\">\n        <div>\n          <div className=\"font-glaze-display text-[22px] font-extrabold\">{title}</div>\n          {subtitle && (\n            <div className=\"mt-0.5 text-[13px]\" style={{ color: theme.soft }}>\n              {subtitle}\n            </div>\n          )}\n        </div>\n        <div className=\"flex flex-wrap items-center gap-5\">\n          {highlights.map((h) => (\n            <div key={h.label} className=\"flex flex-col\">\n              <span className=\"text-[11px] font-medium\" style={{ color: theme.soft }}>\n                {h.label}\n              </span>\n              <span\n                className=\"font-glaze-display text-[20px] leading-6 font-extrabold\"\n                style={{ color: h.hue ? HUE_PALETTES[h.hue][700] : theme.ink }}\n              >\n                {h.value}\n              </span>\n            </div>\n          ))}\n        </div>\n      </div>\n      <ComposedChart\n        data={data}\n        xKey={xKey}\n        series={series}\n        leftYTickFormatter={leftYTickFormatter}\n        rightYTickFormatter={rightYTickFormatter}\n        tone={tone}\n        height={265}\n      />\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

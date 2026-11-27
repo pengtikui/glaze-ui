@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "quick-note-card",
+  "type": "registry:block",
+  "title": "W19 灵感速记便签卡 (QuickNoteCard)",
+  "description": "灵感速记便签卡（W19 · 尺寸 W）— 可编辑文本区 · 字数统计",
+  "registryDependencies": [
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "productivity",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/quick-note-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/quick-note-card.tsx",
+      "content": "import * as React from 'react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function QuickNoteCard({\n  title = '灵感速记',\n  initialText,\n  tag = '工作台',\n  tone = 'lemon',\n}: {\n  title?: string\n  initialText: string\n  tag?: string\n  tone?: TileTone\n}) {\n  const [text, setText] = React.useState(initialText)\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-2\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-bold\">{title}</span>\n        <span\n          className=\"rounded-full px-2.5 py-0.5 text-[11px] font-semibold\"\n          style={{ backgroundColor: theme.track, color: theme.ink }}\n        >\n          {tag} · {text.length} 字\n        </span>\n      </div>\n      <textarea\n        value={text}\n        onChange={(e) => setText(e.target.value)}\n        rows={3}\n        className=\"w-full resize-none rounded-control bg-white/55 px-3 py-2 text-[13px] leading-relaxed text-[#1B1F27] outline-none focus:bg-white/85\"\n      />\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

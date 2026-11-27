@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "count-badge",
+  "type": "registry:ui",
+  "title": "CountBadge (数字角标)",
+  "description": "紧凑的等宽数字计数徽章，支持 9 组色相自动配色。",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "primitives"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/count-badge.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { cn } from 'cn'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\n\nexport interface CountBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {\n  count: number | string\n  hue?: Hue | 'ink' | 'neutral'\n}\n\nexport function CountBadge({\n  count,\n  hue = 'coral',\n  className,\n  style,\n  ...props\n}: CountBadgeProps) {\n  const colors =\n    hue === 'ink'\n      ? { backgroundColor: '#1B1F27', color: '#FFFFFF' }\n      : hue === 'neutral'\n        ? { backgroundColor: '#F2F3F5', color: '#5B6170' }\n        : { backgroundColor: HUE_PALETTES[hue][500], color: '#FFFFFF' }\n\n  return (\n    <span\n      className={cn(\n        'inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-bold tabular-nums',\n        className,\n      )}\n      style={{ ...colors, ...style }}\n      {...props}\n    >\n      {count}\n    </span>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "health-pulse-card",
+  "type": "registry:block",
+  "title": "S30 心率脉搏卡 (HealthPulseCard)",
+  "description": "心率脉搏卡（S30 · 尺寸 S）— BPM 大数字 · 心电折线",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/spark-chart",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "monitoring",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/health-pulse-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/health-pulse-card.tsx",
+      "content": "import { Heart } from '@phosphor-icons/react'\nimport { SparkChart } from '@/components/ui/spark-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nconst ECG_PULSE_DATA = [58, 58, 60, 74, 48, 62, 60, 60, 78, 50, 61, 59, 59]\n\nexport function HealthPulseCard({\n  label = '静息心率',\n  bpm,\n  zone,\n  tone = 'rose',\n}: {\n  label?: string\n  bpm: number\n  zone: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <Heart size={18} weight=\"fill\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"flex items-baseline gap-1\">\n        <span className=\"font-glaze-display text-[44px] leading-none font-extrabold\">\n          {bpm}\n        </span>\n        <span className=\"text-[13px] font-semibold\" style={{ color: theme.soft }}>\n          bpm\n        </span>\n      </div>\n      <SparkChart\n        data={ECG_PULSE_DATA}\n        variant=\"line\"\n        curve=\"linear\"\n        color={theme.accent}\n        label={label}\n        unit=\"bpm\"\n        tone={tone}\n        height={30}\n        strokeWidth={2.2}\n      />\n      <span className=\"truncate text-[11px]\" style={{ color: theme.soft }}>\n        {zone}\n      </span>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

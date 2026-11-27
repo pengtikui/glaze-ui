@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "target-line-card",
+  "type": "registry:block",
+  "title": "W27 目标基线折线宽卡 (TargetLineCard)",
+  "description": "目标基线折线宽卡（W27 · 尺寸 W）— 带参考红线折线 · 状态徽章",
+  "registryDependencies": [
+    "@glaze/line-chart",
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "charts",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/target-line-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/target-line-card.tsx",
+      "content": "import { LineChart, type LineSeries } from '@/components/ui/line-chart'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Status, type TileTone } from '@/lib/tokens'\n\nexport interface TargetLineCardProps {\n  title: string\n  currentValue: string\n  targetValue: number\n  targetLabel?: string\n  status?: Status\n  statusLabel?: string\n  data: readonly object[]\n  xKey: string\n  series: LineSeries[]\n  tone?: TileTone\n}\n\nexport function TargetLineCard({\n  title,\n  currentValue,\n  targetValue,\n  targetLabel = '目标线',\n  status = 'normal',\n  statusLabel = '达标',\n  data,\n  xKey,\n  series,\n  tone = 'white',\n}: TargetLineCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-2 pb-4.5\">\n      <div className=\"flex flex-wrap items-center justify-between gap-2\">\n        <div className=\"flex items-baseline gap-2.5 min-w-0\">\n          <span className=\"truncate text-[17px] font-bold\">{title}</span>\n          <span className=\"shrink-0 font-glaze-display text-[16px] font-extrabold\" style={{ color: theme.accent }}>\n            {currentValue}\n          </span>\n        </div>\n        <StatusPill status={status} label={statusLabel} size=\"sm\" />\n      </div>\n      <div className=\"min-h-28 flex-1 w-full\">\n        <LineChart\n          data={data}\n          xKey={xKey}\n          series={series}\n          showDots\n          showYAxis\n          referenceLine={{ y: targetValue, label: targetLabel, color: '#E5603B' }}\n          tone={tone}\n          height={122}\n        />\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}
