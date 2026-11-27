@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { ArrowsClockwise, Code, Eye } from '@phosphor-icons/react'
 import { cn } from 'cn'
+import type { PreviewSurface } from '@/docs/examples/types'
 import { CodeBlock } from './CodeBlock'
 
 export interface ComponentPreviewProps {
@@ -10,6 +11,7 @@ export interface ComponentPreviewProps {
   filename?: string
   minHeight?: number
   align?: 'center' | 'start'
+  surface?: PreviewSurface
   className?: string
 }
 
@@ -18,8 +20,9 @@ export function ComponentPreview({
   code,
   highlightedCodeHtml,
   filename,
-  minHeight = 220,
+  minHeight = 200,
   align = 'center',
+  surface = 'white',
   className,
 }: ComponentPreviewProps) {
   const [tab, setTab] = React.useState<'preview' | 'code'>('preview')
@@ -74,7 +77,10 @@ export function ComponentPreview({
         <div
           key={mountKey}
           className={cn(
-            'flex w-full rounded-[24px] bg-white p-6 sm:p-8',
+            'flex w-full rounded-[24px] p-6 sm:p-8',
+            surface === 'white' && 'bg-white text-[#1B1F27]',
+            surface === 'canvas' && 'bg-[#E9ECF2] text-[#1B1F27]',
+            surface === 'dark' && 'bg-[#123A5C] text-white',
             align === 'center'
               ? 'items-center justify-center'
               : 'flex-col items-stretch justify-start',

@@ -180,12 +180,19 @@ export function CopyMarkdownButtonIsland(props: { slug: string; variant?: 'pill'
 
 export function ComponentDemoIsland({
   slug,
+  exampleId,
   highlightedCodeHtml,
 }: {
   slug: string
+  exampleId?: string
   highlightedCodeHtml?: string
 }) {
-  const demo = COMPONENT_DEMOS[slug]
+  const group = COMPONENT_DEMOS[slug]
+  if (!group) return null
+
+  const demo = exampleId
+    ? group.examples.find((ex) => ex.id === exampleId)
+    : group.hero
   if (!demo) return null
 
   return (
@@ -193,9 +200,10 @@ export function ComponentDemoIsland({
       <ComponentPreview
         code={demo.code}
         highlightedCodeHtml={highlightedCodeHtml}
-        filename={`${slug}-demo.tsx`}
-        minHeight={demo.minHeight ?? 200}
+        filename={exampleId ? `${slug}-${exampleId}.tsx` : `${slug}-demo.tsx`}
+        minHeight={demo.minHeight ?? 180}
         align={demo.align ?? 'center'}
+        surface={demo.surface ?? 'white'}
       >
         {demo.render()}
       </ComponentPreview>

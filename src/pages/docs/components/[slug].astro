@@ -20,18 +20,30 @@ export async function getStaticPaths() {
 
 const { comp, prev, next } = Astro.props
 const cat = COMPONENT_CATEGORIES.find((c) => c.id === comp.category)
-const demo = COMPONENT_DEMOS[comp.slug]
+const demoGroup = COMPONENT_DEMOS[comp.slug]
+const examples = demoGroup?.examples ?? []
 
 const importCode = `import { ${comp.api.exportedComponents.join(', ') || comp.title} } from '@/components/ui/${comp.slug}'`
-const [importHtml, sourceHtml, demoCodeHtml] = await Promise.all([
+const [importHtml, sourceHtml, heroCodeHtml, ...exampleCodeHtmls] = await Promise.all([
   highlightCode(importCode, 'tsx'),
   highlightCode(comp.sourceCode, 'tsx'),
-  demo ? highlightCode(demo.code, 'tsx') : Promise.resolve(undefined),
+  demoGroup ? highlightCode(demoGroup.hero.code, 'tsx') : Promise.resolve(undefined),
+  ...examples.map((ex) => highlightCode(ex.code, 'tsx')),
 ])
 
 const toc: TocItem[] = [
   { id: 'preview', label: '预览' },
   { id: 'installation', label: '安装' },
+  ...(examples.length > 0
+    ? [
+        { id: 'examples', label: '示例' },
+        ...examples.map((ex) => ({
+          id: `example-${ex.id}`,
+          label: ex.title,
+          depth: 3,
+        })),
+      ]
+    : []),
   { id: 'usage', label: '源码' },
   { id: 'api-reference', label: 'API' },
   ...(comp.dataAttributes.length > 0 ? [{ id: 'data-attributes', label: 'Data Attributes' }] : []),
@@ -91,8 +103,8 @@ const toc: TocItem[] = [
     </header>
 
     <section id="preview">
-      {demo && (
-        <ComponentDemoIsland slug={comp.slug} highlightedCodeHtml={demoCodeHtml} client:only="react" />
+      {demoGroup && (
+        <ComponentDemoIsland slug={comp.slug} highlightedCodeHtml={heroCodeHtml} client:only="react" />
       )}
     </section>
 
@@ -102,6 +114,42 @@ const toc: TocItem[] = [
       </h2>
       <CliCommandIsland command={`shadcn@latest add @glaze/${comp.slug}`} client:load />
     </section>
+
+    {examples.length > 0 && (
+      <section id="examples" class="flex flex-col gap-8">
+        <div class="flex items-baseline gap-2.5">
+          <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
+            示例
+          </h2>
+          <span class="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-bold text-[#6B7280]">
+            {examples.length} 个场景
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-9">
+          {examples.map((ex, idx) => (
+            <div id={`example-${ex.id}`} class="flex scroll-mt-24 flex-col gap-3">
+              <div class="flex flex-col gap-1">
+                <h3 class="m-0 font-glaze-display text-[17px] font-extrabold text-[#123A5C]">
+                  {ex.title}
+                </h3>
+                {ex.description && (
+                  <p class="m-0 text-[13.5px] leading-relaxed text-[#5B6170]">
+                    {ex.description}
+                  </p>
+                )}
+              </div>
+              <ComponentDemoIsland
+                slug={comp.slug}
+                exampleId={ex.id}
+                highlightedCodeHtml={exampleCodeHtmls[idx]}
+                client:only="react"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
 
     <section id="usage" class="flex flex-col gap-3">
       <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
