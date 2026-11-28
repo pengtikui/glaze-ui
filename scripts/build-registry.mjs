@@ -147,6 +147,7 @@ function extractApiInfo(filePath) {
   const sf = ts.createSourceFile(path.basename(filePath), code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
 
   const interfaces = new Map() // name -> { extends, props: [{name, type, optional, defaultValue, description}] }
+  const typeIntersections = new Map() // aliasName -> string[] of referenced type names
   const typeAliases = []
   const componentDefaults = new Map() // componentName -> Map<prop, defaultStr>
   const componentPropsMap = new Map() // componentName -> interfaceName | inlineProps[]
@@ -181,6 +182,14 @@ function extractApiInfo(filePath) {
         definition: stmt.type.getText(sf).replace(/\s+/g, ' ').trim(),
         description: getJsDoc(stmt, code),
       })
+      if (ts.isIntersectionTypeNode(stmt.type)) {
+        const refNames = stmt.type.types
+          .filter((t) => ts.isTypeReferenceNode(t))
+          .map((t) => t.typeName.getText(sf))
+        if (refNames.length > 0) {
+          typeIntersections.set(stmt.name.text, refNames)
+        }
+      }
     } else if (isExported && ts.isFunctionDeclaration(stmt) && stmt.name) {
       const compName = stmt.name.text
       exportedComponents.push(compName)
@@ -255,6 +264,27 @@ function extractApiInfo(filePath) {
         ...p,
         defaultValue: defaults.get(p.name) ?? p.defaultValue,
       }))
+    } else if (typeof mapped === 'string' && typeIntersections.has(mapped)) {
+      const refNames = typeIntersections.get(mapped)
+      const extParts = []
+      const mergedProps = []
+      for (const refName of refNames) {
+        if (interfaces.has(refName)) {
+          consumedInterfaces.add(refName)
+          const iface = interfaces.get(refName)
+          if (iface.extends) extParts.push(iface.extends)
+          for (const p of iface.props) {
+            mergedProps.push({
+              ...p,
+              defaultValue: defaults.get(p.name) ?? p.defaultValue,
+            })
+          }
+        } else {
+          extParts.push(refName)
+        }
+      }
+      extendsText = extParts.join(', ')
+      props = mergedProps
     } else if (Array.isArray(mapped)) {
       props = mapped.map((p) => ({
         ...p,

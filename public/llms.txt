@@ -47,6 +47,7 @@
 - [Field (表单字段)](/llms/components/field.md): 自动关联 Label、Control、Description 与 Error 的无障碍表单字段容器。
 - [Fieldset (表单分组)](/llms/components/fieldset.md): 将相关表单字段归类到带标题（FieldsetLegend）的 18px 圆角区块内。
 - [Form (表单容器)](/llms/components/form.md): 基于 TanStack Form (@tanstack/react-form) 封装的类型安全表单容器与字段原语，内置同步/异步校验、服务端错误映射、细粒度状态订阅，无缝搭配 Input、Select、Textarea、Checkbox 等 Glaze 基础控件。
+- [Calendar (日历选择器)](/llms/components/calendar.md): 基于 react-day-picker v10 与 date-fns v4 封装的 Glaze 日历原语，内置中文（zh-CN）与周一首日、单选/多选/日期区间、多月并排、年月下拉快选、周数显示、9 组柔彩色相强调与自定义单元格扩展。
 
 ## Components — Selection & Menus (选择与命令)
 
@@ -84,6 +85,7 @@
 - [Table (语义表格)](/llms/components/table.md): 纯 HTML 语义表格标签与 Glaze 样式原语（Table / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell / TableCaption），支持紧凑/标准/宽松密度上下文、表头吸顶、行选中态与等宽数字排版，零重依赖。
 - [DataTable (数据表格)](/llms/components/data-table.md): 基于 Table 语义原语与 TanStack Table v9 封装的完备数据表格组件，内置排序、全局搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页。
 - [Sidebar (应用侧边栏)](/llms/components/sidebar.md): 参考 shadcn/ui 架构并结合 Base UI 1.9 与 Glaze 视觉规范打造的可组合侧边栏系统，内置 floating / sidebar / inset 三种布局变体、图标栏收起浮层、多级树形折叠、⌘B 快捷键与移动端抽屉。
+- [Resizable (可调分栏面板)](/llms/components/resizable.md): 基于 react-resizable-panels v4 封装的可拖拽分栏布局原语，支持水平/垂直嵌套、line/pill/gap 三种分隔把手形态、面板折叠展开、吸附刻度、延迟预览线、命令式控制与布局持久化。
 
 ## Components — Charts & DataViz (数据可视化图表)
 

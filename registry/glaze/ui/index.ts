@@ -11,6 +11,8 @@ export * from './segmented-control'
 export * from './table'
 export * from './data-table'
 export * from './sidebar'
+export * from './resizable'
+export * from './calendar'
 
 // Data Visualization & Chart Components (powered by Recharts)
 export * from './chart'

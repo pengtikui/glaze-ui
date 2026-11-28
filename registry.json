@@ -671,6 +671,32 @@
       ]
     },
     {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar (日历选择器)",
+      "description": "基于 react-day-picker v10 与 date-fns v4 封装的 Glaze 日历原语，内置中文（zh-CN）与周一首日、单选/多选/日期区间、多月并排、年月下拉快选、周数显示、9 组柔彩色相强调与自定义单元格扩展。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn",
+        "date-fns",
+        "react-day-picker"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "inputs"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/calendar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select (下拉选择器)",
@@ -1305,6 +1331,29 @@
       "files": [
         {
           "path": "registry/glaze/ui/sidebar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable (可调分栏面板)",
+      "description": "基于 react-resizable-panels v4 封装的可拖拽分栏布局原语，支持水平/垂直嵌套、line/pill/gap 三种分隔把手形态、面板折叠展开、吸附刻度、延迟预览线、命令式控制与布局持久化。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn",
+        "react-resizable-panels"
+      ],
+      "registryDependencies": [
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/resizable.tsx",
           "type": "registry:ui"
         }
       ]

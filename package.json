@@ -24,10 +24,13 @@
     "@xyflow/react": "^13.0.3",
     "cmdk": "^1.1.1",
     "cn": "^0.5.2",
+    "date-fns": "^4.4.0",
     "elkjs": "^0.12.2",
     "motion": "^14.14.0",
     "react": "^19.1.0",
+    "react-day-picker": "^10.0.2",
     "react-dom": "^19.1.0",
+    "react-resizable-panels": "^4.25.1",
     "recharts": "^3.11.1"
   },
   "devDependencies": {

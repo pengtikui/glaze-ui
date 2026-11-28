@@ -628,6 +628,24 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 
 **Data Attributes:** `data-invalid` (字段校验未通过（自动同步至 FormItem、FormLabel 与 FormControl 子控件）), `data-valid` (字段已触碰且校验通过), `data-dirty` (字段值相对默认值已发生变更), `data-touched` (字段已被触碰或失焦), `data-validating` (异步校验器正在执行), `data-submitting` (FormSubmit 处于异步提交进行中)
 
+## Calendar (日历选择器) — `@glaze/calendar`
+
+基于 react-day-picker v10 与 date-fns v4 封装的 Glaze 日历原语，内置中文（zh-CN）与周一首日、单选/多选/日期区间、多月并排、年月下拉快选、周数显示、9 组柔彩色相强调与自定义单元格扩展。
+- Install: `npx shadcn@latest add @glaze/calendar`
+- Import: `import { CalendarDayButton, Calendar } from '@/components/ui/calendar'`
+- Registry Deps: @glaze/motion, @glaze/style, @glaze/tokens
+
+**CalendarDayButton Props:**
+- `showTodayDot: boolean` = true — 是否在未选中的“今日”下方展示圆点指示
+
+**Calendar Props:**
+- `accent: CalendarAccent` = 'ink' — 选中态与区间高亮色：默认 ink（墨色主按钮 + 长春花柔和区间），或 9 组 Glaze 柔彩色相之一
+- `surface: CalendarSurface` = 'card' — 外层表面形态：card（纯白 28px 釉面卡）、soft（柔灰内嵌块）、embedded（透明无内边距，适合 Popover / Tile 内嵌）
+- `size: CalendarSize` = 'md' — 日期单元格尺寸密度：sm (32px) | md (36px) | lg (42px)
+- `showTodayDot: boolean` = true — 是否在“今日”数字下方显示圆点提示（仅未选中今日时显示）
+
+**Data Attributes:** `data-accent` (当前强调色主题（ink | sky | mint | peach | lilac | rose | lemon | aqua | periwinkle | coral）), `data-surface` (外层表面形态（card | soft | embedded）), `data-size` (日期格子尺寸密度（sm | md | lg）), `data-selected-single` (单选/多选模式下处于选中态的日期按钮), `data-range-start` (范围选择起始日期按钮), `data-range-middle` (范围选择中间连续区间日期按钮), `data-range-end` (范围选择结束日期按钮), `data-today` (今日高亮标记), `data-outside` (属于上月或下月的补齐日期), `data-disabled` (不可选择的禁用日期)
+
 ## Select (下拉选择器) — `@glaze/select`
 
 全圆胶囊触发器 + 20px 圆角浮层，支持选项分组、副标题说明与快速键盘检索。
@@ -1232,6 +1250,32 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 - `className: string`
 
 **Data Attributes:** `data-state` (桌面展开或收起态（expanded | collapsed）), `data-collapsible` (收起模式（icon | offcanvas | ""）), `data-variant` (外观变体（floating | sidebar | inset）), `data-side` (停靠方向（left | right）), `data-active` (当前菜单项处于激活路由态)
+
+## Resizable (可调分栏面板) — `@glaze/resizable`
+
+基于 react-resizable-panels v4 封装的可拖拽分栏布局原语，支持水平/垂直嵌套、line/pill/gap 三种分隔把手形态、面板折叠展开、吸附刻度、延迟预览线、命令式控制与布局持久化。
+- Install: `npx shadcn@latest add @glaze/resizable`
+- Import: `import { ResizablePanelGroup, ResizablePanel, ResizableHandle, ResizableSeparatorOverlay, useDefaultLayout, useGroupRef, usePanelRef, useParentGroup, useParentPanel } from '@/components/ui/resizable'`
+- Registry Deps: @glaze/tokens
+
+**ResizablePanelGroup Props:**
+- `orientation: ResizableOrientation` = 'horizontal' — 面板排列方向：horizontal（左右分栏）或 vertical（上下分栏）
+- `className: string` — 自定义外层容器类名
+
+**ResizablePanel Props:**
+- `className: string` — 面板内容区类名（react-resizable-panels v4 会将其应用到内部 Flex 子节点）
+
+**ResizableHandle Props:**
+- `withHandle: boolean` = false — 是否在分隔条中央显示带抓手图标的胶囊把手
+- `variant: ResizableHandleVariant` = 'line' — 分隔条视觉形态：line（细线）、pill（柔和胶囊轨道）、gap（透明画布槽，适合分割 Glaze Tile 卡片）
+- `hue: Hue` = 'periwinkle' — 悬停、聚焦与拖拽激活时的 Glaze 色相强调色
+- `className: string` — 自定义分隔条容器类名
+
+**ResizableSeparatorOverlay Props:**
+- `hue: Hue` = 'periwinkle' — 延迟预览线的 Glaze 色相强调色
+- `className: string` — 自定义预览线类名
+
+**Data Attributes:** `data-orientation` (面板分组排列方向（horizontal | vertical）), `data-variant` (分隔把手外观变体（line | pill | gap）), `data-separator` (分隔把手交互状态（inactive | hover | focus | active | disabled）), `data-separator-overlay` (延迟预览线激活状态（active | inactive）)
 
 ## Chart (图表主题与容器) — `@glaze/chart`
 
