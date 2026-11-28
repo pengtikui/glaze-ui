@@ -4,7 +4,9 @@ import { AdminShellDemoPage } from '@/registry/glaze/demos/admin-shell-demo'
 import { AiStudioDemoPage } from '@/registry/glaze/demos/ai-studio-demo'
 import { AnalyticsDemoPage } from '@/registry/glaze/demos/analytics-demo'
 import { CloudOpsDemoPage } from '@/registry/glaze/demos/cloud-ops-demo'
+import { HomeNetworkDemoPage } from '@/registry/glaze/demos/home-network-demo'
 import { HomelabDemoPage } from '@/registry/glaze/demos/homelab-demo'
+import { NetworkTopologyDemoPage } from '@/registry/glaze/demos/network-topology-demo'
 import { PersonalOsDemoPage } from '@/registry/glaze/demos/personal-os-demo'
 import { SmartHomeDemoPage } from '@/registry/glaze/demos/smart-home-demo'
 import { WorkspaceDemoPage } from '@/registry/glaze/demos/workspace-demo'
@@ -20,9 +22,11 @@ const DEMO_COMPONENTS: Record<string, React.ComponentType> = {
   'cloud-ops': CloudOpsDemoPage,
   'admin-shell': AdminShellDemoPage,
   'ai-studio': AiStudioDemoPage,
+  'network-topology': NetworkTopologyDemoPage,
+  'home-network': HomeNetworkDemoPage,
 }
 
-const FULL_BLEED_DEMOS = new Set(['admin-shell', 'ai-studio'])
+const FULL_BLEED_DEMOS = new Set(['admin-shell', 'ai-studio', 'network-topology', 'home-network'])
 
 /**
  * Pure standalone Demo canvas — completely outside the docs site header/sidebar/frame.

@@ -111,3 +111,12 @@
 - [AiSuggestions (快捷提示与任务队列)](/llms/components/ai-suggestions.md): 包含可换行/横滑的快捷提问建议胶囊 AiSuggestions，以及按待执行与已完成分组的实时 Agent 队列 AiQueue。
 - [AiContextMeter (上下文用量与模型选择器)](/llms/components/ai-context-meter.md): 基于 Base UI Popover 的上下文 Token 环形仪表与分段构成面板 AiContextMeter，以及带厂商/能力标签的模型选择器 AiModelSelector。
 - [AiArtifact (产物预览、文件树与检查点)](/llms/components/ai-artifact.md): 提供预览/源码双态切换的 AI 产物面板 AiArtifact、带 A/M/D 变更标记的目录树 AiFileTree 与对话回溯节点 AiCheckpoint。
+
+## Components — Topology & Architecture (网络与架构拓扑)
+
+- [TopologyCanvas (拓扑观测画布)](/llms/components/topology-canvas.md): 基于 @xyflow/react 与 elkjs (Eclipse Layout Kernel) 封装的 Glaze 拓扑可视化画布，内置无重叠分组自动布局、无描边主题、点击上下游链路追踪高亮、搜索/状态过滤与故障推演状态覆写。
+- [TopologyNode (网络与架构节点)](/llms/components/topology-node.md): 通用云服务与网络设备节点，内置 18 种架构/设备图标、实时状态呼吸点、遥测指标栏、色调与紧凑/详细双密度模式。
+- [TopologyGroup (逻辑与物理分组容器)](/llms/components/topology-group.md): 用于表达 VPC、可用区 AZ、子网、K8s 集群、VLAN 与机柜边界的柔彩浅底分组容器，自带区域健康汇总胶囊。
+- [TopologyEdge (流量动效拓扑连线)](/llms/components/topology-edge.md): 支持正交折线与贝塞尔曲线的观测连线，内置状态着色、CSS 实时流量脉冲动画、冗余备线虚线及可点击的中点指标胶囊。
+- [TopologyControls (拓扑工具栏、图例与缩略图)](/llms/components/topology-controls.md): 包含全圆胶囊悬浮工具栏 TopologyToolbar（搜索、状态过滤、横纵切换、流量动效、缩放居中）、状态图例 TopologyLegend 与 Glaze 配色缩略图 TopologyMinimap。
+- [TopologyInspector (节点与链路详情检查器)](/llms/components/topology-inspector.md): 右侧悬浮观测检查器，统一支持节点、分组与链路详情查看，集成实时指标卡、SparkChart 趋势、上下游跳转列表、最近告警事件与故障注入演练按钮。

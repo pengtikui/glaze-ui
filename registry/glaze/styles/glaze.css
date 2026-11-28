@@ -514,3 +514,74 @@ body {
   opacity: 1;
 }
 
+/* ================================================================
+   Glaze Topology & Architecture Canvas Overrides (@xyflow/react)
+   ================================================================ */
+@keyframes glaze-flow-dash {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-glaze-flow {
+  animation: glaze-flow-dash 1.15s linear infinite;
+}
+
+.animate-glaze-flow-slow {
+  animation: glaze-flow-dash 2.2s linear infinite;
+}
+
+.glaze-topology {
+  --xy-background-color: var(--glaze-canvas);
+  --xy-node-background-color: transparent;
+  --xy-node-border: none;
+  --xy-node-boxshadow-hover: none;
+  --xy-node-boxshadow-selected: none;
+  --xy-edge-stroke: #B8C0CE;
+  --xy-edge-stroke-selected: var(--glaze-periwinkle-500);
+  --xy-minimap-background-color: #FFFFFF;
+  --xy-minimap-mask-background-color: rgba(242, 244, 248, 0.72);
+  --xy-attribution-background-color: transparent;
+}
+
+.glaze-topology .react-flow__node {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.glaze-topology .react-flow__node.selectable:focus,
+.glaze-topology .react-flow__node.selectable:focus-visible {
+  outline: none;
+}
+
+.glaze-topology .react-flow__edge-path {
+  transition: stroke 160ms ease, opacity 180ms ease, stroke-width 160ms ease;
+}
+
+.glaze-topology .react-flow__handle {
+  border: 2px solid #FFFFFF;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.glaze-topology .react-flow__minimap {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--glaze-n100);
+  box-shadow: var(--glaze-shadow-overlay);
+}
+
+.glaze-topology .react-flow__attribution {
+  display: none;
+}
+
+.glaze-topology .react-flow__panel.center {
+  width: max-content;
+  max-width: calc(100% - 24px);
+}
+
+

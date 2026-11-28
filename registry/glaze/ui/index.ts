@@ -78,3 +78,11 @@ export * from './ai-code-block'
 export * from './ai-suggestions'
 export * from './ai-context-meter'
 export * from './ai-artifact'
+
+// Network & Architecture Topology Primitives (powered by @xyflow/react)
+export * from './topology-canvas'
+export * from './topology-node'
+export * from './topology-group'
+export * from './topology-edge'
+export * from './topology-controls'
+export * from './topology-inspector'

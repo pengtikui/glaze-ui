@@ -11009,5 +11009,852 @@
       "typeAliases": []
     },
     "sourceCode": "import * as React from 'react'\nimport {\n  ArrowCounterClockwise,\n  CaretRight,\n  Check,\n  Copy,\n  FileCode,\n  FlagBanner,\n  Folder,\n  FolderOpen,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { SegmentedControl } from '@/components/ui/segmented-control'\nimport { HUE_PALETTES, SEMANTIC_TOKENS, type Hue } from '@/lib/tokens'\nimport { PRESS_CLASS } from '@/lib/motion'\n\nexport interface AiArtifactProps extends React.HTMLAttributes<HTMLDivElement> {\n  title: string\n  subtitle?: string\n  badge?: string\n  hue?: Hue\n  /** Dual-mode view: interactive preview and raw source code */\n  preview?: React.ReactNode\n  code?: React.ReactNode\n  copyText?: string\n  defaultView?: 'preview' | 'code'\n  extraActions?: React.ReactNode\n}\n\nexport function AiArtifact({\n  title,\n  subtitle,\n  badge,\n  hue = 'periwinkle',\n  preview,\n  code,\n  copyText,\n  defaultView = 'preview',\n  extraActions,\n  className,\n  children,\n  ...props\n}: AiArtifactProps) {\n  const [view, setView] = React.useState<'preview' | 'code'>(\n    preview ? defaultView : 'code',\n  )\n  const [copied, setCopied] = React.useState(false)\n  const palette = HUE_PALETTES[hue]\n  const hasToggle = Boolean(preview && code)\n\n  const handleCopy = () => {\n    if (copyText) navigator.clipboard?.writeText(copyText).catch(() => {})\n    setCopied(true)\n    window.setTimeout(() => setCopied(false), 1600)\n  }\n\n  return (\n    <div\n      className={cn('flex w-full flex-col overflow-hidden rounded-tile bg-white', className)}\n      {...props}\n    >\n      <div className=\"flex flex-wrap items-center justify-between gap-2 border-b border-[#EEF0F3] px-4 py-3\">\n        <div className=\"flex min-w-0 items-center gap-2.5\">\n          <span\n            className=\"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px]\"\n            style={{ backgroundColor: palette[100], color: palette[700] }}\n          >\n            <FileCode size={16} weight=\"duotone\" />\n          </span>\n          <div className=\"min-w-0\">\n            <div className=\"flex items-center gap-2\">\n              <span className=\"truncate font-glaze-display text-[14px] font-extrabold text-[#1B1F27]\">\n                {title}\n              </span>\n              {badge && (\n                <span\n                  className=\"shrink-0 rounded-full px-2 py-0.5 font-glaze-mono text-[10.5px] font-bold\"\n                  style={{ backgroundColor: palette[50], color: palette[700] }}\n                >\n                  {badge}\n                </span>\n              )}\n            </div>\n            {subtitle && <div className=\"truncate text-[11.5px] text-[#6B7280]\">{subtitle}</div>}\n          </div>\n        </div>\n\n        <div className=\"flex flex-wrap items-center gap-1.5\">\n          {hasToggle && (\n            <SegmentedControl\n              size=\"sm\"\n              value={view}\n              onValueChange={setView}\n              options={[\n                { value: 'preview', label: '预览' },\n                { value: 'code', label: '源码' },\n              ]}\n            />\n          )}\n          {copyText && (\n            <button\n              type=\"button\"\n              onClick={handleCopy}\n              className={cn(\n                'inline-flex h-8 cursor-pointer items-center gap-1 rounded-full bg-[#F2F3F5] px-3 text-[12px] font-semibold text-[#1B1F27] hover:bg-[#E8EBF0]',\n                PRESS_CLASS,\n              )}\n            >\n              {copied ? <Check size={13} weight=\"bold\" /> : <Copy size={13} />}\n              <span>{copied ? '已复制' : '复制'}</span>\n            </button>\n          )}\n          {extraActions}\n        </div>\n      </div>\n\n      <div className=\"min-h-0 flex-1 p-4\">\n        {hasToggle ? (view === 'preview' ? preview : code) : (preview ?? code ?? children)}\n      </div>\n    </div>\n  )\n}\n\nexport interface AiFileTreeNode {\n  path: string\n  name: string\n  type: 'file' | 'folder'\n  status?: 'added' | 'modified' | 'deleted'\n  children?: AiFileTreeNode[]\n}\n\nexport interface AiFileTreeProps extends React.HTMLAttributes<HTMLDivElement> {\n  nodes: AiFileTreeNode[]\n  selectedPath?: string\n  onSelectPath?: (path: string) => void\n  defaultExpanded?: string[]\n}\n\nexport function AiFileTree({\n  nodes,\n  selectedPath,\n  onSelectPath,\n  defaultExpanded = [],\n  className,\n  ...props\n}: AiFileTreeProps) {\n  const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set(defaultExpanded))\n\n  const toggle = (p: string) => {\n    setExpanded((prev) => {\n      const next = new Set(prev)\n      if (next.has(p)) next.delete(p)\n      else next.add(p)\n      return next\n    })\n  }\n\n  const renderNode = (node: AiFileTreeNode, depth: number) => {\n    const isFolder = node.type === 'folder'\n    const isOpen = expanded.has(node.path)\n    const isSelected = selectedPath === node.path\n    const statusBadge =\n      node.status === 'added'\n        ? { label: 'A', color: SEMANTIC_TOKENS.normal.ink, bg: SEMANTIC_TOKENS.normal.pillBg }\n        : node.status === 'modified'\n          ? { label: 'M', color: SEMANTIC_TOKENS.warning.ink, bg: SEMANTIC_TOKENS.warning.pillBg }\n          : node.status === 'deleted'\n            ? { label: 'D', color: SEMANTIC_TOKENS.error.ink, bg: SEMANTIC_TOKENS.error.pillBg }\n            : null\n\n    return (\n      <div key={node.path}>\n        <button\n          type=\"button\"\n          onClick={() => (isFolder ? toggle(node.path) : onSelectPath?.(node.path))}\n          style={{ paddingLeft: 10 + depth * 14 }}\n          className={cn(\n            'flex w-full cursor-pointer items-center justify-between gap-2 rounded-[10px] py-1.5 pr-2.5 text-left text-[12.5px] transition-colors outline-none',\n            isSelected\n              ? 'bg-[#E4E6FD] font-bold text-[#262B7A]'\n              : 'font-medium text-[#1B1F27] hover:bg-white',\n          )}\n        >\n          <span className=\"flex min-w-0 items-center gap-1.5\">\n            {isFolder ? (\n              <>\n                <CaretRight\n                  size={11}\n                  weight=\"bold\"\n                  className={cn(\n                    'shrink-0 text-[#8A90A0] transition-transform duration-150',\n                    isOpen && 'rotate-90',\n                  )}\n                />\n                {isOpen ? (\n                  <FolderOpen size={14} weight=\"duotone\" className=\"shrink-0 text-[#4A9BD8]\" />\n                ) : (\n                  <Folder size={14} weight=\"duotone\" className=\"shrink-0 text-[#4A9BD8]\" />\n                )}\n              </>\n            ) : (\n              <>\n                <span className=\"w-[11px] shrink-0\" />\n                <FileCode size={14} weight=\"duotone\" className=\"shrink-0 text-[#7B80EA]\" />\n              </>\n            )}\n            <span className=\"truncate font-glaze-mono\">{node.name}</span>\n          </span>\n          {statusBadge && (\n            <span\n              className=\"shrink-0 rounded-full px-1.5 py-0.5 font-glaze-mono text-[10px] font-bold\"\n              style={{ backgroundColor: statusBadge.bg, color: statusBadge.color }}\n            >\n              {statusBadge.label}\n            </span>\n          )}\n        </button>\n        {isFolder && isOpen && node.children?.map((child) => renderNode(child, depth + 1))}\n      </div>\n    )\n  }\n\n  return (\n    <div\n      className={cn('flex w-full flex-col gap-0.5 rounded-inner bg-[#F6F7F9] p-2', className)}\n      {...props}\n    >\n      {nodes.map((n) => renderNode(n, 0))}\n    </div>\n  )\n}\n\nexport interface AiCheckpointProps extends React.HTMLAttributes<HTMLDivElement> {\n  label?: string\n  timestamp?: string\n  onRestore?: () => void\n  restoreLabel?: string\n}\n\nexport function AiCheckpoint({\n  label = '检查点已保存',\n  timestamp,\n  onRestore,\n  restoreLabel = '回溯到此节点',\n  className,\n  ...props\n}: AiCheckpointProps) {\n  return (\n    <div className={cn('flex w-full items-center gap-3 py-1', className)} {...props}>\n      <span className=\"h-px flex-1 bg-[#E8EBF0]\" />\n      <div className=\"flex items-center gap-2 rounded-full bg-[#F6F7F9] py-1 pr-2 pl-3 text-[11.5px] font-semibold text-[#5B6170]\">\n        <FlagBanner size={13} weight=\"duotone\" className=\"text-[#4A4FB8]\" />\n        <span>{label}</span>\n        {timestamp && <span className=\"font-glaze-mono text-[10.5px] text-[#8A90A0]\">{timestamp}</span>}\n        {onRestore && (\n          <button\n            type=\"button\"\n            onClick={onRestore}\n            className={cn(\n              'ml-1 inline-flex cursor-pointer items-center gap-1 rounded-full bg-white px-2.5 py-0.5 text-[11px] font-bold text-[#123A5C] hover:bg-[#E4E6FD] hover:text-[#262B7A]',\n              PRESS_CLASS,\n            )}\n          >\n            <ArrowCounterClockwise size={11} weight=\"bold\" />\n            <span>{restoreLabel}</span>\n          </button>\n        )}\n      </div>\n      <span className=\"h-px flex-1 bg-[#E8EBF0]\" />\n    </div>\n  )\n}\n"
+  },
+  "topology-canvas": {
+    "slug": "topology-canvas",
+    "title": "TopologyCanvas",
+    "cnTitle": "拓扑观测画布",
+    "category": "topology",
+    "kind": "topology",
+    "description": "基于 @xyflow/react 与 elkjs (Eclipse Layout Kernel) 封装的 Glaze 拓扑可视化画布，内置无重叠分组自动布局、无描边主题、点击上下游链路追踪高亮、搜索/状态过滤与故障推演状态覆写。",
+    "parts": [
+      "TopologyCanvas",
+      "useTopology"
+    ],
+    "dataAttributes": [
+      {
+        "attr": "data-surface",
+        "desc": "画布底面模式（canvas | transparent）"
+      },
+      {
+        "attr": "data-direction",
+        "desc": "当前布局方向（LR | TB）"
+      }
+    ],
+    "cssVars": [
+      "--glaze-canvas"
+    ],
+    "baseUiUrl": null,
+    "dependencies": [
+      "@xyflow/react",
+      "cn"
+    ],
+    "registryDependencies": [
+      "@glaze/style",
+      "@glaze/tokens",
+      "@glaze/topology",
+      "@glaze/topology-edge",
+      "@glaze/topology-group",
+      "@glaze/topology-node"
+    ],
+    "api": {
+      "exportedComponents": [
+        "TopologyCanvas",
+        "useTopology"
+      ],
+      "sections": [
+        {
+          "name": "TopologyCanvas",
+          "extends": "Omit<\n    ReactFlowProps<TopologyFlowNode, TopologyFlowEdge>,\n    'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes' | 'onNodeClick' | 'onEdgeClick' | 'onSelectionChange'\n  >",
+          "props": [
+            {
+              "name": "nodes",
+              "type": "TopologyFlowNode[]",
+              "required": true,
+              "defaultValue": null,
+              "description": "Topology nodes (including optional `topologyGroup` parent containers)"
+            },
+            {
+              "name": "edges",
+              "type": "TopologyFlowEdge[]",
+              "required": true,
+              "defaultValue": null,
+              "description": "Topology links connecting nodes"
+            },
+            {
+              "name": "direction",
+              "type": "TopologyDirection",
+              "required": false,
+              "defaultValue": null,
+              "description": "Active layout direction controlling port handle placement"
+            },
+            {
+              "name": "animateFlow",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Toggle animated directional traffic flow on edges"
+            },
+            {
+              "name": "density",
+              "type": "'compact' | 'detailed'",
+              "required": false,
+              "defaultValue": null,
+              "description": "Default visual density for device/service nodes"
+            },
+            {
+              "name": "selection",
+              "type": "TopologySelection | null",
+              "required": false,
+              "defaultValue": null,
+              "description": "Controlled selection (node or edge)"
+            },
+            {
+              "name": "onSelectionChange",
+              "type": "(selection: TopologySelection | null) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Callback fired when selection changes"
+            },
+            {
+              "name": "traceOnSelect",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Automatically trace and highlight upstream/downstream paths on selection"
+            },
+            {
+              "name": "traceDirection",
+              "type": "'both' | 'upstream' | 'downstream'",
+              "required": false,
+              "defaultValue": null,
+              "description": "Direction of path tracing when an item is selected"
+            },
+            {
+              "name": "searchQuery",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "Optional search keyword dimming non-matching nodes"
+            },
+            {
+              "name": "statusFilter",
+              "type": "'all' | Status",
+              "required": false,
+              "defaultValue": null,
+              "description": "Optional status filter ('all' | Status) dimming non-matching nodes"
+            },
+            {
+              "name": "nodeStatusOverrides",
+              "type": "Map<string, Status>",
+              "required": false,
+              "defaultValue": null,
+              "description": "External status overrides for nodes (e.g. fault impact simulation)"
+            },
+            {
+              "name": "edgeStatusOverrides",
+              "type": "Map<string, Status>",
+              "required": false,
+              "defaultValue": null,
+              "description": "External status overrides for edges"
+            },
+            {
+              "name": "showGrid",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Show subtle Glaze dot grid background"
+            },
+            {
+              "name": "surface",
+              "type": "'canvas' | 'transparent'",
+              "required": false,
+              "defaultValue": null,
+              "description": "Canvas surface mode ('canvas' uses #F2F4F8, 'transparent' blends inside a Tile)"
+            },
+            {
+              "name": "draggable",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Allow dragging nodes to adjust layout temporarily"
+            },
+            {
+              "name": "autoLayout",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Automatically compute collision-free compound layout with Eclipse Layout Kernel (`elkjs`)"
+            },
+            {
+              "name": "layoutOptions",
+              "type": "Omit<TopologyLayoutOptions, 'direction' | 'density'>",
+              "required": false,
+              "defaultValue": null,
+              "description": "Fine-grained ELK layout spacing & algorithm options when `autoLayout` is enabled"
+            },
+            {
+              "name": "fitViewKey",
+              "type": "string | number",
+              "required": false,
+              "defaultValue": null,
+              "description": "Automatically re-fit viewport when `fitViewKey` changes"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "Container className (must supply explicit height or flex-1)"
+            },
+            {
+              "name": "children",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Floating overlay children (`TopologyToolbar`, `TopologyLegend`, `TopologyMinimap`, etc.)"
+            }
+          ]
+        },
+        {
+          "name": "useTopology",
+          "extends": "",
+          "props": []
+        }
+      ],
+      "helperInterfaces": [],
+      "typeAliases": []
+    },
+    "sourceCode": "import * as React from 'react'\nimport {\n  Background,\n  BackgroundVariant,\n  ReactFlow,\n  ReactFlowProvider,\n  useNodesState,\n  useReactFlow,\n  type FitViewOptions,\n  type NodeMouseHandler,\n  type EdgeMouseHandler,\n  type ReactFlowProps,\n} from '@xyflow/react'\nimport '@xyflow/react/dist/style.css'\nimport { cn } from 'cn'\nimport { TopologyEdge } from '@/components/ui/topology-edge'\nimport { TopologyGroup } from '@/components/ui/topology-group'\nimport { TopologyNode } from '@/components/ui/topology-node'\nimport type { Status } from '@/lib/tokens'\nimport {\n  TopologyViewContext,\n  isTopologyGroupNode,\n  traceTopologyPath,\n  useTopologyLayout,\n  useTopologyView,\n  type TopologyDirection,\n  type TopologyFlowEdge,\n  type TopologyFlowNode,\n  type TopologyLayoutOptions,\n  type TopologySelection,\n} from '@/lib/topology'\n\nconst GLAZE_NODE_TYPES = {\n  topologyNode: TopologyNode,\n  topologyGroup: TopologyGroup,\n} as const\n\nconst GLAZE_EDGE_TYPES = {\n  topologyEdge: TopologyEdge,\n} as const\n\nconst DEFAULT_FIT_VIEW_OPTIONS: FitViewOptions = {\n  padding: 0.14,\n  duration: 280,\n}\n\nexport interface TopologyCanvasProps\n  extends Omit<\n    ReactFlowProps<TopologyFlowNode, TopologyFlowEdge>,\n    'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes' | 'onNodeClick' | 'onEdgeClick' | 'onSelectionChange'\n  > {\n  /** Topology nodes (including optional `topologyGroup` parent containers) */\n  nodes: TopologyFlowNode[]\n  /** Topology links connecting nodes */\n  edges: TopologyFlowEdge[]\n  /** Active layout direction controlling port handle placement */\n  direction?: TopologyDirection\n  /** Toggle animated directional traffic flow on edges */\n  animateFlow?: boolean\n  /** Default visual density for device/service nodes */\n  density?: 'compact' | 'detailed'\n  /** Controlled selection (node or edge) */\n  selection?: TopologySelection | null\n  /** Callback fired when selection changes */\n  onSelectionChange?: (selection: TopologySelection | null) => void\n  /** Automatically trace and highlight upstream/downstream paths on selection */\n  traceOnSelect?: boolean\n  /** Direction of path tracing when an item is selected */\n  traceDirection?: 'both' | 'upstream' | 'downstream'\n  /** Optional search keyword dimming non-matching nodes */\n  searchQuery?: string\n  /** Optional status filter ('all' | Status) dimming non-matching nodes */\n  statusFilter?: 'all' | Status\n  /** External status overrides for nodes (e.g. fault impact simulation) */\n  nodeStatusOverrides?: Map<string, Status>\n  /** External status overrides for edges */\n  edgeStatusOverrides?: Map<string, Status>\n  /** Show subtle Glaze dot grid background */\n  showGrid?: boolean\n  /** Canvas surface mode ('canvas' uses #F2F4F8, 'transparent' blends inside a Tile) */\n  surface?: 'canvas' | 'transparent'\n  /** Allow dragging nodes to adjust layout temporarily */\n  draggable?: boolean\n  /** Automatically compute collision-free compound layout with Eclipse Layout Kernel (`elkjs`) */\n  autoLayout?: boolean\n  /** Fine-grained ELK layout spacing & algorithm options when `autoLayout` is enabled */\n  layoutOptions?: Omit<TopologyLayoutOptions, 'direction' | 'density'>\n  /** Automatically re-fit viewport when `fitViewKey` changes */\n  fitViewKey?: string | number\n  /** Container className (must supply explicit height or flex-1) */\n  className?: string\n  /** Floating overlay children (`TopologyToolbar`, `TopologyLegend`, `TopologyMinimap`, etc.) */\n  children?: React.ReactNode\n}\n\nfunction TopologyCanvasInner({\n  nodes,\n  edges,\n  direction = 'LR',\n  animateFlow = true,\n  density = 'detailed',\n  selection: controlledSelection,\n  onSelectionChange,\n  traceOnSelect = true,\n  traceDirection = 'both',\n  searchQuery = '',\n  statusFilter = 'all',\n  nodeStatusOverrides,\n  edgeStatusOverrides,\n  showGrid = true,\n  surface = 'canvas',\n  draggable = false,\n  autoLayout = true,\n  layoutOptions,\n  fitViewKey,\n  className,\n  children,\n  ...rest\n}: TopologyCanvasProps) {\n  const { fitView } = useReactFlow()\n  const {\n    nodes: resolvedNodes,\n    isLayouting,\n    layoutVersion,\n  } = useTopologyLayout(nodes, edges, {\n    enabled: autoLayout,\n    direction,\n    density,\n    ...layoutOptions,\n  })\n  const [interactiveNodes, setInteractiveNodes, handleNodesChange] =\n    useNodesState<TopologyFlowNode>(resolvedNodes)\n  React.useEffect(() => {\n    setInteractiveNodes(resolvedNodes)\n  }, [resolvedNodes, setInteractiveNodes])\n\n  const [uncontrolledSelection, setUncontrolledSelection] =\n    React.useState<TopologySelection | null>(null)\n\n  const selection =\n    controlledSelection !== undefined ? controlledSelection : uncontrolledSelection\n\n  // Guard against mobile WebKit/Chrome delayed ghost-clicks landing on a node\n  // directly behind a floating TopologyInspector right after it unmounts.\n  const prevSelectionRef = React.useRef<TopologySelection | null>(selection)\n  const lastDismissedAtRef = React.useRef(0)\n  React.useEffect(() => {\n    if (prevSelectionRef.current !== null && selection === null) {\n      lastDismissedAtRef.current = performance.now()\n    }\n    prevSelectionRef.current = selection\n  }, [selection])\n\n  const selectItem = React.useCallback(\n    (next: TopologySelection | null) => {\n      if (next === null && selection !== null) {\n        lastDismissedAtRef.current = performance.now()\n      }\n      if (controlledSelection === undefined) {\n        setUncontrolledSelection(next)\n      }\n      onSelectionChange?.(next)\n    },\n    [controlledSelection, onSelectionChange, selection],\n  )\n\n  const effectiveNodeOverrides = React.useMemo(\n    () => nodeStatusOverrides ?? new Map<string, Status>(),\n    [nodeStatusOverrides],\n  )\n  const effectiveEdgeOverrides = React.useMemo(\n    () => edgeStatusOverrides ?? new Map<string, Status>(),\n    [edgeStatusOverrides],\n  )\n\n  // Compute highlighted node & edge sets from selection trace + search + status filter\n  const { hasActiveHighlight, highlightedNodeIds, highlightedEdgeIds } = React.useMemo(() => {\n    const trimmed = searchQuery.trim().toLowerCase()\n    const hasFilter = trimmed.length > 0 || statusFilter !== 'all'\n\n    if (selection && traceOnSelect) {\n      const traced = traceTopologyPath(nodes, edges, selection, traceDirection)\n      return {\n        hasActiveHighlight: traced.nodeIds.size > 0 || traced.edgeIds.size > 0,\n        highlightedNodeIds: traced.nodeIds,\n        highlightedEdgeIds: traced.edgeIds,\n      }\n    }\n\n    if (hasFilter) {\n      const matchedNodes = new Set<string>()\n      const matchedEdges = new Set<string>()\n\n      for (const n of nodes) {\n        if (isTopologyGroupNode(n)) continue\n        const st = effectiveNodeOverrides.get(n.id) ?? n.data.status ?? 'normal'\n        const statusOk = statusFilter === 'all' || st === statusFilter\n        const text = `${n.data.label} ${n.data.subtitle ?? ''} ${n.data.address ?? ''} ${n.data.badge ?? ''} ${n.data.layer ?? ''}`.toLowerCase()\n        const queryOk = !trimmed || text.includes(trimmed)\n\n        if (statusOk && queryOk) {\n          matchedNodes.add(n.id)\n          if (n.parentId) matchedNodes.add(n.parentId)\n        }\n      }\n\n      for (const e of edges) {\n        if (matchedNodes.has(e.source) && matchedNodes.has(e.target)) {\n          matchedEdges.add(e.id)\n        }\n      }\n\n      return {\n        hasActiveHighlight: true,\n        highlightedNodeIds: matchedNodes,\n        highlightedEdgeIds: matchedEdges,\n      }\n    }\n\n    return {\n      hasActiveHighlight: false,\n      highlightedNodeIds: new Set<string>(),\n      highlightedEdgeIds: new Set<string>(),\n    }\n  }, [\n    nodes,\n    edges,\n    selection,\n    traceOnSelect,\n    traceDirection,\n    searchQuery,\n    statusFilter,\n    effectiveNodeOverrides,\n  ])\n\n  // Re-fit view smoothly whenever ELK layout finishes or preset/direction changes\n  React.useEffect(() => {\n    if (autoLayout && isLayouting) return\n    const timer = window.setTimeout(() => {\n      void fitView(DEFAULT_FIT_VIEW_OPTIONS)\n    }, 50)\n    return () => window.clearTimeout(timer)\n  }, [fitViewKey, direction, layoutVersion, autoLayout, isLayouting, fitView])\n\n  const handleNodeClick: NodeMouseHandler<TopologyFlowNode> = React.useCallback(\n    (_event, node) => {\n      if (performance.now() - lastDismissedAtRef.current < 360) return\n      selectItem(\n        selection?.type === 'node' && selection.id === node.id\n          ? null\n          : { type: 'node', id: node.id },\n      )\n    },\n    [selectItem, selection],\n  )\n\n  const handleEdgeClick: EdgeMouseHandler<TopologyFlowEdge> = React.useCallback(\n    (_event, edge) => {\n      if (performance.now() - lastDismissedAtRef.current < 360) return\n      selectItem(\n        selection?.type === 'edge' && selection.id === edge.id\n          ? null\n          : { type: 'edge', id: edge.id },\n      )\n    },\n    [selectItem, selection],\n  )\n\n  const handlePaneClick = React.useCallback(() => {\n    if (selection) selectItem(null)\n  }, [selection, selectItem])\n\n  const ctxValue = React.useMemo(\n    () => ({\n      direction,\n      animateFlow,\n      density,\n      selection,\n      hasActiveHighlight,\n      highlightedNodeIds,\n      highlightedEdgeIds,\n      nodeStatusOverrides: effectiveNodeOverrides,\n      edgeStatusOverrides: effectiveEdgeOverrides,\n      selectItem,\n    }),\n    [\n      direction,\n      animateFlow,\n      density,\n      selection,\n      hasActiveHighlight,\n      highlightedNodeIds,\n      highlightedEdgeIds,\n      effectiveNodeOverrides,\n      effectiveEdgeOverrides,\n      selectItem,\n    ],\n  )\n\n  return (\n    <TopologyViewContext.Provider value={ctxValue}>\n      <div\n        data-surface={surface}\n        data-direction={direction}\n        className={cn(\n          'glaze-topology relative h-full w-full overflow-hidden',\n          surface === 'canvas' ? 'bg-[#F2F4F8]' : 'bg-transparent',\n          className,\n        )}\n      >\n        <ReactFlow<TopologyFlowNode, TopologyFlowEdge>\n          nodes={interactiveNodes}\n          edges={edges}\n          nodeTypes={GLAZE_NODE_TYPES}\n          edgeTypes={GLAZE_EDGE_TYPES}\n          onNodesChange={draggable ? handleNodesChange : undefined}\n          onNodeClick={handleNodeClick}\n          onEdgeClick={handleEdgeClick}\n          onPaneClick={handlePaneClick}\n          nodesDraggable={draggable}\n          nodesConnectable={false}\n          elementsSelectable\n          fitView\n          fitViewOptions={DEFAULT_FIT_VIEW_OPTIONS}\n          minZoom={0.3}\n          maxZoom={1.75}\n          proOptions={{ hideAttribution: true }}\n          className={cn(\n            'transition-opacity duration-150',\n            autoLayout && layoutVersion === 0 && isLayouting ? 'opacity-0' : 'opacity-100',\n          )}\n          {...rest}\n        >\n          {showGrid && (\n            <Background\n              variant={BackgroundVariant.Dots}\n              gap={22}\n              size={1.4}\n              color=\"#CBD2DF\"\n            />\n          )}\n          {children}\n        </ReactFlow>\n      </div>\n    </TopologyViewContext.Provider>\n  )\n}\n\n/**\n * Glaze Topology & Architecture Canvas powered by `@xyflow/react`.\n * Wraps `ReactFlowProvider`, Glaze custom node/group/edge types, path-trace highlighting,\n * search/status filtering, and fault-impact overrides.\n */\nexport function TopologyCanvas(props: TopologyCanvasProps) {\n  return (\n    <ReactFlowProvider>\n      <TopologyCanvasInner {...props} />\n    </ReactFlowProvider>\n  )\n}\n\nexport { useTopologyView as useTopology }\n"
+  },
+  "topology-node": {
+    "slug": "topology-node",
+    "title": "TopologyNode",
+    "cnTitle": "网络与架构节点",
+    "category": "topology",
+    "kind": "topology",
+    "description": "通用云服务与网络设备节点，内置 18 种架构/设备图标、实时状态呼吸点、遥测指标栏、色调与紧凑/详细双密度模式。",
+    "parts": [
+      "TopologyNode",
+      "TopologyNodeCard",
+      "TopologyKindIcon"
+    ],
+    "dataAttributes": [
+      {
+        "attr": "data-kind",
+        "desc": "节点语义类型（service | database | firewall | switch 等 18 种）"
+      },
+      {
+        "attr": "data-status",
+        "desc": "当前健康状态（normal | warning | error | info | disabled）"
+      },
+      {
+        "attr": "data-selected",
+        "desc": "节点处于选中高亮态"
+      },
+      {
+        "attr": "data-dimmed",
+        "desc": "链路追踪或过滤时弱化显示"
+      }
+    ],
+    "cssVars": [
+      "--radius-inner"
+    ],
+    "baseUiUrl": null,
+    "dependencies": [
+      "@phosphor-icons/react",
+      "@xyflow/react",
+      "cn"
+    ],
+    "registryDependencies": [
+      "@glaze/hue-tag",
+      "@glaze/icon-tile",
+      "@glaze/status-dot",
+      "@glaze/status-pill",
+      "@glaze/style",
+      "@glaze/tokens",
+      "@glaze/topology"
+    ],
+    "api": {
+      "exportedComponents": [
+        "TopologyKindIcon",
+        "TopologyNodeCard",
+        "TopologyNode"
+      ],
+      "sections": [
+        {
+          "name": "TopologyKindIcon",
+          "extends": "",
+          "props": [
+            {
+              "name": "kind",
+              "type": "TopologyNodeKind",
+              "required": false,
+              "defaultValue": "'service'",
+              "description": ""
+            },
+            {
+              "name": "size",
+              "type": "number",
+              "required": false,
+              "defaultValue": "18",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "TopologyNodeCard",
+          "extends": "Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>",
+          "props": [
+            {
+              "name": "data",
+              "type": "TopologyNodeData",
+              "required": true,
+              "defaultValue": null,
+              "description": "Node data payload"
+            },
+            {
+              "name": "selected",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Whether the node is actively selected"
+            },
+            {
+              "name": "dimmed",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Dim non-matching nodes when a path trace or search filter is active"
+            },
+            {
+              "name": "effectiveStatus",
+              "type": "Status",
+              "required": false,
+              "defaultValue": null,
+              "description": "Override visual status (e.g. cascaded fault status)"
+            },
+            {
+              "name": "density",
+              "type": "'compact' | 'detailed'",
+              "required": false,
+              "defaultValue": null,
+              "description": "Density override ('compact' | 'detailed')"
+            }
+          ]
+        },
+        {
+          "name": "TopologyNode",
+          "extends": "",
+          "props": []
+        }
+      ],
+      "helperInterfaces": [],
+      "typeAliases": [
+        {
+          "name": "TopologyNodeProps",
+          "definition": "NodeProps<TopologyNodeItem>",
+          "description": ""
+        }
+      ]
+    },
+    "sourceCode": "import * as React from 'react'\nimport { Handle, Position, type NodeProps } from '@xyflow/react'\nimport {\n  Archive,\n  ArrowsSplit,\n  Broadcast,\n  CirclesThreePlus,\n  Cloud,\n  Cpu,\n  Cube,\n  Database,\n  Desktop,\n  Devices,\n  GitFork,\n  Globe,\n  HardDrives,\n  Lightning,\n  Network,\n  Queue,\n  ShieldCheck,\n  WifiHigh,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { HUE_PALETTES, SEMANTIC_TOKENS, TILE_THEMES, type Hue, type Status } from '@/lib/tokens'\nimport {\n  TOPOLOGY_KIND_META,\n  useTopologyView,\n  type TopologyNodeData,\n  type TopologyNodeItem,\n  type TopologyNodeKind,\n} from '@/lib/topology'\n\nexport function TopologyKindIcon({\n  kind = 'service',\n  size = 18,\n}: {\n  kind?: TopologyNodeKind\n  size?: number\n}) {\n  switch (kind) {\n    case 'internet':\n      return <Globe size={size} weight=\"duotone\" />\n    case 'cdn':\n      return <Cloud size={size} weight=\"duotone\" />\n    case 'firewall':\n      return <ShieldCheck size={size} weight=\"duotone\" />\n    case 'gateway':\n      return <GitFork size={size} weight=\"duotone\" />\n    case 'load-balancer':\n      return <ArrowsSplit size={size} weight=\"duotone\" />\n    case 'router':\n      return <Network size={size} weight=\"duotone\" />\n    case 'switch':\n      return <Broadcast size={size} weight=\"duotone\" />\n    case 'ap':\n      return <WifiHigh size={size} weight=\"duotone\" />\n    case 'cluster':\n      return <CirclesThreePlus size={size} weight=\"duotone\" />\n    case 'database':\n      return <Database size={size} weight=\"duotone\" />\n    case 'cache':\n      return <Lightning size={size} weight=\"duotone\" />\n    case 'queue':\n      return <Queue size={size} weight=\"duotone\" />\n    case 'storage':\n      return <Archive size={size} weight=\"duotone\" />\n    case 'server':\n      return <Cpu size={size} weight=\"duotone\" />\n    case 'nas':\n      return <HardDrives size={size} weight=\"duotone\" />\n    case 'client':\n      return <Desktop size={size} weight=\"duotone\" />\n    case 'iot':\n      return <Devices size={size} weight=\"duotone\" />\n    case 'service':\n    default:\n      return <Cube size={size} weight=\"duotone\" />\n  }\n}\n\nexport interface TopologyNodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {\n  /** Node data payload */\n  data: TopologyNodeData\n  /** Whether the node is actively selected */\n  selected?: boolean\n  /** Dim non-matching nodes when a path trace or search filter is active */\n  dimmed?: boolean\n  /** Override visual status (e.g. cascaded fault status) */\n  effectiveStatus?: Status\n  /** Density override ('compact' | 'detailed') */\n  density?: 'compact' | 'detailed'\n}\n\n/**\n * Pure presentational Glaze node card usable both inside React Flow (`TopologyNode`)\n * and standalone in legends, previews, or inspector headers.\n */\nexport function TopologyNodeCard({\n  data,\n  selected = false,\n  dimmed = false,\n  effectiveStatus,\n  density: densityProp,\n  className,\n  style,\n  ...props\n}: TopologyNodeCardProps) {\n  const kind = data.kind ?? 'service'\n  const kindMeta = TOPOLOGY_KIND_META[kind]\n  const hue: Hue = data.hue ?? kindMeta.defaultHue\n  const tone = data.tone ?? 'white'\n  const theme = TILE_THEMES[tone]\n  const isDark = Boolean(theme.dark)\n  const status: Status = effectiveStatus ?? data.status ?? 'normal'\n  const density = densityProp ?? data.density ?? 'detailed'\n  const isCompact = density === 'compact'\n  const sem = SEMANTIC_TOKENS[status]\n  const huePalette = HUE_PALETTES[hue]\n\n  const isFault = status === 'error'\n  const isWarn = status === 'warning'\n\n  let ringColor: string | undefined\n  if (selected) {\n    ringColor = isFault ? '#E5603B' : isWarn ? '#E3A33B' : huePalette[500]\n  } else if (isFault) {\n    ringColor = '#E5603B'\n  } else if (isWarn) {\n    ringColor = '#E3A33B'\n  }\n\n  return (\n    <div\n      data-kind={kind}\n      data-status={status}\n      data-selected={selected ? '' : undefined}\n      data-dimmed={dimmed ? '' : undefined}\n      data-density={density}\n      className={cn(\n        'relative flex flex-col rounded-inner transition-[opacity,transform,box-shadow] duration-150 select-none',\n        isCompact ? 'w-[196px] gap-2 p-3' : 'w-[228px] gap-2.5 p-3.5',\n        dimmed && 'opacity-30',\n        className,\n      )}\n      style={{\n        backgroundColor: theme.bg,\n        color: theme.ink,\n        boxShadow: ringColor\n          ? selected\n            ? `0 0 0 2.5px ${ringColor}`\n            : `inset 0 0 0 1.5px ${ringColor}`\n          : undefined,\n        ...style,\n      }}\n      {...props}\n    >\n      {/* Header Row */}\n      <div className=\"flex items-start gap-2.5\">\n        <IconTile\n          hue={isDark ? 'dark-glass' : hue}\n          size={isCompact ? 'sm' : 'md'}\n          className=\"shrink-0\"\n        >\n          {data.icon ?? <TopologyKindIcon kind={kind} size={isCompact ? 16 : 18} />}\n        </IconTile>\n\n        <div className=\"min-w-0 flex-1\">\n          <div className=\"flex items-center justify-between gap-1.5\">\n            <span\n              className={cn(\n                'truncate font-semibold leading-tight',\n                isCompact ? 'text-[13px]' : 'text-[14px]',\n              )}\n              style={{ color: theme.ink }}\n              title={data.label}\n            >\n              {data.label}\n            </span>\n            <StatusDot\n              status={status}\n              size=\"sm\"\n              animated={status === 'normal' || status === 'warning' || status === 'error'}\n              className=\"shrink-0\"\n            />\n          </div>\n\n          <div className=\"mt-0.5 flex items-center gap-1.5\">\n            {(data.subtitle || data.address) && (\n              <span\n                className=\"truncate font-glaze-mono text-[11px] leading-4\"\n                style={{ color: theme.soft }}\n                title={data.subtitle ?? data.address}\n              >\n                {data.subtitle ?? data.address}\n              </span>\n            )}\n          </div>\n        </div>\n      </div>\n\n      {/* Inline Telemetry Metrics */}\n      {!isCompact && data.metrics && data.metrics.length > 0 && (\n        <div\n          className=\"grid gap-1.5 rounded-[12px] px-2.5 py-2\"\n          style={{\n            gridTemplateColumns: `repeat(${Math.min(data.metrics.length, 3)}, minmax(0, 1fr))`,\n            backgroundColor: isDark ? 'rgba(255,255,255,0.09)' : '#F6F7F9',\n          }}\n        >\n          {data.metrics.slice(0, 3).map((m, idx) => {\n            const metricColor = m.status\n              ? SEMANTIC_TOKENS[m.status].ink\n              : isDark\n                ? '#FFFFFF'\n                : '#1B1F27'\n            return (\n              <div key={idx} className=\"min-w-0 flex flex-col\">\n                <span\n                  className=\"truncate text-[10px] leading-3.5 font-medium\"\n                  style={{ color: isDark ? theme.soft : '#8A90A0' }}\n                >\n                  {m.label}\n                </span>\n                <span\n                  className=\"truncate font-glaze-mono text-[12px] leading-4.5 font-bold\"\n                  style={{ color: metricColor }}\n                >\n                  {m.value}\n                </span>\n              </div>\n            )\n          })}\n        </div>\n      )}\n\n      {/* Footer Tags / Status */}\n      {(data.badge || data.statusLabel || (data.tags && data.tags.length > 0) || isFault || isWarn) && (\n        <div className=\"flex flex-wrap items-center justify-between gap-1.5\">\n          <div className=\"flex flex-wrap items-center gap-1\">\n            {data.badge && (\n              <span\n                className=\"inline-flex items-center rounded-full px-2 py-0.5 font-glaze-mono text-[10px] font-semibold\"\n                style={{\n                  backgroundColor: isDark ? 'rgba(255,255,255,0.14)' : '#F2F3F5',\n                  color: isDark ? '#FFFFFF' : '#5B6170',\n                }}\n              >\n                {data.badge}\n              </span>\n            )}\n            {data.tags?.slice(0, isCompact ? 1 : 2).map((t, idx) => (\n              <HueTag key={idx} hue={t.hue} size=\"xs\" tone={isDark ? 'solid' : 'soft'}>\n                {t.label}\n              </HueTag>\n            ))}\n          </div>\n\n          {(isFault || isWarn || data.statusLabel) && (\n            <StatusPill status={status} size=\"sm\">\n              {data.statusLabel ?? (isFault ? '故障' : isWarn ? '降级' : sem.label)}\n            </StatusPill>\n          )}\n        </div>\n      )}\n    </div>\n  )\n}\n\nexport type TopologyNodeProps = NodeProps<TopologyNodeItem>\n\n/**\n * Interactive React Flow node component registered as `topologyNode`.\n * Connects cleanly to `TopologyViewContext` for orientation-aware ports,\n * path-trace dimming, and cascading fault impact overrides.\n */\nexport const TopologyNode = React.memo(function TopologyNode({\n  id,\n  data,\n  selected,\n}: TopologyNodeProps) {\n  const {\n    direction,\n    density,\n    hasActiveHighlight,\n    highlightedNodeIds,\n    nodeStatusOverrides,\n    selection,\n  } = useTopologyView()\n\n  const effectiveStatus = nodeStatusOverrides.get(id) ?? data.status ?? 'normal'\n  const isSelected = Boolean(selected || (selection?.type === 'node' && selection.id === id))\n  const isHighlighted = highlightedNodeIds.has(id)\n  const dimmed = hasActiveHighlight && !isHighlighted && !isSelected\n\n  const targetPos = direction === 'LR' ? Position.Left : Position.Top\n  const sourcePos = direction === 'LR' ? Position.Right : Position.Bottom\n  const handleBg = SEMANTIC_TOKENS[effectiveStatus].dot\n\n  return (\n    <div className=\"group relative\">\n      <Handle\n        type=\"target\"\n        position={targetPos}\n        isConnectable={false}\n        className=\"!h-2.5 !w-2.5 !rounded-full opacity-0 group-hover:opacity-100 data-[selected]:opacity-100\"\n        data-selected={isSelected ? '' : undefined}\n        style={{ backgroundColor: handleBg }}\n      />\n      <TopologyNodeCard\n        data={data}\n        selected={isSelected}\n        dimmed={dimmed}\n        effectiveStatus={effectiveStatus}\n        density={data.density ?? density}\n        className=\"cursor-pointer\"\n      />\n      <Handle\n        type=\"source\"\n        position={sourcePos}\n        isConnectable={false}\n        className=\"!h-2.5 !w-2.5 !rounded-full opacity-0 group-hover:opacity-100 data-[selected]:opacity-100\"\n        data-selected={isSelected ? '' : undefined}\n        style={{ backgroundColor: handleBg }}\n      />\n    </div>\n  )\n})\n"
+  },
+  "topology-group": {
+    "slug": "topology-group",
+    "title": "TopologyGroup",
+    "cnTitle": "逻辑与物理分组容器",
+    "category": "topology",
+    "kind": "topology",
+    "description": "用于表达 VPC、可用区 AZ、子网、K8s 集群、VLAN 与机柜边界的柔彩浅底分组容器，自带区域健康汇总胶囊。",
+    "parts": [
+      "TopologyGroup",
+      "TopologyGroupSurface"
+    ],
+    "dataAttributes": [
+      {
+        "attr": "data-kind",
+        "desc": "分组类型（vpc | az | subnet | cluster | vlan | rack | zone）"
+      },
+      {
+        "attr": "data-status",
+        "desc": "区域汇总状态"
+      },
+      {
+        "attr": "data-selected",
+        "desc": "分组被选中高亮"
+      }
+    ],
+    "cssVars": [
+      "--radius-tile"
+    ],
+    "baseUiUrl": null,
+    "dependencies": [
+      "@xyflow/react",
+      "cn"
+    ],
+    "registryDependencies": [
+      "@glaze/hue-tag",
+      "@glaze/status-dot",
+      "@glaze/style",
+      "@glaze/tokens",
+      "@glaze/topology"
+    ],
+    "api": {
+      "exportedComponents": [
+        "TopologyGroupSurface",
+        "TopologyGroup"
+      ],
+      "sections": [
+        {
+          "name": "TopologyGroupSurface",
+          "extends": "React.HTMLAttributes<HTMLDivElement>",
+          "props": [
+            {
+              "name": "data",
+              "type": "TopologyGroupData",
+              "required": true,
+              "defaultValue": null,
+              "description": "Group container metadata"
+            },
+            {
+              "name": "selected",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Whether the group container is currently selected"
+            },
+            {
+              "name": "dimmed",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Dim when outside an active trace"
+            },
+            {
+              "name": "effectiveStatus",
+              "type": "Status",
+              "required": false,
+              "defaultValue": null,
+              "description": "Status override (e.g. from cascading fault impact)"
+            }
+          ]
+        },
+        {
+          "name": "TopologyGroup",
+          "extends": "",
+          "props": []
+        }
+      ],
+      "helperInterfaces": [],
+      "typeAliases": [
+        {
+          "name": "TopologyGroupProps",
+          "definition": "NodeProps<TopologyGroupItem>",
+          "description": ""
+        }
+      ]
+    },
+    "sourceCode": "import * as React from 'react'\nimport type { NodeProps } from '@xyflow/react'\nimport { cn } from 'cn'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { HUE_PALETTES, SEMANTIC_TOKENS, type Hue, type Status } from '@/lib/tokens'\nimport {\n  TOPOLOGY_GROUP_META,\n  useTopologyView,\n  type TopologyGroupData,\n  type TopologyGroupItem,\n} from '@/lib/topology'\n\nexport interface TopologyGroupSurfaceProps extends React.HTMLAttributes<HTMLDivElement> {\n  /** Group container metadata */\n  data: TopologyGroupData\n  /** Whether the group container is currently selected */\n  selected?: boolean\n  /** Dim when outside an active trace */\n  dimmed?: boolean\n  /** Status override (e.g. from cascading fault impact) */\n  effectiveStatus?: Status\n}\n\n/**\n * Pure presentational Glaze topology group container (VPC, AZ, Subnet, VLAN, Rack).\n * Uses soft pastel background tint and subtle inner hairline rather than heavy borders.\n */\nexport function TopologyGroupSurface({\n  data,\n  selected = false,\n  dimmed = false,\n  effectiveStatus,\n  className,\n  style,\n  children,\n  ...props\n}: TopologyGroupSurfaceProps) {\n  const kind = data.kind ?? 'zone'\n  const meta = TOPOLOGY_GROUP_META[kind]\n  const hue: Hue = data.hue ?? meta.defaultHue\n  const palette = HUE_PALETTES[hue]\n  const status: Status = effectiveStatus ?? data.status ?? 'normal'\n  const sem = SEMANTIC_TOKENS[status]\n\n  const isFault = status === 'error'\n  const isWarn = status === 'warning'\n\n  const surfaceBg = isFault\n    ? 'rgba(254, 242, 238, 0.78)'\n    : isWarn\n      ? 'rgba(254, 246, 234, 0.78)'\n      : `${palette[50]}CC`\n\n  const ringColor = selected\n    ? palette[500]\n    : isFault\n      ? '#F7B39C'\n      : isWarn\n        ? '#F5C995'\n        : palette[300]\n\n  return (\n    <div\n      data-kind={kind}\n      data-status={status}\n      data-selected={selected ? '' : undefined}\n      data-dimmed={dimmed ? '' : undefined}\n      className={cn(\n        'relative h-full w-full rounded-tile transition-[opacity,box-shadow,background-color] duration-150 select-none',\n        dimmed && 'opacity-35',\n        className,\n      )}\n      style={{\n        backgroundColor: surfaceBg,\n        boxShadow: selected\n          ? `0 0 0 2px ${ringColor}`\n          : `inset 0 0 0 1.5px ${ringColor}`,\n        ...style,\n      }}\n      {...props}\n    >\n      {/* Top Group Header Strip */}\n      <div className=\"flex items-center justify-between gap-2 px-4 pt-3.5 pb-2\">\n        <div className=\"flex min-w-0 items-center gap-2\">\n          <HueTag hue={isFault ? 'coral' : isWarn ? 'peach' : hue} size=\"xs\" tone=\"solid\">\n            {data.badge ?? meta.label}\n          </HueTag>\n          <span\n            className=\"truncate font-glaze-display text-[13px] font-bold\"\n            style={{ color: isFault ? '#5E1E0A' : isWarn ? '#4D2306' : palette[900] }}\n          >\n            {data.label}\n          </span>\n          {data.subtitle && (\n            <span\n              className=\"hidden truncate font-glaze-mono text-[11px] sm:inline\"\n              style={{ color: isFault ? '#A6360F' : isWarn ? '#8A4B12' : palette[700] }}\n            >\n              {data.subtitle}\n            </span>\n          )}\n        </div>\n\n        {(data.summary || isFault || isWarn) && (\n          <div\n            className=\"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold\"\n            style={{\n              backgroundColor: '#FFFFFF',\n              color: sem.ink,\n            }}\n          >\n            <StatusDot status={status} size=\"sm\" animated={isFault || isWarn} />\n            <span>{data.summary ?? (isFault ? '区域异常' : isWarn ? '部分降级' : '正常')}</span>\n          </div>\n        )}\n      </div>\n\n      {children}\n    </div>\n  )\n}\n\nexport type TopologyGroupProps = NodeProps<TopologyGroupItem>\n\n/**\n * Interactive React Flow group node registered as `topologyGroup`.\n */\nexport const TopologyGroup = React.memo(function TopologyGroup({\n  id,\n  data,\n  selected,\n}: TopologyGroupProps) {\n  const {\n    hasActiveHighlight,\n    highlightedNodeIds,\n    nodeStatusOverrides,\n    selection,\n  } = useTopologyView()\n\n  const effectiveStatus = nodeStatusOverrides.get(id) ?? data.status ?? 'normal'\n  const isSelected = Boolean(selected || (selection?.type === 'node' && selection.id === id))\n  const dimmed = hasActiveHighlight && !highlightedNodeIds.has(id) && !isSelected\n\n  return (\n    <TopologyGroupSurface\n      data={data}\n      selected={isSelected}\n      dimmed={dimmed}\n      effectiveStatus={effectiveStatus}\n      className=\"cursor-pointer\"\n    />\n  )\n})\n"
+  },
+  "topology-edge": {
+    "slug": "topology-edge",
+    "title": "TopologyEdge",
+    "cnTitle": "流量动效拓扑连线",
+    "category": "topology",
+    "kind": "topology",
+    "description": "支持正交折线与贝塞尔曲线的观测连线，内置状态着色、CSS 实时流量脉冲动画、冗余备线虚线及可点击的中点指标胶囊。",
+    "parts": [
+      "TopologyEdge"
+    ],
+    "dataAttributes": [
+      {
+        "attr": "data-status",
+        "desc": "链路健康状态（normal | warning | error | disabled）"
+      },
+      {
+        "attr": "data-selected",
+        "desc": "链路被选中高亮"
+      }
+    ],
+    "cssVars": [],
+    "baseUiUrl": null,
+    "dependencies": [
+      "@xyflow/react",
+      "cn"
+    ],
+    "registryDependencies": [
+      "@glaze/style",
+      "@glaze/tokens",
+      "@glaze/topology"
+    ],
+    "api": {
+      "exportedComponents": [
+        "TopologyEdge"
+      ],
+      "sections": [
+        {
+          "name": "TopologyEdge",
+          "extends": "",
+          "props": []
+        }
+      ],
+      "helperInterfaces": [],
+      "typeAliases": [
+        {
+          "name": "TopologyEdgeProps",
+          "definition": "EdgeProps<TopologyFlowEdge>",
+          "description": ""
+        }
+      ]
+    },
+    "sourceCode": "import * as React from 'react'\nimport {\n  BaseEdge,\n  EdgeLabelRenderer,\n  getBezierPath,\n  getSmoothStepPath,\n  type EdgeProps,\n} from '@xyflow/react'\nimport { cn } from 'cn'\nimport { SEMANTIC_TOKENS, type Status } from '@/lib/tokens'\nimport { useTopologyView, type TopologyFlowEdge } from '@/lib/topology'\n\nconst EDGE_STROKE_BY_STATUS: Record<Status, string> = {\n  normal: '#94A3B8',\n  info: '#4A9BD8',\n  warning: '#E3A33B',\n  error: '#E5603B',\n  disabled: '#CDD3DD',\n}\n\nconst EDGE_ACTIVE_STROKE_BY_STATUS: Record<Status, string> = {\n  normal: '#7B80EA',\n  info: '#4A9BD8',\n  warning: '#E3A33B',\n  error: '#E5603B',\n  disabled: '#8A90A0',\n}\n\nexport type TopologyEdgeProps = EdgeProps<TopologyFlowEdge>\n\n/**\n * Glaze observability topology edge supporting smooth orthogonal or bezier paths,\n * animated directional traffic flow, semantic health coloring, and floating pill labels.\n */\nexport const TopologyEdge = React.memo(function TopologyEdge({\n  id,\n  sourceX,\n  sourceY,\n  targetX,\n  targetY,\n  sourcePosition,\n  targetPosition,\n  data,\n  selected,\n}: TopologyEdgeProps) {\n  const {\n    animateFlow,\n    hasActiveHighlight,\n    highlightedEdgeIds,\n    edgeStatusOverrides,\n    selection,\n    selectItem,\n  } = useTopologyView()\n\n  const effectiveStatus: Status = edgeStatusOverrides.get(id) ?? data?.status ?? 'normal'\n  const isSelected = Boolean(selected || (selection?.type === 'edge' && selection.id === id))\n  const isHighlighted = highlightedEdgeIds.has(id)\n  const dimmed = hasActiveHighlight && !isHighlighted && !isSelected\n\n  const curve = data?.curve ?? 'smoothstep'\n  const [edgePath, labelX, labelY] =\n    curve === 'bezier'\n      ? getBezierPath({\n          sourceX,\n          sourceY,\n          targetX,\n          targetY,\n          sourcePosition,\n          targetPosition,\n          curvature: 0.28,\n        })\n      : getSmoothStepPath({\n          sourceX,\n          sourceY,\n          targetX,\n          targetY,\n          sourcePosition,\n          targetPosition,\n          borderRadius: 16,\n        })\n\n  const strokeColor =\n    isSelected || isHighlighted\n      ? EDGE_ACTIVE_STROKE_BY_STATUS[effectiveStatus]\n      : EDGE_STROKE_BY_STATUS[effectiveStatus]\n\n  const isFault = effectiveStatus === 'error'\n  const isWarn = effectiveStatus === 'warning'\n  const isDisabled = effectiveStatus === 'disabled'\n  const showAnimatedOverlay =\n    animateFlow && (data?.animated ?? true) && !isDisabled && !dimmed\n\n  const strokeWidth = isSelected\n    ? 2.75\n    : isHighlighted || isFault || isWarn\n      ? 2.25\n      : 1.75\n\n  const pillText =\n    data?.label ??\n    [data?.bandwidth, data?.latency].filter(Boolean).join(' · ') ??\n    data?.protocol\n\n  const sem = SEMANTIC_TOKENS[effectiveStatus]\n\n  return (\n    <>\n      {/* Base solid or dashed track */}\n      <BaseEdge\n        id={id}\n        path={edgePath}\n        style={{\n          stroke: strokeColor,\n          strokeWidth,\n          strokeDasharray: data?.dashed || isDisabled ? '5 5' : undefined,\n          opacity: dimmed ? 0.2 : 1,\n        }}\n      />\n\n      {/* Animated directional traffic pulse overlay */}\n      {showAnimatedOverlay && (\n        <path\n          d={edgePath}\n          fill=\"none\"\n          stroke={isFault ? '#E5603B' : isWarn ? '#E3A33B' : isSelected || isHighlighted ? '#7B80EA' : '#4A9BD8'}\n          strokeWidth={strokeWidth}\n          strokeDasharray=\"6 18\"\n          strokeLinecap=\"round\"\n          className={cn(\n            'pointer-events-none',\n            isFault ? 'animate-glaze-flow-slow' : 'animate-glaze-flow',\n          )}\n          style={{\n            opacity: isSelected || isHighlighted || isFault || isWarn ? 0.95 : 0.65,\n          }}\n        />\n      )}\n\n      {/* Floating Glaze Pill Label */}\n      {pillText && (\n        <EdgeLabelRenderer>\n          <button\n            type=\"button\"\n            onClick={(e) => {\n              e.stopPropagation()\n              selectItem({ type: 'edge', id })\n            }}\n            data-status={effectiveStatus}\n            data-selected={isSelected ? '' : undefined}\n            className={cn(\n              'nodrag nopan pointer-events-auto absolute inline-flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-0.5 font-glaze-mono text-[11px] font-semibold transition-[opacity,transform,box-shadow] duration-150',\n              dimmed ? 'opacity-20' : 'opacity-100',\n            )}\n            style={{\n              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,\n              backgroundColor: isFault\n                ? '#FDE5DC'\n                : isWarn\n                  ? '#FBEBD4'\n                  : isSelected\n                    ? '#E4E6FD'\n                    : '#FFFFFF',\n              color: isFault\n                ? '#A6360F'\n                : isWarn\n                  ? '#8A4B12'\n                  : isSelected\n                    ? '#262B7A'\n                    : '#5B6170',\n              boxShadow: isSelected\n                ? `0 0 0 1.5px ${EDGE_ACTIVE_STROKE_BY_STATUS[effectiveStatus]}`\n                : '0 1px 3px rgba(18, 58, 92, 0.08)',\n            }}\n          >\n            <span\n              className=\"h-1.5 w-1.5 rounded-full shrink-0\"\n              style={{ backgroundColor: sem.dot }}\n            />\n            <span>{pillText}</span>\n          </button>\n        </EdgeLabelRenderer>\n      )}\n    </>\n  )\n})\n"
+  },
+  "topology-controls": {
+    "slug": "topology-controls",
+    "title": "TopologyControls",
+    "cnTitle": "拓扑工具栏、图例与缩略图",
+    "category": "topology",
+    "kind": "topology",
+    "description": "包含全圆胶囊悬浮工具栏 TopologyToolbar（搜索、状态过滤、横纵切换、流量动效、缩放居中）、状态图例 TopologyLegend 与 Glaze 配色缩略图 TopologyMinimap。",
+    "parts": [
+      "TopologyToolbar",
+      "TopologyLegend",
+      "TopologyMinimap"
+    ],
+    "dataAttributes": [],
+    "cssVars": [
+      "--glaze-shadow-overlay"
+    ],
+    "baseUiUrl": null,
+    "dependencies": [
+      "@phosphor-icons/react",
+      "@xyflow/react",
+      "cn"
+    ],
+    "registryDependencies": [
+      "@glaze/button",
+      "@glaze/status-dot",
+      "@glaze/tokens",
+      "@glaze/tooltip",
+      "@glaze/topology"
+    ],
+    "api": {
+      "exportedComponents": [
+        "TopologyToolbar",
+        "TopologyLegend",
+        "TopologyMinimap"
+      ],
+      "sections": [
+        {
+          "name": "TopologyToolbar",
+          "extends": "",
+          "props": [
+            {
+              "name": "position",
+              "type": "PanelPosition",
+              "required": false,
+              "defaultValue": "'bottom-center'",
+              "description": "Position on the topology canvas"
+            },
+            {
+              "name": "searchQuery",
+              "type": "string",
+              "required": false,
+              "defaultValue": "''",
+              "description": "Search query value (enables inline pill search when `onSearchChange` is provided)"
+            },
+            {
+              "name": "onSearchChange",
+              "type": "(value: string) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Search query change handler"
+            },
+            {
+              "name": "statusFilter",
+              "type": "'all' | Status",
+              "required": false,
+              "defaultValue": "'all'",
+              "description": "Active status filter ('all' | 'normal' | 'warning' | 'error')"
+            },
+            {
+              "name": "onStatusFilterChange",
+              "type": "(status: 'all' | Status) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Status filter change handler"
+            },
+            {
+              "name": "onDirectionChange",
+              "type": "(direction: TopologyDirection) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Layout direction toggle handler ('LR' <-> 'TB')"
+            },
+            {
+              "name": "onAnimateFlowChange",
+              "type": "(animated: boolean) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Traffic flow animation toggle handler"
+            },
+            {
+              "name": "showZoomControls",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "true",
+              "description": "Show zoom in / zoom out / fitView controls"
+            },
+            {
+              "name": "compact",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Compact mode hides button text labels to fit narrow embedded canvases"
+            },
+            {
+              "name": "actions",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Extra action buttons rendered at the trailing end"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "TopologyLegend",
+          "extends": "",
+          "props": [
+            {
+              "name": "position",
+              "type": "PanelPosition",
+              "required": false,
+              "defaultValue": "'bottom-left'",
+              "description": "Position on the canvas"
+            },
+            {
+              "name": "items",
+              "type": "TopologyLegendItem[]",
+              "required": false,
+              "defaultValue": "DEFAULT_LEGEND_ITEMS",
+              "description": "Custom legend items; defaults to Glaze semantic health states"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "TopologyMinimap",
+          "extends": "",
+          "props": [
+            {
+              "name": "position",
+              "type": "PanelPosition",
+              "required": false,
+              "defaultValue": "'bottom-right'",
+              "description": "Position on the canvas"
+            },
+            {
+              "name": "width",
+              "type": "number",
+              "required": false,
+              "defaultValue": "168",
+              "description": "Minimap width in px"
+            },
+            {
+              "name": "height",
+              "type": "number",
+              "required": false,
+              "defaultValue": "108",
+              "description": "Minimap height in px"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "helperInterfaces": [
+        {
+          "name": "TopologyLegendItem",
+          "extends": "",
+          "props": [
+            {
+              "name": "label",
+              "type": "string",
+              "required": true,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "status",
+              "type": "Status",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "color",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "dashed",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "typeAliases": []
+    },
+    "sourceCode": "import * as React from 'react'\nimport { MiniMap, Panel, useReactFlow, type PanelPosition } from '@xyflow/react'\nimport {\n  ArrowsDownUp,\n  ArrowsLeftRight,\n  CornersOut,\n  MagnifyingGlass,\n  MagnifyingGlassMinus,\n  MagnifyingGlassPlus,\n  Pulse,\n  X,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { Button } from '@/components/ui/button'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { Tooltip } from '@/components/ui/tooltip'\nimport { HUE_PALETTES, SEMANTIC_TOKENS, type Status } from '@/lib/tokens'\nimport {\n  TOPOLOGY_GROUP_META,\n  TOPOLOGY_KIND_META,\n  isTopologyGroupNode,\n  useTopologyView,\n  type TopologyDirection,\n  type TopologyFlowNode,\n} from '@/lib/topology'\n\nexport interface TopologyToolbarProps {\n  /** Position on the topology canvas */\n  position?: PanelPosition\n  /** Search query value (enables inline pill search when `onSearchChange` is provided) */\n  searchQuery?: string\n  /** Search query change handler */\n  onSearchChange?: (value: string) => void\n  /** Active status filter ('all' | 'normal' | 'warning' | 'error') */\n  statusFilter?: 'all' | Status\n  /** Status filter change handler */\n  onStatusFilterChange?: (status: 'all' | Status) => void\n  /** Layout direction toggle handler ('LR' <-> 'TB') */\n  onDirectionChange?: (direction: TopologyDirection) => void\n  /** Traffic flow animation toggle handler */\n  onAnimateFlowChange?: (animated: boolean) => void\n  /** Show zoom in / zoom out / fitView controls */\n  showZoomControls?: boolean\n  /** Compact mode hides button text labels to fit narrow embedded canvases */\n  compact?: boolean\n  /** Extra action buttons rendered at the trailing end */\n  actions?: React.ReactNode\n  className?: string\n}\n\nconst STATUS_FILTER_OPTIONS: Array<{ value: 'all' | Status; label: string }> = [\n  { value: 'all', label: '全部' },\n  { value: 'normal', label: '正常' },\n  { value: 'warning', label: '降级' },\n  { value: 'error', label: '异常' },\n]\n\n/**\n * Glaze floating pill toolbar positioned inside `TopologyCanvas`.\n * Provides zoom, fitView, search, status filter, layout direction, and flow animation controls.\n */\nexport function TopologyToolbar({\n  position = 'bottom-center',\n  searchQuery = '',\n  onSearchChange,\n  statusFilter = 'all',\n  onStatusFilterChange,\n  onDirectionChange,\n  onAnimateFlowChange,\n  showZoomControls = true,\n  compact = false,\n  actions,\n  className,\n}: TopologyToolbarProps) {\n  const { zoomIn, zoomOut, fitView } = useReactFlow()\n  const { direction, animateFlow } = useTopologyView()\n\n  return (\n    <Panel position={position} className={cn('!m-3 max-w-[calc(100%-24px)]', className)}>\n      <div\n        className=\"flex max-w-full flex-nowrap items-center gap-1.5 overflow-x-auto rounded-full border border-[#E8EBF0] bg-white px-2 py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden\"\n        style={{\n          boxShadow: '0 10px 28px rgba(18, 58, 92, 0.1), 0 1px 4px rgba(18, 58, 92, 0.05)',\n        }}\n      >\n        {/* Inline Search Pill */}\n        {onSearchChange && (\n          <div className=\"relative flex h-8 shrink-0 items-center rounded-full bg-[#F6F7F9] pl-2.5 pr-1.5\">\n            <MagnifyingGlass size={14} className=\"shrink-0 text-[#8A90A0]\" />\n            <input\n              type=\"text\"\n              value={searchQuery}\n              onChange={(e) => onSearchChange(e.target.value)}\n              placeholder=\"搜索节点或 IP...\"\n              aria-label=\"搜索拓扑节点\"\n              className={cn(\n                'bg-transparent px-1.5 text-[12.5px] text-[#1B1F27] placeholder:text-[#8A90A0] focus:outline-none',\n                compact ? 'w-26' : 'w-28 sm:w-36',\n              )}\n            />\n            {searchQuery && (\n              <button\n                type=\"button\"\n                onClick={() => onSearchChange('')}\n                aria-label=\"清空搜索\"\n                className=\"flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#E8EBF0] hover:text-[#1B1F27]\"\n              >\n                <X size={11} weight=\"bold\" />\n              </button>\n            )}\n          </div>\n        )}\n\n        {/* Status Filter Pills */}\n        {onStatusFilterChange && (\n          <div className=\"flex shrink-0 items-center gap-0.5 rounded-full bg-[#F6F7F9] p-0.5\">\n            {STATUS_FILTER_OPTIONS.map((opt) => {\n              const active = statusFilter === opt.value\n              return (\n                <button\n                  key={opt.value}\n                  type=\"button\"\n                  onClick={() => onStatusFilterChange(opt.value)}\n                  className={cn(\n                    'inline-flex h-7 shrink-0 cursor-pointer items-center gap-1 rounded-full px-2.5 text-[12px] font-semibold whitespace-nowrap transition-colors',\n                    active\n                      ? 'bg-white text-[#1B1F27] shadow-[0_1px_2px_rgba(16,24,40,0.08)]'\n                      : 'text-[#5B6170] hover:text-[#1B1F27]',\n                  )}\n                >\n                  {opt.value !== 'all' && (\n                    <span\n                      className=\"h-1.5 w-1.5 shrink-0 rounded-full\"\n                      style={{ backgroundColor: SEMANTIC_TOKENS[opt.value].dot }}\n                    />\n                  )}\n                  <span>{opt.label}</span>\n                </button>\n              )\n            })}\n          </div>\n        )}\n\n        {/* Layout Direction & Traffic Animation */}\n        {(onDirectionChange || onAnimateFlowChange) && (\n          <div className=\"flex shrink-0 items-center gap-1\">\n            {onDirectionChange && (\n              <Tooltip content={direction === 'LR' ? '切换为纵向排布 (TB)' : '切换为横向排布 (LR)'}>\n                <Button\n                  size={compact ? 'icon' : 'sm'}\n                  variant=\"ghost\"\n                  className={cn('shrink-0 whitespace-nowrap', compact ? 'h-8 w-8' : 'h-8 px-2.5')}\n                  onClick={() => onDirectionChange(direction === 'LR' ? 'TB' : 'LR')}\n                  aria-label=\"切换布局方向\"\n                >\n                  {direction === 'LR' ? <ArrowsLeftRight size={15} /> : <ArrowsDownUp size={15} />}\n                  {!compact && (\n                    <span className=\"hidden md:inline\">{direction === 'LR' ? '横向' : '纵向'}</span>\n                  )}\n                </Button>\n              </Tooltip>\n            )}\n\n            {onAnimateFlowChange && (\n              <Tooltip content={animateFlow ? '暂停流量动效' : '开启实时流量动效'}>\n                <Button\n                  size={compact ? 'icon' : 'sm'}\n                  variant={animateFlow ? 'soft' : 'ghost'}\n                  className={cn('shrink-0 whitespace-nowrap', compact ? 'h-8 w-8' : 'h-8 px-2.5')}\n                  onClick={() => onAnimateFlowChange(!animateFlow)}\n                  aria-label=\"切换流量动效\"\n                >\n                  <Pulse size={15} weight={animateFlow ? 'bold' : 'regular'} />\n                  {!compact && <span className=\"hidden md:inline\">流量</span>}\n                </Button>\n              </Tooltip>\n            )}\n          </div>\n        )}\n\n        {/* Zoom & Fit Controls */}\n        {showZoomControls && (\n          <div className=\"flex shrink-0 items-center gap-0.5 border-l border-[#EEF0F3] pl-1.5\">\n            <Tooltip content=\"缩小\">\n              <Button\n                size=\"icon\"\n                variant=\"ghost\"\n                className=\"h-8 w-8 shrink-0\"\n                onClick={() => void zoomOut({ duration: 180 })}\n                aria-label=\"缩小画布\"\n              >\n                <MagnifyingGlassMinus size={15} />\n              </Button>\n            </Tooltip>\n            <Tooltip content=\"放大\">\n              <Button\n                size=\"icon\"\n                variant=\"ghost\"\n                className=\"h-8 w-8 shrink-0\"\n                onClick={() => void zoomIn({ duration: 180 })}\n                aria-label=\"放大画布\"\n              >\n                <MagnifyingGlassPlus size={15} />\n              </Button>\n            </Tooltip>\n            <Tooltip content=\"自适应画布\">\n              <Button\n                size=\"icon\"\n                variant=\"ghost\"\n                className=\"h-8 w-8 shrink-0\"\n                onClick={() => void fitView({ padding: 0.14, duration: 240 })}\n                aria-label=\"自适应视图\"\n              >\n                <CornersOut size={15} />\n              </Button>\n            </Tooltip>\n          </div>\n        )}\n\n        {actions && (\n          <div className=\"flex shrink-0 items-center gap-1 border-l border-[#EEF0F3] pl-1.5\">\n            {actions}\n          </div>\n        )}\n      </div>\n    </Panel>\n  )\n}\n\nexport interface TopologyLegendItem {\n  label: string\n  status?: Status\n  color?: string\n  dashed?: boolean\n}\n\nexport interface TopologyLegendProps {\n  /** Position on the canvas */\n  position?: PanelPosition\n  /** Custom legend items; defaults to Glaze semantic health states */\n  items?: TopologyLegendItem[]\n  className?: string\n}\n\nconst DEFAULT_LEGEND_ITEMS: TopologyLegendItem[] = [\n  { label: '运行正常', status: 'normal' },\n  { label: '延迟/降级', status: 'warning' },\n  { label: '链路/节点故障', status: 'error' },\n  { label: '冗余备线', color: '#94A3B8', dashed: true },\n]\n\n/**\n * Compact floating legend pill for topology health and link semantics.\n */\nexport function TopologyLegend({\n  position = 'bottom-left',\n  items = DEFAULT_LEGEND_ITEMS,\n  className,\n}: TopologyLegendProps) {\n  return (\n    <Panel position={position} className={cn('!m-3 max-w-[calc(100%-24px)]', className)}>\n      <div\n        className=\"flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[18px] border border-[#E8EBF0] bg-white/95 px-3 py-1.5 text-[11.5px] font-medium text-[#5B6170] sm:rounded-full sm:px-3.5 sm:py-2 sm:text-[12px]\"\n        style={{\n          boxShadow: '0 8px 24px rgba(18, 58, 92, 0.08), 0 1px 3px rgba(18, 58, 92, 0.04)',\n        }}\n      >\n        {items.map((item, idx) => (\n          <span key={idx} className=\"inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap\">\n            {item.dashed ? (\n              <span\n                className=\"inline-block w-3.5 shrink-0 border-t-2 border-dashed\"\n                style={{ borderColor: item.color ?? '#94A3B8' }}\n              />\n            ) : item.status ? (\n              <StatusDot status={item.status} size=\"sm\" animated={false} />\n            ) : (\n              <span\n                className=\"h-2 w-2 shrink-0 rounded-full\"\n                style={{ backgroundColor: item.color ?? '#7B80EA' }}\n              />\n            )}\n            <span>{item.label}</span>\n          </span>\n        ))}\n      </div>\n    </Panel>\n  )\n}\n\nexport interface TopologyMinimapProps {\n  /** Position on the canvas */\n  position?: PanelPosition\n  /** Minimap width in px */\n  width?: number\n  /** Minimap height in px */\n  height?: number\n  className?: string\n}\n\n/**\n * Glaze-themed interactive MiniMap colored by node health and hue family.\n */\nexport function TopologyMinimap({\n  position = 'bottom-right',\n  width = 168,\n  height = 108,\n  className,\n}: TopologyMinimapProps) {\n  const { nodeStatusOverrides } = useTopologyView()\n\n  return (\n    <MiniMap<TopologyFlowNode>\n      position={position}\n      pannable\n      zoomable\n      style={{ width, height }}\n      className={cn('!m-3', className)}\n      nodeColor={(node) => {\n        const override = nodeStatusOverrides.get(node.id)\n        if (override === 'error') return '#E5603B'\n        if (override === 'warning') return '#E3A33B'\n\n        if (isTopologyGroupNode(node)) {\n          const hue = node.data.hue ?? TOPOLOGY_GROUP_META[node.data.kind ?? 'zone'].defaultHue\n          return HUE_PALETTES[hue][100]\n        }\n\n        const st = node.data.status ?? 'normal'\n        if (st === 'error') return '#E5603B'\n        if (st === 'warning') return '#E3A33B'\n        const hue = node.data.hue ?? TOPOLOGY_KIND_META[node.data.kind ?? 'service'].defaultHue\n        return HUE_PALETTES[hue][500]\n      }}\n      nodeStrokeWidth={0}\n      nodeBorderRadius={6}\n      maskColor=\"rgba(242, 244, 248, 0.72)\"\n    />\n  )\n}\n"
+  },
+  "topology-inspector": {
+    "slug": "topology-inspector",
+    "title": "TopologyInspector",
+    "cnTitle": "节点与链路详情检查器",
+    "category": "topology",
+    "kind": "topology",
+    "description": "右侧悬浮观测检查器，统一支持节点、分组与链路详情查看，集成实时指标卡、SparkChart 趋势、上下游跳转列表、最近告警事件与故障注入演练按钮。",
+    "parts": [
+      "TopologyInspector"
+    ],
+    "dataAttributes": [
+      {
+        "attr": "data-kind",
+        "desc": "当前检查对象类型（edge | group | 节点类型）"
+      },
+      {
+        "attr": "data-status",
+        "desc": "当前对象健康状态"
+      }
+    ],
+    "cssVars": [
+      "--radius-tile",
+      "--radius-inner"
+    ],
+    "baseUiUrl": null,
+    "dependencies": [
+      "@phosphor-icons/react",
+      "cn"
+    ],
+    "registryDependencies": [
+      "@glaze/button",
+      "@glaze/hue-tag",
+      "@glaze/icon-tile",
+      "@glaze/scroll-area",
+      "@glaze/spark-chart",
+      "@glaze/status-dot",
+      "@glaze/status-pill",
+      "@glaze/style",
+      "@glaze/tokens",
+      "@glaze/topology",
+      "@glaze/topology-node"
+    ],
+    "api": {
+      "exportedComponents": [
+        "TopologyInspector"
+      ],
+      "sections": [
+        {
+          "name": "TopologyInspector",
+          "extends": "",
+          "props": [
+            {
+              "name": "nodes",
+              "type": "TopologyFlowNode[]",
+              "required": true,
+              "defaultValue": null,
+              "description": "All nodes in the current topology graph"
+            },
+            {
+              "name": "edges",
+              "type": "TopologyFlowEdge[]",
+              "required": true,
+              "defaultValue": null,
+              "description": "All edges in the current topology graph"
+            },
+            {
+              "name": "selection",
+              "type": "TopologySelection | null",
+              "required": true,
+              "defaultValue": null,
+              "description": "Currently selected node or edge"
+            },
+            {
+              "name": "onClose",
+              "type": "() => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Close inspector callback"
+            },
+            {
+              "name": "onSelect",
+              "type": "(selection: TopologySelection) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Jump to another node or edge from upstream/downstream hops"
+            },
+            {
+              "name": "nodeStatusOverrides",
+              "type": "Map<string, Status>",
+              "required": false,
+              "defaultValue": null,
+              "description": "Optional status overrides (e.g. fault simulation)"
+            },
+            {
+              "name": "edgeStatusOverrides",
+              "type": "Map<string, Status>",
+              "required": false,
+              "defaultValue": null,
+              "description": "Optional edge status overrides"
+            },
+            {
+              "name": "isFaultInjected",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Whether the selected node is currently injected as a simulated fault"
+            },
+            {
+              "name": "onToggleFault",
+              "type": "(nodeId: string) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Optional handler to toggle fault simulation on the selected node"
+            },
+            {
+              "name": "footerActions",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Custom footer actions"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "helperInterfaces": [],
+      "typeAliases": []
+    },
+    "sourceCode": "import * as React from 'react'\nimport {\n  ArrowLeft,\n  ArrowRight,\n  FlowArrow,\n  Pulse,\n  WarningCircle,\n  X,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { Button } from '@/components/ui/button'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { ScrollArea } from '@/components/ui/scroll-area'\nimport { SparkChart } from '@/components/ui/spark-chart'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { TopologyKindIcon } from '@/components/ui/topology-node'\nimport { SEMANTIC_TOKENS, type Hue, type Status } from '@/lib/tokens'\nimport {\n  TOPOLOGY_GROUP_META,\n  TOPOLOGY_KIND_META,\n  isTopologyGroupNode,\n  type TopologyFlowEdge,\n  type TopologyFlowNode,\n  type TopologyNodeItem,\n  type TopologySelection,\n} from '@/lib/topology'\n\nexport interface TopologyInspectorProps {\n  /** All nodes in the current topology graph */\n  nodes: TopologyFlowNode[]\n  /** All edges in the current topology graph */\n  edges: TopologyFlowEdge[]\n  /** Currently selected node or edge */\n  selection: TopologySelection | null\n  /** Close inspector callback */\n  onClose?: () => void\n  /** Jump to another node or edge from upstream/downstream hops */\n  onSelect?: (selection: TopologySelection) => void\n  /** Optional status overrides (e.g. fault simulation) */\n  nodeStatusOverrides?: Map<string, Status>\n  /** Optional edge status overrides */\n  edgeStatusOverrides?: Map<string, Status>\n  /** Whether the selected node is currently injected as a simulated fault */\n  isFaultInjected?: boolean\n  /** Optional handler to toggle fault simulation on the selected node */\n  onToggleFault?: (nodeId: string) => void\n  /** Custom footer actions */\n  footerActions?: React.ReactNode\n  className?: string\n}\n\n/**\n * Glaze observability detail panel for inspecting a selected topology node, group, or link.\n * Displays live status, telemetry metrics, SparkChart trend, upstream/downstream hops, and recent events.\n */\nexport function TopologyInspector({\n  nodes,\n  edges,\n  selection,\n  onClose,\n  onSelect,\n  nodeStatusOverrides,\n  edgeStatusOverrides,\n  isFaultInjected = false,\n  onToggleFault,\n  footerActions,\n  className,\n}: TopologyInspectorProps) {\n  const handleCloseClick = (e: React.MouseEvent<HTMLButtonElement>) => {\n    e.stopPropagation()\n    e.preventDefault()\n    onClose?.()\n  }\n\n  const stopBubble = (e: React.SyntheticEvent) => {\n    e.stopPropagation()\n  }\n\n  if (!selection) return null\n\n  const nodeMap = new Map(nodes.map((n) => [n.id, n]))\n\n  // ── Edge Inspection View ──────────────────────────────────────────────────\n  if (selection.type === 'edge') {\n    const edge = edges.find((e) => e.id === selection.id)\n    if (!edge) return null\n\n    const src = nodeMap.get(edge.source)\n    const tgt = nodeMap.get(edge.target)\n    const status: Status = edgeStatusOverrides?.get(edge.id) ?? edge.data?.status ?? 'normal'\n    const sem = SEMANTIC_TOKENS[status]\n    const hue: Hue = status === 'error' ? 'coral' : status === 'warning' ? 'peach' : 'sky'\n\n    return (\n      <aside\n        data-kind=\"edge\"\n        data-status={status}\n        onClick={stopBubble}\n        onPointerDown={stopBubble}\n        onTouchStart={stopBubble}\n        className={cn(\n          'flex w-full max-w-[356px] touch-manipulation flex-col overflow-hidden rounded-tile border border-[#E8EBF0] bg-white',\n          className,\n        )}\n        style={{\n          boxShadow: '0 10px 28px rgba(18, 58, 92, 0.1), 0 1px 4px rgba(18, 58, 92, 0.05)',\n        }}\n      >\n        {/* Header */}\n        <div className=\"flex items-start justify-between gap-3 px-5 pt-5 pb-3\">\n          <div className=\"flex min-w-0 items-center gap-3\">\n            <IconTile hue={hue} size=\"md\">\n              <FlowArrow size={18} weight=\"duotone\" />\n            </IconTile>\n            <div className=\"min-w-0\">\n              <h3 className=\"m-0 truncate font-glaze-display text-[16px] font-extrabold text-[#1B1F27]\">\n                {edge.data?.label ?? '网络链路'}\n              </h3>\n              <p className=\"m-0 mt-0.5 truncate font-glaze-mono text-[12px] text-[#6B7280]\">\n                {edge.data?.protocol ?? 'TCP / IP'}\n              </p>\n            </div>\n          </div>\n\n          {onClose && (\n            <Button\n              type=\"button\"\n              size=\"icon\"\n              variant=\"ghost\"\n              className=\"h-8 w-8 shrink-0 touch-manipulation\"\n              onClick={handleCloseClick}\n              aria-label=\"关闭检查器\"\n            >\n              <X size={15} />\n            </Button>\n          )}\n        </div>\n\n        <ScrollArea className=\"max-h-[calc(100vh-220px)] flex-1\">\n          <div className=\"flex flex-col gap-4 px-5 pb-5\">\n            <div className=\"flex items-center justify-between\">\n              <StatusPill status={status}>\n                {status === 'error' ? '链路异常' : status === 'warning' ? '高延迟 / 降级' : sem.label}\n              </StatusPill>\n              {edge.data?.utilization !== undefined && (\n                <span className=\"font-glaze-mono text-[12px] font-semibold text-[#5B6170]\">\n                  负载 {edge.data.utilization}%\n                </span>\n              )}\n            </div>\n\n            {/* Endpoints */}\n            <div className=\"flex flex-col gap-2 rounded-inner bg-[#F6F7F9] p-3\">\n              <span className=\"text-[11px] font-semibold text-[#8A90A0]\">链路端点</span>\n              <div className=\"flex flex-col gap-1.5\">\n                {src && (\n                  <button\n                    type=\"button\"\n                    onClick={() => onSelect?.({ type: 'node', id: src.id })}\n                    className=\"flex cursor-pointer items-center justify-between gap-2 rounded-[12px] bg-white px-3 py-2 text-left transition-colors hover:bg-[#EEF7FD]\"\n                  >\n                    <span className=\"inline-flex min-w-0 items-center gap-2 text-[13px] font-semibold text-[#1B1F27]\">\n                      <ArrowRight size={13} className=\"shrink-0 text-[#4A9BD8]\" />\n                      <span className=\"truncate\">{src.data.label}</span>\n                    </span>\n                    <span className=\"shrink-0 text-[11px] text-[#8A90A0]\">源端</span>\n                  </button>\n                )}\n                {tgt && (\n                  <button\n                    type=\"button\"\n                    onClick={() => onSelect?.({ type: 'node', id: tgt.id })}\n                    className=\"flex cursor-pointer items-center justify-between gap-2 rounded-[12px] bg-white px-3 py-2 text-left transition-colors hover:bg-[#EEF7FD]\"\n                  >\n                    <span className=\"inline-flex min-w-0 items-center gap-2 text-[13px] font-semibold text-[#1B1F27]\">\n                      <ArrowLeft size={13} className=\"shrink-0 text-[#7B80EA]\" />\n                      <span className=\"truncate\">{tgt.data.label}</span>\n                    </span>\n                    <span className=\"shrink-0 text-[11px] text-[#8A90A0]\">目标</span>\n                  </button>\n                )}\n              </div>\n            </div>\n\n            {/* Key Link Metrics */}\n            <div className=\"grid grid-cols-2 gap-2\">\n              {edge.data?.bandwidth && (\n                <div className=\"rounded-[14px] bg-[#F6F7F9] p-3\">\n                  <span className=\"block text-[11px] text-[#8A90A0]\">实时带宽 / 速率</span>\n                  <span className=\"mt-0.5 block font-glaze-mono text-[15px] font-bold text-[#1B1F27]\">\n                    {edge.data.bandwidth}\n                  </span>\n                </div>\n              )}\n              {edge.data?.latency && (\n                <div className=\"rounded-[14px] bg-[#F6F7F9] p-3\">\n                  <span className=\"block text-[11px] text-[#8A90A0]\">往返延迟 RTT</span>\n                  <span className=\"mt-0.5 block font-glaze-mono text-[15px] font-bold text-[#1B1F27]\">\n                    {edge.data.latency}\n                  </span>\n                </div>\n              )}\n              {edge.data?.loss && (\n                <div className=\"rounded-[14px] bg-[#F6F7F9] p-3\">\n                  <span className=\"block text-[11px] text-[#8A90A0]\">丢包 / 错误率</span>\n                  <span\n                    className=\"mt-0.5 block font-glaze-mono text-[15px] font-bold\"\n                    style={{ color: status === 'error' ? '#A6360F' : '#1B1F27' }}\n                  >\n                    {edge.data.loss}\n                  </span>\n                </div>\n              )}\n              {edge.data?.protocol && (\n                <div className=\"rounded-[14px] bg-[#F6F7F9] p-3\">\n                  <span className=\"block text-[11px] text-[#8A90A0]\">传输协议</span>\n                  <span className=\"mt-0.5 block font-glaze-mono text-[15px] font-bold text-[#1B1F27]\">\n                    {edge.data.protocol}\n                  </span>\n                </div>\n              )}\n            </div>\n\n            {/* Sparkline Trend */}\n            {edge.data?.series && edge.data.series.length > 1 && (\n              <div className=\"rounded-inner bg-[#F6F7F9] p-3.5\">\n                <div className=\"mb-2 flex items-center justify-between text-[12px]\">\n                  <span className=\"font-semibold text-[#5B6170]\">近 12 采样周期吞吐趋势</span>\n                  <Pulse size={14} className=\"text-[#4A9BD8]\" />\n                </div>\n                <SparkChart data={edge.data.series} variant=\"area\" hue={hue} height={64} label=\"吞吐\" />\n              </div>\n            )}\n\n            {edge.data?.description && (\n              <p className=\"m-0 text-[13px] leading-5 text-[#5B6170]\">{edge.data.description}</p>\n            )}\n          </div>\n        </ScrollArea>\n      </aside>\n    )\n  }\n\n  // ── Node or Group Inspection View ─────────────────────────────────────────\n  const node = nodeMap.get(selection.id)\n  if (!node) return null\n\n  if (isTopologyGroupNode(node)) {\n    const children = nodes.filter(\n      (n): n is TopologyNodeItem => !isTopologyGroupNode(n) && n.parentId === node.id,\n    )\n    const status: Status = nodeStatusOverrides?.get(node.id) ?? node.data.status ?? 'normal'\n    const meta = TOPOLOGY_GROUP_META[node.data.kind ?? 'zone']\n    const hue: Hue = node.data.hue ?? meta.defaultHue\n\n    return (\n      <aside\n        data-kind=\"group\"\n        data-status={status}\n        onClick={stopBubble}\n        onPointerDown={stopBubble}\n        onTouchStart={stopBubble}\n        className={cn(\n          'flex w-full max-w-[356px] touch-manipulation flex-col overflow-hidden rounded-tile border border-[#E8EBF0] bg-white',\n          className,\n        )}\n        style={{\n          boxShadow: '0 10px 28px rgba(18, 58, 92, 0.1), 0 1px 4px rgba(18, 58, 92, 0.05)',\n        }}\n      >\n        <div className=\"flex items-start justify-between gap-3 px-5 pt-5 pb-3\">\n          <div className=\"min-w-0\">\n            <div className=\"flex items-center gap-2\">\n              <HueTag hue={hue} size=\"xs\" tone=\"solid\">\n                {node.data.badge ?? meta.label}\n              </HueTag>\n              <StatusPill status={status} size=\"sm\">\n                {node.data.summary ?? SEMANTIC_TOKENS[status].label}\n              </StatusPill>\n            </div>\n            <h3 className=\"m-0 mt-2 truncate font-glaze-display text-[17px] font-extrabold text-[#1B1F27]\">\n              {node.data.label}\n            </h3>\n            {node.data.subtitle && (\n              <p className=\"m-0 mt-0.5 font-glaze-mono text-[12px] text-[#6B7280]\">\n                {node.data.subtitle}\n              </p>\n            )}\n          </div>\n          {onClose && (\n            <Button\n              type=\"button\"\n              size=\"icon\"\n              variant=\"ghost\"\n              className=\"h-8 w-8 shrink-0 touch-manipulation\"\n              onClick={handleCloseClick}\n              aria-label=\"关闭检查器\"\n            >\n              <X size={15} />\n            </Button>\n          )}\n        </div>\n\n        <ScrollArea className=\"max-h-[calc(100vh-220px)] flex-1\">\n          <div className=\"flex flex-col gap-3 px-5 pb-5\">\n            <span className=\"text-[12px] font-semibold text-[#5B6170]\">\n              区域内节点（{children.length}）\n            </span>\n            <div className=\"flex flex-col gap-1.5\">\n              {children.map((child) => {\n                const cStatus = nodeStatusOverrides?.get(child.id) ?? child.data.status ?? 'normal'\n                return (\n                  <button\n                    key={child.id}\n                    type=\"button\"\n                    onClick={() => onSelect?.({ type: 'node', id: child.id })}\n                    className=\"flex cursor-pointer items-center justify-between gap-2 rounded-[14px] bg-[#F6F7F9] px-3 py-2.5 text-left transition-colors hover:bg-[#EEF7FD]\"\n                  >\n                    <div className=\"min-w-0\">\n                      <div className=\"truncate text-[13px] font-semibold text-[#1B1F27]\">\n                        {child.data.label}\n                      </div>\n                      {(child.data.subtitle || child.data.address) && (\n                        <div className=\"truncate font-glaze-mono text-[11px] text-[#6B7280]\">\n                          {child.data.subtitle ?? child.data.address}\n                        </div>\n                      )}\n                    </div>\n                    <StatusDot status={cStatus} size=\"sm\" animated={cStatus !== 'normal'} />\n                  </button>\n                )\n              })}\n            </div>\n          </div>\n        </ScrollArea>\n      </aside>\n    )\n  }\n\n  // Standard TopologyNodeItem\n  const kind = node.data.kind ?? 'service'\n  const kindMeta = TOPOLOGY_KIND_META[kind]\n  const hue: Hue = node.data.hue ?? kindMeta.defaultHue\n  const status: Status = nodeStatusOverrides?.get(node.id) ?? node.data.status ?? 'normal'\n  const sem = SEMANTIC_TOKENS[status]\n\n  const upstreamEdges = edges.filter((e) => e.target === node.id)\n  const downstreamEdges = edges.filter((e) => e.source === node.id)\n\n  return (\n    <aside\n      data-kind={kind}\n      data-status={status}\n      onClick={stopBubble}\n      onPointerDown={stopBubble}\n      onTouchStart={stopBubble}\n      className={cn(\n        'flex w-full max-w-[356px] touch-manipulation flex-col overflow-hidden rounded-tile border border-[#E8EBF0] bg-white',\n        className,\n      )}\n      style={{\n        boxShadow: '0 10px 28px rgba(18, 58, 92, 0.1), 0 1px 4px rgba(18, 58, 92, 0.05)',\n      }}\n    >\n      {/* Header */}\n      <div className=\"flex items-start justify-between gap-3 px-5 pt-5 pb-3\">\n        <div className=\"flex min-w-0 items-center gap-3\">\n          <IconTile hue={hue} size=\"md\">\n            {node.data.icon ?? <TopologyKindIcon kind={kind} size={18} />}\n          </IconTile>\n          <div className=\"min-w-0\">\n            <h3 className=\"m-0 truncate font-glaze-display text-[16px] font-extrabold text-[#1B1F27]\">\n              {node.data.label}\n            </h3>\n            <p className=\"m-0 mt-0.5 truncate font-glaze-mono text-[12px] text-[#6B7280]\">\n              {node.data.address ?? node.data.subtitle ?? kindMeta.label}\n            </p>\n          </div>\n        </div>\n        {onClose && (\n          <Button\n            type=\"button\"\n            size=\"icon\"\n            variant=\"ghost\"\n            className=\"h-8 w-8 shrink-0 touch-manipulation\"\n            onClick={handleCloseClick}\n            aria-label=\"关闭检查器\"\n          >\n            <X size={15} />\n          </Button>\n        )}\n      </div>\n\n      <ScrollArea className=\"max-h-[calc(100vh-230px)] flex-1\">\n        <div className=\"flex flex-col gap-4 px-5 pb-5\">\n          {/* Status + Tags */}\n          <div className=\"flex flex-wrap items-center gap-1.5\">\n            <StatusPill status={status}>\n              {isFaultInjected\n                ? '模拟故障源'\n                : status === 'error'\n                  ? '受影响 / 故障'\n                  : status === 'warning'\n                    ? '降级告警'\n                    : node.data.statusLabel ?? sem.label}\n            </StatusPill>\n            <HueTag hue={hue} size=\"xs\">\n              {node.data.layer ?? kindMeta.label}\n            </HueTag>\n            {node.data.location && (\n              <span className=\"rounded-full bg-[#F2F3F5] px-2 py-0.5 font-glaze-mono text-[11px] font-medium text-[#5B6170]\">\n                {node.data.location}\n              </span>\n            )}\n          </div>\n\n          {node.data.description && (\n            <p className=\"m-0 text-[13px] leading-5 text-[#5B6170]\">{node.data.description}</p>\n          )}\n\n          {/* Metrics Grid */}\n          {node.data.metrics && node.data.metrics.length > 0 && (\n            <div className=\"grid grid-cols-2 gap-2\">\n              {node.data.metrics.map((m, idx) => (\n                <div key={idx} className=\"rounded-[14px] bg-[#F6F7F9] p-3\">\n                  <span className=\"block text-[11px] font-medium text-[#8A90A0]\">{m.label}</span>\n                  <span\n                    className=\"mt-0.5 block font-glaze-mono text-[15px] font-bold\"\n                    style={{\n                      color: m.status ? SEMANTIC_TOKENS[m.status].ink : '#1B1F27',\n                    }}\n                  >\n                    {m.value}\n                  </span>\n                </div>\n              ))}\n            </div>\n          )}\n\n          {/* Live Telemetry SparkChart */}\n          {node.data.series && node.data.series.length > 1 && (\n            <div className=\"rounded-inner bg-[#F6F7F9] p-3.5\">\n              <div className=\"mb-2 flex items-center justify-between text-[12px]\">\n                <span className=\"font-semibold text-[#5B6170]\">\n                  {node.data.seriesLabel ?? '近 12 周期负载趋势'}\n                </span>\n                <span className=\"font-glaze-mono text-[11px] text-[#8A90A0]\">\n                  {node.data.series[node.data.series.length - 1]}\n                  {node.data.seriesUnit ?? ''}\n                </span>\n              </div>\n              <SparkChart\n                data={node.data.series}\n                variant=\"area\"\n                hue={status === 'error' ? 'coral' : status === 'warning' ? 'peach' : hue}\n                height={62}\n                label={node.data.seriesLabel ?? '指标'}\n                unit={node.data.seriesUnit}\n              />\n            </div>\n          )}\n\n          {/* Connected Upstream & Downstream Hops */}\n          {(upstreamEdges.length > 0 || downstreamEdges.length > 0) && (\n            <div className=\"flex flex-col gap-2.5\">\n              {upstreamEdges.length > 0 && (\n                <div className=\"flex flex-col gap-1.5\">\n                  <span className=\"text-[11px] font-semibold text-[#8A90A0]\">\n                    上游入口（{upstreamEdges.length}）\n                  </span>\n                  {upstreamEdges.map((edge) => {\n                    const peer = nodeMap.get(edge.source)\n                    if (!peer) return null\n                    const eStatus = edgeStatusOverrides?.get(edge.id) ?? edge.data?.status ?? 'normal'\n                    return (\n                      <button\n                        key={edge.id}\n                        type=\"button\"\n                        onClick={() => onSelect?.({ type: 'node', id: peer.id })}\n                        className=\"flex cursor-pointer items-center justify-between gap-2 rounded-[12px] bg-[#F6F7F9] px-3 py-2 text-left transition-colors hover:bg-[#EEF7FD]\"\n                      >\n                        <span className=\"inline-flex min-w-0 items-center gap-2 text-[12.5px] font-semibold text-[#1B1F27]\">\n                          <ArrowRight size={12} className=\"shrink-0 text-[#4A9BD8]\" />\n                          <span className=\"truncate\">{peer.data.label}</span>\n                        </span>\n                        <span className=\"inline-flex shrink-0 items-center gap-1.5 font-glaze-mono text-[11px] text-[#6B7280]\">\n                          {edge.data?.latency ?? edge.data?.bandwidth ?? edge.data?.protocol}\n                          <StatusDot status={eStatus} size=\"sm\" animated={false} />\n                        </span>\n                      </button>\n                    )\n                  })}\n                </div>\n              )}\n\n              {downstreamEdges.length > 0 && (\n                <div className=\"flex flex-col gap-1.5\">\n                  <span className=\"text-[11px] font-semibold text-[#8A90A0]\">\n                    下游依赖（{downstreamEdges.length}）\n                  </span>\n                  {downstreamEdges.map((edge) => {\n                    const peer = nodeMap.get(edge.target)\n                    if (!peer) return null\n                    const eStatus = edgeStatusOverrides?.get(edge.id) ?? edge.data?.status ?? 'normal'\n                    return (\n                      <button\n                        key={edge.id}\n                        type=\"button\"\n                        onClick={() => onSelect?.({ type: 'node', id: peer.id })}\n                        className=\"flex cursor-pointer items-center justify-between gap-2 rounded-[12px] bg-[#F6F7F9] px-3 py-2 text-left transition-colors hover:bg-[#F3F4FE]\"\n                      >\n                        <span className=\"inline-flex min-w-0 items-center gap-2 text-[12.5px] font-semibold text-[#1B1F27]\">\n                          <ArrowRight size={12} className=\"shrink-0 text-[#7B80EA]\" />\n                          <span className=\"truncate\">{peer.data.label}</span>\n                        </span>\n                        <span className=\"inline-flex shrink-0 items-center gap-1.5 font-glaze-mono text-[11px] text-[#6B7280]\">\n                          {edge.data?.latency ?? edge.data?.bandwidth ?? edge.data?.protocol}\n                          <StatusDot status={eStatus} size=\"sm\" animated={false} />\n                        </span>\n                      </button>\n                    )\n                  })}\n                </div>\n              )}\n            </div>\n          )}\n\n          {/* Recent Alerts / Events */}\n          {node.data.events && node.data.events.length > 0 && (\n            <div className=\"flex flex-col gap-1.5\">\n              <span className=\"text-[11px] font-semibold text-[#8A90A0]\">最近可观测事件</span>\n              <div className=\"flex flex-col gap-1.5 rounded-inner bg-[#F6F7F9] p-3\">\n                {node.data.events.map((ev) => (\n                  <div key={ev.id} className=\"flex items-start gap-2 text-[12px]\">\n                    <StatusDot status={ev.status} size=\"sm\" animated={false} className=\"mt-1 shrink-0\" />\n                    <div className=\"min-w-0 flex-1\">\n                      <span className=\"block text-[#1B1F27]\">{ev.message}</span>\n                      <span className=\"font-glaze-mono text-[11px] text-[#8A90A0]\">{ev.time}</span>\n                    </div>\n                  </div>\n                ))}\n              </div>\n            </div>\n          )}\n\n          {/* Fault Simulation & Footer Actions */}\n          {(onToggleFault || footerActions) && (\n            <div className=\"flex flex-wrap items-center gap-2 pt-1\">\n              {onToggleFault && (\n                <Button\n                  size=\"sm\"\n                  variant={isFaultInjected ? 'secondary' : 'danger'}\n                  onClick={() => onToggleFault(node.id)}\n                  className=\"flex-1\"\n                >\n                  <WarningCircle size={15} weight=\"bold\" />\n                  <span>{isFaultInjected ? '恢复该节点正常' : '模拟该节点故障'}</span>\n                </Button>\n              )}\n              {footerActions}\n            </div>\n          )}\n        </div>\n      </ScrollArea>\n    </aside>\n  )\n}\n"
   }
 }

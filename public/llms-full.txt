@@ -130,6 +130,8 @@ Each demo can be viewed standalone at `/view/demos/<slug>` (outside the docs fra
 | 06 | 云原生运维与可观测性中心 (`CloudOpsDemoPage`) | `/view/demos/cloud-ops` | `npx shadcn@latest add @glaze/demo-cloud-ops` | 展示全站 30 日 SLA 状态、集群资源三环监控、告警事件日志、散点延迟分布与全局命令栏的 SRE 运维中心。 |
 | 07 | 企业级控制台壳层 (`AdminShellDemoPage`) | `/view/demos/admin-shell` | `npx shadcn@latest add @glaze/demo-admin-shell` | 带完整侧边栏与顶部栏的 App Shell 仪表盘示例，侧边栏涵盖 15 种常见菜单类型（工作区切换、搜索过滤、2/3 级树形折叠、状态点、动态计数、右键/悬停菜单、内嵌开关、锁定态与迷你图标栏）。 |
 | 08 | AI 智能体工作台 (`AiStudioDemoPage`) | `/view/demos/ai-studio` | `npx shadcn@latest add @glaze/demo-ai-studio` | 集成 12 个 Glaze AI Elements 与 10 张 AI Bento 业务卡片的全景工作台，支持「智能体分栏对话与产物审查」与「AI Ops 四列看板」双模式无缝切换。 |
+| 09 | 网络与架构拓扑观测台 (`NetworkTopologyDemoPage`) | `/view/demos/network-topology` | `npx shadcn@latest add @glaze/demo-network-topology` | 基于 @xyflow/react 与 elkjs 构建的通用拓扑监控观测工作台，内置「云原生多可用区微服务架构」与「物理 / VLAN 万兆网络」双场景切换、实时流量动效、上下游路径追踪与故障级联演练。 |
+| 10 | 家庭内网与 Homelab 架构图 (`HomeNetworkDemoPage`) | `/view/demos/home-network` | `npx shadcn@latest add @glaze/demo-home-network` | 面向极客家庭与 Homelab 的全屋网络拓扑观测台，支持「全屋物理布线与四区 VLAN」与「自托管服务与 Tailscale 远程回家」双视角切换，基于 elkjs 自动防重叠排布。 |
 
 ---
 
@@ -245,6 +247,7 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | L17 | `MultiRadarCompareCard` | `@glaze/multi-radar-compare-card` | L | charts | 双方案雷达对比大卡 — 双序列对比 · 多边形/同心圆切换 |
 | L18 | `AiAssistantCard` | `@glaze/ai-assistant-card` | L | ai | AI 交互对话大卡 — 流式推理折叠 · 对话流 · 实时发送 |
 | L19 | `AiTraceInspectorCard` | `@glaze/ai-trace-inspector-card` | L | ai | 智能体执行链路大卡 — 思维链步骤 · 检索胶囊 · 工具入参输出 |
+| L20 | `ServiceMeshCard` | `@glaze/service-mesh-card` | L | monitoring | 服务依赖网格大卡 — 核心指标带 · 紧凑交互拓扑预览 |
 | F1 | `DataTableCard` | `@glaze/data-table-card` | F | layout | 数据表格通栏卡 — 分组标签 · 头像 · 进度条 · 状态 |
 | F2 | `HierarchyCard` | `@glaze/hierarchy-card` | F | layout | 层级架构通栏卡 — 根节点 · 多分支节点树 |
 | F3 | `PhaseTimelineCard` | `@glaze/phase-timeline-card` | F | layout | 阶段时间轴通栏卡 — 横向里程碑节点连线 |
@@ -261,6 +264,7 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | F14 | `ComposedOverviewCard` | `@glaze/composed-overview-card` | F | charts | 全年经营组合双轴通栏卡 — 12 月柱状 + 面积 + 折线双轴全景 |
 | F15 | `AiWorkspaceConsoleCard` | `@glaze/ai-workspace-console-card` | F | ai | AI 代码产物工作区通栏卡 — 变更文件树 · 代码/Diff 审查 · 终端输出 |
 | F16 | `AiModelEvalCard` | `@glaze/ai-model-eval-card` | F | ai | 多模型评测路由矩阵通栏卡 — 延迟/吞吐/推理得分对比 · 一键切换主路由 |
+| F17 | `TopologyMapCard` | `@glaze/topology-map-card` | F | monitoring | 交互网络拓扑通栏卡 — 实时流量连线 · 上下游路径追踪 · 缩放工具栏 |
 
 ---
 
@@ -1868,3 +1872,132 @@ Human-in-the-loop 敏感操作审批面板，支持低/中/高风险色板映射
 - `timestamp: string`
 - `onRestore: () => void`
 - `restoreLabel: string` = '回溯到此节点'
+
+## TopologyCanvas (拓扑观测画布) — `@glaze/topology-canvas`
+
+基于 @xyflow/react 与 elkjs (Eclipse Layout Kernel) 封装的 Glaze 拓扑可视化画布，内置无重叠分组自动布局、无描边主题、点击上下游链路追踪高亮、搜索/状态过滤与故障推演状态覆写。
+- Install: `npx shadcn@latest add @glaze/topology-canvas`
+- Import: `import { TopologyCanvas, useTopology } from '@/components/ui/topology-canvas'`
+- Registry Deps: @glaze/style, @glaze/tokens, @glaze/topology, @glaze/topology-edge, @glaze/topology-group, @glaze/topology-node
+
+**TopologyCanvas Props:**
+- `nodes: TopologyFlowNode[]` (required) — Topology nodes (including optional `topologyGroup` parent containers)
+- `edges: TopologyFlowEdge[]` (required) — Topology links connecting nodes
+- `direction: TopologyDirection` — Active layout direction controlling port handle placement
+- `animateFlow: boolean` — Toggle animated directional traffic flow on edges
+- `density: 'compact' | 'detailed'` — Default visual density for device/service nodes
+- `selection: TopologySelection | null` — Controlled selection (node or edge)
+- `onSelectionChange: (selection: TopologySelection | null) => void` — Callback fired when selection changes
+- `traceOnSelect: boolean` — Automatically trace and highlight upstream/downstream paths on selection
+- `traceDirection: 'both' | 'upstream' | 'downstream'` — Direction of path tracing when an item is selected
+- `searchQuery: string` — Optional search keyword dimming non-matching nodes
+- `statusFilter: 'all' | Status` — Optional status filter ('all' | Status) dimming non-matching nodes
+- `nodeStatusOverrides: Map<string, Status>` — External status overrides for nodes (e.g. fault impact simulation)
+- `edgeStatusOverrides: Map<string, Status>` — External status overrides for edges
+- `showGrid: boolean` — Show subtle Glaze dot grid background
+- `surface: 'canvas' | 'transparent'` — Canvas surface mode ('canvas' uses #F2F4F8, 'transparent' blends inside a Tile)
+- `draggable: boolean` — Allow dragging nodes to adjust layout temporarily
+- `autoLayout: boolean` — Automatically compute collision-free compound layout with Eclipse Layout Kernel (`elkjs`)
+- `layoutOptions: Omit<TopologyLayoutOptions, 'direction' | 'density'>` — Fine-grained ELK layout spacing & algorithm options when `autoLayout` is enabled
+- `fitViewKey: string | number` — Automatically re-fit viewport when `fitViewKey` changes
+- `className: string` — Container className (must supply explicit height or flex-1)
+- `children: React.ReactNode` — Floating overlay children (`TopologyToolbar`, `TopologyLegend`, `TopologyMinimap`, etc.)
+
+**Data Attributes:** `data-surface` (画布底面模式（canvas | transparent）), `data-direction` (当前布局方向（LR | TB）)
+
+## TopologyNode (网络与架构节点) — `@glaze/topology-node`
+
+通用云服务与网络设备节点，内置 18 种架构/设备图标、实时状态呼吸点、遥测指标栏、色调与紧凑/详细双密度模式。
+- Install: `npx shadcn@latest add @glaze/topology-node`
+- Import: `import { TopologyKindIcon, TopologyNodeCard, TopologyNode } from '@/components/ui/topology-node'`
+- Registry Deps: @glaze/hue-tag, @glaze/icon-tile, @glaze/status-dot, @glaze/status-pill, @glaze/style, @glaze/tokens, @glaze/topology
+
+**TopologyKindIcon Props:**
+- `kind: TopologyNodeKind` = 'service'
+- `size: number` = 18
+
+**TopologyNodeCard Props:**
+- `data: TopologyNodeData` (required) — Node data payload
+- `selected: boolean` = false — Whether the node is actively selected
+- `dimmed: boolean` = false — Dim non-matching nodes when a path trace or search filter is active
+- `effectiveStatus: Status` — Override visual status (e.g. cascaded fault status)
+- `density: 'compact' | 'detailed'` — Density override ('compact' | 'detailed')
+
+**Data Attributes:** `data-kind` (节点语义类型（service | database | firewall | switch 等 18 种）), `data-status` (当前健康状态（normal | warning | error | info | disabled）), `data-selected` (节点处于选中高亮态), `data-dimmed` (链路追踪或过滤时弱化显示)
+
+## TopologyGroup (逻辑与物理分组容器) — `@glaze/topology-group`
+
+用于表达 VPC、可用区 AZ、子网、K8s 集群、VLAN 与机柜边界的柔彩浅底分组容器，自带区域健康汇总胶囊。
+- Install: `npx shadcn@latest add @glaze/topology-group`
+- Import: `import { TopologyGroupSurface, TopologyGroup } from '@/components/ui/topology-group'`
+- Registry Deps: @glaze/hue-tag, @glaze/status-dot, @glaze/style, @glaze/tokens, @glaze/topology
+
+**TopologyGroupSurface Props:**
+- `data: TopologyGroupData` (required) — Group container metadata
+- `selected: boolean` = false — Whether the group container is currently selected
+- `dimmed: boolean` = false — Dim when outside an active trace
+- `effectiveStatus: Status` — Status override (e.g. from cascading fault impact)
+
+**Data Attributes:** `data-kind` (分组类型（vpc | az | subnet | cluster | vlan | rack | zone）), `data-status` (区域汇总状态), `data-selected` (分组被选中高亮)
+
+## TopologyEdge (流量动效拓扑连线) — `@glaze/topology-edge`
+
+支持正交折线与贝塞尔曲线的观测连线，内置状态着色、CSS 实时流量脉冲动画、冗余备线虚线及可点击的中点指标胶囊。
+- Install: `npx shadcn@latest add @glaze/topology-edge`
+- Import: `import { TopologyEdge } from '@/components/ui/topology-edge'`
+- Registry Deps: @glaze/style, @glaze/tokens, @glaze/topology
+
+**Data Attributes:** `data-status` (链路健康状态（normal | warning | error | disabled）), `data-selected` (链路被选中高亮)
+
+## TopologyControls (拓扑工具栏、图例与缩略图) — `@glaze/topology-controls`
+
+包含全圆胶囊悬浮工具栏 TopologyToolbar（搜索、状态过滤、横纵切换、流量动效、缩放居中）、状态图例 TopologyLegend 与 Glaze 配色缩略图 TopologyMinimap。
+- Install: `npx shadcn@latest add @glaze/topology-controls`
+- Import: `import { TopologyToolbar, TopologyLegend, TopologyMinimap } from '@/components/ui/topology-controls'`
+- Registry Deps: @glaze/button, @glaze/status-dot, @glaze/tokens, @glaze/tooltip, @glaze/topology
+
+**TopologyToolbar Props:**
+- `position: PanelPosition` = 'bottom-center' — Position on the topology canvas
+- `searchQuery: string` = '' — Search query value (enables inline pill search when `onSearchChange` is provided)
+- `onSearchChange: (value: string) => void` — Search query change handler
+- `statusFilter: 'all' | Status` = 'all' — Active status filter ('all' | 'normal' | 'warning' | 'error')
+- `onStatusFilterChange: (status: 'all' | Status) => void` — Status filter change handler
+- `onDirectionChange: (direction: TopologyDirection) => void` — Layout direction toggle handler ('LR' <-> 'TB')
+- `onAnimateFlowChange: (animated: boolean) => void` — Traffic flow animation toggle handler
+- `showZoomControls: boolean` = true — Show zoom in / zoom out / fitView controls
+- `compact: boolean` = false — Compact mode hides button text labels to fit narrow embedded canvases
+- `actions: React.ReactNode` — Extra action buttons rendered at the trailing end
+- `className: string`
+
+**TopologyLegend Props:**
+- `position: PanelPosition` = 'bottom-left' — Position on the canvas
+- `items: TopologyLegendItem[]` = DEFAULT_LEGEND_ITEMS — Custom legend items; defaults to Glaze semantic health states
+- `className: string`
+
+**TopologyMinimap Props:**
+- `position: PanelPosition` = 'bottom-right' — Position on the canvas
+- `width: number` = 168 — Minimap width in px
+- `height: number` = 108 — Minimap height in px
+- `className: string`
+
+## TopologyInspector (节点与链路详情检查器) — `@glaze/topology-inspector`
+
+右侧悬浮观测检查器，统一支持节点、分组与链路详情查看，集成实时指标卡、SparkChart 趋势、上下游跳转列表、最近告警事件与故障注入演练按钮。
+- Install: `npx shadcn@latest add @glaze/topology-inspector`
+- Import: `import { TopologyInspector } from '@/components/ui/topology-inspector'`
+- Registry Deps: @glaze/button, @glaze/hue-tag, @glaze/icon-tile, @glaze/scroll-area, @glaze/spark-chart, @glaze/status-dot, @glaze/status-pill, @glaze/style, @glaze/tokens, @glaze/topology, @glaze/topology-node
+
+**TopologyInspector Props:**
+- `nodes: TopologyFlowNode[]` (required) — All nodes in the current topology graph
+- `edges: TopologyFlowEdge[]` (required) — All edges in the current topology graph
+- `selection: TopologySelection | null` (required) — Currently selected node or edge
+- `onClose: () => void` — Close inspector callback
+- `onSelect: (selection: TopologySelection) => void` — Jump to another node or edge from upstream/downstream hops
+- `nodeStatusOverrides: Map<string, Status>` — Optional status overrides (e.g. fault simulation)
+- `edgeStatusOverrides: Map<string, Status>` — Optional edge status overrides
+- `isFaultInjected: boolean` = false — Whether the selected node is currently injected as a simulated fault
+- `onToggleFault: (nodeId: string) => void` — Optional handler to toggle fault simulation on the selected node
+- `footerActions: React.ReactNode` — Custom footer actions
+- `className: string`
+
+**Data Attributes:** `data-kind` (当前检查对象类型（edge | group | 节点类型）), `data-status` (当前对象健康状态)

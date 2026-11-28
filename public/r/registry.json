@@ -137,6 +137,29 @@
       ]
     },
     {
+      "name": "topology",
+      "type": "registry:lib",
+      "title": "Glaze Topology Data, ELK Layout & Trace Utils",
+      "description": "网络与云架构拓扑通用数据模型、上下游链路追踪、级联故障影响推演与基于 elkjs (Eclipse Layout Kernel) 的分组自动布局。",
+      "dependencies": [
+        "@xyflow/react",
+        "elkjs"
+      ],
+      "registryDependencies": [
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "topology"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/lib/topology.ts",
+          "type": "registry:lib",
+          "target": "lib/topology.ts"
+        }
+      ]
+    },
+    {
       "name": "grid",
       "type": "registry:ui",
       "title": "Grid (四列密集栅格)",
@@ -1787,6 +1810,171 @@
       "files": [
         {
           "path": "registry/glaze/ui/ai-artifact.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "topology-canvas",
+      "type": "registry:ui",
+      "title": "TopologyCanvas (拓扑观测画布)",
+      "description": "基于 @xyflow/react 与 elkjs (Eclipse Layout Kernel) 封装的 Glaze 拓扑可视化画布，内置无重叠分组自动布局、无描边主题、点击上下游链路追踪高亮、搜索/状态过滤与故障推演状态覆写。",
+      "dependencies": [
+        "@xyflow/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/style",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-edge",
+        "@glaze/topology-group",
+        "@glaze/topology-node"
+      ],
+      "categories": [
+        "topology"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/topology-canvas.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "topology-node",
+      "type": "registry:ui",
+      "title": "TopologyNode (网络与架构节点)",
+      "description": "通用云服务与网络设备节点，内置 18 种架构/设备图标、实时状态呼吸点、遥测指标栏、色调与紧凑/详细双密度模式。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "@xyflow/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/hue-tag",
+        "@glaze/icon-tile",
+        "@glaze/status-dot",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tokens",
+        "@glaze/topology"
+      ],
+      "categories": [
+        "topology"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/topology-node.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "topology-group",
+      "type": "registry:ui",
+      "title": "TopologyGroup (逻辑与物理分组容器)",
+      "description": "用于表达 VPC、可用区 AZ、子网、K8s 集群、VLAN 与机柜边界的柔彩浅底分组容器，自带区域健康汇总胶囊。",
+      "dependencies": [
+        "@xyflow/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/hue-tag",
+        "@glaze/status-dot",
+        "@glaze/style",
+        "@glaze/tokens",
+        "@glaze/topology"
+      ],
+      "categories": [
+        "topology"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/topology-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "topology-edge",
+      "type": "registry:ui",
+      "title": "TopologyEdge (流量动效拓扑连线)",
+      "description": "支持正交折线与贝塞尔曲线的观测连线，内置状态着色、CSS 实时流量脉冲动画、冗余备线虚线及可点击的中点指标胶囊。",
+      "dependencies": [
+        "@xyflow/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/style",
+        "@glaze/tokens",
+        "@glaze/topology"
+      ],
+      "categories": [
+        "topology"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/topology-edge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "topology-controls",
+      "type": "registry:ui",
+      "title": "TopologyControls (拓扑工具栏、图例与缩略图)",
+      "description": "包含全圆胶囊悬浮工具栏 TopologyToolbar（搜索、状态过滤、横纵切换、流量动效、缩放居中）、状态图例 TopologyLegend 与 Glaze 配色缩略图 TopologyMinimap。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "@xyflow/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/status-dot",
+        "@glaze/tokens",
+        "@glaze/tooltip",
+        "@glaze/topology"
+      ],
+      "categories": [
+        "topology"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/topology-controls.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "topology-inspector",
+      "type": "registry:ui",
+      "title": "TopologyInspector (节点与链路详情检查器)",
+      "description": "右侧悬浮观测检查器，统一支持节点、分组与链路详情查看，集成实时指标卡、SparkChart 趋势、上下游跳转列表、最近告警事件与故障注入演练按钮。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/hue-tag",
+        "@glaze/icon-tile",
+        "@glaze/scroll-area",
+        "@glaze/spark-chart",
+        "@glaze/status-dot",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-node"
+      ],
+      "categories": [
+        "topology"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/topology-inspector.tsx",
           "type": "registry:ui"
         }
       ]
@@ -4433,6 +4621,33 @@
       ]
     },
     {
+      "name": "service-mesh-card",
+      "type": "registry:block",
+      "title": "L20 服务依赖网格大卡 (ServiceMeshCard)",
+      "description": "服务依赖网格大卡（L20 · 尺寸 L）— 核心指标带 · 紧凑交互拓扑预览",
+      "registryDependencies": [
+        "@glaze/hue-tag",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-canvas"
+      ],
+      "categories": [
+        "blocks",
+        "monitoring",
+        "size-l"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/service-mesh-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/service-mesh-card.tsx"
+        }
+      ]
+    },
+    {
       "name": "data-table-card",
       "type": "registry:block",
       "title": "F1 数据表格通栏卡 (DataTableCard)",
@@ -4844,6 +5059,38 @@
       ]
     },
     {
+      "name": "topology-map-card",
+      "type": "registry:block",
+      "title": "F17 交互网络拓扑通栏卡 (TopologyMapCard)",
+      "description": "交互网络拓扑通栏卡（F17 · 尺寸 F）— 实时流量连线 · 上下游路径追踪 · 缩放工具栏",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/hue-tag",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-canvas",
+        "@glaze/topology-controls"
+      ],
+      "categories": [
+        "blocks",
+        "monitoring",
+        "size-f"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/topology-map-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/topology-map-card.tsx"
+        }
+      ]
+    },
+    {
       "name": "demo-homelab",
       "type": "registry:block",
       "title": "Demo 01 · 家庭内网总控中心",
@@ -5202,6 +5449,72 @@
           "path": "registry/glaze/demos/ai-studio-demo.tsx",
           "type": "registry:page",
           "target": "components/demos/ai-studio-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "demo-network-topology",
+      "type": "registry:block",
+      "title": "Demo 09 · 网络与架构拓扑观测台",
+      "description": "基于 @xyflow/react 与 elkjs 构建的通用拓扑监控观测工作台，内置「云原生多可用区微服务架构」与「物理 / VLAN 万兆网络」双场景切换、实时流量动效、上下游路径追踪与故障级联演练。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/hue-tag",
+        "@glaze/segmented-control",
+        "@glaze/status-dot",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/toast",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-canvas",
+        "@glaze/topology-controls",
+        "@glaze/topology-inspector"
+      ],
+      "categories": [
+        "demos"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/demos/network-topology-demo.tsx",
+          "type": "registry:page",
+          "target": "components/demos/network-topology-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "demo-home-network",
+      "type": "registry:block",
+      "title": "Demo 10 · 家庭内网与 Homelab 架构图",
+      "description": "面向极客家庭与 Homelab 的全屋网络拓扑观测台，支持「全屋物理布线与四区 VLAN」与「自托管服务与 Tailscale 远程回家」双视角切换，基于 elkjs 自动防重叠排布。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/hue-tag",
+        "@glaze/segmented-control",
+        "@glaze/status-dot",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/toast",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-canvas",
+        "@glaze/topology-controls",
+        "@glaze/topology-inspector"
+      ],
+      "categories": [
+        "demos"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/demos/home-network-demo.tsx",
+          "type": "registry:page",
+          "target": "components/demos/home-network-demo.tsx"
         }
       ]
     }

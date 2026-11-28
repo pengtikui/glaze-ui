@@ -110,6 +110,7 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | L17 | `MultiRadarCompareCard` | `@glaze/multi-radar-compare-card` | L | charts | 双方案雷达对比大卡 — 双序列对比 · 多边形/同心圆切换 |
 | L18 | `AiAssistantCard` | `@glaze/ai-assistant-card` | L | ai | AI 交互对话大卡 — 流式推理折叠 · 对话流 · 实时发送 |
 | L19 | `AiTraceInspectorCard` | `@glaze/ai-trace-inspector-card` | L | ai | 智能体执行链路大卡 — 思维链步骤 · 检索胶囊 · 工具入参输出 |
+| L20 | `ServiceMeshCard` | `@glaze/service-mesh-card` | L | monitoring | 服务依赖网格大卡 — 核心指标带 · 紧凑交互拓扑预览 |
 | F1 | `DataTableCard` | `@glaze/data-table-card` | F | layout | 数据表格通栏卡 — 分组标签 · 头像 · 进度条 · 状态 |
 | F2 | `HierarchyCard` | `@glaze/hierarchy-card` | F | layout | 层级架构通栏卡 — 根节点 · 多分支节点树 |
 | F3 | `PhaseTimelineCard` | `@glaze/phase-timeline-card` | F | layout | 阶段时间轴通栏卡 — 横向里程碑节点连线 |
@@ -126,3 +127,4 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | F14 | `ComposedOverviewCard` | `@glaze/composed-overview-card` | F | charts | 全年经营组合双轴通栏卡 — 12 月柱状 + 面积 + 折线双轴全景 |
 | F15 | `AiWorkspaceConsoleCard` | `@glaze/ai-workspace-console-card` | F | ai | AI 代码产物工作区通栏卡 — 变更文件树 · 代码/Diff 审查 · 终端输出 |
 | F16 | `AiModelEvalCard` | `@glaze/ai-model-eval-card` | F | ai | 多模型评测路由矩阵通栏卡 — 延迟/吞吐/推理得分对比 · 一键切换主路由 |
+| F17 | `TopologyMapCard` | `@glaze/topology-map-card` | F | monitoring | 交互网络拓扑通栏卡 — 实时流量连线 · 上下游路径追踪 · 缩放工具栏 |

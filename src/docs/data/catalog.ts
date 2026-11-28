@@ -33,7 +33,7 @@ export interface ComponentDocMeta {
   title: string
   cnTitle: string
   category: string
-  kind: 'primitive' | 'base-ui' | 'chart' | 'ai'
+  kind: 'primitive' | 'base-ui' | 'chart' | 'ai' | 'topology'
   baseUiSlug?: string
   baseUiPackage?: string
   baseUiUrl: string | null
@@ -100,6 +100,7 @@ export const COMPONENT_CATEGORIES = [
   { id: 'navigation', title: '导航与结构', en: 'Navigation & Structure' },
   { id: 'charts', title: '数据可视化图表', en: 'Charts & DataViz' },
   { id: 'ai', title: 'AI 智能体元素', en: 'AI Elements' },
+  { id: 'topology', title: '网络与架构拓扑', en: 'Topology & Architecture' },
 ] as const
 
 export const BLOCK_DOMAIN_CATEGORIES = [

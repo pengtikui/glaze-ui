@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "topology-map-card",
+  "type": "registry:block",
+  "title": "F17 交互网络拓扑通栏卡 (TopologyMapCard)",
+  "description": "交互网络拓扑通栏卡（F17 · 尺寸 F）— 实时流量连线 · 上下游路径追踪 · 缩放工具栏",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/hue-tag",
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens",
+    "@glaze/topology",
+    "@glaze/topology-canvas",
+    "@glaze/topology-controls"
+  ],
+  "categories": [
+    "blocks",
+    "monitoring",
+    "size-f"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/topology-map-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/topology-map-card.tsx",
+      "content": "import * as React from 'react'\nimport { ArrowsOutSimple, Pulse } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TopologyCanvas } from '@/components/ui/topology-canvas'\nimport { TopologyLegend, TopologyToolbar } from '@/components/ui/topology-controls'\nimport type { Hue, Status, TileTone } from '@/lib/tokens'\nimport type {\n  TopologyDirection,\n  TopologyFlowEdge,\n  TopologyFlowNode,\n  TopologySelection,\n} from '@/lib/topology'\n\nexport interface TopologyMapCardProps {\n  /** Card header title */\n  title: string\n  /** Optional subtitle describing the architecture or subnet */\n  subtitle?: string\n  /** Optional category tag */\n  tag?: string\n  /** Tag hue */\n  tagHue?: Hue\n  /** Overall health status pill */\n  status?: Status\n  /** Overall health status label */\n  statusLabel?: string\n  /** Topology graph nodes */\n  nodes: TopologyFlowNode[]\n  /** Topology graph edges */\n  edges: TopologyFlowEdge[]\n  /** Initial layout orientation */\n  direction?: TopologyDirection\n  /** Height of the embedded interactive canvas in px */\n  canvasHeight?: number\n  /** Card background tone */\n  tone?: TileTone\n  /** Optional callback for expanding into a dedicated full-screen workbench */\n  onExpand?: () => void\n}\n\n/**\n * Full-width Bento dashboard card (`size=\"f\"`) embedding an interactive Glaze TopologyCanvas.\n * Clicking any node highlights its upstream/downstream path directly inside the dashboard.\n */\nexport function TopologyMapCard({\n  title,\n  subtitle,\n  tag = 'TOPOLOGY',\n  tagHue = 'sky',\n  status = 'normal',\n  statusLabel = '链路健康',\n  nodes,\n  edges,\n  direction = 'LR',\n  canvasHeight = 420,\n  tone = 'white',\n  onExpand,\n}: TopologyMapCardProps) {\n  const [selection, setSelection] = React.useState<TopologySelection | null>(null)\n  const [animateFlow, setAnimateFlow] = React.useState(true)\n\n  const selectedLabel = React.useMemo(() => {\n    if (!selection) return null\n    if (selection.type === 'node') {\n      return nodes.find((n) => n.id === selection.id)?.data.label ?? null\n    }\n    return edges.find((e) => e.id === selection.id)?.data?.label ?? '选中链路'\n  }, [selection, nodes, edges])\n\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <div className=\"flex flex-wrap items-center justify-between gap-3\">\n        <div className=\"flex min-w-0 flex-col gap-1\">\n          <div className=\"flex flex-wrap items-center gap-2\">\n            <h3 className=\"m-0 font-glaze-display text-[20px] leading-6.5 font-extrabold text-[#1B1F27]\">\n              {title}\n            </h3>\n            <HueTag hue={tagHue} size=\"xs\">\n              {tag}\n            </HueTag>\n            <StatusPill status={status} size=\"sm\">\n              {statusLabel}\n            </StatusPill>\n          </div>\n          {subtitle && <p className=\"m-0 text-[13px] text-[#6B7280]\">{subtitle}</p>}\n        </div>\n\n        <div className=\"flex items-center gap-2\">\n          {selectedLabel && (\n            <span className=\"inline-flex items-center gap-1.5 rounded-full bg-[#F3F4FE] px-3 py-1 text-[12px] font-semibold text-[#4A4FB8]\">\n              <Pulse size={13} weight=\"bold\" />\n              <span>已追踪：{selectedLabel}</span>\n            </span>\n          )}\n          {onExpand && (\n            <Button size=\"sm\" variant=\"secondary\" onClick={onExpand}>\n              <ArrowsOutSimple size={14} />\n              <span>全屏观测</span>\n            </Button>\n          )}\n        </div>\n      </div>\n\n      <div\n        className=\"w-full overflow-hidden rounded-inner\"\n        style={{ height: canvasHeight }}\n      >\n        <TopologyCanvas\n          nodes={nodes}\n          edges={edges}\n          direction={direction}\n          animateFlow={animateFlow}\n          density=\"compact\"\n          selection={selection}\n          onSelectionChange={setSelection}\n        >\n          <TopologyLegend position=\"top-left\" />\n          <TopologyToolbar\n            position=\"bottom-right\"\n            onAnimateFlowChange={setAnimateFlow}\n            showZoomControls\n          />\n        </TopologyCanvas>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

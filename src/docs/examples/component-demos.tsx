@@ -5,6 +5,7 @@ import { NAVIGATION_DEMOS } from '@/docs/examples/demos/navigation'
 import { OVERLAYS_DEMOS } from '@/docs/examples/demos/overlays'
 import { PRIMITIVES_DEMOS } from '@/docs/examples/demos/primitives'
 import { SELECTION_DEMOS } from '@/docs/examples/demos/selection'
+import { TOPOLOGY_DEMOS } from '@/docs/examples/demos/topology'
 import type { ComponentDemoGroup } from '@/docs/examples/types'
 
 export type { ComponentDemoGroup, ComponentDemoHero, ComponentDemoItem, PreviewSurface } from '@/docs/examples/types'
@@ -17,4 +18,5 @@ export const COMPONENT_DEMOS: Record<string, ComponentDemoGroup> = {
   ...NAVIGATION_DEMOS,
   ...CHARTS_DEMOS,
   ...AI_DEMOS,
+  ...TOPOLOGY_DEMOS,
 }

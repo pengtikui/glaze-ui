@@ -81,6 +81,8 @@ function analyzeFileDependencies(code, selfName) {
       regDeps.add(depRef('tokens'))
     } else if (spec === '@/lib/motion') {
       regDeps.add(depRef('motion'))
+    } else if (spec === '@/lib/topology') {
+      regDeps.add(depRef('topology'))
     } else if (spec.startsWith('@/components/ui/')) {
       const target = spec.replace('@/components/ui/', '')
       if (target !== selfName) regDeps.add(depRef(target))
@@ -92,7 +94,7 @@ function analyzeFileDependencies(code, selfName) {
 
   // Detect glaze.css utility classes that require @glaze/style
   if (
-    /glaze-(grid|size-|popup|dialog-|drawer-|toast-|focus)|animate-glaze-|font-glaze-|rounded-(tile|overlay|inner|control|item|icon)/.test(
+    /glaze-(grid|size-|popup|dialog-|drawer-|toast-|focus|topology)|animate-glaze-|font-glaze-|rounded-(tile|overlay|inner|control|item|icon)/.test(
       code,
     )
   ) {
@@ -440,6 +442,22 @@ addRegistryItem(
     files: [{ path: motionPath, type: 'registry:lib', target: 'lib/motion.ts' }],
   },
   new Map([[motionPath, motionContent]]),
+)
+
+const topologyLibPath = 'registry/glaze/lib/topology.ts'
+const topologyLibContent = fs.readFileSync(path.join(ROOT, topologyLibPath), 'utf8')
+addRegistryItem(
+  {
+    name: 'topology',
+    type: 'registry:lib',
+    title: 'Glaze Topology Data, ELK Layout & Trace Utils',
+    description: '网络与云架构拓扑通用数据模型、上下游链路追踪、级联故障影响推演与基于 elkjs (Eclipse Layout Kernel) 的分组自动布局。',
+    dependencies: ['@xyflow/react', 'elkjs'],
+    registryDependencies: [depRef('tokens')],
+    categories: ['topology'],
+    files: [{ path: topologyLibPath, type: 'registry:lib', target: 'lib/topology.ts' }],
+  },
+  new Map([[topologyLibPath, topologyLibContent]]),
 )
 
 // 2. All 58 UI components

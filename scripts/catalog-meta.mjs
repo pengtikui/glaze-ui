@@ -22,6 +22,7 @@ export const COMPONENT_CATEGORIES = [
   { id: 'navigation', title: '导航与结构', en: 'Navigation & Structure', description: '标签页、分段切换、手风琴、工具栏与自定义滚动区' },
   { id: 'charts', title: '数据可视化图表', en: 'Charts & DataViz', description: '基于 Recharts v3 的 10 种自适应亮暗色主题图表组件' },
   { id: 'ai', title: 'AI 智能体元素', en: 'AI Elements', description: '参考 shadcn AI Elements 打造的对话、思考链、工具调用、人工审批与产物预览组件' },
+  { id: 'topology', title: '网络与架构拓扑', en: 'Topology & Architecture', description: '基于 @xyflow/react 的云架构与物理网络观测画布、分组容器、流量动效连线与详情检查器' },
 ]
 
 /**
@@ -1144,6 +1145,92 @@ export const COMPONENTS_CATALOG = [
     dataAttributes: [],
     cssVars: ['--radius-tile', '--radius-inner'],
   },
+
+  // 8. Topology & Architecture (6)
+  {
+    slug: 'topology-canvas',
+    title: 'TopologyCanvas',
+    cnTitle: '拓扑观测画布',
+    category: 'topology',
+    kind: 'topology',
+    description: '基于 @xyflow/react 与 elkjs (Eclipse Layout Kernel) 封装的 Glaze 拓扑可视化画布，内置无重叠分组自动布局、无描边主题、点击上下游链路追踪高亮、搜索/状态过滤与故障推演状态覆写。',
+    parts: ['TopologyCanvas', 'useTopology'],
+    dataAttributes: [
+      { attr: 'data-surface', desc: '画布底面模式（canvas | transparent）' },
+      { attr: 'data-direction', desc: '当前布局方向（LR | TB）' },
+    ],
+    cssVars: ['--glaze-canvas'],
+  },
+  {
+    slug: 'topology-node',
+    title: 'TopologyNode',
+    cnTitle: '网络与架构节点',
+    category: 'topology',
+    kind: 'topology',
+    description: '通用云服务与网络设备节点，内置 18 种架构/设备图标、实时状态呼吸点、遥测指标栏、色调与紧凑/详细双密度模式。',
+    parts: ['TopologyNode', 'TopologyNodeCard', 'TopologyKindIcon'],
+    dataAttributes: [
+      { attr: 'data-kind', desc: '节点语义类型（service | database | firewall | switch 等 18 种）' },
+      { attr: 'data-status', desc: '当前健康状态（normal | warning | error | info | disabled）' },
+      { attr: 'data-selected', desc: '节点处于选中高亮态' },
+      { attr: 'data-dimmed', desc: '链路追踪或过滤时弱化显示' },
+    ],
+    cssVars: ['--radius-inner'],
+  },
+  {
+    slug: 'topology-group',
+    title: 'TopologyGroup',
+    cnTitle: '逻辑与物理分组容器',
+    category: 'topology',
+    kind: 'topology',
+    description: '用于表达 VPC、可用区 AZ、子网、K8s 集群、VLAN 与机柜边界的柔彩浅底分组容器，自带区域健康汇总胶囊。',
+    parts: ['TopologyGroup', 'TopologyGroupSurface'],
+    dataAttributes: [
+      { attr: 'data-kind', desc: '分组类型（vpc | az | subnet | cluster | vlan | rack | zone）' },
+      { attr: 'data-status', desc: '区域汇总状态' },
+      { attr: 'data-selected', desc: '分组被选中高亮' },
+    ],
+    cssVars: ['--radius-tile'],
+  },
+  {
+    slug: 'topology-edge',
+    title: 'TopologyEdge',
+    cnTitle: '流量动效拓扑连线',
+    category: 'topology',
+    kind: 'topology',
+    description: '支持正交折线与贝塞尔曲线的观测连线，内置状态着色、CSS 实时流量脉冲动画、冗余备线虚线及可点击的中点指标胶囊。',
+    parts: ['TopologyEdge'],
+    dataAttributes: [
+      { attr: 'data-status', desc: '链路健康状态（normal | warning | error | disabled）' },
+      { attr: 'data-selected', desc: '链路被选中高亮' },
+    ],
+    cssVars: [],
+  },
+  {
+    slug: 'topology-controls',
+    title: 'TopologyControls',
+    cnTitle: '拓扑工具栏、图例与缩略图',
+    category: 'topology',
+    kind: 'topology',
+    description: '包含全圆胶囊悬浮工具栏 TopologyToolbar（搜索、状态过滤、横纵切换、流量动效、缩放居中）、状态图例 TopologyLegend 与 Glaze 配色缩略图 TopologyMinimap。',
+    parts: ['TopologyToolbar', 'TopologyLegend', 'TopologyMinimap'],
+    dataAttributes: [],
+    cssVars: ['--glaze-shadow-overlay'],
+  },
+  {
+    slug: 'topology-inspector',
+    title: 'TopologyInspector',
+    cnTitle: '节点与链路详情检查器',
+    category: 'topology',
+    kind: 'topology',
+    description: '右侧悬浮观测检查器，统一支持节点、分组与链路详情查看，集成实时指标卡、SparkChart 趋势、上下游跳转列表、最近告警事件与故障注入演练按钮。',
+    parts: ['TopologyInspector'],
+    dataAttributes: [
+      { attr: 'data-kind', desc: '当前检查对象类型（edge | group | 节点类型）' },
+      { attr: 'data-status', desc: '当前对象健康状态' },
+    ],
+    cssVars: ['--radius-tile', '--radius-inner'],
+  },
 ]
 
 export const BLOCK_DOMAIN_CATEGORIES = [
@@ -1269,6 +1356,7 @@ export const BLOCKS_CATALOG_RAW = [
   ['L17', 'MultiRadarCompareCard', '双方案雷达对比大卡', '双序列对比 · 多边形/同心圆切换', 'charts'],
   ['L18', 'AiAssistantCard', 'AI 交互对话大卡', '流式推理折叠 · 对话流 · 实时发送', 'ai'],
   ['L19', 'AiTraceInspectorCard', '智能体执行链路大卡', '思维链步骤 · 检索胶囊 · 工具入参输出', 'ai'],
+  ['L20', 'ServiceMeshCard', '服务依赖网格大卡', '核心指标带 · 紧凑交互拓扑预览', 'monitoring'],
 
   ['F1', 'DataTableCard', '数据表格通栏卡', '分组标签 · 头像 · 进度条 · 状态', 'layout'],
   ['F2', 'HierarchyCard', '层级架构通栏卡', '根节点 · 多分支节点树', 'layout'],
@@ -1286,6 +1374,7 @@ export const BLOCKS_CATALOG_RAW = [
   ['F14', 'ComposedOverviewCard', '全年经营组合双轴通栏卡', '12 月柱状 + 面积 + 折线双轴全景', 'charts'],
   ['F15', 'AiWorkspaceConsoleCard', 'AI 代码产物工作区通栏卡', '变更文件树 · 代码/Diff 审查 · 终端输出', 'ai'],
   ['F16', 'AiModelEvalCard', '多模型评测路由矩阵通栏卡', '延迟/吞吐/推理得分对比 · 一键切换主路由', 'ai'],
+  ['F17', 'TopologyMapCard', '交互网络拓扑通栏卡', '实时流量连线 · 上下游路径追踪 · 缩放工具栏', 'monitoring'],
 ]
 
 export const DEMOS_CATALOG = [
@@ -1392,5 +1481,31 @@ export const DEMOS_CATALOG = [
     tone: 'periwinkle',
     description: '集成 12 个 Glaze AI Elements 与 10 张 AI Bento 业务卡片的全景工作台，支持「智能体分栏对话与产物审查」与「AI Ops 四列看板」双模式无缝切换。',
     highlights: ['流式推理 + 思维链 + 工具调用 + 人工审批闭环', '右侧产物预览 / 实时终端 / 变更文件树三合一审查器', '一键切换至 4 列 AI Ops 智能体运营看板'],
+  },
+  {
+    slug: 'network-topology',
+    registryName: 'demo-network-topology',
+    file: 'network-topology-demo.tsx',
+    exportName: 'NetworkTopologyDemoPage',
+    index: '09',
+    title: '网络与架构拓扑观测台',
+    enTitle: 'Network & Architecture Topology',
+    badge: 'NET.TOPO',
+    tone: 'sky',
+    description: '基于 @xyflow/react 与 elkjs 构建的通用拓扑监控观测工作台，内置「云原生多可用区微服务架构」与「物理 / VLAN 万兆网络」双场景切换、实时流量动效、上下游路径追踪与故障级联演练。',
+    highlights: ['云架构与物理 VLAN 双场景无缝切换', '点击节点/链路自动高亮上下游并滑出检查器', '一键注入故障演练与横纵自动排布切换'],
+  },
+  {
+    slug: 'home-network',
+    registryName: 'demo-home-network',
+    file: 'home-network-demo.tsx',
+    exportName: 'HomeNetworkDemoPage',
+    index: '10',
+    title: '家庭内网与 Homelab 架构图',
+    enTitle: 'Home Network & Homelab Topology',
+    badge: 'HOME.LAN',
+    tone: 'mint',
+    description: '面向极客家庭与 Homelab 的全屋网络拓扑观测台，支持「全屋物理布线与四区 VLAN」与「自托管服务与 Tailscale 远程回家」双视角切换，基于 elkjs 自动防重叠排布。',
+    highlights: ['双宽带桥接 + 软路由 + 万兆交换机 + 4 VLAN 分区', 'Emby / Immich / Home Assistant 与 NAS 存储依赖链路', '模拟主宽带断网与 NAS 离线排障演练'],
   },
 ]

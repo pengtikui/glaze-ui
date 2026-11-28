@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "topology-group",
+  "type": "registry:ui",
+  "title": "TopologyGroup (逻辑与物理分组容器)",
+  "description": "用于表达 VPC、可用区 AZ、子网、K8s 集群、VLAN 与机柜边界的柔彩浅底分组容器，自带区域健康汇总胶囊。",
+  "dependencies": [
+    "@xyflow/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/hue-tag",
+    "@glaze/status-dot",
+    "@glaze/style",
+    "@glaze/tokens",
+    "@glaze/topology"
+  ],
+  "categories": [
+    "topology"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/topology-group.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport type { NodeProps } from '@xyflow/react'\nimport { cn } from 'cn'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { HUE_PALETTES, SEMANTIC_TOKENS, type Hue, type Status } from '@/lib/tokens'\nimport {\n  TOPOLOGY_GROUP_META,\n  useTopologyView,\n  type TopologyGroupData,\n  type TopologyGroupItem,\n} from '@/lib/topology'\n\nexport interface TopologyGroupSurfaceProps extends React.HTMLAttributes<HTMLDivElement> {\n  /** Group container metadata */\n  data: TopologyGroupData\n  /** Whether the group container is currently selected */\n  selected?: boolean\n  /** Dim when outside an active trace */\n  dimmed?: boolean\n  /** Status override (e.g. from cascading fault impact) */\n  effectiveStatus?: Status\n}\n\n/**\n * Pure presentational Glaze topology group container (VPC, AZ, Subnet, VLAN, Rack).\n * Uses soft pastel background tint and subtle inner hairline rather than heavy borders.\n */\nexport function TopologyGroupSurface({\n  data,\n  selected = false,\n  dimmed = false,\n  effectiveStatus,\n  className,\n  style,\n  children,\n  ...props\n}: TopologyGroupSurfaceProps) {\n  const kind = data.kind ?? 'zone'\n  const meta = TOPOLOGY_GROUP_META[kind]\n  const hue: Hue = data.hue ?? meta.defaultHue\n  const palette = HUE_PALETTES[hue]\n  const status: Status = effectiveStatus ?? data.status ?? 'normal'\n  const sem = SEMANTIC_TOKENS[status]\n\n  const isFault = status === 'error'\n  const isWarn = status === 'warning'\n\n  const surfaceBg = isFault\n    ? 'rgba(254, 242, 238, 0.78)'\n    : isWarn\n      ? 'rgba(254, 246, 234, 0.78)'\n      : `${palette[50]}CC`\n\n  const ringColor = selected\n    ? palette[500]\n    : isFault\n      ? '#F7B39C'\n      : isWarn\n        ? '#F5C995'\n        : palette[300]\n\n  return (\n    <div\n      data-kind={kind}\n      data-status={status}\n      data-selected={selected ? '' : undefined}\n      data-dimmed={dimmed ? '' : undefined}\n      className={cn(\n        'relative h-full w-full rounded-tile transition-[opacity,box-shadow,background-color] duration-150 select-none',\n        dimmed && 'opacity-35',\n        className,\n      )}\n      style={{\n        backgroundColor: surfaceBg,\n        boxShadow: selected\n          ? `0 0 0 2px ${ringColor}`\n          : `inset 0 0 0 1.5px ${ringColor}`,\n        ...style,\n      }}\n      {...props}\n    >\n      {/* Top Group Header Strip */}\n      <div className=\"flex items-center justify-between gap-2 px-4 pt-3.5 pb-2\">\n        <div className=\"flex min-w-0 items-center gap-2\">\n          <HueTag hue={isFault ? 'coral' : isWarn ? 'peach' : hue} size=\"xs\" tone=\"solid\">\n            {data.badge ?? meta.label}\n          </HueTag>\n          <span\n            className=\"truncate font-glaze-display text-[13px] font-bold\"\n            style={{ color: isFault ? '#5E1E0A' : isWarn ? '#4D2306' : palette[900] }}\n          >\n            {data.label}\n          </span>\n          {data.subtitle && (\n            <span\n              className=\"hidden truncate font-glaze-mono text-[11px] sm:inline\"\n              style={{ color: isFault ? '#A6360F' : isWarn ? '#8A4B12' : palette[700] }}\n            >\n              {data.subtitle}\n            </span>\n          )}\n        </div>\n\n        {(data.summary || isFault || isWarn) && (\n          <div\n            className=\"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold\"\n            style={{\n              backgroundColor: '#FFFFFF',\n              color: sem.ink,\n            }}\n          >\n            <StatusDot status={status} size=\"sm\" animated={isFault || isWarn} />\n            <span>{data.summary ?? (isFault ? '区域异常' : isWarn ? '部分降级' : '正常')}</span>\n          </div>\n        )}\n      </div>\n\n      {children}\n    </div>\n  )\n}\n\nexport type TopologyGroupProps = NodeProps<TopologyGroupItem>\n\n/**\n * Interactive React Flow group node registered as `topologyGroup`.\n */\nexport const TopologyGroup = React.memo(function TopologyGroup({\n  id,\n  data,\n  selected,\n}: TopologyGroupProps) {\n  const {\n    hasActiveHighlight,\n    highlightedNodeIds,\n    nodeStatusOverrides,\n    selection,\n  } = useTopologyView()\n\n  const effectiveStatus = nodeStatusOverrides.get(id) ?? data.status ?? 'normal'\n  const isSelected = Boolean(selected || (selection?.type === 'node' && selection.id === id))\n  const dimmed = hasActiveHighlight && !highlightedNodeIds.has(id) && !isSelected\n\n  return (\n    <TopologyGroupSurface\n      data={data}\n      selected={isSelected}\n      dimmed={dimmed}\n      effectiveStatus={effectiveStatus}\n      className=\"cursor-pointer\"\n    />\n  )\n})\n"
+    }
+  ]
+}

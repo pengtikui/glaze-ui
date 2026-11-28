@@ -5814,6 +5814,91 @@
     "sourceCode": "import {\n  ChainOfThought,\n  ChainOfThoughtContent,\n  ChainOfThoughtHeader,\n  ChainOfThoughtSearchResult,\n  ChainOfThoughtSearchResults,\n  ChainOfThoughtStep,\n  type ChainStepStatus,\n} from '@/components/ui/chain-of-thought'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { Tile } from '@/components/ui/tile'\nimport {\n  ToolCall,\n  ToolCallContent,\n  ToolCallHeader,\n  ToolCallInput,\n  ToolCallOutput,\n  type ToolCallState,\n} from '@/components/ui/tool-call'\nimport type { TileTone } from '@/lib/tokens'\n\nexport interface AiTraceStepItem {\n  id: string\n  label: string\n  description?: string\n  status: ChainStepStatus\n  duration?: string\n  links?: { label: string; href: string }[]\n}\n\nexport interface AiTraceToolItem {\n  name: string\n  title?: string\n  state: ToolCallState\n  duration?: string\n  input: unknown\n  output?: unknown\n  errorText?: string\n}\n\nexport interface AiTraceInspectorCardProps {\n  title?: string\n  summary?: string\n  steps: AiTraceStepItem[]\n  toolCall?: AiTraceToolItem\n  tone?: TileTone\n}\n\nexport function AiTraceInspectorCard({\n  title = '智能体执行链路',\n  summary = '已完成 3 步调研',\n  steps,\n  toolCall,\n  tone = 'white',\n}: AiTraceInspectorCardProps) {\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-start gap-3\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n        <HueTag hue=\"periwinkle\" size=\"xs\">\n          Trace\n        </HueTag>\n      </div>\n\n      <ChainOfThought defaultOpen>\n        <ChainOfThoughtHeader\n          badge={\n            <HueTag hue=\"mint\" size=\"xs\">\n              {steps.length} 步\n            </HueTag>\n          }\n        >\n          {summary}\n        </ChainOfThoughtHeader>\n        <ChainOfThoughtContent>\n          {steps.map((step) => (\n            <ChainOfThoughtStep\n              key={step.id}\n              label={step.label}\n              description={step.description}\n              status={step.status}\n              duration={step.duration}\n            >\n              {step.links && step.links.length > 0 && (\n                <ChainOfThoughtSearchResults>\n                  {step.links.map((link) => (\n                    <ChainOfThoughtSearchResult key={link.label} href={link.href}>\n                      {link.label}\n                    </ChainOfThoughtSearchResult>\n                  ))}\n                </ChainOfThoughtSearchResults>\n              )}\n            </ChainOfThoughtStep>\n          ))}\n        </ChainOfThoughtContent>\n      </ChainOfThought>\n\n      {toolCall && (\n        <ToolCall defaultOpen={false}>\n          <ToolCallHeader\n            name={toolCall.name}\n            title={toolCall.title}\n            state={toolCall.state}\n            duration={toolCall.duration}\n          />\n          <ToolCallContent>\n            <ToolCallInput input={toolCall.input} />\n            <ToolCallOutput output={toolCall.output} errorText={toolCall.errorText} />\n          </ToolCallContent>\n        </ToolCall>\n      )}\n    </Tile>\n  )\n}\n"
   },
   {
+    "code": "L20",
+    "slug": "service-mesh-card",
+    "componentName": "ServiceMeshCard",
+    "cnName": "服务依赖网格大卡",
+    "slots": "核心指标带 · 紧凑交互拓扑预览",
+    "size": "l",
+    "domain": "monitoring",
+    "dependencies": [],
+    "registryDependencies": [
+      "@glaze/hue-tag",
+      "@glaze/status-pill",
+      "@glaze/style",
+      "@glaze/tile",
+      "@glaze/tokens",
+      "@glaze/topology",
+      "@glaze/topology-canvas"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "defaultValue": null,
+        "description": "Card title"
+      },
+      {
+        "name": "badge",
+        "type": "string",
+        "required": false,
+        "defaultValue": "'MESH'",
+        "description": "Optional badge text"
+      },
+      {
+        "name": "badgeHue",
+        "type": "Hue",
+        "required": false,
+        "defaultValue": "'periwinkle'",
+        "description": "Badge hue"
+      },
+      {
+        "name": "status",
+        "type": "Status",
+        "required": false,
+        "defaultValue": "'normal'",
+        "description": "Health status"
+      },
+      {
+        "name": "statusLabel",
+        "type": "string",
+        "required": false,
+        "defaultValue": "'全链路正常'",
+        "description": "Health status text"
+      },
+      {
+        "name": "metrics",
+        "type": "ServiceMeshCardMetric[]",
+        "required": false,
+        "defaultValue": null,
+        "description": "Compact summary metrics shown above the mini topology"
+      },
+      {
+        "name": "nodes",
+        "type": "TopologyFlowNode[]",
+        "required": true,
+        "defaultValue": null,
+        "description": "Compact nodes list (recommended 3-6 nodes for 2×2 card)"
+      },
+      {
+        "name": "edges",
+        "type": "TopologyFlowEdge[]",
+        "required": true,
+        "defaultValue": null,
+        "description": "Links between nodes"
+      },
+      {
+        "name": "tone",
+        "type": "TileTone",
+        "required": false,
+        "defaultValue": "'white'",
+        "description": "Card tone"
+      }
+    ],
+    "sourceCode": "import * as React from 'react'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TopologyCanvas } from '@/components/ui/topology-canvas'\nimport type { Hue, Status, TileTone } from '@/lib/tokens'\nimport type {\n  TopologyFlowEdge,\n  TopologyFlowNode,\n  TopologySelection,\n} from '@/lib/topology'\n\nexport interface ServiceMeshCardMetric {\n  label: string\n  value: string\n  status?: Status\n}\n\nexport interface ServiceMeshCardProps {\n  /** Card title */\n  title: string\n  /** Optional badge text */\n  badge?: string\n  /** Badge hue */\n  badgeHue?: Hue\n  /** Health status */\n  status?: Status\n  /** Health status text */\n  statusLabel?: string\n  /** Compact summary metrics shown above the mini topology */\n  metrics?: ServiceMeshCardMetric[]\n  /** Compact nodes list (recommended 3-6 nodes for 2×2 card) */\n  nodes: TopologyFlowNode[]\n  /** Links between nodes */\n  edges: TopologyFlowEdge[]\n  /** Card tone */\n  tone?: TileTone\n}\n\n/**\n * Compact 2×2 Bento card (`size=\"l\"`) showing a live service dependency or subnet mesh preview\n * with instant click-to-trace highlighting.\n */\nexport function ServiceMeshCard({\n  title,\n  badge = 'MESH',\n  badgeHue = 'periwinkle',\n  status = 'normal',\n  statusLabel = '全链路正常',\n  metrics,\n  nodes,\n  edges,\n  tone = 'white',\n}: ServiceMeshCardProps) {\n  const [selection, setSelection] = React.useState<TopologySelection | null>(null)\n\n  return (\n    <Tile size=\"l\" tone={tone} className=\"gap-3.5\">\n      <div className=\"flex items-start justify-between gap-2\">\n        <div className=\"flex min-w-0 flex-wrap items-center gap-2\">\n          <h3 className=\"m-0 font-glaze-display text-[19px] leading-6 font-extrabold text-[#1B1F27]\">\n            {title}\n          </h3>\n          <HueTag hue={badgeHue} size=\"xs\">\n            {badge}\n          </HueTag>\n        </div>\n        <StatusPill status={status} size=\"sm\">\n          {statusLabel}\n        </StatusPill>\n      </div>\n\n      {metrics && metrics.length > 0 && (\n        <div\n          className=\"grid gap-2\"\n          style={{ gridTemplateColumns: `repeat(${Math.min(metrics.length, 3)}, minmax(0, 1fr))` }}\n        >\n          {metrics.slice(0, 3).map((m, idx) => (\n            <div key={idx} className=\"rounded-[14px] bg-[#F6F7F9] px-3 py-2\">\n              <span className=\"block text-[11px] text-[#8A90A0]\">{m.label}</span>\n              <span className=\"mt-0.5 block font-glaze-mono text-[15px] font-bold text-[#1B1F27]\">\n                {m.value}\n              </span>\n            </div>\n          ))}\n        </div>\n      )}\n\n      <div className=\"min-h-[250px] flex-1 overflow-hidden rounded-inner\">\n        <TopologyCanvas\n          nodes={nodes}\n          edges={edges}\n          density=\"compact\"\n          selection={selection}\n          onSelectionChange={setSelection}\n          zoomOnScroll={false}\n        />\n      </div>\n    </Tile>\n  )\n}\n"
+  },
+  {
     "code": "F1",
     "slug": "data-table-card",
     "componentName": "DataTableCard",
@@ -6678,5 +6763,115 @@
       }
     ],
     "sourceCode": "import * as React from 'react'\nimport { CheckCircle, Lightning } from '@phosphor-icons/react'\nimport { AiModelSelector, type AiModelOption } from '@/components/ui/ai-context-meter'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { Progress } from '@/components/ui/progress'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport interface AiModelEvalRow {\n  id: string\n  name: string\n  provider: string\n  contextWindow: string\n  tag: string\n  hue: Hue\n  ttft: string\n  throughput: string\n  costPer1M: string\n  reasoningScore: number\n  codingScore: number\n  status: 'normal' | 'info' | 'warning'\n}\n\nexport interface AiModelEvalCardProps {\n  title?: string\n  subtitle?: string\n  rows: AiModelEvalRow[]\n  defaultModelId?: string\n  onSelectDefault?: (modelId: string) => void\n  tone?: TileTone\n}\n\nexport function AiModelEvalCard({\n  title = '多模型评测与智能路由矩阵',\n  subtitle = '实时基准 · 首字延迟 / 吞吐 / 推理与编程得分对比',\n  rows,\n  defaultModelId,\n  onSelectDefault,\n  tone = 'white',\n}: AiModelEvalCardProps) {\n  const [activeId, setActiveId] = React.useState(defaultModelId ?? rows[0]?.id ?? '')\n\n  const modelOptions: AiModelOption[] = rows.map((r) => ({\n    id: r.id,\n    name: r.name,\n    provider: r.provider,\n    contextWindow: r.contextWindow,\n    tag: r.tag,\n    hue: r.hue,\n  }))\n\n  const handleSelect = (id: string) => {\n    setActiveId(id)\n    onSelectDefault?.(id)\n  }\n\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <div className=\"flex flex-wrap items-center justify-between gap-3\">\n        <div>\n          <span className=\"font-glaze-display text-[19px] font-extrabold\">{title}</span>\n          <p className=\"m-0 mt-0.5 text-[13px] text-[#6B7280]\">{subtitle}</p>\n        </div>\n        <div className=\"flex items-center gap-2\">\n          <span className=\"text-[12px] font-semibold text-[#6B7280]\">默认主路由</span>\n          <AiModelSelector\n            models={modelOptions}\n            value={activeId}\n            onValueChange={handleSelect}\n            side=\"bottom\"\n          />\n        </div>\n      </div>\n\n      <div className=\"overflow-x-auto\">\n        <table className=\"w-full border-collapse text-left text-[13px]\">\n          <thead>\n            <tr className=\"border-b border-[#EEF0F3] text-[11.5px] font-bold text-[#8A90A0]\">\n              <th className=\"py-2.5 pr-3\">模型</th>\n              <th className=\"px-3 py-2.5\">上下文</th>\n              <th className=\"px-3 py-2.5\">TTFT</th>\n              <th className=\"px-3 py-2.5\">吞吐</th>\n              <th className=\"px-3 py-2.5\">推理得分</th>\n              <th className=\"px-3 py-2.5\">编码得分</th>\n              <th className=\"px-3 py-2.5\">价格 / 1M</th>\n              <th className=\"py-2.5 pl-3 text-right\">状态</th>\n            </tr>\n          </thead>\n          <tbody className=\"divide-y divide-[#F2F3F5]\">\n            {rows.map((row) => {\n              const isDefault = row.id === activeId\n              return (\n                <tr\n                  key={row.id}\n                  onClick={() => handleSelect(row.id)}\n                  className={\n                    isDefault\n                      ? 'cursor-pointer bg-[#F3F4FE]/75 transition-colors'\n                      : 'cursor-pointer transition-colors hover:bg-[#F6F7F9]'\n                  }\n                >\n                  <td className=\"py-3 pr-3\">\n                    <div className=\"flex items-center gap-2\">\n                      {isDefault ? (\n                        <CheckCircle size={15} weight=\"fill\" className=\"shrink-0 text-[#4A4FB8]\" />\n                      ) : (\n                        <Lightning size={14} weight=\"duotone\" className=\"shrink-0 text-[#8A90A0]\" />\n                      )}\n                      <span className=\"font-bold text-[#1B1F27]\">{row.name}</span>\n                      <HueTag hue={row.hue} size=\"xs\">\n                        {row.tag}\n                      </HueTag>\n                    </div>\n                  </td>\n                  <td className=\"px-3 py-3 font-glaze-mono text-[12px] text-[#5B6170]\">\n                    {row.contextWindow}\n                  </td>\n                  <td className=\"px-3 py-3 font-glaze-mono font-semibold text-[#1B1F27]\">\n                    {row.ttft}\n                  </td>\n                  <td className=\"px-3 py-3 font-glaze-mono text-[#5B6170]\">{row.throughput}</td>\n                  <td className=\"w-36 px-3 py-3\">\n                    <div className=\"flex items-center gap-2\">\n                      <Progress value={row.reasoningScore} hue={row.hue} height=\"sm\" />\n                      <span className=\"w-8 font-glaze-mono text-[11.5px] font-bold\">\n                        {row.reasoningScore}\n                      </span>\n                    </div>\n                  </td>\n                  <td className=\"w-36 px-3 py-3\">\n                    <div className=\"flex items-center gap-2\">\n                      <Progress value={row.codingScore} hue=\"aqua\" height=\"sm\" />\n                      <span className=\"w-8 font-glaze-mono text-[11.5px] font-bold\">\n                        {row.codingScore}\n                      </span>\n                    </div>\n                  </td>\n                  <td className=\"px-3 py-3 font-glaze-mono text-[12px] font-semibold text-[#1B1F27]\">\n                    {row.costPer1M}\n                  </td>\n                  <td className=\"py-3 pl-3 text-right\">\n                    <StatusPill\n                      status={row.status}\n                      label={isDefault ? '主路由' : '可用'}\n                      size=\"sm\"\n                    />\n                  </td>\n                </tr>\n              )\n            })}\n          </tbody>\n        </table>\n      </div>\n    </Tile>\n  )\n}\n"
+  },
+  {
+    "code": "F17",
+    "slug": "topology-map-card",
+    "componentName": "TopologyMapCard",
+    "cnName": "交互网络拓扑通栏卡",
+    "slots": "实时流量连线 · 上下游路径追踪 · 缩放工具栏",
+    "size": "f",
+    "domain": "monitoring",
+    "dependencies": [
+      "@phosphor-icons/react"
+    ],
+    "registryDependencies": [
+      "@glaze/button",
+      "@glaze/hue-tag",
+      "@glaze/status-pill",
+      "@glaze/style",
+      "@glaze/tile",
+      "@glaze/tokens",
+      "@glaze/topology",
+      "@glaze/topology-canvas",
+      "@glaze/topology-controls"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "defaultValue": null,
+        "description": "Card header title"
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "required": false,
+        "defaultValue": null,
+        "description": "Optional subtitle describing the architecture or subnet"
+      },
+      {
+        "name": "tag",
+        "type": "string",
+        "required": false,
+        "defaultValue": "'TOPOLOGY'",
+        "description": "Optional category tag"
+      },
+      {
+        "name": "tagHue",
+        "type": "Hue",
+        "required": false,
+        "defaultValue": "'sky'",
+        "description": "Tag hue"
+      },
+      {
+        "name": "status",
+        "type": "Status",
+        "required": false,
+        "defaultValue": "'normal'",
+        "description": "Overall health status pill"
+      },
+      {
+        "name": "statusLabel",
+        "type": "string",
+        "required": false,
+        "defaultValue": "'链路健康'",
+        "description": "Overall health status label"
+      },
+      {
+        "name": "nodes",
+        "type": "TopologyFlowNode[]",
+        "required": true,
+        "defaultValue": null,
+        "description": "Topology graph nodes"
+      },
+      {
+        "name": "edges",
+        "type": "TopologyFlowEdge[]",
+        "required": true,
+        "defaultValue": null,
+        "description": "Topology graph edges"
+      },
+      {
+        "name": "direction",
+        "type": "TopologyDirection",
+        "required": false,
+        "defaultValue": "'LR'",
+        "description": "Initial layout orientation"
+      },
+      {
+        "name": "canvasHeight",
+        "type": "number",
+        "required": false,
+        "defaultValue": "420",
+        "description": "Height of the embedded interactive canvas in px"
+      },
+      {
+        "name": "tone",
+        "type": "TileTone",
+        "required": false,
+        "defaultValue": "'white'",
+        "description": "Card background tone"
+      },
+      {
+        "name": "onExpand",
+        "type": "() => void",
+        "required": false,
+        "defaultValue": null,
+        "description": "Optional callback for expanding into a dedicated full-screen workbench"
+      }
+    ],
+    "sourceCode": "import * as React from 'react'\nimport { ArrowsOutSimple, Pulse } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TopologyCanvas } from '@/components/ui/topology-canvas'\nimport { TopologyLegend, TopologyToolbar } from '@/components/ui/topology-controls'\nimport type { Hue, Status, TileTone } from '@/lib/tokens'\nimport type {\n  TopologyDirection,\n  TopologyFlowEdge,\n  TopologyFlowNode,\n  TopologySelection,\n} from '@/lib/topology'\n\nexport interface TopologyMapCardProps {\n  /** Card header title */\n  title: string\n  /** Optional subtitle describing the architecture or subnet */\n  subtitle?: string\n  /** Optional category tag */\n  tag?: string\n  /** Tag hue */\n  tagHue?: Hue\n  /** Overall health status pill */\n  status?: Status\n  /** Overall health status label */\n  statusLabel?: string\n  /** Topology graph nodes */\n  nodes: TopologyFlowNode[]\n  /** Topology graph edges */\n  edges: TopologyFlowEdge[]\n  /** Initial layout orientation */\n  direction?: TopologyDirection\n  /** Height of the embedded interactive canvas in px */\n  canvasHeight?: number\n  /** Card background tone */\n  tone?: TileTone\n  /** Optional callback for expanding into a dedicated full-screen workbench */\n  onExpand?: () => void\n}\n\n/**\n * Full-width Bento dashboard card (`size=\"f\"`) embedding an interactive Glaze TopologyCanvas.\n * Clicking any node highlights its upstream/downstream path directly inside the dashboard.\n */\nexport function TopologyMapCard({\n  title,\n  subtitle,\n  tag = 'TOPOLOGY',\n  tagHue = 'sky',\n  status = 'normal',\n  statusLabel = '链路健康',\n  nodes,\n  edges,\n  direction = 'LR',\n  canvasHeight = 420,\n  tone = 'white',\n  onExpand,\n}: TopologyMapCardProps) {\n  const [selection, setSelection] = React.useState<TopologySelection | null>(null)\n  const [animateFlow, setAnimateFlow] = React.useState(true)\n\n  const selectedLabel = React.useMemo(() => {\n    if (!selection) return null\n    if (selection.type === 'node') {\n      return nodes.find((n) => n.id === selection.id)?.data.label ?? null\n    }\n    return edges.find((e) => e.id === selection.id)?.data?.label ?? '选中链路'\n  }, [selection, nodes, edges])\n\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <div className=\"flex flex-wrap items-center justify-between gap-3\">\n        <div className=\"flex min-w-0 flex-col gap-1\">\n          <div className=\"flex flex-wrap items-center gap-2\">\n            <h3 className=\"m-0 font-glaze-display text-[20px] leading-6.5 font-extrabold text-[#1B1F27]\">\n              {title}\n            </h3>\n            <HueTag hue={tagHue} size=\"xs\">\n              {tag}\n            </HueTag>\n            <StatusPill status={status} size=\"sm\">\n              {statusLabel}\n            </StatusPill>\n          </div>\n          {subtitle && <p className=\"m-0 text-[13px] text-[#6B7280]\">{subtitle}</p>}\n        </div>\n\n        <div className=\"flex items-center gap-2\">\n          {selectedLabel && (\n            <span className=\"inline-flex items-center gap-1.5 rounded-full bg-[#F3F4FE] px-3 py-1 text-[12px] font-semibold text-[#4A4FB8]\">\n              <Pulse size={13} weight=\"bold\" />\n              <span>已追踪：{selectedLabel}</span>\n            </span>\n          )}\n          {onExpand && (\n            <Button size=\"sm\" variant=\"secondary\" onClick={onExpand}>\n              <ArrowsOutSimple size={14} />\n              <span>全屏观测</span>\n            </Button>\n          )}\n        </div>\n      </div>\n\n      <div\n        className=\"w-full overflow-hidden rounded-inner\"\n        style={{ height: canvasHeight }}\n      >\n        <TopologyCanvas\n          nodes={nodes}\n          edges={edges}\n          direction={direction}\n          animateFlow={animateFlow}\n          density=\"compact\"\n          selection={selection}\n          onSelectionChange={setSelection}\n        >\n          <TopologyLegend position=\"top-left\" />\n          <TopologyToolbar\n            position=\"bottom-right\"\n            onAnimateFlowChange={setAnimateFlow}\n            showZoomControls\n          />\n        </TopologyCanvas>\n      </div>\n    </Tile>\n  )\n}\n"
   }
 ]

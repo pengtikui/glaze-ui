@@ -115,6 +115,7 @@ import {
   ScheduleAgendaCard,
   ServerRackCard,
   ServerResourceCard,
+  ServiceMeshCard,
   ServiceStatusMatrixCard,
   SignalStrengthCard,
   SliderControlCard,
@@ -130,6 +131,7 @@ import {
   TagCloudCard,
   TargetLineCard,
   TemperatureCard,
+  TopologyMapCard,
   TrendCard,
   UptimeStripCard,
   VerticalBarsCard,
@@ -1495,6 +1497,97 @@ export const BLOCK_PREVIEW_RENDERERS: Record<string, (ctx: BlockPreviewContext) 
         { id: 'gpt-5-mini', name: 'GPT-5 Mini', provider: 'OpenAI', contextWindow: '128k', tag: '极速路由', hue: 'mint', ttft: '0.21s', throughput: '185 tok/s', costPer1M: '$0.30', reasoningScore: 86, codingScore: 88, status: 'info' },
       ]}
       onSelectDefault={(id) => toast({ title: '已切换主推理模型', description: id, status: 'normal' })}
+    />
+  ),
+  'service-mesh-card': () => (
+    <ServiceMeshCard
+      title="核心交易服务网格"
+      badge="MESH"
+      status="normal"
+      statusLabel="4/4 在线"
+      metrics={[
+        { label: 'P99 延迟', value: '18ms' },
+        { label: '吞吐', value: '9.4k rps' },
+        { label: '错误率', value: '0.02%' },
+      ]}
+      nodes={[
+        {
+          id: 'm-gw',
+          type: 'topologyNode',
+          position: { x: 16, y: 78 },
+          data: { label: 'Ingress GW', subtitle: 'TLS 1.3', kind: 'gateway', tone: 'sky-dark', hue: 'sky' },
+        },
+        {
+          id: 'm-api',
+          type: 'topologyNode',
+          position: { x: 256, y: 20 },
+          data: { label: 'Order API', subtitle: '8 pods', kind: 'service', hue: 'periwinkle' },
+        },
+        {
+          id: 'm-db',
+          type: 'topologyNode',
+          position: { x: 256, y: 136 },
+          data: { label: 'PG Primary', subtitle: '12ms', kind: 'database', hue: 'peach' },
+        },
+      ]}
+      edges={[
+        { id: 'me-1', source: 'm-gw', target: 'm-api', type: 'topologyEdge', data: { label: 'gRPC · 6ms' } },
+        { id: 'me-2', source: 'm-gw', target: 'm-db', type: 'topologyEdge', data: { label: 'Read · 9ms', dashed: true } },
+      ]}
+    />
+  ),
+  'topology-map-card': ({ toast }) => (
+    <TopologyMapCard
+      title="生产 VPC 与核心网络拓扑"
+      subtitle="点击任意节点可即时追踪上下游依赖链路"
+      tag="VPC-PROD"
+      status="normal"
+      statusLabel="全链路健康"
+      onExpand={() => toast({ title: '已打开全屏拓扑观测台', status: 'info' })}
+      nodes={[
+        {
+          id: 'tm-group',
+          type: 'topologyGroup',
+          position: { x: 274, y: 16 },
+          style: { width: 512, height: 248 },
+          data: { label: 'AZ-A · 业务子网', subtitle: '10.20.1.0/24', kind: 'az', badge: 'AZ-A', hue: 'periwinkle', summary: '3 节点在线' },
+        },
+        {
+          id: 'tm-edge',
+          type: 'topologyNode',
+          position: { x: 20, y: 98 },
+          data: { label: 'Edge ALB', subtitle: '10.20.0.10', kind: 'load-balancer', tone: 'sky-dark', hue: 'sky' },
+        },
+        {
+          id: 'tm-svc',
+          type: 'topologyNode',
+          parentId: 'tm-group',
+          extent: 'parent',
+          position: { x: 20, y: 84 },
+          data: { label: 'Checkout API', subtitle: 'k8s · 10 pods', kind: 'service', hue: 'periwinkle' },
+        },
+        {
+          id: 'tm-cache',
+          type: 'topologyNode',
+          parentId: 'tm-group',
+          extent: 'parent',
+          position: { x: 274, y: 46 },
+          data: { label: 'Redis Cache', subtitle: '0.4ms', kind: 'cache', hue: 'rose' },
+        },
+        {
+          id: 'tm-pg',
+          type: 'topologyNode',
+          parentId: 'tm-group',
+          extent: 'parent',
+          position: { x: 274, y: 146 },
+          data: { label: 'PostgreSQL', subtitle: 'Primary RW', kind: 'database', hue: 'peach' },
+        },
+      ]}
+      edges={[
+        { id: 'tme-1', source: 'tm-edge', target: 'tm-svc', type: 'topologyEdge', data: { label: 'HTTPS · 1.8G' } },
+        { id: 'tme-2', source: 'tm-svc', target: 'tm-cache', type: 'topologyEdge', data: { label: '0.4ms' } },
+        { id: 'tme-3', source: 'tm-svc', target: 'tm-pg', type: 'topologyEdge', data: { label: 'SQL · 9ms' } },
+      ]}
     />
   ),
 }
