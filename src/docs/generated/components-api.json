@@ -4840,6 +4840,740 @@
     },
     "sourceCode": "import * as React from 'react'\nimport {\n  columnFilteringFeature,\n  columnVisibilityFeature,\n  createColumnHelper,\n  createExpandedRowModel,\n  createFilteredRowModel,\n  createPaginatedRowModel,\n  createSortedRowModel,\n  filterFn_arrIncludesSome,\n  filterFn_equals,\n  filterFn_equalsString,\n  filterFn_includesString,\n  filterFn_inNumberRange,\n  globalFilteringFeature,\n  rowExpandingFeature,\n  rowPaginationFeature,\n  rowSelectionFeature,\n  rowSortingFeature,\n  sortFn_alphanumeric,\n  sortFn_basic,\n  sortFn_datetime,\n  sortFn_text,\n  tableFeatures,\n  useTable,\n  type ColumnDef,\n  type ColumnFiltersState,\n  type ExpandedState,\n  type PaginationState,\n  type Row,\n  type RowData,\n  type RowSelectionState,\n  type SortingState,\n} from '@tanstack/react-table'\nimport {\n  CaretDoubleLeft,\n  CaretDoubleRight,\n  CaretDown,\n  CaretLeft,\n  CaretRight,\n  CaretUp,\n  CaretUpDown,\n  Columns,\n  FadersHorizontal,\n  MagnifyingGlass,\n  Rows,\n  X,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { Button } from '@/components/ui/button'\nimport { Checkbox } from '@/components/ui/checkbox'\nimport { Input } from '@/components/ui/input'\nimport { Popover } from '@/components/ui/popover'\nimport { SegmentedControl, type SegmentedOption } from '@/components/ui/segmented-control'\nimport { Select } from '@/components/ui/select'\nimport { Tile } from '@/components/ui/tile'\nimport { PRESS_CLASS } from '@/lib/motion'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\n// ============================================================================\n// TanStack Table v9 Feature Bundle & Typed Helpers\n// ============================================================================\n\nexport type TableDensity = 'compact' | 'comfortable' | 'spacious'\n\nexport interface GlazeColumnMeta {\n  /** Horizontal text alignment for header and cells */\n  align?: 'left' | 'center' | 'right'\n  /** Human-readable column label shown in the column visibility menu */\n  label?: string\n  /** Extra classes applied to the header <th> */\n  headerClassName?: string\n  /** Extra classes applied to each body <td> */\n  cellClassName?: string\n  /** Apply tabular-nums & monospace-friendly alignment for numeric values */\n  numeric?: boolean\n}\n\n/**\n * Static TanStack Table v9 feature set powering Glaze DataTable.\n * Includes sorting, global & column filtering, pagination, row selection,\n * row expansion, and column visibility with typed columnMeta.\n */\nexport const glazeTableFeatures = tableFeatures({\n  columnVisibilityFeature,\n  columnFilteringFeature,\n  globalFilteringFeature,\n  rowSortingFeature,\n  rowPaginationFeature,\n  rowSelectionFeature,\n  rowExpandingFeature,\n  filteredRowModel: createFilteredRowModel(),\n  sortedRowModel: createSortedRowModel(),\n  paginatedRowModel: createPaginatedRowModel(),\n  expandedRowModel: createExpandedRowModel(),\n  filterFns: {\n    includesString: filterFn_includesString,\n    equalsString: filterFn_equalsString,\n    equals: filterFn_equals,\n    arrIncludesSome: filterFn_arrIncludesSome,\n    inNumberRange: filterFn_inNumberRange,\n  },\n  sortFns: {\n    alphanumeric: sortFn_alphanumeric,\n    text: sortFn_text,\n    basic: sortFn_basic,\n    datetime: sortFn_datetime,\n  },\n  columnMeta: {} as GlazeColumnMeta,\n})\n\nexport type GlazeTableFeatures = typeof glazeTableFeatures\n\nexport type DataTableColumnDef<TData extends RowData, TValue = unknown> = ColumnDef<\n  GlazeTableFeatures,\n  TData,\n  TValue\n>\n\nexport type DataTableRow<TData extends RowData> = Row<GlazeTableFeatures, TData>\n\n/**\n * Create a strongly-typed TanStack Table v9 column helper pre-bound to Glaze features.\n */\nexport function createGlazeColumnHelper<TData extends RowData>() {\n  return createColumnHelper<GlazeTableFeatures, TData>()\n}\n\n// ============================================================================\n// Layer 1: Semantic Styled Table Primitives\n// ============================================================================\n\nconst DENSITY_CELL_PADDING: Record<TableDensity, string> = {\n  compact: 'py-2 px-3',\n  comfortable: 'py-3 px-3.5',\n  spacious: 'py-4 px-4',\n}\n\nconst DENSITY_HEAD_PADDING: Record<TableDensity, string> = {\n  compact: 'py-2 px-3',\n  comfortable: 'py-2.5 px-3.5',\n  spacious: 'py-3 px-4',\n}\n\nconst TableDensityContext = React.createContext<TableDensity>('comfortable')\n\nexport interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {\n  /** Row vertical padding density */\n  density?: TableDensity\n  /** Sticky table header when scrolled vertically */\n  stickyHeader?: boolean\n  /** Extra classes on the scrollable container */\n  containerClassName?: string\n}\n\nexport const Table = React.forwardRef<HTMLTableElement, TableProps>(function Table(\n  { density = 'comfortable', stickyHeader = false, containerClassName, className, ...props },\n  ref,\n) {\n  return (\n    <TableDensityContext.Provider value={density}>\n      <div\n        className={cn(\n          'w-full overflow-x-auto',\n          stickyHeader && 'max-h-[540px] overflow-y-auto',\n          containerClassName,\n        )}\n      >\n        <table\n          ref={ref}\n          data-density={density}\n          className={cn(\n            'w-full border-collapse text-left text-[13.5px] text-[#1B1F27] tabular-nums',\n            className,\n          )}\n          {...props}\n        />\n      </div>\n    </TableDensityContext.Provider>\n  )\n})\n\nexport const TableHeader = React.forwardRef<\n  HTMLTableSectionElement,\n  React.HTMLAttributes<HTMLTableSectionElement>\n>(function TableHeader({ className, ...props }, ref) {\n  return (\n    <thead\n      ref={ref}\n      className={cn('text-[12px] font-semibold text-[#6B7280]', className)}\n      {...props}\n    />\n  )\n})\n\nexport const TableBody = React.forwardRef<\n  HTMLTableSectionElement,\n  React.HTMLAttributes<HTMLTableSectionElement>\n>(function TableBody({ className, ...props }, ref) {\n  return <tbody ref={ref} className={cn('divide-y divide-[#F2F3F5]', className)} {...props} />\n})\n\nexport const TableFooter = React.forwardRef<\n  HTMLTableSectionElement,\n  React.HTMLAttributes<HTMLTableSectionElement>\n>(function TableFooter({ className, ...props }, ref) {\n  return (\n    <tfoot\n      ref={ref}\n      className={cn('border-t border-[#E8EBF0] bg-[#F6F7F9]/70 font-semibold text-[#1B1F27]', className)}\n      {...props}\n    />\n  )\n})\n\nexport interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {\n  selected?: boolean\n  interactive?: boolean\n}\n\nexport const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(function TableRow(\n  { selected = false, interactive = false, className, ...props },\n  ref,\n) {\n  return (\n    <tr\n      ref={ref}\n      data-selected={selected ? '' : undefined}\n      className={cn(\n        'transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)]',\n        selected ? 'bg-[#F3F4FE]/85 hover:bg-[#F3F4FE]' : 'hover:bg-[#F6F7F9]/85',\n        interactive && 'cursor-pointer',\n        className,\n      )}\n      {...props}\n    />\n  )\n})\n\nexport interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {\n  align?: 'left' | 'center' | 'right'\n  sticky?: boolean\n}\n\nexport const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(function TableHead(\n  { align = 'left', sticky = false, className, ...props },\n  ref,\n) {\n  const density = React.useContext(TableDensityContext)\n  return (\n    <th\n      ref={ref}\n      className={cn(\n        'border-b border-[#EEF0F3] font-semibold whitespace-nowrap text-[#6B7280] select-none',\n        DENSITY_HEAD_PADDING[density],\n        align === 'center' && 'text-center',\n        align === 'right' && 'text-right',\n        sticky && 'sticky top-0 z-10 bg-white',\n        className,\n      )}\n      {...props}\n    />\n  )\n})\n\nexport interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {\n  align?: 'left' | 'center' | 'right'\n}\n\nexport const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(function TableCell(\n  { align = 'left', className, ...props },\n  ref,\n) {\n  const density = React.useContext(TableDensityContext)\n  return (\n    <td\n      ref={ref}\n      className={cn(\n        'align-middle text-[#1B1F27]',\n        DENSITY_CELL_PADDING[density],\n        align === 'center' && 'text-center',\n        align === 'right' && 'text-right',\n        className,\n      )}\n      {...props}\n    />\n  )\n})\n\nexport const TableCaption = React.forwardRef<\n  HTMLTableCaptionElement,\n  React.HTMLAttributes<HTMLTableCaptionElement>\n>(function TableCaption({ className, ...props }, ref) {\n  return (\n    <caption\n      ref={ref}\n      className={cn('mt-3 text-[12px] text-[#8A90A0]', className)}\n      {...props}\n    />\n  )\n})\n\n// ============================================================================\n// Layer 2: Full-Featured Glaze DataTable (TanStack Table v9)\n// ============================================================================\n\nexport interface DataTableFacetFilter {\n  /** Target column id to filter on */\n  columnId: string\n  /** Options rendered in the SegmentedControl (include 'all' or let allLabel prepend it) */\n  options: SegmentedOption<string>[]\n  /** Label for the reset-all tab (defaults to '全部') */\n  allLabel?: string\n  /** Accessible aria-label */\n  ariaLabel?: string\n}\n\nexport interface DataTableProps<TData extends RowData> {\n  /** Data array (keep memoized or state-backed for stable row models) */\n  data: TData[]\n  /** TanStack Table v9 column definitions */\n  columns: DataTableColumnDef<TData, any>[]\n  /** Optional stable row ID extractor */\n  getRowId?: (originalRow: TData, index: number) => string\n  /** Optional card title */\n  title?: React.ReactNode\n  /** Optional card subtitle / description */\n  description?: React.ReactNode\n  /** Card tone when wrapped in Tile (defaults to 'white') */\n  tone?: TileTone\n  /** Render bare without the outer Glaze Tile wrapper */\n  embedded?: boolean\n  /** Controlled row density */\n  density?: TableDensity\n  /** Default row density when uncontrolled */\n  defaultDensity?: TableDensity\n  /** Callback when density is changed via the toolbar button */\n  onDensityChange?: (density: TableDensity) => void\n  /** Show interactive density toggle button in toolbar */\n  enableDensityToggle?: boolean\n  /** Enable global keyword search input */\n  searchable?: boolean\n  /** Placeholder text for global search input */\n  searchPlaceholder?: string\n  /** Quick segmented filter bound to a specific column */\n  facetFilter?: DataTableFacetFilter\n  /** Enable sorting on sortable columns (default: true) */\n  enableSorting?: boolean\n  /** Initial sorting state */\n  initialSorting?: SortingState\n  /** Enable multi-row selection with Glaze checkboxes */\n  enableRowSelection?: boolean\n  /** Controlled row selection state */\n  rowSelection?: RowSelectionState\n  /** Controlled row selection updater */\n  onRowSelectionChange?: React.Dispatch<React.SetStateAction<RowSelectionState>>\n  /** Custom bulk action controls shown when 1+ rows are selected */\n  bulkActions?: (selectedRows: TData[], clearSelection: () => void) => React.ReactNode\n  /** Render an expandable detail panel below each row */\n  renderSubComponent?: (row: DataTableRow<TData>) => React.ReactNode\n  /** Optional predicate controlling whether a specific row can expand */\n  getRowCanExpand?: (row: DataTableRow<TData>) => boolean\n  /** Enable column visibility selector popover */\n  enableColumnVisibility?: boolean\n  /** Initial column visibility map */\n  initialColumnVisibility?: Record<string, boolean>\n  /** Enable client-side pagination footer (default: true) */\n  enablePagination?: boolean\n  /** Initial page size (default: 5) */\n  defaultPageSize?: number\n  /** Page size choices in footer select */\n  pageSizeOptions?: number[]\n  /** Sticky header inside a vertically scrollable viewport */\n  stickyHeader?: boolean\n  /** Show subtle alternating stripe background */\n  striped?: boolean\n  /** Loading skeleton state */\n  loading?: boolean\n  /** Row click handler (ignored when clicking interactive controls inside a row) */\n  onRowClick?: (row: TData) => void\n  /** Extra action buttons placed on the right side of the toolbar */\n  toolbarActions?: React.ReactNode\n  /** Empty state heading */\n  emptyTitle?: string\n  /** Empty state description */\n  emptyDescription?: string\n  /** Custom empty state action */\n  emptyAction?: React.ReactNode\n  /** Minimum table width before horizontal scroll activates */\n  minTableWidth?: number | string\n  /** Extra container classes */\n  className?: string\n}\n\nconst DENSITY_CYCLE: TableDensity[] = ['comfortable', 'compact', 'spacious']\nconst DENSITY_LABEL: Record<TableDensity, string> = {\n  compact: '紧凑',\n  comfortable: '标准',\n  spacious: '宽松',\n}\n\nfunction getColumnLabel<TData extends RowData>(col: {\n  id: string\n  columnDef: DataTableColumnDef<TData, any>\n}): string {\n  const meta = col.columnDef.meta as GlazeColumnMeta | undefined\n  if (meta?.label) return meta.label\n  if (typeof col.columnDef.header === 'string') return col.columnDef.header\n  return col.id\n}\n\nfunction getVisiblePageNumbers(pageIndex: number, pageCount: number): (number | 'ellipsis')[] {\n  if (pageCount <= 5) {\n    return Array.from({ length: pageCount }, (_, i) => i)\n  }\n  const pages: (number | 'ellipsis')[] = [0]\n  if (pageIndex > 2) pages.push('ellipsis')\n  const start = Math.max(1, pageIndex - 1)\n  const end = Math.min(pageCount - 2, pageIndex + 1)\n  for (let i = start; i <= end; i++) pages.push(i)\n  if (pageIndex < pageCount - 3) pages.push('ellipsis')\n  pages.push(pageCount - 1)\n  return pages\n}\n\nexport function DataTable<TData extends RowData>({\n  data,\n  columns: userColumns,\n  getRowId,\n  title,\n  description,\n  tone = 'white',\n  embedded = false,\n  density: controlledDensity,\n  defaultDensity = 'comfortable',\n  onDensityChange,\n  enableDensityToggle = false,\n  searchable = true,\n  searchPlaceholder = '搜索关键字…',\n  facetFilter,\n  enableSorting = true,\n  initialSorting = [],\n  enableRowSelection = false,\n  rowSelection: controlledRowSelection,\n  onRowSelectionChange: controlledOnRowSelectionChange,\n  bulkActions,\n  renderSubComponent,\n  getRowCanExpand,\n  enableColumnVisibility = false,\n  initialColumnVisibility = {},\n  enablePagination = true,\n  defaultPageSize = 5,\n  pageSizeOptions = [5, 10, 20, 50],\n  stickyHeader = false,\n  striped = false,\n  loading = false,\n  onRowClick,\n  toolbarActions,\n  emptyTitle = '暂无匹配数据',\n  emptyDescription = '尝试调整搜索关键字或筛选条件后再查看。',\n  emptyAction,\n  minTableWidth = 680,\n  className,\n}: DataTableProps<TData>) {\n  const [internalDensity, setInternalDensity] = React.useState<TableDensity>(\n    controlledDensity ?? defaultDensity,\n  )\n  const density = controlledDensity ?? internalDensity\n\n  const [sorting, setSorting] = React.useState<SortingState>(initialSorting)\n  const [globalFilter, setGlobalFilter] = React.useState('')\n  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])\n  const [columnVisibility, setColumnVisibility] =\n    React.useState<Record<string, boolean>>(initialColumnVisibility)\n  const [internalRowSelection, setInternalRowSelection] = React.useState<RowSelectionState>({})\n  const [expanded, setExpanded] = React.useState<ExpandedState>({})\n  const [pagination, setPagination] = React.useState<PaginationState>({\n    pageIndex: 0,\n    pageSize: enablePagination ? defaultPageSize : Math.max(data.length, 100),\n  })\n\n  const rowSelection = controlledRowSelection ?? internalRowSelection\n  const setRowSelection = controlledOnRowSelectionChange ?? setInternalRowSelection\n\n  // Keep pageSize synced when pagination is disabled and data grows\n  React.useEffect(() => {\n    if (!enablePagination) {\n      setPagination((prev) => ({ ...prev, pageIndex: 0, pageSize: Math.max(data.length, 100) }))\n    }\n  }, [enablePagination, data.length])\n\n  // Build effective columns with optional selection & expander columns prepended\n  const columns = React.useMemo<DataTableColumnDef<TData, any>[]>(() => {\n    const prefix: DataTableColumnDef<TData, any>[] = []\n\n    if (renderSubComponent) {\n      prefix.push({\n        id: '__expand__',\n        enableSorting: false,\n        enableHiding: false,\n        meta: {\n          align: 'center',\n          label: '展开详情',\n          headerClassName: 'w-10 px-2',\n          cellClassName: 'w-10 px-2',\n        },\n        header: () => null,\n        cell: ({ row }) => {\n          if (!row.getCanExpand()) return null\n          const isOpen = row.getIsExpanded()\n          return (\n            <button\n              type=\"button\"\n              aria-label={isOpen ? '收起行详情' : '展开行详情'}\n              aria-expanded={isOpen}\n              onClick={(e) => {\n                e.stopPropagation()\n                row.toggleExpanded()\n              }}\n              className={cn(\n                'inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full text-[#6B7280] transition-colors hover:bg-[#EEF0F3] hover:text-[#1B1F27]',\n                isOpen && 'bg-[#F3F4FE] text-[#4A4FB8]',\n              )}\n            >\n              <CaretRight\n                size={13}\n                weight=\"bold\"\n                className={cn(\n                  'transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n                  isOpen && 'rotate-90',\n                )}\n              />\n            </button>\n          )\n        },\n      })\n    }\n\n    if (enableRowSelection) {\n      prefix.push({\n        id: '__select__',\n        enableSorting: false,\n        enableHiding: false,\n        meta: {\n          align: 'center',\n          label: '选择行',\n          headerClassName: 'w-11 px-2.5',\n          cellClassName: 'w-11 px-2.5',\n        },\n        header: ({ table }) => (\n          <div className=\"flex items-center justify-center\" onClick={(e) => e.stopPropagation()}>\n            <Checkbox\n              aria-label=\"全选当前页\"\n              checked={table.getIsAllPageRowsSelected()}\n              indeterminate={\n                !table.getIsAllPageRowsSelected() && table.getIsSomePageRowsSelected()\n              }\n              onCheckedChange={(checked) => table.toggleAllPageRowsSelected(Boolean(checked))}\n            />\n          </div>\n        ),\n        cell: ({ row }) => (\n          <div className=\"flex items-center justify-center\" onClick={(e) => e.stopPropagation()}>\n            <Checkbox\n              aria-label=\"选择当前行\"\n              checked={row.getIsSelected()}\n              disabled={!row.getCanSelect()}\n              onCheckedChange={(checked) => row.toggleSelected(Boolean(checked))}\n            />\n          </div>\n        ),\n      })\n    }\n\n    return prefix.length > 0 ? [...prefix, ...userColumns] : userColumns\n  }, [enableRowSelection, renderSubComponent, userColumns])\n\n  const table = useTable({\n    features: glazeTableFeatures,\n    data,\n    columns,\n    getRowId,\n    enableSorting,\n    enableRowSelection,\n    getRowCanExpand: renderSubComponent\n      ? (row) => (getRowCanExpand ? getRowCanExpand(row) : true)\n      : undefined,\n    state: {\n      sorting,\n      globalFilter,\n      columnFilters,\n      columnVisibility,\n      rowSelection,\n      expanded,\n      pagination,\n    },\n    onSortingChange: setSorting,\n    onGlobalFilterChange: setGlobalFilter,\n    onColumnFiltersChange: setColumnFilters,\n    onColumnVisibilityChange: setColumnVisibility,\n    onRowSelectionChange: setRowSelection,\n    onExpandedChange: setExpanded,\n    onPaginationChange: setPagination,\n  })\n\n  // Facet filter value synced with columnFilters\n  const activeFacetValue = React.useMemo(() => {\n    if (!facetFilter) return '__all__'\n    const found = columnFilters.find((f) => f.id === facetFilter.columnId)\n    return found && typeof found.value === 'string' ? found.value : '__all__'\n  }, [facetFilter, columnFilters])\n\n  const handleFacetChange = React.useCallback(\n    (val: string) => {\n      if (!facetFilter) return\n      setColumnFilters((prev) => {\n        const rest = prev.filter((f) => f.id !== facetFilter.columnId)\n        if (val === '__all__') return rest\n        return [...rest, { id: facetFilter.columnId, value: val }]\n      })\n      setPagination((prev) => ({ ...prev, pageIndex: 0 }))\n    },\n    [facetFilter],\n  )\n\n  const facetOptions = React.useMemo<SegmentedOption<string>[]>(() => {\n    if (!facetFilter) return []\n    const hasAll = facetFilter.options.some((o) => o.value === '__all__')\n    return hasAll\n      ? facetFilter.options\n      : [{ value: '__all__', label: facetFilter.allLabel ?? '全部' }, ...facetFilter.options]\n  }, [facetFilter])\n\n  const selectedRows = table.getFilteredSelectedRowModel().rows.map((r) => r.original)\n  const selectedCount = selectedRows.length\n  const totalFilteredCount = table.getFilteredRowModel().rows.length\n  const pageRows = table.getRowModel().rows\n  const pageCount = Math.max(1, table.getPageCount())\n  const pageIndex = table.state.pagination.pageIndex\n  const pageSize = table.state.pagination.pageSize\n  const hasActiveFilters = Boolean(globalFilter.trim()) || columnFilters.length > 0\n  const hideableColumns = table.getAllLeafColumns().filter((c) => c.getCanHide())\n  const hiddenCount = hideableColumns.filter((c) => !c.getIsVisible()).length\n\n  const clearFilters = () => {\n    setGlobalFilter('')\n    setColumnFilters([])\n    setPagination((prev) => ({ ...prev, pageIndex: 0 }))\n  }\n\n  const clearSelection = () => setRowSelection({})\n\n  const handleCycleDensity = () => {\n    const idx = DENSITY_CYCLE.indexOf(density)\n    const next = DENSITY_CYCLE[(idx + 1) % DENSITY_CYCLE.length]\n    if (controlledDensity === undefined) setInternalDensity(next)\n    onDensityChange?.(next)\n  }\n\n  const theme = TILE_THEMES[tone]\n\n  const content = (\n    <div className={cn('flex flex-col gap-4', embedded && className)}>\n      {/* Header Row: Title / Subtitle + Right Actions */}\n      {(title || description || toolbarActions) && (\n        <div className=\"flex flex-wrap items-start justify-between gap-3\">\n          <div className=\"flex min-w-0 flex-col gap-0.5\">\n            {title && (\n              <h2 className=\"m-0 font-glaze-display text-[20px] leading-7 font-extrabold text-[#1B1F27]\">\n                {title}\n              </h2>\n            )}\n            {description && (\n              <p className=\"m-0 text-[13px] text-[#6B7280]\">{description}</p>\n            )}\n          </div>\n          {toolbarActions && (\n            <div className=\"flex shrink-0 flex-wrap items-center gap-2\">{toolbarActions}</div>\n          )}\n        </div>\n      )}\n\n      {/* Toolbar Row: Search + Facet SegmentedControl + Column Visibility + Density */}\n      {(searchable || facetFilter || enableColumnVisibility || enableDensityToggle) && (\n        <div className=\"flex flex-wrap items-center justify-between gap-2.5\">\n          <div className=\"flex min-w-0 flex-1 flex-wrap items-center gap-2.5\">\n            {searchable && (\n              <div className=\"w-full sm:w-64\">\n                <Input\n                  inputSize=\"sm\"\n                  surface=\"soft\"\n                  value={globalFilter}\n                  onChange={(e) => {\n                    setGlobalFilter(e.target.value)\n                    setPagination((prev) => ({ ...prev, pageIndex: 0 }))\n                  }}\n                  placeholder={searchPlaceholder}\n                  leadingIcon={<MagnifyingGlass size={14} weight=\"bold\" />}\n                  trailingElement={\n                    globalFilter ? (\n                      <button\n                        type=\"button\"\n                        onClick={() => setGlobalFilter('')}\n                        aria-label=\"清空搜索\"\n                        className=\"inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#E8EBF0] hover:text-[#1B1F27]\"\n                      >\n                        <X size={11} weight=\"bold\" />\n                      </button>\n                    ) : undefined\n                  }\n                />\n              </div>\n            )}\n\n            {facetFilter && (\n              <SegmentedControl\n                size=\"sm\"\n                ariaLabel={facetFilter.ariaLabel ?? '表格筛选'}\n                value={activeFacetValue}\n                onValueChange={handleFacetChange}\n                options={facetOptions}\n              />\n            )}\n\n            {hasActiveFilters && (\n              <button\n                type=\"button\"\n                onClick={clearFilters}\n                className=\"inline-flex h-8 cursor-pointer items-center gap-1 rounded-full bg-[#F2F3F5] px-3 text-[12px] font-semibold text-[#5B6170] transition-colors hover:bg-[#E8EBF0] hover:text-[#1B1F27]\"\n              >\n                <X size={12} weight=\"bold\" />\n                <span>重置筛选</span>\n              </button>\n            )}\n          </div>\n\n          <div className=\"flex shrink-0 items-center gap-2\">\n            {enableDensityToggle && !controlledDensity && (\n              <Button\n                type=\"button\"\n                variant=\"secondary\"\n                size=\"sm\"\n                onClick={handleCycleDensity}\n              >\n                <Rows size={14} weight=\"duotone\" />\n                <span>密度：{DENSITY_LABEL[density]}</span>\n              </Button>\n            )}\n\n            {enableColumnVisibility && hideableColumns.length > 0 && (\n              <Popover\n                side=\"bottom\"\n                align=\"end\"\n                title=\"显示列配置\"\n                description=\"勾选要在表格中展示的数据列\"\n                className=\"w-60 p-4\"\n                trigger={\n                  <Button type=\"button\" variant=\"secondary\" size=\"sm\">\n                    <Columns size={14} weight=\"duotone\" />\n                    <span>列设置</span>\n                    {hiddenCount > 0 && (\n                      <span className=\"rounded-full bg-[#E4E6FD] px-1.5 py-0.5 font-glaze-mono text-[10px] font-bold text-[#4A4FB8]\">\n                        -{hiddenCount}\n                      </span>\n                    )}\n                  </Button>\n                }\n              >\n                <div className=\"flex flex-col gap-2.5\">\n                  {hideableColumns.map((col) => (\n                    <Checkbox\n                      key={col.id}\n                      checked={col.getIsVisible()}\n                      onCheckedChange={(checked) => col.toggleVisibility(Boolean(checked))}\n                      label={\n                        <span className=\"text-[13px] font-medium text-[#1B1F27]\">\n                          {getColumnLabel(col)}\n                        </span>\n                      }\n                    />\n                  ))}\n                  {hiddenCount > 0 && (\n                    <div className=\"border-t border-[#F2F3F5] pt-2\">\n                      <button\n                        type=\"button\"\n                        onClick={() => table.resetColumnVisibility()}\n                        className=\"cursor-pointer text-[12px] font-semibold text-[#4A4FB8] hover:underline\"\n                      >\n                        恢复显示全部列\n                      </button>\n                    </div>\n                  )}\n                </div>\n              </Popover>\n            )}\n          </div>\n        </div>\n      )}\n\n      {/* Bulk Row Selection Bar */}\n      {enableRowSelection && selectedCount > 0 && (\n        <div className=\"flex flex-wrap items-center justify-between gap-2.5 rounded-[18px] bg-[#F3F4FE] px-4 py-2.5\">\n          <div className=\"flex items-center gap-2.5\">\n            <span className=\"inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#4A4FB8] px-2 font-glaze-mono text-[11px] font-bold text-white\">\n              {selectedCount}\n            </span>\n            <span className=\"text-[13px] font-bold text-[#262B7A]\">\n              已选中 {selectedCount} 条记录\n            </span>\n          </div>\n          <div className=\"flex flex-wrap items-center gap-2\">\n            {bulkActions?.(selectedRows, clearSelection)}\n            <Button\n              type=\"button\"\n              variant=\"ghost\"\n              size=\"sm\"\n              onClick={clearSelection}\n              className=\"text-[#4A4FB8] hover:bg-[#E4E6FD] hover:text-[#262B7A]\"\n            >\n              取消选择\n            </Button>\n          </div>\n        </div>\n      )}\n\n      {/* Core Semantic Table */}\n      <Table\n        density={density}\n        stickyHeader={stickyHeader}\n        style={{ minWidth: typeof minTableWidth === 'number' ? `${minTableWidth}px` : minTableWidth }}\n      >\n        <TableHeader>\n          {table.getHeaderGroups().map((headerGroup) => (\n            <tr key={headerGroup.id}>\n              {headerGroup.headers.map((header) => {\n                const meta = header.column.columnDef.meta as GlazeColumnMeta | undefined\n                const align = meta?.align ?? (meta?.numeric ? 'right' : 'left')\n                const canSort = enableSorting && header.column.getCanSort()\n                const sorted = header.column.getIsSorted()\n\n                return (\n                  <TableHead\n                    key={header.id}\n                    colSpan={header.colSpan}\n                    align={align}\n                    sticky={stickyHeader}\n                    className={meta?.headerClassName}\n                  >\n                    {header.isPlaceholder ? null : canSort ? (\n                      <button\n                        type=\"button\"\n                        onClick={header.column.getToggleSortingHandler()}\n                        className={cn(\n                          'group inline-flex cursor-pointer items-center gap-1 rounded-full py-0.5 text-[12px] font-semibold transition-colors outline-none',\n                          'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n                          align === 'right' && 'flex-row-reverse',\n                          sorted\n                            ? 'text-[#262B7A]'\n                            : 'text-[#6B7280] hover:text-[#1B1F27]',\n                        )}\n                      >\n                        <span>\n                          <table.FlexRender header={header} />\n                        </span>\n                        <span\n                          className={cn(\n                            'inline-flex shrink-0 transition-colors',\n                            sorted\n                              ? 'text-[#4A4FB8]'\n                              : 'text-[#CDD3DD] group-hover:text-[#8A90A0]',\n                          )}\n                        >\n                          {sorted === 'asc' ? (\n                            <CaretUp size={12} weight=\"bold\" />\n                          ) : sorted === 'desc' ? (\n                            <CaretDown size={12} weight=\"bold\" />\n                          ) : (\n                            <CaretUpDown size={12} weight=\"bold\" />\n                          )}\n                        </span>\n                      </button>\n                    ) : (\n                      <table.FlexRender header={header} />\n                    )}\n                  </TableHead>\n                )\n              })}\n            </tr>\n          ))}\n        </TableHeader>\n\n        <TableBody>\n          {loading ? (\n            Array.from({ length: Math.min(pageSize, 5) }).map((_, rowIdx) => (\n              <tr key={`skeleton-${rowIdx}`}>\n                {table.getVisibleLeafColumns().map((col) => (\n                  <TableCell key={col.id}>\n                    <div className=\"h-4 w-full max-w-36 animate-pulse rounded-full bg-[#EEF0F3]\" />\n                  </TableCell>\n                ))}\n              </tr>\n            ))\n          ) : pageRows.length === 0 ? (\n            <tr>\n              <td\n                colSpan={Math.max(1, table.getVisibleLeafColumns().length)}\n                className=\"py-12 text-center\"\n              >\n                <div className=\"mx-auto flex max-w-sm flex-col items-center gap-2\">\n                  <span className=\"inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F6F7F9] text-[#8A90A0]\">\n                    <FadersHorizontal size={18} weight=\"duotone\" />\n                  </span>\n                  <span className=\"font-glaze-display text-[15px] font-extrabold text-[#1B1F27]\">\n                    {emptyTitle}\n                  </span>\n                  <span className=\"text-[12.5px] text-[#6B7280]\">{emptyDescription}</span>\n                  <div className=\"mt-1 flex items-center gap-2\">\n                    {hasActiveFilters && (\n                      <Button type=\"button\" size=\"sm\" variant=\"soft\" hue=\"periwinkle\" onClick={clearFilters}>\n                        清空筛选条件\n                      </Button>\n                    )}\n                    {emptyAction}\n                  </div>\n                </div>\n              </td>\n            </tr>\n          ) : (\n            pageRows.map((row, idx) => {\n              const isSelected = row.getIsSelected()\n              const isExpanded = row.getIsExpanded()\n              return (\n                <React.Fragment key={row.id}>\n                  <TableRow\n                    selected={isSelected}\n                    interactive={Boolean(onRowClick)}\n                    className={cn(striped && idx % 2 === 1 && !isSelected && 'bg-[#F6F7F9]/45')}\n                    onClick={\n                      onRowClick\n                        ? (e) => {\n                            const target = e.target as HTMLElement\n                            if (target.closest('button, a, input, [role=\"checkbox\"], [role=\"menuitem\"]')) {\n                              return\n                            }\n                            onRowClick(row.original)\n                          }\n                        : undefined\n                    }\n                  >\n                    {row.getVisibleCells().map((cell) => {\n                      const meta = cell.column.columnDef.meta as GlazeColumnMeta | undefined\n                      const align = meta?.align ?? (meta?.numeric ? 'right' : 'left')\n                      return (\n                        <TableCell\n                          key={cell.id}\n                          align={align}\n                          className={cn(meta?.numeric && 'font-glaze-mono', meta?.cellClassName)}\n                        >\n                          <table.FlexRender cell={cell} />\n                        </TableCell>\n                      )\n                    })}\n                  </TableRow>\n\n                  {isExpanded && renderSubComponent && (\n                    <tr className=\"bg-[#F6F7F9]/65\">\n                      <td colSpan={row.getVisibleCells().length} className=\"px-4 py-3.5\">\n                        <div className=\"rounded-inner bg-white p-4\">\n                          {renderSubComponent(row)}\n                        </div>\n                      </td>\n                    </tr>\n                  )}\n                </React.Fragment>\n              )\n            })\n          )}\n        </TableBody>\n      </Table>\n\n      {/* Pagination Footer */}\n      {enablePagination && (\n        <div className=\"flex flex-wrap items-center justify-between gap-3 border-t border-[#F2F3F5] pt-3.5 text-[12.5px] text-[#6B7280]\">\n          <div className=\"flex flex-wrap items-center gap-2\">\n            <span>\n              共 <strong className=\"font-bold text-[#1B1F27]\">{totalFilteredCount}</strong> 条\n              {totalFilteredCount !== data.length && (\n                <span className=\"text-[#8A90A0]\">（总计 {data.length} 条）</span>\n              )}\n            </span>\n            <span className=\"text-[#CDD3DD]\">·</span>\n            <span>\n              第 <strong className=\"font-bold text-[#1B1F27]\">{pageIndex + 1}</strong> / {pageCount} 页\n            </span>\n          </div>\n\n          <div className=\"flex flex-wrap items-center gap-2.5\">\n            {/* Page Size Selector */}\n            <div className=\"flex items-center gap-1.5\">\n              <span className=\"hidden text-[12px] text-[#8A90A0] sm:inline\">每页</span>\n              <div className=\"w-24\">\n                <Select\n                  size=\"sm\"\n                  surface=\"soft\"\n                  value={String(pageSize)}\n                  onValueChange={(v) => {\n                    const nextSize = Number(v)\n                    if (!Number.isNaN(nextSize)) {\n                      setPagination({ pageIndex: 0, pageSize: nextSize })\n                    }\n                  }}\n                  options={pageSizeOptions.map((n) => ({ value: String(n), label: `${n} 条` }))}\n                />\n              </div>\n            </div>\n\n            {/* Page Navigation Buttons */}\n            <div className=\"flex items-center gap-1\">\n              <button\n                type=\"button\"\n                aria-label=\"首页\"\n                disabled={!table.getCanPreviousPage()}\n                onClick={() => table.setPageIndex(0)}\n                className={cn(\n                  'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F7F9] text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27] disabled:pointer-events-none disabled:opacity-40',\n                  PRESS_CLASS,\n                )}\n              >\n                <CaretDoubleLeft size={13} weight=\"bold\" />\n              </button>\n              <button\n                type=\"button\"\n                aria-label=\"上一页\"\n                disabled={!table.getCanPreviousPage()}\n                onClick={() => table.previousPage()}\n                className={cn(\n                  'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F7F9] text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27] disabled:pointer-events-none disabled:opacity-40',\n                  PRESS_CLASS,\n                )}\n              >\n                <CaretLeft size={13} weight=\"bold\" />\n              </button>\n\n              {getVisiblePageNumbers(pageIndex, pageCount).map((p, i) =>\n                p === 'ellipsis' ? (\n                  <span key={`el-${i}`} className=\"px-1.5 text-[12px] text-[#8A90A0]\">\n                    …\n                  </span>\n                ) : (\n                  <button\n                    key={p}\n                    type=\"button\"\n                    aria-current={p === pageIndex ? 'page' : undefined}\n                    onClick={() => table.setPageIndex(p)}\n                    className={cn(\n                      'inline-flex h-8 min-w-8 cursor-pointer items-center justify-center rounded-full px-2 font-glaze-mono text-[12px] font-bold transition-colors',\n                      p === pageIndex\n                        ? 'bg-[#1B1F27] text-white'\n                        : 'bg-transparent text-[#5B6170] hover:bg-[#F2F3F5] hover:text-[#1B1F27]',\n                    )}\n                  >\n                    {p + 1}\n                  </button>\n                ),\n              )}\n\n              <button\n                type=\"button\"\n                aria-label=\"下一页\"\n                disabled={!table.getCanNextPage()}\n                onClick={() => table.nextPage()}\n                className={cn(\n                  'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F7F9] text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27] disabled:pointer-events-none disabled:opacity-40',\n                  PRESS_CLASS,\n                )}\n              >\n                <CaretRight size={13} weight=\"bold\" />\n              </button>\n              <button\n                type=\"button\"\n                aria-label=\"末页\"\n                disabled={!table.getCanNextPage()}\n                onClick={() => table.setPageIndex(pageCount - 1)}\n                className={cn(\n                  'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F7F9] text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27] disabled:pointer-events-none disabled:opacity-40',\n                  PRESS_CLASS,\n                )}\n              >\n                <CaretDoubleRight size={13} weight=\"bold\" />\n              </button>\n            </div>\n          </div>\n        </div>\n      )}\n    </div>\n  )\n\n  if (embedded) return content\n\n  return (\n    <Tile\n      size=\"f\"\n      tone={tone}\n      className={cn('justify-start px-6 py-6 sm:px-7', className)}\n      style={{ backgroundColor: theme.bg, color: theme.ink }}\n    >\n      {content}\n    </Tile>\n  )\n}\n"
   },
+  "sidebar": {
+    "slug": "sidebar",
+    "title": "Sidebar",
+    "cnTitle": "应用侧边栏",
+    "category": "navigation",
+    "kind": "primitive",
+    "description": "参考 shadcn/ui 架构并结合 Base UI 1.9 与 Glaze 视觉规范打造的可组合侧边栏系统，内置 floating / sidebar / inset 三种布局变体、图标栏收起浮层、多级树形折叠、⌘B 快捷键与移动端抽屉。",
+    "parts": [
+      "SidebarProvider",
+      "useSidebar",
+      "Sidebar",
+      "SidebarInset",
+      "SidebarTrigger",
+      "SidebarRail",
+      "SidebarHeader",
+      "SidebarFooter",
+      "SidebarContent",
+      "SidebarSeparator",
+      "SidebarGroup",
+      "SidebarGroupLabel",
+      "SidebarGroupAction",
+      "SidebarGroupContent",
+      "SidebarMenu",
+      "SidebarMenuItem",
+      "SidebarMenuButton",
+      "SidebarMenuAction",
+      "SidebarMenuBadge",
+      "SidebarMenuSub",
+      "SidebarMenuSubItem",
+      "SidebarMenuSubButton",
+      "SidebarMenuCollapsible",
+      "SidebarMenuSkeleton"
+    ],
+    "dataAttributes": [
+      {
+        "attr": "data-state",
+        "desc": "桌面展开或收起态（expanded | collapsed）"
+      },
+      {
+        "attr": "data-collapsible",
+        "desc": "收起模式（icon | offcanvas | \"\"）"
+      },
+      {
+        "attr": "data-variant",
+        "desc": "外观变体（floating | sidebar | inset）"
+      },
+      {
+        "attr": "data-side",
+        "desc": "停靠方向（left | right）"
+      },
+      {
+        "attr": "data-active",
+        "desc": "当前菜单项处于激活路由态"
+      }
+    ],
+    "cssVars": [
+      "--sidebar-width",
+      "--sidebar-width-icon",
+      "--sidebar-width-mobile"
+    ],
+    "baseUiUrl": null,
+    "dependencies": [
+      "@base-ui/react",
+      "@phosphor-icons/react",
+      "cn"
+    ],
+    "registryDependencies": [
+      "@glaze/button",
+      "@glaze/motion",
+      "@glaze/popover",
+      "@glaze/style",
+      "@glaze/tooltip"
+    ],
+    "api": {
+      "exportedComponents": [
+        "useSidebar",
+        "SidebarProvider",
+        "Sidebar",
+        "SidebarInset",
+        "SidebarTrigger",
+        "SidebarRail",
+        "SidebarHeader",
+        "SidebarFooter",
+        "SidebarContent",
+        "SidebarSeparator",
+        "SidebarGroup",
+        "SidebarGroupLabel",
+        "SidebarGroupAction",
+        "SidebarGroupContent",
+        "SidebarMenu",
+        "SidebarMenuItem",
+        "SidebarMenuButton",
+        "SidebarMenuAction",
+        "SidebarMenuBadge",
+        "SidebarMenuSub",
+        "SidebarMenuSubItem",
+        "SidebarMenuSubButton",
+        "SidebarMenuCollapsible",
+        "SidebarMenuSkeleton"
+      ],
+      "sections": [
+        {
+          "name": "useSidebar",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarProvider",
+          "extends": "React.HTMLAttributes<HTMLDivElement>",
+          "props": [
+            {
+              "name": "defaultOpen",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "true",
+              "description": "Initial expanded state when uncontrolled (default: true)"
+            },
+            {
+              "name": "open",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Controlled expanded state"
+            },
+            {
+              "name": "onOpenChange",
+              "type": "(open: boolean) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Controlled expanded state change callback"
+            },
+            {
+              "name": "openMobile",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Controlled mobile drawer open state"
+            },
+            {
+              "name": "onOpenMobileChange",
+              "type": "(open: boolean) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Controlled mobile drawer state change callback"
+            },
+            {
+              "name": "variant",
+              "type": "SidebarVariant",
+              "required": false,
+              "defaultValue": "'floating'",
+              "description": "Layout variant shared with Sidebar & SidebarInset (default: 'floating')"
+            },
+            {
+              "name": "shortcut",
+              "type": "string | false",
+              "required": false,
+              "defaultValue": "'b'",
+              "description": "Keyboard shortcut letter paired with ⌘/Ctrl (default: 'b'; pass false to disable)"
+            },
+            {
+              "name": "sidebarWidth",
+              "type": "string",
+              "required": false,
+              "defaultValue": "'280px'",
+              "description": "Expanded sidebar width CSS length (default: '280px')"
+            },
+            {
+              "name": "sidebarWidthIcon",
+              "type": "string",
+              "required": false,
+              "defaultValue": "'76px'",
+              "description": "Collapsed icon-rail width CSS length (default: '76px')"
+            },
+            {
+              "name": "sidebarWidthMobile",
+              "type": "string",
+              "required": false,
+              "defaultValue": "'300px'",
+              "description": "Mobile drawer width CSS length (default: '300px')"
+            },
+            {
+              "name": "contained",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Render inside a bounded container (e.g. docs preview) instead of full viewport"
+            }
+          ]
+        },
+        {
+          "name": "Sidebar",
+          "extends": "React.HTMLAttributes<HTMLElement>",
+          "props": [
+            {
+              "name": "side",
+              "type": "SidebarSide",
+              "required": false,
+              "defaultValue": "'left'",
+              "description": "Which side the sidebar docks to (default: 'left')"
+            },
+            {
+              "name": "variant",
+              "type": "SidebarVariant",
+              "required": false,
+              "defaultValue": null,
+              "description": "Visual surface style (inherits from SidebarProvider if omitted)"
+            },
+            {
+              "name": "collapsible",
+              "type": "SidebarCollapsible",
+              "required": false,
+              "defaultValue": "'icon'",
+              "description": "Collapse behavior on desktop (default: 'icon')"
+            },
+            {
+              "name": "mobileTitle",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": "'导航菜单'",
+              "description": "Header title displayed inside the mobile navigation Drawer"
+            }
+          ]
+        },
+        {
+          "name": "SidebarInset",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarTrigger",
+          "extends": "Omit<ButtonProps, 'children'>",
+          "props": [
+            {
+              "name": "icon",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Custom icon override"
+            },
+            {
+              "name": "collapseLabel",
+              "type": "string",
+              "required": false,
+              "defaultValue": "'收起侧边栏 (⌘B)'",
+              "description": "Tooltip text when expanded"
+            },
+            {
+              "name": "expandLabel",
+              "type": "string",
+              "required": false,
+              "defaultValue": "'展开侧边栏 (⌘B)'",
+              "description": "Tooltip text when collapsed"
+            }
+          ]
+        },
+        {
+          "name": "SidebarRail",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarHeader",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarFooter",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarContent",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarSeparator",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarGroup",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarGroupLabel",
+          "extends": "React.HTMLAttributes<HTMLDivElement>",
+          "props": [
+            {
+              "name": "collapsible",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Allow clicking the section label to collapse/expand the group"
+            },
+            {
+              "name": "open",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "true",
+              "description": "Current open state when collapsible=true"
+            },
+            {
+              "name": "onToggle",
+              "type": "() => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Toggle handler when collapsible=true"
+            },
+            {
+              "name": "action",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Optional inline action slot (e.g. SidebarGroupAction '+' button)"
+            }
+          ]
+        },
+        {
+          "name": "SidebarGroupAction",
+          "extends": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+          "props": [
+            {
+              "name": "tooltip",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "SidebarGroupContent",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarMenu",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarMenuItem",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarMenuButton",
+          "extends": "",
+          "props": [
+            {
+              "name": "isActive",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Highlights the item in Glaze soft periwinkle pill state"
+            },
+            {
+              "name": "size",
+              "type": "'sm' | 'default' | 'lg'",
+              "required": false,
+              "defaultValue": "'default'",
+              "description": "Height size preset"
+            },
+            {
+              "name": "icon",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Leading icon element"
+            },
+            {
+              "name": "trailing",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Trailing badge, shortcut, or status pill (auto-hidden in collapsed icon-rail)"
+            },
+            {
+              "name": "tooltip",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Tooltip shown in collapsed icon-rail mode or always when provided"
+            },
+            {
+              "name": "disabled",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Disable interaction & show muted locked styling"
+            },
+            {
+              "name": "href",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "Render as external or internal <a> link when provided"
+            },
+            {
+              "name": "target",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "Link target when href is set"
+            },
+            {
+              "name": "rel",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "Link rel when href is set"
+            },
+            {
+              "name": "forceExpanded",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Force expanded rendering (e.g. inside a collapsed rail flyout Popover)"
+            },
+            {
+              "name": "onClick",
+              "type": "React.MouseEventHandler<HTMLElement>",
+              "required": false,
+              "defaultValue": null,
+              "description": "Click handler"
+            },
+            {
+              "name": "aria-label",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "Accessible label"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "children",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "SidebarMenuAction",
+          "extends": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+          "props": [
+            {
+              "name": "showOnHover",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Only reveal on parent SidebarMenuItem hover (or when popup is open)"
+            }
+          ]
+        },
+        {
+          "name": "SidebarMenuBadge",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarMenuSub",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarMenuSubItem",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "SidebarMenuSubButton",
+          "extends": "",
+          "props": [
+            {
+              "name": "isActive",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": ""
+            },
+            {
+              "name": "size",
+              "type": "'sm' | 'md'",
+              "required": false,
+              "defaultValue": "'md'",
+              "description": ""
+            },
+            {
+              "name": "icon",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "trailing",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "href",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "onClick",
+              "type": "React.MouseEventHandler<HTMLElement>",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "children",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "SidebarMenuCollapsible",
+          "extends": "",
+          "props": [
+            {
+              "name": "icon",
+              "type": "React.ReactNode",
+              "required": true,
+              "defaultValue": null,
+              "description": "Leading icon"
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "required": true,
+              "defaultValue": null,
+              "description": "Group trigger label"
+            },
+            {
+              "name": "badge",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Optional badge shown before the caret (e.g. '3级')"
+            },
+            {
+              "name": "open",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "Controlled open state"
+            },
+            {
+              "name": "defaultOpen",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Initial open state when uncontrolled"
+            },
+            {
+              "name": "onOpenChange",
+              "type": "(open: boolean) => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "Open state change handler"
+            },
+            {
+              "name": "hasActiveChild",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "false",
+              "description": "Highlight trigger text & icon when a child route is active"
+            },
+            {
+              "name": "level",
+              "type": "0 | 1",
+              "required": false,
+              "defaultValue": "0",
+              "description": "Nesting depth (0 = top-level group, 1 = 2nd-level nested group for 3-level trees)"
+            },
+            {
+              "name": "flyoutContent",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "Popover flyout content displayed when sidebar is collapsed to icon-rail mode"
+            },
+            {
+              "name": "children",
+              "type": "React.ReactNode",
+              "required": true,
+              "defaultValue": null,
+              "description": "Child menu items rendered inside SidebarMenuSub"
+            }
+          ]
+        },
+        {
+          "name": "SidebarMenuSkeleton",
+          "extends": "",
+          "props": [
+            {
+              "name": "showIcon",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": "true",
+              "description": ""
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "helperInterfaces": [
+        {
+          "name": "SidebarContextValue",
+          "extends": "",
+          "props": [
+            {
+              "name": "state",
+              "type": "SidebarState",
+              "required": true,
+              "defaultValue": null,
+              "description": "Expanded or collapsed visual state on desktop"
+            },
+            {
+              "name": "open",
+              "type": "boolean",
+              "required": true,
+              "defaultValue": null,
+              "description": "Whether desktop sidebar is expanded"
+            },
+            {
+              "name": "setOpen",
+              "type": "(open: boolean | ((prev: boolean) => boolean)) => void",
+              "required": true,
+              "defaultValue": null,
+              "description": "Update desktop open state"
+            },
+            {
+              "name": "openMobile",
+              "type": "boolean",
+              "required": true,
+              "defaultValue": null,
+              "description": "Whether mobile drawer sidebar is open"
+            },
+            {
+              "name": "setOpenMobile",
+              "type": "(open: boolean | ((prev: boolean) => boolean)) => void",
+              "required": true,
+              "defaultValue": null,
+              "description": "Update mobile drawer open state"
+            },
+            {
+              "name": "isMobile",
+              "type": "boolean",
+              "required": true,
+              "defaultValue": null,
+              "description": "True below desktop `lg` breakpoint (<1024px)"
+            },
+            {
+              "name": "contained",
+              "type": "boolean",
+              "required": true,
+              "defaultValue": null,
+              "description": "True when rendered inside a contained preview box instead of full viewport"
+            },
+            {
+              "name": "variant",
+              "type": "SidebarVariant",
+              "required": true,
+              "defaultValue": null,
+              "description": "Active visual variant shared between Sidebar and SidebarInset"
+            },
+            {
+              "name": "toggleSidebar",
+              "type": "() => void",
+              "required": true,
+              "defaultValue": null,
+              "description": "Toggle desktop collapse or mobile drawer depending on viewport"
+            }
+          ]
+        }
+      ],
+      "typeAliases": [
+        {
+          "name": "SidebarState",
+          "definition": "'expanded' | 'collapsed'",
+          "description": ""
+        },
+        {
+          "name": "SidebarVariant",
+          "definition": "'floating' | 'sidebar' | 'inset'",
+          "description": ""
+        },
+        {
+          "name": "SidebarCollapsible",
+          "definition": "'icon' | 'offcanvas' | 'none'",
+          "description": ""
+        },
+        {
+          "name": "SidebarSide",
+          "definition": "'left' | 'right'",
+          "description": ""
+        }
+      ]
+    },
+    "sourceCode": "import * as React from 'react'\nimport { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible'\nimport { Drawer as BaseDrawer } from '@base-ui/react/drawer'\nimport { CaretDown, CaretRight, List, SidebarSimple, X } from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { Button, type ButtonProps } from '@/components/ui/button'\nimport { Popover } from '@/components/ui/popover'\nimport { Tooltip } from '@/components/ui/tooltip'\nimport { PRESS_CLASS } from '@/lib/motion'\n\n// ============================================================================\n// Context & Types (shadcn/ui Sidebar architecture adapted for Glaze + Base UI)\n// ============================================================================\n\nexport type SidebarState = 'expanded' | 'collapsed'\nexport type SidebarVariant = 'floating' | 'sidebar' | 'inset'\nexport type SidebarCollapsible = 'icon' | 'offcanvas' | 'none'\nexport type SidebarSide = 'left' | 'right'\n\nconst MOBILE_MEDIA_QUERY = '(max-width: 1023px)'\n\nexport interface SidebarContextValue {\n  /** Expanded or collapsed visual state on desktop */\n  state: SidebarState\n  /** Whether desktop sidebar is expanded */\n  open: boolean\n  /** Update desktop open state */\n  setOpen: (open: boolean | ((prev: boolean) => boolean)) => void\n  /** Whether mobile drawer sidebar is open */\n  openMobile: boolean\n  /** Update mobile drawer open state */\n  setOpenMobile: (open: boolean | ((prev: boolean) => boolean)) => void\n  /** True below desktop `lg` breakpoint (<1024px) */\n  isMobile: boolean\n  /** True when rendered inside a contained preview box instead of full viewport */\n  contained: boolean\n  /** Active visual variant shared between Sidebar and SidebarInset */\n  variant: SidebarVariant\n  /** Toggle desktop collapse or mobile drawer depending on viewport */\n  toggleSidebar: () => void\n}\n\nconst SidebarContext = React.createContext<SidebarContextValue | null>(null)\n\nexport function useSidebar(): SidebarContextValue {\n  const ctx = React.useContext(SidebarContext)\n  if (!ctx) {\n    throw new Error('useSidebar must be used within a <SidebarProvider>.')\n  }\n  return ctx\n}\n\n// ============================================================================\n// SidebarProvider\n// ============================================================================\n\nexport interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElement> {\n  /** Initial expanded state when uncontrolled (default: true) */\n  defaultOpen?: boolean\n  /** Controlled expanded state */\n  open?: boolean\n  /** Controlled expanded state change callback */\n  onOpenChange?: (open: boolean) => void\n  /** Controlled mobile drawer open state */\n  openMobile?: boolean\n  /** Controlled mobile drawer state change callback */\n  onOpenMobileChange?: (open: boolean) => void\n  /** Layout variant shared with Sidebar & SidebarInset (default: 'floating') */\n  variant?: SidebarVariant\n  /** Keyboard shortcut letter paired with ⌘/Ctrl (default: 'b'; pass false to disable) */\n  shortcut?: string | false\n  /** Expanded sidebar width CSS length (default: '280px') */\n  sidebarWidth?: string\n  /** Collapsed icon-rail width CSS length (default: '76px') */\n  sidebarWidthIcon?: string\n  /** Mobile drawer width CSS length (default: '300px') */\n  sidebarWidthMobile?: string\n  /** Render inside a bounded container (e.g. docs preview) instead of full viewport */\n  contained?: boolean\n}\n\nexport const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(\n  function SidebarProvider(\n    {\n      defaultOpen = true,\n      open: openProp,\n      onOpenChange: setOpenProp,\n      openMobile: openMobileProp,\n      onOpenMobileChange: setOpenMobileProp,\n      variant = 'floating',\n      shortcut = 'b',\n      sidebarWidth = '280px',\n      sidebarWidthIcon = '76px',\n      sidebarWidthMobile = '300px',\n      contained = false,\n      className,\n      style,\n      children,\n      ...props\n    },\n    ref,\n  ) {\n    const [isMobile, setIsMobile] = React.useState(false)\n    const [internalOpen, setInternalOpen] = React.useState(defaultOpen)\n    const [internalOpenMobile, setInternalOpenMobile] = React.useState(false)\n\n    React.useEffect(() => {\n      if (contained || typeof window === 'undefined') return\n      const mql = window.matchMedia(MOBILE_MEDIA_QUERY)\n      const update = () => setIsMobile(mql.matches)\n      update()\n      mql.addEventListener('change', update)\n      return () => mql.removeEventListener('change', update)\n    }, [contained])\n\n    const open = openProp ?? internalOpen\n    const setOpen = React.useCallback(\n      (value: boolean | ((prev: boolean) => boolean)) => {\n        const next = typeof value === 'function' ? value(open) : value\n        if (setOpenProp) {\n          setOpenProp(next)\n        } else {\n          setInternalOpen(next)\n        }\n      },\n      [open, setOpenProp],\n    )\n\n    const openMobile = openMobileProp ?? internalOpenMobile\n    const setOpenMobile = React.useCallback(\n      (value: boolean | ((prev: boolean) => boolean)) => {\n        const next = typeof value === 'function' ? value(openMobile) : value\n        if (setOpenMobileProp) {\n          setOpenMobileProp(next)\n        } else {\n          setInternalOpenMobile(next)\n        }\n      },\n      [openMobile, setOpenMobileProp],\n    )\n\n    const toggleSidebar = React.useCallback(() => {\n      if (isMobile) {\n        setOpenMobile((prev) => !prev)\n      } else {\n        setOpen((prev) => !prev)\n      }\n    }, [isMobile, setOpen, setOpenMobile])\n\n    // Keyboard shortcut: ⌘B / Ctrl+B (disabled when contained to avoid multi-demo collisions)\n    React.useEffect(() => {\n      if (contained || !shortcut) return\n      const onKeyDown = (e: KeyboardEvent) => {\n        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === shortcut.toLowerCase()) {\n          e.preventDefault()\n          toggleSidebar()\n        }\n      }\n      window.addEventListener('keydown', onKeyDown)\n      return () => window.removeEventListener('keydown', onKeyDown)\n    }, [contained, shortcut, toggleSidebar])\n\n    const state: SidebarState = open ? 'expanded' : 'collapsed'\n\n    const contextValue = React.useMemo<SidebarContextValue>(\n      () => ({\n        state,\n        open,\n        setOpen,\n        openMobile,\n        setOpenMobile,\n        isMobile,\n        contained,\n        variant,\n        toggleSidebar,\n      }),\n      [state, open, setOpen, openMobile, setOpenMobile, isMobile, contained, variant, toggleSidebar],\n    )\n\n    return (\n      <SidebarContext.Provider value={contextValue}>\n        <div\n          ref={ref}\n          data-sidebar-wrapper=\"\"\n          data-variant={variant}\n          data-state={state}\n          style={\n            {\n              '--sidebar-width': sidebarWidth,\n              '--sidebar-width-icon': sidebarWidthIcon,\n              '--sidebar-width-mobile': sidebarWidthMobile,\n              ...style,\n            } as React.CSSProperties\n          }\n          className={cn(\n            'group/sidebar-wrapper flex w-full bg-[#F2F4F8] text-[#1B1F27]',\n            contained ? 'h-full overflow-hidden rounded-tile' : 'min-h-screen',\n            variant === 'floating' && (contained ? 'gap-3 p-3' : 'gap-4 p-3 sm:p-4'),\n            variant === 'inset' && (contained ? 'gap-2 p-2.5' : 'gap-3 p-3 sm:p-4'),\n            className,\n          )}\n          {...props}\n        >\n          {children}\n        </div>\n      </SidebarContext.Provider>\n    )\n  },\n)\n\n// ============================================================================\n// Sidebar Container (Desktop Rail / Floating / Inset + Mobile Base UI Drawer)\n// ============================================================================\n\nexport interface SidebarProps extends React.HTMLAttributes<HTMLElement> {\n  /** Which side the sidebar docks to (default: 'left') */\n  side?: SidebarSide\n  /** Visual surface style (inherits from SidebarProvider if omitted) */\n  variant?: SidebarVariant\n  /** Collapse behavior on desktop (default: 'icon') */\n  collapsible?: SidebarCollapsible\n  /** Header title displayed inside the mobile navigation Drawer */\n  mobileTitle?: React.ReactNode\n}\n\nexport const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Sidebar(\n  {\n    side = 'left',\n    variant: variantProp,\n    collapsible = 'icon',\n    mobileTitle = '导航菜单',\n    className,\n    style,\n    children,\n    ...props\n  },\n  ref,\n) {\n  const { isMobile, state, openMobile, setOpenMobile, contained, variant: ctxVariant } =\n    useSidebar()\n  const variant = variantProp ?? ctxVariant\n\n  // Effective collapsed state (only applies when collapsible !== 'none')\n  const isCollapsed = collapsible !== 'none' && state === 'collapsed'\n  const isOffcanvasCollapsed = collapsible === 'offcanvas' && state === 'collapsed'\n\n  // Mobile Drawer Mode (Base UI Drawer, zero backdrop-blur)\n  if (isMobile && !contained) {\n    return (\n      <BaseDrawer.Root\n        open={openMobile}\n        onOpenChange={setOpenMobile}\n        swipeDirection={side}\n      >\n        <BaseDrawer.Portal>\n          <BaseDrawer.Backdrop className=\"glaze-drawer-backdrop fixed inset-0 z-50 bg-[#1B1F27]/36\" />\n          <BaseDrawer.Viewport className=\"fixed inset-0 z-50 flex\">\n            <BaseDrawer.Popup\n              data-sidebar=\"sidebar\"\n              data-mobile=\"true\"\n              data-side={side}\n              style={{ width: 'min(var(--sidebar-width-mobile, 300px), calc(100vw - 24px))' }}\n              className={cn(\n                'fixed top-3 bottom-3 flex flex-col overflow-hidden rounded-tile bg-white shadow-[0_24px_64px_rgba(18,58,92,0.18)] outline-none',\n                side === 'left' ? 'left-3' : 'right-3',\n                className,\n              )}\n            >\n              <div className=\"flex shrink-0 items-center justify-between border-b border-[#F2F3F5] px-4 py-3\">\n                <span className=\"font-glaze-display text-[15px] font-extrabold text-[#123A5C]\">\n                  {mobileTitle}\n                </span>\n                <BaseDrawer.Close\n                  aria-label=\"关闭侧边栏\"\n                  className={cn(\n                    'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F2F3F5] text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27]',\n                    PRESS_CLASS,\n                  )}\n                >\n                  <X size={15} weight=\"bold\" />\n                </BaseDrawer.Close>\n              </div>\n              <div className=\"flex min-h-0 flex-1 flex-col overflow-hidden\">{children}</div>\n            </BaseDrawer.Popup>\n          </BaseDrawer.Viewport>\n        </BaseDrawer.Portal>\n      </BaseDrawer.Root>\n    )\n  }\n\n  const widthStyle: React.CSSProperties = {\n    width: isOffcanvasCollapsed\n      ? 0\n      : isCollapsed && collapsible === 'icon'\n        ? 'var(--sidebar-width-icon, 76px)'\n        : 'var(--sidebar-width, 280px)',\n    ...style,\n  }\n\n  return (\n    <aside\n      ref={ref}\n      data-sidebar=\"sidebar\"\n      data-state={collapsible === 'none' ? 'expanded' : state}\n      data-collapsible={isCollapsed ? collapsible : ''}\n      data-variant={variant}\n      data-side={side}\n      style={widthStyle}\n      className={cn(\n        'group/sidebar relative shrink-0 flex-col overflow-hidden transition-[width,opacity,margin] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n        contained ? 'flex h-full' : 'hidden lg:flex',\n        !contained &&\n          (variant === 'floating' || variant === 'inset'\n            ? 'sticky top-4 h-[calc(100vh-32px)]'\n            : 'sticky top-0 h-screen'),\n        variant === 'floating' && 'rounded-tile bg-white',\n        variant === 'sidebar' && 'bg-white',\n        variant === 'inset' && 'bg-transparent',\n        side === 'right' && 'order-last',\n        isOffcanvasCollapsed && 'pointer-events-none -mr-4 opacity-0',\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </aside>\n  )\n})\n\n// ============================================================================\n// SidebarInset (Main Content Region Paired with Sidebar)\n// ============================================================================\n\nexport const SidebarInset = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  function SidebarInset({ className, ...props }, ref) {\n    const { variant, contained } = useSidebar()\n    return (\n      <div\n        ref={ref}\n        data-sidebar=\"inset\"\n        className={cn(\n          'relative flex min-w-0 flex-1 flex-col',\n          variant === 'floating' && 'gap-4',\n          variant === 'sidebar' && 'bg-[#F2F4F8]',\n          variant === 'inset' &&\n            cn('overflow-hidden rounded-tile bg-white', contained ? 'h-full' : 'min-h-[calc(100vh-32px)]'),\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n\n// ============================================================================\n// SidebarTrigger & SidebarRail\n// ============================================================================\n\nexport interface SidebarTriggerProps extends Omit<ButtonProps, 'children'> {\n  /** Custom icon override */\n  icon?: React.ReactNode\n  /** Tooltip text when expanded */\n  collapseLabel?: string\n  /** Tooltip text when collapsed */\n  expandLabel?: string\n}\n\nexport const SidebarTrigger = React.forwardRef<HTMLButtonElement, SidebarTriggerProps>(\n  function SidebarTrigger(\n    {\n      icon,\n      collapseLabel = '收起侧边栏 (⌘B)',\n      expandLabel = '展开侧边栏 (⌘B)',\n      variant,\n      size = 'icon',\n      className,\n      onClick,\n      ...props\n    },\n    ref,\n  ) {\n    const { isMobile, state, toggleSidebar } = useSidebar()\n    const isCollapsed = state === 'collapsed'\n    const label = isMobile ? '打开导航菜单' : isCollapsed ? expandLabel : collapseLabel\n\n    const btn = (\n      <Button\n        ref={ref}\n        type=\"button\"\n        data-sidebar=\"trigger\"\n        variant={variant ?? (isMobile ? 'secondary' : 'ghost')}\n        size={size}\n        aria-label={label}\n        onClick={(e) => {\n          onClick?.(e)\n          toggleSidebar()\n        }}\n        className={cn('h-9.5 w-9.5', className)}\n        {...props}\n      >\n        {icon ??\n          (isMobile ? (\n            <List size={18} weight=\"bold\" />\n          ) : (\n            <SidebarSimple size={18} weight={isCollapsed ? 'fill' : 'duotone'} />\n          ))}\n      </Button>\n    )\n\n    if (isMobile) return btn\n\n    return (\n      <Tooltip content={label} side=\"bottom\">\n        {btn}\n      </Tooltip>\n    )\n  },\n)\n\nexport const SidebarRail = React.forwardRef<\n  HTMLButtonElement,\n  React.ButtonHTMLAttributes<HTMLButtonElement>\n>(function SidebarRail({ className, ...props }, ref) {\n  const { toggleSidebar, state } = useSidebar()\n  return (\n    <button\n      ref={ref}\n      type=\"button\"\n      data-sidebar=\"rail\"\n      aria-label={state === 'collapsed' ? '展开侧边栏' : '收起侧边栏'}\n      title={state === 'collapsed' ? '展开侧边栏 (⌘B)' : '收起侧边栏 (⌘B)'}\n      tabIndex={-1}\n      onClick={toggleSidebar}\n      className={cn(\n        'group/rail absolute inset-y-4 right-0 z-20 hidden w-3 cursor-ew-resize items-center justify-center outline-none lg:flex',\n        'group-data-[side=right]/sidebar:right-auto group-data-[side=right]/sidebar:left-0',\n        className,\n      )}\n      {...props}\n    >\n      <span className=\"h-12 w-1 rounded-full bg-transparent transition-colors duration-150 group-hover/rail:bg-[#CDD3DD]\" />\n    </button>\n  )\n})\n\n// ============================================================================\n// Structural Slots: Header, Footer, Content, Separator\n// ============================================================================\n\nexport const SidebarHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  function SidebarHeader({ className, ...props }, ref) {\n    const { state, isMobile } = useSidebar()\n    const collapsed = !isMobile && state === 'collapsed'\n    return (\n      <div\n        ref={ref}\n        data-sidebar=\"header\"\n        className={cn(\n          'flex shrink-0 flex-col gap-2',\n          collapsed ? 'px-2 pt-3 pb-2' : 'px-3 pt-3.5 pb-2',\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n\nexport const SidebarFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  function SidebarFooter({ className, ...props }, ref) {\n    const { state, isMobile } = useSidebar()\n    const collapsed = !isMobile && state === 'collapsed'\n    return (\n      <div\n        ref={ref}\n        data-sidebar=\"footer\"\n        className={cn(\n          'flex shrink-0 flex-col gap-2 border-t border-[#F2F3F5]',\n          collapsed ? 'p-2' : 'p-3',\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n\nexport const SidebarContent = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(\n  function SidebarContent({ className, ...props }, ref) {\n    const { state, isMobile } = useSidebar()\n    const collapsed = !isMobile && state === 'collapsed'\n    return (\n      <nav\n        ref={ref}\n        data-sidebar=\"content\"\n        aria-label=\"主侧边栏导航\"\n        className={cn(\n          'flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pb-3',\n          collapsed ? 'px-2' : 'px-2.5',\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n\nexport const SidebarSeparator = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(function SidebarSeparator({ className, ...props }, ref) {\n  return (\n    <div\n      ref={ref}\n      role=\"separator\"\n      data-sidebar=\"separator\"\n      className={cn('mx-2 my-1.5 h-px bg-[#EEF0F3]', className)}\n      {...props}\n    />\n  )\n})\n\n// ============================================================================\n// Grouping: SidebarGroup, SidebarGroupLabel, SidebarGroupAction, SidebarGroupContent\n// ============================================================================\n\nexport const SidebarGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  function SidebarGroup({ className, ...props }, ref) {\n    return (\n      <div\n        ref={ref}\n        data-sidebar=\"group\"\n        className={cn('relative flex w-full min-w-0 flex-col pt-3 first:pt-1', className)}\n        {...props}\n      />\n    )\n  },\n)\n\nexport interface SidebarGroupLabelProps extends React.HTMLAttributes<HTMLDivElement> {\n  /** Allow clicking the section label to collapse/expand the group */\n  collapsible?: boolean\n  /** Current open state when collapsible=true */\n  open?: boolean\n  /** Toggle handler when collapsible=true */\n  onToggle?: () => void\n  /** Optional inline action slot (e.g. SidebarGroupAction '+' button) */\n  action?: React.ReactNode\n}\n\nexport const SidebarGroupLabel = React.forwardRef<HTMLDivElement, SidebarGroupLabelProps>(\n  function SidebarGroupLabel(\n    { collapsible = false, open = true, onToggle, action, className, children, ...props },\n    ref,\n  ) {\n    const { state, isMobile } = useSidebar()\n    const collapsed = !isMobile && state === 'collapsed'\n\n    if (collapsed) {\n      return (\n        <div\n          ref={ref}\n          data-sidebar=\"group-label\"\n          aria-hidden=\"true\"\n          className=\"mx-auto my-1.5 h-px w-6 bg-[#EEF0F3]\"\n        />\n      )\n    }\n\n    return (\n      <div\n        ref={ref}\n        data-sidebar=\"group-label\"\n        className={cn('mb-1 flex items-center justify-between gap-1 px-3', className)}\n        {...props}\n      >\n        {collapsible ? (\n          <button\n            type=\"button\"\n            onClick={onToggle}\n            className=\"inline-flex cursor-pointer items-center gap-1 text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase transition-colors outline-none hover:text-[#1B1F27]\"\n          >\n            <CaretRight\n              size={11}\n              weight=\"bold\"\n              className={cn(\n                'transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',\n                open && 'rotate-90',\n              )}\n            />\n            <span>{children}</span>\n          </button>\n        ) : (\n          <span className=\"text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase\">\n            {children}\n          </span>\n        )}\n        {action}\n      </div>\n    )\n  },\n)\n\nexport interface SidebarGroupActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  tooltip?: string\n}\n\nexport const SidebarGroupAction = React.forwardRef<HTMLButtonElement, SidebarGroupActionProps>(\n  function SidebarGroupAction({ tooltip, className, ...props }, ref) {\n    const btn = (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-sidebar=\"group-action\"\n        className={cn(\n          'inline-flex h-5.5 w-5.5 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#F2F3F5] hover:text-[#1B1F27] outline-none focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n          PRESS_CLASS,\n          className,\n        )}\n        {...props}\n      />\n    )\n    if (tooltip) {\n      return (\n        <Tooltip content={tooltip} side=\"top\">\n          {btn}\n        </Tooltip>\n      )\n    }\n    return btn\n  },\n)\n\nexport const SidebarGroupContent = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(function SidebarGroupContent({ className, ...props }, ref) {\n  return (\n    <div\n      ref={ref}\n      data-sidebar=\"group-content\"\n      className={cn('flex w-full flex-col gap-0.5', className)}\n      {...props}\n    />\n  )\n})\n\n// ============================================================================\n// Menu & Items: SidebarMenu, SidebarMenuItem, SidebarMenuButton, Action, Badge\n// ============================================================================\n\nexport const SidebarMenu = React.forwardRef<HTMLUListElement, React.HTMLAttributes<HTMLUListElement>>(\n  function SidebarMenu({ className, ...props }, ref) {\n    return (\n      <ul\n        ref={ref}\n        data-sidebar=\"menu\"\n        className={cn('m-0 flex w-full min-w-0 list-none flex-col gap-0.5 p-0', className)}\n        {...props}\n      />\n    )\n  },\n)\n\nexport const SidebarMenuItem = React.forwardRef<HTMLLIElement, React.LiHTMLAttributes<HTMLLIElement>>(\n  function SidebarMenuItem({ className, ...props }, ref) {\n    return (\n      <li\n        ref={ref}\n        data-sidebar=\"menu-item\"\n        className={cn('group/menu-item relative', className)}\n        {...props}\n      />\n    )\n  },\n)\n\nexport interface SidebarMenuButtonProps {\n  /** Highlights the item in Glaze soft periwinkle pill state */\n  isActive?: boolean\n  /** Height size preset */\n  size?: 'sm' | 'default' | 'lg'\n  /** Leading icon element */\n  icon?: React.ReactNode\n  /** Trailing badge, shortcut, or status pill (auto-hidden in collapsed icon-rail) */\n  trailing?: React.ReactNode\n  /** Tooltip shown in collapsed icon-rail mode or always when provided */\n  tooltip?: React.ReactNode\n  /** Disable interaction & show muted locked styling */\n  disabled?: boolean\n  /** Render as external or internal <a> link when provided */\n  href?: string\n  /** Link target when href is set */\n  target?: string\n  /** Link rel when href is set */\n  rel?: string\n  /** Force expanded rendering (e.g. inside a collapsed rail flyout Popover) */\n  forceExpanded?: boolean\n  /** Click handler */\n  onClick?: React.MouseEventHandler<HTMLElement>\n  /** Accessible label */\n  'aria-label'?: string\n  className?: string\n  children?: React.ReactNode\n}\n\nexport const SidebarMenuButton = React.forwardRef<HTMLElement, SidebarMenuButtonProps>(\n  function SidebarMenuButton(\n    {\n      isActive = false,\n      size = 'default',\n      icon,\n      trailing,\n      tooltip,\n      disabled = false,\n      href,\n      target,\n      rel,\n      forceExpanded = false,\n      onClick,\n      'aria-label': ariaLabel,\n      className,\n      children,\n    },\n    ref,\n  ) {\n    const { state, isMobile } = useSidebar()\n    const collapsed = !forceExpanded && !isMobile && state === 'collapsed'\n\n    const baseClass = cn(\n      'group/menu-btn relative flex w-full items-center rounded-full font-semibold transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)] select-none outline-none',\n      'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n      collapsed\n        ? 'mx-auto h-10 w-10 justify-center p-0'\n        : cn(\n            'gap-2.5 px-3',\n            size === 'sm' && 'h-8.5 text-[12.5px]',\n            size === 'default' && 'h-9.5 text-[13px]',\n            size === 'lg' && 'h-11 text-[13.5px]',\n          ),\n      disabled\n        ? 'cursor-not-allowed text-[#8A90A0] opacity-60'\n        : isActive\n          ? 'cursor-pointer bg-[#F3F4FE] text-[#262B7A]'\n          : 'cursor-pointer text-[#5B6170] hover:bg-[#F6F7F9] hover:text-[#1B1F27]',\n      className,\n    )\n\n    const inner = (\n      <>\n        {icon && (\n          <span\n            className={cn(\n              'inline-flex shrink-0 items-center justify-center transition-colors',\n              isActive\n                ? 'text-[#4A4FB8]'\n                : disabled\n                  ? 'text-[#8A90A0]'\n                  : 'text-[#6B7280] group-hover/menu-btn:text-[#1B1F27]',\n            )}\n          >\n            {icon}\n          </span>\n        )}\n        {!collapsed && <span className=\"min-w-0 flex-1 truncate text-left\">{children}</span>}\n        {!collapsed && trailing && (\n          <span className=\"flex shrink-0 items-center gap-1.5\">{trailing}</span>\n        )}\n      </>\n    )\n\n    const fallbackLabel =\n      ariaLabel ?? (typeof children === 'string' ? children : undefined)\n\n    const element = href ? (\n      <a\n        ref={ref as React.Ref<HTMLAnchorElement>}\n        href={href}\n        target={target}\n        rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}\n        data-sidebar=\"menu-button\"\n        data-active={isActive ? 'true' : undefined}\n        aria-label={collapsed ? fallbackLabel : ariaLabel}\n        onClick={onClick}\n        className={cn(baseClass, 'no-underline')}\n      >\n        {inner}\n      </a>\n    ) : (\n      <button\n        ref={ref as React.Ref<HTMLButtonElement>}\n        type=\"button\"\n        disabled={disabled}\n        data-sidebar=\"menu-button\"\n        data-active={isActive ? 'true' : undefined}\n        aria-current={isActive ? 'page' : undefined}\n        aria-label={collapsed ? fallbackLabel : ariaLabel}\n        onClick={disabled ? undefined : onClick}\n        className={baseClass}\n      >\n        {inner}\n      </button>\n    )\n\n    const resolvedTooltip = tooltip ?? (collapsed ? children : undefined)\n\n    if (resolvedTooltip && (collapsed || tooltip)) {\n      return (\n        <Tooltip content={resolvedTooltip} side=\"right\" delay={140}>\n          {disabled ? <span className=\"block w-full\">{element}</span> : element}\n        </Tooltip>\n      )\n    }\n\n    return element\n  },\n)\n\nexport interface SidebarMenuActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  /** Only reveal on parent SidebarMenuItem hover (or when popup is open) */\n  showOnHover?: boolean\n}\n\nexport const SidebarMenuAction = React.forwardRef<HTMLButtonElement, SidebarMenuActionProps>(\n  function SidebarMenuAction({ showOnHover = false, className, ...props }, ref) {\n    const { state, isMobile } = useSidebar()\n    if (!isMobile && state === 'collapsed') return null\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-sidebar=\"menu-action\"\n        className={cn(\n          'inline-flex h-6.5 w-6.5 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] transition-opacity outline-none',\n          'hover:bg-[#E8EBF0] hover:text-[#1B1F27] data-popup-open:bg-[#E8EBF0] data-popup-open:text-[#1B1F27] data-popup-open:opacity-100',\n          showOnHover && 'opacity-0 group-hover/menu-item:opacity-100 focus-visible:opacity-100',\n          className,\n        )}\n        {...props}\n      />\n    )\n  },\n)\n\nexport const SidebarMenuBadge = React.forwardRef<\n  HTMLSpanElement,\n  React.HTMLAttributes<HTMLSpanElement>\n>(function SidebarMenuBadge({ className, ...props }, ref) {\n  const { state, isMobile } = useSidebar()\n  if (!isMobile && state === 'collapsed') return null\n\n  return (\n    <span\n      ref={ref}\n      data-sidebar=\"menu-badge\"\n      className={cn(\n        'inline-flex shrink-0 items-center justify-center font-glaze-mono text-[11px] font-semibold text-[#8A90A0] select-none',\n        className,\n      )}\n      {...props}\n    />\n  )\n})\n\n// ============================================================================\n// Nested Submenus: SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, Collapsible\n// ============================================================================\n\nexport const SidebarMenuSub = React.forwardRef<\n  HTMLUListElement,\n  React.HTMLAttributes<HTMLUListElement>\n>(function SidebarMenuSub({ className, ...props }, ref) {\n  return (\n    <ul\n      ref={ref}\n      data-sidebar=\"menu-sub\"\n      className={cn(\n        'm-0 mt-0.5 ml-4.5 flex list-none flex-col gap-0.5 border-l border-[#E8EBF0] p-0 pl-2.5',\n        className,\n      )}\n      {...props}\n    />\n  )\n})\n\nexport const SidebarMenuSubItem = React.forwardRef<\n  HTMLLIElement,\n  React.LiHTMLAttributes<HTMLLIElement>\n>(function SidebarMenuSubItem({ className, ...props }, ref) {\n  return (\n    <li\n      ref={ref}\n      data-sidebar=\"menu-sub-item\"\n      className={cn('relative', className)}\n      {...props}\n    />\n  )\n})\n\nexport interface SidebarMenuSubButtonProps {\n  isActive?: boolean\n  size?: 'sm' | 'md'\n  icon?: React.ReactNode\n  trailing?: React.ReactNode\n  href?: string\n  onClick?: React.MouseEventHandler<HTMLElement>\n  className?: string\n  children?: React.ReactNode\n}\n\nexport const SidebarMenuSubButton = React.forwardRef<HTMLElement, SidebarMenuSubButtonProps>(\n  function SidebarMenuSubButton(\n    { isActive = false, size = 'md', icon, trailing, href, onClick, className, children },\n    ref,\n  ) {\n    const baseClass = cn(\n      'group/sub-btn flex w-full cursor-pointer items-center gap-2.5 rounded-full pr-2.5 pl-3 font-semibold transition-colors duration-150 select-none outline-none',\n      'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n      size === 'sm' ? 'h-8 text-[12px]' : 'h-8.5 text-[12.5px]',\n      isActive\n        ? 'bg-[#F3F4FE] text-[#262B7A]'\n        : 'text-[#5B6170] hover:bg-[#F6F7F9] hover:text-[#1B1F27]',\n      className,\n    )\n\n    const leading = icon ?? (\n      <span\n        className={cn(\n          'h-1.5 w-1.5 shrink-0 rounded-full transition-colors',\n          isActive ? 'bg-[#4A4FB8]' : 'bg-[#CDD3DD] group-hover/sub-btn:bg-[#8A90A0]',\n        )}\n      />\n    )\n\n    const inner = (\n      <>\n        <span\n          className={cn(\n            'inline-flex shrink-0 items-center justify-center',\n            isActive ? 'text-[#4A4FB8]' : 'text-[#6B7280] group-hover/sub-btn:text-[#1B1F27]',\n          )}\n        >\n          {leading}\n        </span>\n        <span className=\"min-w-0 flex-1 truncate text-left\">{children}</span>\n        {trailing && <span className=\"flex shrink-0 items-center gap-1.5\">{trailing}</span>}\n      </>\n    )\n\n    if (href) {\n      return (\n        <a\n          ref={ref as React.Ref<HTMLAnchorElement>}\n          href={href}\n          data-sidebar=\"menu-sub-button\"\n          data-active={isActive ? 'true' : undefined}\n          onClick={onClick}\n          className={cn(baseClass, 'no-underline')}\n        >\n          {inner}\n        </a>\n      )\n    }\n\n    return (\n      <button\n        ref={ref as React.Ref<HTMLButtonElement>}\n        type=\"button\"\n        data-sidebar=\"menu-sub-button\"\n        data-active={isActive ? 'true' : undefined}\n        aria-current={isActive ? 'page' : undefined}\n        onClick={onClick}\n        className={baseClass}\n      >\n        {inner}\n      </button>\n    )\n  },\n)\n\nexport interface SidebarMenuCollapsibleProps {\n  /** Leading icon */\n  icon: React.ReactNode\n  /** Group trigger label */\n  label: string\n  /** Optional badge shown before the caret (e.g. '3级') */\n  badge?: React.ReactNode\n  /** Controlled open state */\n  open?: boolean\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean\n  /** Open state change handler */\n  onOpenChange?: (open: boolean) => void\n  /** Highlight trigger text & icon when a child route is active */\n  hasActiveChild?: boolean\n  /** Nesting depth (0 = top-level group, 1 = 2nd-level nested group for 3-level trees) */\n  level?: 0 | 1\n  /** Popover flyout content displayed when sidebar is collapsed to icon-rail mode */\n  flyoutContent?: React.ReactNode\n  /** Child menu items rendered inside SidebarMenuSub */\n  children: React.ReactNode\n}\n\nexport function SidebarMenuCollapsible({\n  icon,\n  label,\n  badge,\n  open,\n  defaultOpen = false,\n  onOpenChange,\n  hasActiveChild = false,\n  level = 0,\n  flyoutContent,\n  children,\n}: SidebarMenuCollapsibleProps) {\n  const { state, isMobile } = useSidebar()\n  const collapsed = !isMobile && state === 'collapsed'\n\n  // In icon-rail collapsed mode, top-level collapsible groups automatically open a right-side Popover flyout\n  if (collapsed && level === 0) {\n    return (\n      <Popover\n        side=\"right\"\n        align=\"start\"\n        title={label}\n        className=\"w-60 p-3\"\n        trigger={\n          <button\n            type=\"button\"\n            aria-label={label}\n            data-sidebar=\"menu-button\"\n            data-active={hasActiveChild ? 'true' : undefined}\n            className={cn(\n              'mx-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-colors duration-150 outline-none',\n              'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n              hasActiveChild\n                ? 'bg-[#F3F4FE] text-[#4A4FB8]'\n                : 'text-[#6B7280] hover:bg-[#F6F7F9] hover:text-[#1B1F27] data-popup-open:bg-[#F2F3F5] data-popup-open:text-[#1B1F27]',\n            )}\n          >\n            {icon}\n          </button>\n        }\n      >\n        <div className=\"flex flex-col gap-1\">{flyoutContent ?? children}</div>\n      </Popover>\n    )\n  }\n\n  return (\n    <BaseCollapsible.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>\n      <BaseCollapsible.Trigger\n        data-sidebar=\"menu-collapsible-trigger\"\n        className={cn(\n          'group/collapsible flex w-full cursor-pointer items-center gap-2.5 rounded-full font-semibold transition-colors duration-150 select-none outline-none',\n          'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',\n          level === 0 ? 'h-9.5 px-3 text-[13px]' : 'h-8.5 px-3 text-[12.5px]',\n          hasActiveChild\n            ? 'text-[#262B7A] hover:bg-[#F3F4FE]/70'\n            : 'text-[#5B6170] hover:bg-[#F6F7F9] hover:text-[#1B1F27]',\n        )}\n      >\n        <span\n          className={cn(\n            'inline-flex shrink-0 items-center justify-center',\n            hasActiveChild\n              ? 'text-[#4A4FB8]'\n              : 'text-[#6B7280] group-hover/collapsible:text-[#1B1F27]',\n          )}\n        >\n          {icon}\n        </span>\n        <span className=\"min-w-0 flex-1 truncate text-left\">{label}</span>\n        {badge}\n        <CaretDown\n          size={13}\n          weight=\"bold\"\n          className=\"shrink-0 text-[#8A90A0] transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-panel-open/collapsible:rotate-180\"\n        />\n      </BaseCollapsible.Trigger>\n      <BaseCollapsible.Panel className=\"h-(--collapsible-panel-height) overflow-hidden transition-[height,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:h-0 data-ending-style:opacity-0 data-starting-style:h-0 data-starting-style:opacity-0\">\n        <SidebarMenuSub>{children}</SidebarMenuSub>\n      </BaseCollapsible.Panel>\n    </BaseCollapsible.Root>\n  )\n}\n\n// ============================================================================\n// SidebarMenuSkeleton\n// ============================================================================\n\nexport function SidebarMenuSkeleton({\n  showIcon = true,\n  className,\n}: {\n  showIcon?: boolean\n  className?: string\n}) {\n  return (\n    <div\n      data-sidebar=\"menu-skeleton\"\n      className={cn('flex h-9.5 items-center gap-2.5 px-3', className)}\n    >\n      {showIcon && <span className=\"h-4.5 w-4.5 shrink-0 animate-pulse rounded-full bg-[#EEF0F3]\" />}\n      <span className=\"h-3.5 w-3/4 animate-pulse rounded-full bg-[#EEF0F3]\" />\n    </div>\n  )\n}\n"
+  },
   "chart": {
     "slug": "chart",
     "title": "Chart",

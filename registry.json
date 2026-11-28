@@ -1213,6 +1213,33 @@
       ]
     },
     {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar (应用侧边栏)",
+      "description": "参考 shadcn/ui 架构并结合 Base UI 1.9 与 Glaze 视觉规范打造的可组合侧边栏系统，内置 floating / sidebar / inset 三种布局变体、图标栏收起浮层、多级树形折叠、⌘B 快捷键与移动端抽屉。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/motion",
+        "@glaze/popover",
+        "@glaze/style",
+        "@glaze/tooltip"
+      ],
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/sidebar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart (图表主题与容器)",
@@ -4475,7 +4502,6 @@
       "title": "Demo 07 · 企业级控制台壳层",
       "description": "带完整侧边栏与顶部栏的 App Shell 仪表盘示例，侧边栏涵盖 15 种常见菜单类型（工作区切换、搜索过滤、2/3 级树形折叠、状态点、动态计数、右键/悬停菜单、内嵌开关、锁定态与迷你图标栏）。",
       "dependencies": [
-        "@base-ui/react",
         "@phosphor-icons/react",
         "cn"
       ],
@@ -4505,13 +4531,13 @@
         "@glaze/members-card",
         "@glaze/menu",
         "@glaze/metric-card",
-        "@glaze/motion",
         "@glaze/popover",
         "@glaze/progress",
         "@glaze/quota-card",
         "@glaze/resource-allocation-card",
         "@glaze/segmented-control",
         "@glaze/select",
+        "@glaze/sidebar",
         "@glaze/status-card",
         "@glaze/status-dot",
         "@glaze/status-pill",

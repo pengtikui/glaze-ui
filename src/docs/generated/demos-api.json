@@ -271,7 +271,6 @@
       "顶部栏面包屑、⌘K 命令面板与通知中心"
     ],
     "dependencies": [
-      "@base-ui/react",
       "@phosphor-icons/react",
       "cn"
     ],
@@ -301,13 +300,13 @@
       "@glaze/members-card",
       "@glaze/menu",
       "@glaze/metric-card",
-      "@glaze/motion",
       "@glaze/popover",
       "@glaze/progress",
       "@glaze/quota-card",
       "@glaze/resource-allocation-card",
       "@glaze/segmented-control",
       "@glaze/select",
+      "@glaze/sidebar",
       "@glaze/status-card",
       "@glaze/status-dot",
       "@glaze/status-pill",

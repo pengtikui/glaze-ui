@@ -1,6 +1,4 @@
 import * as React from 'react'
-import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible'
-import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 import {
   ArrowsClockwise,
   ArrowSquareOut,
@@ -9,7 +7,6 @@ import {
   BellSlash,
   Broadcast,
   Buildings,
-  CaretDown,
   CaretRight,
   CaretUpDown,
   ChartBar,
@@ -29,7 +26,6 @@ import {
   House,
   Key,
   Link as LinkIcon,
-  List,
   LockSimple,
   MagnifyingGlass,
   Plus,
@@ -82,13 +78,35 @@ import { Popover } from '@/components/ui/popover'
 import { Progress } from '@/components/ui/progress'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { Select } from '@/components/ui/select'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuCollapsible,
+  SidebarMenuItem,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+} from '@/components/ui/sidebar'
 import { StatusDot } from '@/components/ui/status-dot'
 import { StatusPill } from '@/components/ui/status-pill'
 import { Switch } from '@/components/ui/switch'
 import { createGlazeColumnHelper, DataTable } from '@/components/ui/table'
 import { useToast } from '@/components/ui/toast'
 import { Tooltip } from '@/components/ui/tooltip'
-import { PRESS_CLASS } from '@/lib/motion'
 import { HUE_PALETTES, type Hue, type Status } from '@/lib/tokens'
 
 // ============================================================================
@@ -664,239 +682,33 @@ const PRESENCE_META: Record<UserPresence, { label: string; status: Status }> = {
 }
 
 // ============================================================================
-// Sidebar Helper Subcomponents
-// ============================================================================
-
-function SidebarNavRow({
-  active,
-  collapsed,
-  icon,
-  label,
-  trailing,
-  disabled,
-  tooltip,
-  indent = 0,
-  onClick,
-  href,
-}: {
-  active?: boolean
-  collapsed?: boolean
-  icon: React.ReactNode
-  label: string
-  trailing?: React.ReactNode
-  disabled?: boolean
-  tooltip?: string
-  indent?: 0 | 1 | 2
-  onClick?: () => void
-  href?: string
-}) {
-  const baseClass = cn(
-    'group relative flex w-full items-center rounded-full text-[13px] font-semibold transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)] select-none outline-none',
-    'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',
-    collapsed ? 'h-10 w-10 justify-center p-0 mx-auto' : 'h-9.5 gap-2.5 px-3',
-    !collapsed && indent === 1 && 'h-8.5 pl-3 pr-2.5 text-[12.5px]',
-    !collapsed && indent === 2 && 'h-8 pl-3 pr-2.5 text-[12px]',
-    disabled
-      ? 'cursor-not-allowed text-[#8A90A0] opacity-60'
-      : active
-        ? 'cursor-pointer bg-[#F3F4FE] text-[#262B7A]'
-        : 'cursor-pointer text-[#5B6170] hover:bg-[#F6F7F9] hover:text-[#1B1F27]',
-  )
-
-  const inner = (
-    <>
-      <span
-        className={cn(
-          'inline-flex shrink-0 items-center justify-center transition-colors',
-          active ? 'text-[#4A4FB8]' : disabled ? 'text-[#8A90A0]' : 'text-[#6B7280] group-hover:text-[#1B1F27]',
-        )}
-      >
-        {icon}
-      </span>
-      {!collapsed && <span className="min-w-0 flex-1 truncate text-left">{label}</span>}
-      {!collapsed && trailing && <span className="flex shrink-0 items-center gap-1.5">{trailing}</span>}
-    </>
-  )
-
-  const element = href ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(baseClass, 'no-underline')}
-      aria-label={collapsed ? label : undefined}
-    >
-      {inner}
-    </a>
-  ) : (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={disabled ? undefined : onClick}
-      className={baseClass}
-      aria-current={active ? 'page' : undefined}
-      aria-label={collapsed ? label : undefined}
-    >
-      {inner}
-    </button>
-  )
-
-  if (tooltip || collapsed) {
-    return (
-      <Tooltip content={tooltip ?? label} side="right" delay={140}>
-        {disabled ? <span className="block w-full">{element}</span> : element}
-      </Tooltip>
-    )
-  }
-
-  return element
-}
-
-function SidebarSectionHeader({
-  title,
-  collapsed,
-  collapsible,
-  open,
-  onToggle,
-  action,
-}: {
-  title: string
-  collapsed?: boolean
-  collapsible?: boolean
-  open?: boolean
-  onToggle?: () => void
-  action?: React.ReactNode
-}) {
-  if (collapsed) {
-    return <div className="mx-auto my-2 h-px w-6 bg-[#EEF0F3]" aria-hidden="true" />
-  }
-
-  return (
-    <div className="mt-4 mb-1 flex items-center justify-between gap-1 px-3 first:mt-1">
-      {collapsible ? (
-        <button
-          type="button"
-          onClick={onToggle}
-          className="inline-flex cursor-pointer items-center gap-1 text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase transition-colors hover:text-[#1B1F27] outline-none"
-        >
-          <CaretRight
-            size={11}
-            weight="bold"
-            className={cn(
-              'transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
-              open && 'rotate-90',
-            )}
-          />
-          <span>{title}</span>
-        </button>
-      ) : (
-        <span className="text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
-          {title}
-        </span>
-      )}
-      {action}
-    </div>
-  )
-}
-
-function SidebarCollapsibleGroup({
-  icon,
-  label,
-  badge,
-  open,
-  onOpenChange,
-  hasActiveChild,
-  collapsed,
-  indent = 0,
-  flyoutContent,
-  children,
-}: {
-  icon: React.ReactNode
-  label: string
-  badge?: React.ReactNode
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  hasActiveChild?: boolean
-  collapsed?: boolean
-  indent?: 0 | 1
-  flyoutContent?: React.ReactNode
-  children: React.ReactNode
-}) {
-  if (collapsed) {
-    return (
-      <Popover
-        side="right"
-        align="start"
-        title={label}
-        className="w-60 p-3"
-        trigger={
-          <button
-            type="button"
-            aria-label={label}
-            className={cn(
-              'mx-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-colors duration-150 outline-none',
-              'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',
-              hasActiveChild
-                ? 'bg-[#F3F4FE] text-[#4A4FB8]'
-                : 'text-[#6B7280] hover:bg-[#F6F7F9] hover:text-[#1B1F27] data-popup-open:bg-[#F2F3F5] data-popup-open:text-[#1B1F27]',
-            )}
-          >
-            {icon}
-          </button>
-        }
-      >
-        <div className="flex flex-col gap-1">{flyoutContent}</div>
-      </Popover>
-    )
-  }
-
-  return (
-    <BaseCollapsible.Root open={open} onOpenChange={onOpenChange}>
-      <BaseCollapsible.Trigger
-        className={cn(
-          'group flex w-full cursor-pointer items-center gap-2.5 rounded-full font-semibold transition-colors duration-150 select-none outline-none',
-          'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',
-          indent === 0 ? 'h-9.5 px-3 text-[13px]' : 'h-8.5 px-3 text-[12.5px]',
-          hasActiveChild
-            ? 'text-[#262B7A] hover:bg-[#F3F4FE]/70'
-            : 'text-[#5B6170] hover:bg-[#F6F7F9] hover:text-[#1B1F27]',
-        )}
-      >
-        <span
-          className={cn(
-            'inline-flex shrink-0 items-center justify-center',
-            hasActiveChild ? 'text-[#4A4FB8]' : 'text-[#6B7280] group-hover:text-[#1B1F27]',
-          )}
-        >
-          {icon}
-        </span>
-        <span className="min-w-0 flex-1 truncate text-left">{label}</span>
-        {badge}
-        <CaretDown
-          size={13}
-          weight="bold"
-          className="shrink-0 text-[#8A90A0] transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-panel-open:rotate-180"
-        />
-      </BaseCollapsible.Trigger>
-      <BaseCollapsible.Panel className="h-(--collapsible-panel-height) overflow-hidden transition-[height,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:h-0 data-ending-style:opacity-0 data-starting-style:h-0 data-starting-style:opacity-0">
-        <div className="mt-0.5 ml-4.5 flex flex-col gap-0.5 border-l border-[#E8EBF0] pl-2.5">
-          {children}
-        </div>
-      </BaseCollapsible.Panel>
-    </BaseCollapsible.Root>
-  )
-}
-
-// ============================================================================
 // Main Demo Page Component
 // ============================================================================
 
 export function AdminShellDemoPage() {
+  const [sidebarOpen, setSidebarOpen] = React.useState(true)
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+
+  return (
+    <SidebarProvider
+      variant="floating"
+      open={sidebarOpen}
+      onOpenChange={setSidebarOpen}
+      openMobile={mobileMenuOpen}
+      onOpenMobileChange={setMobileMenuOpen}
+      className="mx-auto max-w-[1640px]"
+    >
+      <AdminShellWorkspace />
+    </SidebarProvider>
+  )
+}
+
+function AdminShellWorkspace() {
   const toast = useToast()
+  const { state: sidebarState, isMobile, setOpenMobile, toggleSidebar } = useSidebar()
+  const isCollapsed = !isMobile && sidebarState === 'collapsed'
 
   // Shell & Sidebar states
-  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const [workspaceId, setWorkspaceId] = React.useState(WORKSPACES[0].id)
   const [activeRoute, setActiveRoute] = React.useState('overview')
   const [sidebarFilter, setSidebarFilter] = React.useState('')
@@ -945,14 +757,17 @@ export function AdminShellDemoPage() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 
-  const navigate = React.useCallback((routeId: string) => {
-    setActiveRoute(routeId)
-    setMobileMenuOpen(false)
-    if (routeId.startsWith('analytics/')) setAnalyticsOpen(true)
-    if (routeId.startsWith('platform/')) setPlatformOpen(true)
-    if (routeId.startsWith('platform/access/')) setAccessOpen(true)
-    if (routeId.startsWith('platform/billing/')) setBillingOpen(true)
-  }, [])
+  const navigate = React.useCallback(
+    (routeId: string) => {
+      setActiveRoute(routeId)
+      setOpenMobile(false)
+      if (routeId.startsWith('analytics/')) setAnalyticsOpen(true)
+      if (routeId.startsWith('platform/')) setPlatformOpen(true)
+      if (routeId.startsWith('platform/access/')) setAccessOpen(true)
+      if (routeId.startsWith('platform/billing/')) setBillingOpen(true)
+    },
+    [setOpenMobile],
+  )
 
   const matchesFilter = React.useCallback(
     (...terms: string[]) => {
@@ -1517,419 +1332,412 @@ export function AdminShellDemoPage() {
     [projects],
   )
 
-  // Shared Sidebar Renderer (used in Desktop Sidebar & Mobile Left Drawer)
-  const renderSidebarContent = (isCollapsed: boolean) => {
-    const wsPalette = HUE_PALETTES[activeWorkspace.hue]
+  // Composable Glaze Sidebar (powered by @/components/ui/sidebar)
+  const wsPalette = HUE_PALETTES[activeWorkspace.hue]
 
-    const showOverview = matchesFilter('总览驾驶舱', 'overview', '首页', '工作台')
-    const showLive = matchesFilter('实时监控大屏', 'live', '监控', '遥测')
-    const showInbox = matchesFilter('消息收件箱', 'inbox', '通知', '未读')
-    const showAi = matchesFilter('AI 洞察助手', 'ai', '助手', 'new')
-    const showWorkspaceGroup = showOverview || showLive || showInbox || showAi
+  const showOverview = matchesFilter('总览驾驶舱', 'overview', '首页', '工作台')
+  const showLive = matchesFilter('实时监控大屏', 'live', '监控', '遥测')
+  const showInbox = matchesFilter('消息收件箱', 'inbox', '通知', '未读')
+  const showAi = matchesFilter('AI 洞察助手', 'ai', '助手', 'new')
+  const showWorkspaceGroup = showOverview || showLive || showInbox || showAi
 
-    const analyticsChildren = [
-      { id: 'analytics/traffic', label: '实时流量', trailing: <span className="font-glaze-mono text-[10px] font-bold text-[#2F6B28]">1.4k/s</span> },
-      { id: 'analytics/funnel', label: '转化漏斗' },
-      { id: 'analytics/retention', label: '留存队列' },
-      { id: 'analytics/custom', label: '自定义报表', trailing: <HueTag hue="sky" size="xs">BETA</HueTag> },
-    ].filter((c) => matchesFilter('数据中心', c.label, c.id))
+  const analyticsChildren = [
+    { id: 'analytics/traffic', label: '实时流量', trailing: <span className="font-glaze-mono text-[10px] font-bold text-[#2F6B28]">1.4k/s</span> },
+    { id: 'analytics/funnel', label: '转化漏斗' },
+    { id: 'analytics/retention', label: '留存队列' },
+    { id: 'analytics/custom', label: '自定义报表', trailing: <HueTag hue="sky" size="xs">BETA</HueTag> },
+  ].filter((c) => matchesFilter('数据中心', c.label, c.id))
 
-    const accessChildren = [
-      { id: 'platform/access/roles', label: '成员与角色' },
-      { id: 'platform/access/api-keys', label: 'API 密钥', badge: <CountBadge count={activeApiKeyCount} hue="neutral" className="h-4.5 min-w-4.5 text-[10px]" /> },
-      { id: 'platform/access/sso', label: 'SSO 单点登录' },
-    ].filter((c) => matchesFilter('平台管理', '访问控制', c.label, c.id))
+  const accessChildren = [
+    { id: 'platform/access/roles', label: '成员与角色' },
+    { id: 'platform/access/api-keys', label: 'API 密钥', badge: <CountBadge count={activeApiKeyCount} hue="neutral" className="h-4.5 min-w-4.5 text-[10px]" /> },
+    { id: 'platform/access/sso', label: 'SSO 单点登录' },
+  ].filter((c) => matchesFilter('平台管理', '访问控制', c.label, c.id))
 
-    const billingChildren = [
-      { id: 'platform/billing/usage', label: '用量明细' },
-      { id: 'platform/billing/invoices', label: '发票与抬头' },
-    ].filter((c) => matchesFilter('平台管理', '计费与账单', c.label, c.id))
+  const billingChildren = [
+    { id: 'platform/billing/usage', label: '用量明细' },
+    { id: 'platform/billing/invoices', label: '发票与抬头' },
+  ].filter((c) => matchesFilter('平台管理', '计费与账单', c.label, c.id))
 
-    const showAudit = matchesFilter('平台管理', '操作审计日志', 'audit')
-    const showPlatform = accessChildren.length > 0 || billingChildren.length > 0 || showAudit
+  const showAudit = matchesFilter('平台管理', '操作审计日志', 'audit')
+  const showPlatform = accessChildren.length > 0 || billingChildren.length > 0 || showAudit
 
-    const filteredProjects = sortedProjects.filter((p) => matchesFilter('项目空间', p.name, p.branch))
-    const filteredTags = TAG_VIEWS.filter((t) => matchesFilter('标签视图', t.label))
-    const showDnd = matchesFilter('免打扰模式', '偏好', '开关')
-    const showCompact = matchesFilter('紧凑卡片模式', '密度', '偏好')
-    const showCmdItem = matchesFilter('全局命令面板', '搜索', 'command')
-    const showDocs = matchesFilter('开发者文档', 'api', 'docs', '外链')
-    const showVault = matchesFilter('合规审计 Vault', '锁定', 'pro', '禁用')
-    const showUtilityGroup = showDnd || showCompact || showCmdItem || showDocs || showVault
+  const filteredProjects = sortedProjects.filter((p) => matchesFilter('项目空间', p.name, p.branch))
+  const filteredTags = TAG_VIEWS.filter((t) => matchesFilter('标签视图', t.label))
+  const showDnd = matchesFilter('免打扰模式', '偏好', '开关')
+  const showCompact = matchesFilter('紧凑卡片模式', '密度', '偏好')
+  const showCmdItem = matchesFilter('全局命令面板', '搜索', 'command')
+  const showDocs = matchesFilter('开发者文档', 'api', 'docs', '外链')
+  const showVault = matchesFilter('合规审计 Vault', '锁定', 'pro', '禁用')
+  const showUtilityGroup = showDnd || showCompact || showCmdItem || showDocs || showVault
 
-    const hasAnyResult =
-      showWorkspaceGroup ||
-      analyticsChildren.length > 0 ||
-      showPlatform ||
-      filteredProjects.length > 0 ||
-      filteredTags.length > 0 ||
-      showUtilityGroup
+  const hasAnyResult =
+    showWorkspaceGroup ||
+    analyticsChildren.length > 0 ||
+    showPlatform ||
+    filteredProjects.length > 0 ||
+    filteredTags.length > 0 ||
+    showUtilityGroup
 
-    return (
-      <div className="flex h-full flex-col">
-        {/* 1. Workspace Switcher Menu */}
-        <div className={cn('shrink-0', isCollapsed ? 'px-2 pt-3 pb-2' : 'px-3 pt-3.5 pb-2')}>
-          <Menu
-            align="start"
-            side={isCollapsed ? 'right' : 'bottom'}
-            items={workspaceMenuItems}
-            trigger={
-              <button
-                type="button"
-                aria-label="切换工作区"
-                className={cn(
-                  'flex w-full cursor-pointer items-center rounded-[18px] transition-colors duration-150 outline-none',
-                  'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',
-                  isCollapsed
-                    ? 'mx-auto h-11 w-11 justify-center p-0 hover:bg-[#F6F7F9]'
-                    : 'gap-2.5 bg-[#F6F7F9] px-2.5 py-2 hover:bg-[#EEF0F3] data-popup-open:bg-[#EEF0F3]',
-                )}
+  const sidebarElement = (
+    <Sidebar variant="floating" collapsible="icon" mobileTitle="导航菜单">
+      {/* 1. Workspace Switcher + 2. Quick Menu Filter */}
+      <SidebarHeader>
+        <Menu
+          align="start"
+          side={isCollapsed ? 'right' : 'bottom'}
+          items={workspaceMenuItems}
+          trigger={
+            <button
+              type="button"
+              aria-label="切换工作区"
+              className={cn(
+                'flex w-full cursor-pointer items-center rounded-[18px] transition-colors duration-150 outline-none',
+                'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',
+                isCollapsed
+                  ? 'mx-auto h-11 w-11 justify-center p-0 hover:bg-[#F6F7F9]'
+                  : 'gap-2.5 bg-[#F6F7F9] px-2.5 py-2 hover:bg-[#EEF0F3] data-popup-open:bg-[#EEF0F3]',
+              )}
+            >
+              <span
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-glaze-display text-[13px] font-extrabold"
+                style={{ backgroundColor: wsPalette[100], color: wsPalette[700] }}
               >
-                <span
-                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-glaze-display text-[13px] font-extrabold"
-                  style={{ backgroundColor: wsPalette[100], color: wsPalette[700] }}
-                >
-                  {activeWorkspace.code}
-                </span>
-                {!isCollapsed && (
-                  <>
-                    <span className="flex min-w-0 flex-1 flex-col text-left">
-                      <span className="truncate font-glaze-display text-[14px] leading-tight font-extrabold text-[#1B1F27]">
-                        {activeWorkspace.name}
-                      </span>
-                      <span className="truncate text-[11px] font-medium text-[#6B7280]">
-                        {activeWorkspace.plan}
-                      </span>
+                {activeWorkspace.code}
+              </span>
+              {!isCollapsed && (
+                <>
+                  <span className="flex min-w-0 flex-1 flex-col text-left">
+                    <span className="truncate font-glaze-display text-[14px] leading-tight font-extrabold text-[#1B1F27]">
+                      {activeWorkspace.name}
                     </span>
-                    <CaretUpDown size={15} weight="bold" className="shrink-0 text-[#8A90A0]" />
-                  </>
-                )}
-              </button>
+                    <span className="truncate text-[11px] font-medium text-[#6B7280]">
+                      {activeWorkspace.plan}
+                    </span>
+                  </span>
+                  <CaretUpDown size={15} weight="bold" className="shrink-0 text-[#8A90A0]" />
+                </>
+              )}
+            </button>
+          }
+        />
+
+        {!isCollapsed && (
+          <Input
+            inputSize="sm"
+            surface="soft"
+            value={sidebarFilter}
+            onChange={(e) => setSidebarFilter(e.target.value)}
+            placeholder="筛选菜单项..."
+            leadingIcon={<MagnifyingGlass size={14} weight="bold" />}
+            trailingElement={
+              sidebarFilter ? (
+                <button
+                  type="button"
+                  onClick={() => setSidebarFilter('')}
+                  aria-label="清空筛选"
+                  className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#E8EBF0] hover:text-[#1B1F27]"
+                >
+                  <X size={11} weight="bold" />
+                </button>
+              ) : (
+                <span className="rounded-full bg-white px-1.5 py-0.5 font-glaze-mono text-[10px] font-semibold text-[#8A90A0]">
+                  /
+                </span>
+              )
             }
           />
+        )}
+      </SidebarHeader>
 
-          {/* 2. Sidebar Quick Menu Filter Input */}
-          {!isCollapsed && (
-            <div className="mt-2.5">
-              <Input
-                inputSize="sm"
-                surface="soft"
-                value={sidebarFilter}
-                onChange={(e) => setSidebarFilter(e.target.value)}
-                placeholder="筛选菜单项..."
-                leadingIcon={<MagnifyingGlass size={14} weight="bold" />}
-                trailingElement={
-                  sidebarFilter ? (
-                    <button
-                      type="button"
-                      onClick={() => setSidebarFilter('')}
-                      aria-label="清空筛选"
-                      className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#E8EBF0] hover:text-[#1B1F27]"
-                    >
-                      <X size={11} weight="bold" />
-                    </button>
-                  ) : (
-                    <span className="rounded-full bg-white px-1.5 py-0.5 font-glaze-mono text-[10px] font-semibold text-[#8A90A0]">
-                      /
-                    </span>
-                  )
-                }
-              />
-            </div>
-          )}
-        </div>
+      {/* Scrollable Navigation Regions */}
+      <SidebarContent>
+        {!hasAnyResult && (
+          <div className="mx-2 my-6 rounded-inner bg-[#F6F7F9] p-4 text-center">
+            <p className="m-0 text-[12.5px] font-semibold text-[#5B6170]">未匹配到菜单项</p>
+            <button
+              type="button"
+              onClick={() => setSidebarFilter('')}
+              className="mt-2 cursor-pointer text-[12px] font-semibold text-[#4A4FB8] hover:underline"
+            >
+              重置过滤条件
+            </button>
+          </div>
+        )}
 
-        {/* Scrollable Navigation Regions */}
-        <nav
-          aria-label="主侧边栏导航"
-          className={cn(
-            'flex-1 overflow-y-auto pb-3',
-            isCollapsed ? 'px-2' : 'px-2.5',
-          )}
-        >
-          {!hasAnyResult && (
-            <div className="mx-2 my-6 rounded-inner bg-[#F6F7F9] p-4 text-center">
-              <p className="m-0 text-[12.5px] font-semibold text-[#5B6170]">未匹配到菜单项</p>
-              <button
-                type="button"
-                onClick={() => setSidebarFilter('')}
-                className="mt-2 cursor-pointer text-[12px] font-semibold text-[#4A4FB8] hover:underline"
-              >
-                重置过滤条件
-              </button>
-            </div>
-          )}
-
-          {/* Section 1: Workspace Core (Standard, Live Pulse, Counter Badge, Tag Badge) */}
-          {showWorkspaceGroup && (
-            <div>
-              <SidebarSectionHeader title="工作台" collapsed={isCollapsed} />
-              <div className="flex flex-col gap-0.5">
+        {/* Section 1: Workspace Core */}
+        {showWorkspaceGroup && (
+          <SidebarGroup>
+            <SidebarGroupLabel>工作台</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
                 {showOverview && (
-                  <SidebarNavRow
-                    collapsed={isCollapsed}
-                    active={activeRoute === 'overview'}
-                    icon={<House size={17} weight={activeRoute === 'overview' ? 'fill' : 'duotone'} />}
-                    label="总览驾驶舱"
-                    onClick={() => navigate('overview')}
-                  />
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={activeRoute === 'overview'}
+                      icon={<House size={17} weight={activeRoute === 'overview' ? 'fill' : 'duotone'} />}
+                      onClick={() => navigate('overview')}
+                    >
+                      总览驾驶舱
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 )}
                 {showLive && (
-                  <SidebarNavRow
-                    collapsed={isCollapsed}
-                    active={activeRoute === 'live-monitor'}
-                    icon={<Broadcast size={17} weight={activeRoute === 'live-monitor' ? 'fill' : 'duotone'} />}
-                    label="实时监控大屏"
-                    trailing={
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E2F5DA] px-2 py-0.5 text-[10px] font-bold text-[#2F6B28]">
-                        <StatusDot status="normal" mode="ripple" size={6} />
-                        LIVE
-                      </span>
-                    }
-                    onClick={() => navigate('live-monitor')}
-                  />
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={activeRoute === 'live-monitor'}
+                      icon={<Broadcast size={17} weight={activeRoute === 'live-monitor' ? 'fill' : 'duotone'} />}
+                      trailing={
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E2F5DA] px-2 py-0.5 text-[10px] font-bold text-[#2F6B28]">
+                          <StatusDot status="normal" mode="ripple" size={6} />
+                          LIVE
+                        </span>
+                      }
+                      onClick={() => navigate('live-monitor')}
+                    >
+                      实时监控大屏
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 )}
                 {showInbox && (
-                  <SidebarNavRow
-                    collapsed={isCollapsed}
-                    active={activeRoute === 'inbox'}
-                    icon={<Tray size={17} weight={activeRoute === 'inbox' ? 'fill' : 'duotone'} />}
-                    label="消息收件箱"
-                    trailing={
-                      unreadCount > 0 ? (
-                        <CountBadge count={unreadCount} hue="coral" />
-                      ) : (
-                        <CheckCircle size={14} weight="fill" className="text-[#49A851]" />
-                      )
-                    }
-                    onClick={() => navigate('inbox')}
-                  />
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={activeRoute === 'inbox'}
+                      icon={<Tray size={17} weight={activeRoute === 'inbox' ? 'fill' : 'duotone'} />}
+                      trailing={
+                        unreadCount > 0 ? (
+                          <CountBadge count={unreadCount} hue="coral" />
+                        ) : (
+                          <CheckCircle size={14} weight="fill" className="text-[#49A851]" />
+                        )
+                      }
+                      onClick={() => navigate('inbox')}
+                    >
+                      消息收件箱
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 )}
                 {showAi && (
-                  <SidebarNavRow
-                    collapsed={isCollapsed}
-                    active={activeRoute === 'ai-assistant'}
-                    icon={<Sparkle size={17} weight={activeRoute === 'ai-assistant' ? 'fill' : 'duotone'} />}
-                    label="AI 洞察助手"
-                    trailing={<HueTag hue="lilac" size="xs">NEW</HueTag>}
-                    onClick={() => navigate('ai-assistant')}
-                  />
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Section 2: Multi-level Tree Navigation (2-Level & 3-Level Collapsible) */}
-          {(analyticsChildren.length > 0 || showPlatform) && (
-            <div>
-              <SidebarSectionHeader title="业务与管理" collapsed={isCollapsed} />
-              <div className="flex flex-col gap-0.5">
-                {/* 2-Level Collapsible Group: 数据中心 */}
-                {analyticsChildren.length > 0 && (
-                  <SidebarCollapsibleGroup
-                    collapsed={isCollapsed}
-                    icon={<ChartLineUp size={17} weight={activeRoute.startsWith('analytics/') ? 'fill' : 'duotone'} />}
-                    label="数据中心"
-                    open={Boolean(filterKeyword) || analyticsOpen}
-                    onOpenChange={setAnalyticsOpen}
-                    hasActiveChild={activeRoute.startsWith('analytics/')}
-                    flyoutContent={analyticsChildren.map((child) => (
-                      <SidebarNavRow
-                        key={child.id}
-                        active={activeRoute === child.id}
-                        icon={<ChartBar size={14} weight="duotone" />}
-                        label={child.label}
-                        trailing={child.trailing}
-                        onClick={() => navigate(child.id)}
-                      />
-                    ))}
-                  >
-                    {analyticsChildren.map((child) => (
-                      <SidebarNavRow
-                        key={child.id}
-                        indent={1}
-                        active={activeRoute === child.id}
-                        icon={
-                          <span
-                            className={cn(
-                              'h-1.5 w-1.5 rounded-full',
-                              activeRoute === child.id ? 'bg-[#4A4FB8]' : 'bg-[#CDD3DD]',
-                            )}
-                          />
-                        }
-                        label={child.label}
-                        trailing={child.trailing}
-                        onClick={() => navigate(child.id)}
-                      />
-                    ))}
-                  </SidebarCollapsibleGroup>
-                )}
-
-                {/* 3-Level Nested Tree Group: 平台管理 -> 访问控制 / 计费与账单 -> 3rd-level leaves */}
-                {showPlatform && (
-                  <SidebarCollapsibleGroup
-                    collapsed={isCollapsed}
-                    icon={<ShieldCheck size={17} weight={activeRoute.startsWith('platform/') ? 'fill' : 'duotone'} />}
-                    label="平台管理"
-                    badge={
-                      <span className="rounded-full bg-[#F2F3F5] px-1.5 py-0.5 font-glaze-mono text-[10px] font-bold text-[#6B7280]">
-                        3级
-                      </span>
-                    }
-                    open={Boolean(filterKeyword) || platformOpen}
-                    onOpenChange={setPlatformOpen}
-                    hasActiveChild={activeRoute.startsWith('platform/')}
-                    flyoutContent={
-                      <div className="flex flex-col gap-2">
-                        {accessChildren.length > 0 && (
-                          <div className="flex flex-col gap-0.5">
-                            <span className="px-2.5 text-[10px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
-                              访问控制
-                            </span>
-                            {accessChildren.map((c) => (
-                              <SidebarNavRow
-                                key={c.id}
-                                active={activeRoute === c.id}
-                                icon={<Key size={14} weight="duotone" />}
-                                label={c.label}
-                                trailing={c.badge}
-                                onClick={() => navigate(c.id)}
-                              />
-                            ))}
-                          </div>
-                        )}
-                        {billingChildren.length > 0 && (
-                          <div className="flex flex-col gap-0.5">
-                            <span className="px-2.5 text-[10px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
-                              计费与账单
-                            </span>
-                            {billingChildren.map((c) => (
-                              <SidebarNavRow
-                                key={c.id}
-                                active={activeRoute === c.id}
-                                icon={<Receipt size={14} weight="duotone" />}
-                                label={c.label}
-                                onClick={() => navigate(c.id)}
-                              />
-                            ))}
-                          </div>
-                        )}
-                        {showAudit && (
-                          <SidebarNavRow
-                            active={activeRoute === 'platform/audit'}
-                            icon={<FileText size={14} weight="duotone" />}
-                            label="操作审计日志"
-                            onClick={() => navigate('platform/audit')}
-                          />
-                        )}
-                      </div>
-                    }
-                  >
-                    {/* Level 2 -> Level 3: 访问控制 */}
-                    {accessChildren.length > 0 && (
-                      <SidebarCollapsibleGroup
-                        indent={1}
-                        icon={<UsersThree size={15} weight="duotone" />}
-                        label="访问控制"
-                        open={Boolean(filterKeyword) || accessOpen}
-                        onOpenChange={setAccessOpen}
-                        hasActiveChild={activeRoute.startsWith('platform/access/')}
-                      >
-                        {accessChildren.map((c) => (
-                          <SidebarNavRow
-                            key={c.id}
-                            indent={2}
-                            active={activeRoute === c.id}
-                            icon={
-                              <span
-                                className={cn(
-                                  'h-1.5 w-1.5 rounded-full',
-                                  activeRoute === c.id ? 'bg-[#4A4FB8]' : 'bg-[#CDD3DD]',
-                                )}
-                              />
-                            }
-                            label={c.label}
-                            trailing={c.badge}
-                            onClick={() => navigate(c.id)}
-                          />
-                        ))}
-                      </SidebarCollapsibleGroup>
-                    )}
-
-                    {/* Level 2 -> Level 3: 计费与账单 */}
-                    {billingChildren.length > 0 && (
-                      <SidebarCollapsibleGroup
-                        indent={1}
-                        icon={<CreditCard size={15} weight="duotone" />}
-                        label="计费与账单"
-                        open={Boolean(filterKeyword) || billingOpen}
-                        onOpenChange={setBillingOpen}
-                        hasActiveChild={activeRoute.startsWith('platform/billing/')}
-                      >
-                        {billingChildren.map((c) => (
-                          <SidebarNavRow
-                            key={c.id}
-                            indent={2}
-                            active={activeRoute === c.id}
-                            icon={
-                              <span
-                                className={cn(
-                                  'h-1.5 w-1.5 rounded-full',
-                                  activeRoute === c.id ? 'bg-[#4A4FB8]' : 'bg-[#CDD3DD]',
-                                )}
-                              />
-                            }
-                            label={c.label}
-                            onClick={() => navigate(c.id)}
-                          />
-                        ))}
-                      </SidebarCollapsibleGroup>
-                    )}
-
-                    {/* Level 2 leaf: 操作审计日志 */}
-                    {showAudit && (
-                      <SidebarNavRow
-                        indent={1}
-                        active={activeRoute === 'platform/audit'}
-                        icon={<FileText size={15} weight="duotone" />}
-                        label="操作审计日志"
-                        onClick={() => navigate('platform/audit')}
-                      />
-                    )}
-                  </SidebarCollapsibleGroup>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Section 3: Collapsible Section + Inline '+' Button + Hover '···' & Right-Click ContextMenu */}
-          {filteredProjects.length > 0 && (
-            <div>
-              <SidebarSectionHeader
-                title="项目空间"
-                collapsed={isCollapsed}
-                collapsible
-                open={Boolean(filterKeyword) || projectsSectionOpen}
-                onToggle={() => setProjectsSectionOpen((o) => !o)}
-                action={
-                  <Tooltip content="新建项目空间" side="top">
-                    <button
-                      type="button"
-                      onClick={() => setNewProjectOpen(true)}
-                      aria-label="新建项目空间"
-                      className={cn(
-                        'inline-flex h-5.5 w-5.5 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#F2F3F5] hover:text-[#1B1F27]',
-                        PRESS_CLASS,
-                      )}
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={activeRoute === 'ai-assistant'}
+                      icon={<Sparkle size={17} weight={activeRoute === 'ai-assistant' ? 'fill' : 'duotone'} />}
+                      trailing={<HueTag hue="lilac" size="xs">NEW</HueTag>}
+                      onClick={() => navigate('ai-assistant')}
                     >
-                      <Plus size={12} weight="bold" />
-                    </button>
-                  </Tooltip>
-                }
-              />
+                      AI 洞察助手
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
-              {(isCollapsed || Boolean(filterKeyword) || projectsSectionOpen) && (
-                <div className="flex flex-col gap-0.5">
+        {/* Section 2: 2-Level & 3-Level Collapsible Tree Menus */}
+        {(analyticsChildren.length > 0 || showPlatform) && (
+          <SidebarGroup>
+            <SidebarGroupLabel>业务与管理</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {analyticsChildren.length > 0 && (
+                  <SidebarMenuItem>
+                    <SidebarMenuCollapsible
+                      icon={<ChartLineUp size={17} weight={activeRoute.startsWith('analytics/') ? 'fill' : 'duotone'} />}
+                      label="数据中心"
+                      open={Boolean(filterKeyword) || analyticsOpen}
+                      onOpenChange={setAnalyticsOpen}
+                      hasActiveChild={activeRoute.startsWith('analytics/')}
+                      flyoutContent={analyticsChildren.map((child) => (
+                        <SidebarMenuButton
+                          key={child.id}
+                          forceExpanded
+                          size="sm"
+                          isActive={activeRoute === child.id}
+                          icon={<ChartBar size={14} weight="duotone" />}
+                          trailing={child.trailing}
+                          onClick={() => navigate(child.id)}
+                        >
+                          {child.label}
+                        </SidebarMenuButton>
+                      ))}
+                    >
+                      {analyticsChildren.map((child) => (
+                        <SidebarMenuSubItem key={child.id}>
+                          <SidebarMenuSubButton
+                            isActive={activeRoute === child.id}
+                            trailing={child.trailing}
+                            onClick={() => navigate(child.id)}
+                          >
+                            {child.label}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuCollapsible>
+                  </SidebarMenuItem>
+                )}
+
+                {showPlatform && (
+                  <SidebarMenuItem>
+                    <SidebarMenuCollapsible
+                      icon={<ShieldCheck size={17} weight={activeRoute.startsWith('platform/') ? 'fill' : 'duotone'} />}
+                      label="平台管理"
+                      badge={
+                        <span className="rounded-full bg-[#F2F3F5] px-1.5 py-0.5 font-glaze-mono text-[10px] font-bold text-[#6B7280]">
+                          3级
+                        </span>
+                      }
+                      open={Boolean(filterKeyword) || platformOpen}
+                      onOpenChange={setPlatformOpen}
+                      hasActiveChild={activeRoute.startsWith('platform/')}
+                      flyoutContent={
+                        <div className="flex flex-col gap-2">
+                          {accessChildren.length > 0 && (
+                            <div className="flex flex-col gap-0.5">
+                              <span className="px-2.5 text-[10px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
+                                访问控制
+                              </span>
+                              {accessChildren.map((c) => (
+                                <SidebarMenuButton
+                                  key={c.id}
+                                  forceExpanded
+                                  size="sm"
+                                  isActive={activeRoute === c.id}
+                                  icon={<Key size={14} weight="duotone" />}
+                                  trailing={c.badge}
+                                  onClick={() => navigate(c.id)}
+                                >
+                                  {c.label}
+                                </SidebarMenuButton>
+                              ))}
+                            </div>
+                          )}
+                          {billingChildren.length > 0 && (
+                            <div className="flex flex-col gap-0.5">
+                              <span className="px-2.5 text-[10px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
+                                计费与账单
+                              </span>
+                              {billingChildren.map((c) => (
+                                <SidebarMenuButton
+                                  key={c.id}
+                                  forceExpanded
+                                  size="sm"
+                                  isActive={activeRoute === c.id}
+                                  icon={<Receipt size={14} weight="duotone" />}
+                                  onClick={() => navigate(c.id)}
+                                >
+                                  {c.label}
+                                </SidebarMenuButton>
+                              ))}
+                            </div>
+                          )}
+                          {showAudit && (
+                            <SidebarMenuButton
+                              forceExpanded
+                              size="sm"
+                              isActive={activeRoute === 'platform/audit'}
+                              icon={<FileText size={14} weight="duotone" />}
+                              onClick={() => navigate('platform/audit')}
+                            >
+                              操作审计日志
+                            </SidebarMenuButton>
+                          )}
+                        </div>
+                      }
+                    >
+                      {accessChildren.length > 0 && (
+                        <SidebarMenuSubItem>
+                          <SidebarMenuCollapsible
+                            level={1}
+                            icon={<UsersThree size={15} weight="duotone" />}
+                            label="访问控制"
+                            open={Boolean(filterKeyword) || accessOpen}
+                            onOpenChange={setAccessOpen}
+                            hasActiveChild={activeRoute.startsWith('platform/access/')}
+                          >
+                            {accessChildren.map((c) => (
+                              <SidebarMenuSubItem key={c.id}>
+                                <SidebarMenuSubButton
+                                  size="sm"
+                                  isActive={activeRoute === c.id}
+                                  trailing={c.badge}
+                                  onClick={() => navigate(c.id)}
+                                >
+                                  {c.label}
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuCollapsible>
+                        </SidebarMenuSubItem>
+                      )}
+
+                      {billingChildren.length > 0 && (
+                        <SidebarMenuSubItem>
+                          <SidebarMenuCollapsible
+                            level={1}
+                            icon={<CreditCard size={15} weight="duotone" />}
+                            label="计费与账单"
+                            open={Boolean(filterKeyword) || billingOpen}
+                            onOpenChange={setBillingOpen}
+                            hasActiveChild={activeRoute.startsWith('platform/billing/')}
+                          >
+                            {billingChildren.map((c) => (
+                              <SidebarMenuSubItem key={c.id}>
+                                <SidebarMenuSubButton
+                                  size="sm"
+                                  isActive={activeRoute === c.id}
+                                  onClick={() => navigate(c.id)}
+                                >
+                                  {c.label}
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuCollapsible>
+                        </SidebarMenuSubItem>
+                      )}
+
+                      {showAudit && (
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            isActive={activeRoute === 'platform/audit'}
+                            icon={<FileText size={15} weight="duotone" />}
+                            onClick={() => navigate('platform/audit')}
+                          >
+                            操作审计日志
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      )}
+                    </SidebarMenuCollapsible>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {/* Section 3: Collapsible Group + Inline '+' Action + Hover '···' & Right-Click ContextMenu */}
+        {filteredProjects.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel
+              collapsible
+              open={Boolean(filterKeyword) || projectsSectionOpen}
+              onToggle={() => setProjectsSectionOpen((o) => !o)}
+              action={
+                <SidebarGroupAction
+                  tooltip="新建项目空间"
+                  aria-label="新建项目空间"
+                  onClick={() => setNewProjectOpen(true)}
+                >
+                  <Plus size={12} weight="bold" />
+                </SidebarGroupAction>
+              }
+            >
+              项目空间
+            </SidebarGroupLabel>
+
+            {(isCollapsed || Boolean(filterKeyword) || projectsSectionOpen) && (
+              <SidebarGroupContent>
+                <SidebarMenu>
                   {filteredProjects.map((proj) => {
                     const isActive = activeRoute === `project:${proj.id}`
                     const swatch = HUE_PALETTES[proj.hue][500]
@@ -1963,337 +1771,347 @@ export function AdminShellDemoPage() {
 
                     if (isCollapsed) {
                       return (
-                        <SidebarNavRow
-                          key={proj.id}
-                          collapsed
-                          active={isActive}
-                          icon={
-                            <span
-                              className="h-2.5 w-2.5 rounded-full"
-                              style={{ backgroundColor: swatch }}
-                            />
-                          }
-                          label={proj.name}
-                          tooltip={`${proj.name}${proj.pinned ? '（已置顶）' : ''}`}
-                          onClick={() => navigate(`project:${proj.id}`)}
-                        />
+                        <SidebarMenuItem key={proj.id}>
+                          <SidebarMenuButton
+                            isActive={isActive}
+                            icon={
+                              <span
+                                className="h-2.5 w-2.5 rounded-full"
+                                style={{ backgroundColor: swatch }}
+                              />
+                            }
+                            tooltip={`${proj.name}${proj.pinned ? '（已置顶）' : ''}`}
+                            onClick={() => navigate(`project:${proj.id}`)}
+                          >
+                            {proj.name}
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
                       )
                     }
 
                     return (
-                      <ContextMenu
-                        key={proj.id}
-                        items={[
-                          {
-                            id: 'ctx-pin',
-                            label: '置顶到项目顶部',
-                            checked: proj.pinned,
-                            onSelect: () => handleTogglePinProject(proj.id),
-                          },
-                          {
-                            id: 'ctx-open',
-                            label: '打开项目看板',
-                            icon: <FolderSimple size={14} />,
-                            separatorBefore: true,
-                            onSelect: () => navigate(`project:${proj.id}`),
-                          },
-                          {
-                            id: 'ctx-copy',
-                            label: '复制项目 ID',
-                            icon: <Copy size={14} />,
-                            onSelect: () => toast({ title: `已复制 ${proj.id}`, status: 'info' }),
-                          },
-                          {
-                            id: 'ctx-archive',
-                            label: '归档项目',
-                            icon: <Trash size={14} />,
-                            danger: true,
-                            separatorBefore: true,
-                            onSelect: () => handleArchiveProject(proj.id),
-                          },
-                        ]}
-                      >
-                        <div
-                          className={cn(
-                            'group relative flex h-9 w-full items-center gap-2 rounded-full pr-1.5 pl-3 text-[13px] font-semibold transition-colors duration-150',
-                            isActive
-                              ? 'bg-[#F3F4FE] text-[#262B7A]'
-                              : 'text-[#5B6170] hover:bg-[#F6F7F9] hover:text-[#1B1F27]',
-                          )}
+                      <SidebarMenuItem key={proj.id}>
+                        <ContextMenu
+                          items={[
+                            {
+                              id: 'ctx-pin',
+                              label: '置顶到项目顶部',
+                              checked: proj.pinned,
+                              onSelect: () => handleTogglePinProject(proj.id),
+                            },
+                            {
+                              id: 'ctx-open',
+                              label: '打开项目看板',
+                              icon: <FolderSimple size={14} />,
+                              separatorBefore: true,
+                              onSelect: () => navigate(`project:${proj.id}`),
+                            },
+                            {
+                              id: 'ctx-copy',
+                              label: '复制项目 ID',
+                              icon: <Copy size={14} />,
+                              onSelect: () => toast({ title: `已复制 ${proj.id}`, status: 'info' }),
+                            },
+                            {
+                              id: 'ctx-archive',
+                              label: '归档项目',
+                              icon: <Trash size={14} />,
+                              danger: true,
+                              separatorBefore: true,
+                              onSelect: () => handleArchiveProject(proj.id),
+                            },
+                          ]}
                         >
-                          <button
-                            type="button"
-                            onClick={() => navigate(`project:${proj.id}`)}
-                            className="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 text-left outline-none"
+                          <div
+                            className={cn(
+                              'relative flex h-9 w-full items-center gap-2 rounded-full pr-1.5 pl-3 text-[13px] font-semibold transition-colors duration-150',
+                              isActive
+                                ? 'bg-[#F3F4FE] text-[#262B7A]'
+                                : 'text-[#5B6170] hover:bg-[#F6F7F9] hover:text-[#1B1F27]',
+                            )}
                           >
-                            <span
-                              className="h-2.5 w-2.5 shrink-0 rounded-full"
-                              style={{ backgroundColor: swatch }}
-                            />
-                            <span className="truncate">{proj.name}</span>
-                          </button>
+                            <button
+                              type="button"
+                              onClick={() => navigate(`project:${proj.id}`)}
+                              className="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 text-left outline-none"
+                            >
+                              <span
+                                className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                style={{ backgroundColor: swatch }}
+                              />
+                              <span className="truncate">{proj.name}</span>
+                            </button>
 
-                          {proj.pinned && (
-                            <PushPin
-                              size={12}
-                              weight="fill"
-                              className="shrink-0 text-[#7B80EA] transition-opacity group-hover:hidden"
-                            />
-                          )}
+                            {proj.pinned && (
+                              <PushPin
+                                size={12}
+                                weight="fill"
+                                className="shrink-0 text-[#7B80EA] transition-opacity group-hover/menu-item:hidden"
+                              />
+                            )}
 
-                          <Menu
-                            side="right"
-                            align="start"
-                            items={projMenuItems}
-                            trigger={
-                              <button
-                                type="button"
-                                aria-label={`${proj.name} 更多操作`}
-                                className="inline-flex h-6.5 w-6.5 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] opacity-0 transition-opacity hover:bg-[#E8EBF0] hover:text-[#1B1F27] group-hover:opacity-100 data-popup-open:bg-[#E8EBF0] data-popup-open:text-[#1B1F27] data-popup-open:opacity-100"
-                              >
-                                <DotsThree size={16} weight="bold" />
-                              </button>
-                            }
-                          />
-                        </div>
-                      </ContextMenu>
+                            <Menu
+                              side="right"
+                              align="start"
+                              items={projMenuItems}
+                              trigger={
+                                <SidebarMenuAction
+                                  showOnHover
+                                  aria-label={`${proj.name} 更多操作`}
+                                >
+                                  <DotsThree size={16} weight="bold" />
+                                </SidebarMenuAction>
+                              }
+                            />
+                          </div>
+                        </ContextMenu>
+                      </SidebarMenuItem>
                     )
                   })}
-                </div>
-              )}
-            </div>
-          )}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            )}
+          </SidebarGroup>
+        )}
 
-          {/* Section 4: Color-Coded Tag Filter Views */}
-          {filteredTags.length > 0 && (
-            <div>
-              <SidebarSectionHeader
-                title="标签视图"
-                collapsed={isCollapsed}
-                collapsible
-                open={Boolean(filterKeyword) || tagsSectionOpen}
-                onToggle={() => setTagsSectionOpen((o) => !o)}
-              />
-              {(isCollapsed || Boolean(filterKeyword) || tagsSectionOpen) && (
-                <div className="flex flex-col gap-0.5">
+        {/* Section 4: Color-Coded Tag Filter Views */}
+        {filteredTags.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel
+              collapsible
+              open={Boolean(filterKeyword) || tagsSectionOpen}
+              onToggle={() => setTagsSectionOpen((o) => !o)}
+            >
+              标签视图
+            </SidebarGroupLabel>
+            {(isCollapsed || Boolean(filterKeyword) || tagsSectionOpen) && (
+              <SidebarGroupContent>
+                <SidebarMenu>
                   {filteredTags.map((tag) => {
                     const isActive = activeRoute === `tag:${tag.id}`
                     const palette = HUE_PALETTES[tag.hue]
                     return (
-                      <SidebarNavRow
-                        key={tag.id}
-                        collapsed={isCollapsed}
-                        active={isActive}
-                        icon={<Tag size={15} weight="fill" style={{ color: palette[500] }} />}
-                        label={tag.label}
-                        trailing={
-                          <span className="font-glaze-mono text-[11px] font-semibold text-[#8A90A0]">
-                            {tag.count}
-                          </span>
-                        }
-                        onClick={() => navigate(`tag:${tag.id}`)}
-                      />
+                      <SidebarMenuItem key={tag.id}>
+                        <SidebarMenuButton
+                          isActive={isActive}
+                          icon={<Tag size={15} weight="fill" style={{ color: palette[500] }} />}
+                          trailing={<SidebarMenuBadge>{tag.count}</SidebarMenuBadge>}
+                          onClick={() => navigate(`tag:${tag.id}`)}
+                        >
+                          {tag.label}
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
                     )
                   })}
-                </div>
-              )}
-            </div>
-          )}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            )}
+          </SidebarGroup>
+        )}
 
-          {/* Section 5: Inline Switch Toggles, Shortcut Item, External Link, Disabled Locked Item */}
-          {showUtilityGroup && (
-            <div>
-              <SidebarSectionHeader title="偏好与工具" collapsed={isCollapsed} />
-              <div className="flex flex-col gap-0.5">
-                {/* Inline Toggle Switch 1: 免打扰模式 */}
+        {/* Section 5: Inline Switch Toggles, Shortcut Item, External Link, Disabled Locked Item */}
+        {showUtilityGroup && (
+          <SidebarGroup>
+            <SidebarGroupLabel>偏好与工具</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
                 {showDnd && !isCollapsed && (
-                  <div className="flex h-9.5 items-center justify-between gap-2 rounded-full px-3 text-[13px] font-semibold text-[#5B6170] hover:bg-[#F6F7F9]">
-                    <span className="flex min-w-0 items-center gap-2.5">
-                      <BellSlash
-                        size={17}
-                        weight={dndMode ? 'fill' : 'duotone'}
-                        className={dndMode ? 'text-[#4A4FB8]' : 'text-[#6B7280]'}
+                  <SidebarMenuItem>
+                    <div className="flex h-9.5 items-center justify-between gap-2 rounded-full px-3 text-[13px] font-semibold text-[#5B6170] hover:bg-[#F6F7F9]">
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <BellSlash
+                          size={17}
+                          weight={dndMode ? 'fill' : 'duotone'}
+                          className={dndMode ? 'text-[#4A4FB8]' : 'text-[#6B7280]'}
+                        />
+                        <span className="truncate">免打扰模式</span>
+                      </span>
+                      <Switch
+                        size="sm"
+                        hue="periwinkle"
+                        checked={dndMode}
+                        onCheckedChange={(checked) => {
+                          setDndMode(checked)
+                          toast({
+                            title: checked ? '已开启免打扰模式' : '已关闭免打扰模式',
+                            description: checked ? '顶部栏将静音非紧急告警通知' : '恢复接收全部实时告警',
+                            status: 'info',
+                          })
+                        }}
                       />
-                      <span className="truncate">免打扰模式</span>
-                    </span>
-                    <Switch
-                      size="sm"
-                      hue="periwinkle"
-                      checked={dndMode}
-                      onCheckedChange={(checked) => {
-                        setDndMode(checked)
-                        toast({
-                          title: checked ? '已开启免打扰模式' : '已关闭免打扰模式',
-                          description: checked ? '顶部栏将静音非紧急告警通知' : '恢复接收全部实时告警',
-                          status: 'info',
-                        })
-                      }}
-                    />
-                  </div>
+                    </div>
+                  </SidebarMenuItem>
                 )}
                 {showDnd && isCollapsed && (
-                  <SidebarNavRow
-                    collapsed
-                    active={dndMode}
-                    icon={<BellSlash size={17} weight={dndMode ? 'fill' : 'duotone'} />}
-                    label={dndMode ? '免打扰：已开启' : '免打扰：已关闭'}
-                    onClick={() => setDndMode((v) => !v)}
-                  />
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={dndMode}
+                      icon={<BellSlash size={17} weight={dndMode ? 'fill' : 'duotone'} />}
+                      onClick={() => setDndMode((v) => !v)}
+                    >
+                      {dndMode ? '免打扰：已开启' : '免打扰：已关闭'}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 )}
 
-                {/* Inline Toggle Switch 2: 紧凑卡片模式 */}
                 {showCompact && !isCollapsed && (
-                  <div className="flex h-9.5 items-center justify-between gap-2 rounded-full px-3 text-[13px] font-semibold text-[#5B6170] hover:bg-[#F6F7F9]">
-                    <span className="flex min-w-0 items-center gap-2.5">
-                      <SlidersHorizontal
-                        size={17}
-                        weight={compactDensity ? 'fill' : 'duotone'}
-                        className={compactDensity ? 'text-[#17625B]' : 'text-[#6B7280]'}
-                      />
-                      <span className="truncate">紧凑密度</span>
-                    </span>
-                    <Switch
-                      size="sm"
-                      hue="aqua"
-                      checked={compactDensity}
-                      onCheckedChange={(checked) => {
-                        setCompactDensity(checked)
-                        toast({
-                          title: checked ? '已切换紧凑布局密度' : '已恢复标准 Bento 间距',
-                          status: 'info',
-                        })
-                      }}
-                    />
-                  </div>
-                )}
-
-                {/* Shortcut Hint Item */}
-                {showCmdItem && (
-                  <SidebarNavRow
-                    collapsed={isCollapsed}
-                    icon={<Command size={17} weight="duotone" />}
-                    label="全局命令面板"
-                    trailing={
-                      <span className="rounded-full bg-[#F2F3F5] px-2 py-0.5 font-glaze-mono text-[10px] font-bold text-[#6B7280]">
-                        ⌘K
+                  <SidebarMenuItem>
+                    <div className="flex h-9.5 items-center justify-between gap-2 rounded-full px-3 text-[13px] font-semibold text-[#5B6170] hover:bg-[#F6F7F9]">
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <SlidersHorizontal
+                          size={17}
+                          weight={compactDensity ? 'fill' : 'duotone'}
+                          className={compactDensity ? 'text-[#17625B]' : 'text-[#6B7280]'}
+                        />
+                        <span className="truncate">紧凑密度</span>
                       </span>
-                    }
-                    onClick={() => setCmdOpen(true)}
-                  />
+                      <Switch
+                        size="sm"
+                        hue="aqua"
+                        checked={compactDensity}
+                        onCheckedChange={(checked) => {
+                          setCompactDensity(checked)
+                          toast({
+                            title: checked ? '已切换紧凑布局密度' : '已恢复标准 Bento 间距',
+                            status: 'info',
+                          })
+                        }}
+                      />
+                    </div>
+                  </SidebarMenuItem>
                 )}
 
-                {/* External Link Item */}
+                {showCmdItem && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      icon={<Command size={17} weight="duotone" />}
+                      trailing={
+                        <span className="rounded-full bg-[#F2F3F5] px-2 py-0.5 font-glaze-mono text-[10px] font-bold text-[#6B7280]">
+                          ⌘K
+                        </span>
+                      }
+                      onClick={() => setCmdOpen(true)}
+                    >
+                      全局命令面板
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+
                 {showDocs && (
-                  <SidebarNavRow
-                    collapsed={isCollapsed}
-                    icon={<Terminal size={17} weight="duotone" />}
-                    label="开发者文档"
-                    trailing={<ArrowUpRight size={14} weight="bold" className="text-[#8A90A0]" />}
-                    href="/docs/components"
-                  />
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      icon={<Terminal size={17} weight="duotone" />}
+                      trailing={<ArrowUpRight size={14} weight="bold" className="text-[#8A90A0]" />}
+                      href="/docs/components"
+                      target="_blank"
+                    >
+                      开发者文档
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 )}
 
-                {/* Disabled / Locked Pro Item with Tooltip */}
                 {showVault && (
-                  <SidebarNavRow
-                    collapsed={isCollapsed}
-                    disabled
-                    icon={<LockSimple size={17} weight="duotone" />}
-                    label="合规审计 Vault"
-                    tooltip="仅企业旗舰版可用 · 联系管理员解锁"
-                    trailing={
-                      <HueTag hue="lemon" size="xs">
-                        <Crown size={10} weight="fill" />
-                        PRO
-                      </HueTag>
-                    }
-                  />
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      disabled
+                      icon={<LockSimple size={17} weight="duotone" />}
+                      tooltip="仅企业旗舰版可用 · 联系管理员解锁"
+                      trailing={
+                        <HueTag hue="lemon" size="xs">
+                          <Crown size={10} weight="fill" />
+                          PRO
+                        </HueTag>
+                      }
+                    >
+                      合规审计 Vault
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 )}
-              </div>
-            </div>
-          )}
-        </nav>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+      </SidebarContent>
 
-        {/* Bottom Area: Embedded Quota Progress Widget + User Account Menu */}
-        <div className={cn('shrink-0 border-t border-[#F2F3F5]', isCollapsed ? 'p-2' : 'p-3')}>
-          {/* 15a. Dismissible Embedded Quota Card */}
-          {!isCollapsed && showQuotaCard && (
-            <div className="mb-3 rounded-inner bg-[#F3F4FE] p-3.5">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex flex-col">
-                  <span className="text-[12px] font-bold text-[#262B7A]">API 调用配额</span>
-                  <span className="text-[11px] text-[#4A4FB8]">本月已用 760k / 1M</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowQuotaCard(false)}
-                  aria-label="关闭配额提示"
-                  className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[#4A4FB8] hover:bg-[#E4E6FD]"
-                >
-                  <X size={11} weight="bold" />
-                </button>
+      {/* Bottom Area: Embedded Quota Progress Widget + User Account Menu */}
+      <SidebarFooter>
+        {!isCollapsed && showQuotaCard && (
+          <div className="mb-1 rounded-inner bg-[#F3F4FE] p-3.5">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-col">
+                <span className="text-[12px] font-bold text-[#262B7A]">API 调用配额</span>
+                <span className="text-[11px] text-[#4A4FB8]">本月已用 760k / 1M</span>
               </div>
-              <Progress
-                value={76}
-                hue="periwinkle"
-                height="sm"
-                trackColor="rgba(38,43,122,0.12)"
-                className="mt-2.5"
-              />
-              <div className="mt-2.5 flex items-center justify-between">
-                <span className="font-glaze-mono text-[11px] font-bold text-[#262B7A]">76%</span>
-                <button
-                  type="button"
-                  onClick={() => navigate('platform/billing/usage')}
-                  className="cursor-pointer rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#262B7A] transition-colors hover:bg-[#E4E6FD]"
-                >
-                  升级配额 →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* 15b. User Profile Footer Menu with Live Presence Dot */}
-          <Menu
-            side="right"
-            align="end"
-            items={userMenuItems}
-            trigger={
               <button
                 type="button"
-                aria-label="账号与状态菜单"
-                className={cn(
-                  'flex w-full cursor-pointer items-center rounded-full transition-colors duration-150 outline-none',
-                  'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',
-                  isCollapsed
-                    ? 'mx-auto h-11 w-11 justify-center p-0 hover:bg-[#F6F7F9]'
-                    : 'gap-2.5 px-2 py-1.5 hover:bg-[#F6F7F9] data-popup-open:bg-[#F2F3F5]',
-                )}
+                onClick={() => setShowQuotaCard(false)}
+                aria-label="关闭配额提示"
+                className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-[#4A4FB8] hover:bg-[#E4E6FD]"
               >
-                <span className="relative shrink-0">
-                  <Avatar fallback="林" hue="sky" size="sm" />
-                  <span className="absolute -right-0.5 -bottom-0.5 rounded-full bg-white p-0.5">
-                    <StatusDot status={PRESENCE_META[presence].status} size={7} />
-                  </span>
-                </span>
-                {!isCollapsed && (
-                  <>
-                    <span className="flex min-w-0 flex-1 flex-col text-left">
-                      <span className="truncate text-[13px] font-bold text-[#1B1F27]">林一</span>
-                      <span className="truncate text-[11px] text-[#6B7280]">
-                        {PRESENCE_META[presence].label} · 管理员
-                      </span>
-                    </span>
-                    <GearSix size={16} weight="duotone" className="shrink-0 text-[#8A90A0]" />
-                  </>
-                )}
+                <X size={11} weight="bold" />
               </button>
-            }
-          />
-        </div>
-      </div>
-    )
-  }
+            </div>
+            <Progress
+              value={76}
+              hue="periwinkle"
+              height="sm"
+              trackColor="rgba(38,43,122,0.12)"
+              className="mt-2.5"
+            />
+            <div className="mt-2.5 flex items-center justify-between">
+              <span className="font-glaze-mono text-[11px] font-bold text-[#262B7A]">76%</span>
+              <button
+                type="button"
+                onClick={() => navigate('platform/billing/usage')}
+                className="cursor-pointer rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#262B7A] transition-colors hover:bg-[#E4E6FD]"
+              >
+                升级配额 →
+              </button>
+            </div>
+          </div>
+        )}
+
+        <Menu
+          side="right"
+          align="end"
+          items={userMenuItems}
+          trigger={
+            <button
+              type="button"
+              aria-label="账号与状态菜单"
+              className={cn(
+                'flex w-full cursor-pointer items-center rounded-full transition-colors duration-150 outline-none',
+                'focus-visible:ring-2 focus-visible:ring-[#7B80EA]',
+                isCollapsed
+                  ? 'mx-auto h-11 w-11 justify-center p-0 hover:bg-[#F6F7F9]'
+                  : 'gap-2.5 px-2 py-1.5 hover:bg-[#F6F7F9] data-popup-open:bg-[#F2F3F5]',
+              )}
+            >
+              <span className="relative shrink-0">
+                <Avatar fallback="林" hue="sky" size="sm" />
+                <span className="absolute -right-0.5 -bottom-0.5 rounded-full bg-white p-0.5">
+                  <StatusDot status={PRESENCE_META[presence].status} size={7} />
+                </span>
+              </span>
+              {!isCollapsed && (
+                <>
+                  <span className="flex min-w-0 flex-1 flex-col text-left">
+                    <span className="truncate text-[13px] font-bold text-[#1B1F27]">林一</span>
+                    <span className="truncate text-[11px] text-[#6B7280]">
+                      {PRESENCE_META[presence].label} · 管理员
+                    </span>
+                  </span>
+                  <GearSix size={16} weight="duotone" className="shrink-0 text-[#8A90A0]" />
+                </>
+              )}
+            </button>
+          }
+        />
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
+  )
 
   // Main View Content Switcher (reacts to activeRoute & timeRange)
   const rangeData = RANGE_METRICS[timeRange]
@@ -2896,85 +2714,18 @@ export function AdminShellDemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F4F8] text-[#1B1F27]">
-      <div className="mx-auto flex min-h-screen max-w-[1640px] gap-4 p-3 sm:p-4">
-        {/* Desktop Floating Glaze Sidebar (Pure White Tile, Zero Border, Zero Shadow) */}
-        <aside
-          aria-label="侧边栏容器"
-          className={cn(
-            'sticky top-4 hidden h-[calc(100vh-32px)] shrink-0 flex-col overflow-hidden rounded-tile bg-white transition-[width] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] lg:flex',
-            sidebarCollapsed ? 'w-19' : 'w-70',
-          )}
-        >
-          {renderSidebarContent(sidebarCollapsed)}
-        </aside>
+    <>
+      {sidebarElement}
 
-        {/* Mobile / Tablet Left Slide-in Navigation Drawer (Base UI Drawer, zero backdrop-blur) */}
-        <BaseDrawer.Root
-          open={mobileMenuOpen}
-          onOpenChange={setMobileMenuOpen}
-          swipeDirection="left"
-        >
-          <BaseDrawer.Portal>
-            <BaseDrawer.Backdrop className="glaze-drawer-backdrop fixed inset-0 z-50 bg-[#1B1F27]/36" />
-            <BaseDrawer.Viewport className="fixed inset-0 z-50 flex">
-              <BaseDrawer.Popup className="fixed top-3 bottom-3 left-3 flex w-[min(300px,calc(100vw-24px))] flex-col overflow-hidden rounded-tile bg-white shadow-[0_24px_64px_rgba(18,58,92,0.18)] outline-none">
-                <div className="flex items-center justify-between border-b border-[#F2F3F5] px-4 py-3">
-                  <span className="font-glaze-display text-[15px] font-extrabold text-[#123A5C]">
-                    导航菜单
-                  </span>
-                  <BaseDrawer.Close
-                    aria-label="关闭侧边栏"
-                    className={cn(
-                      'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F2F3F5] text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27]',
-                      PRESS_CLASS,
-                    )}
-                  >
-                    <X size={15} weight="bold" />
-                  </BaseDrawer.Close>
-                </div>
-                <div className="min-h-0 flex-1 overflow-hidden">
-                  {renderSidebarContent(false)}
-                </div>
-              </BaseDrawer.Popup>
-            </BaseDrawer.Viewport>
-          </BaseDrawer.Portal>
-        </BaseDrawer.Root>
+      {/* Right Main Column: Sticky Top Bar + Reactive Bento Canvas */}
+      <SidebarInset>
+        {/* Top Bar (Floating White Bar on #F2F4F8 Canvas) */}
+        <header className="sticky top-3 z-30 flex flex-wrap items-center justify-between gap-3 rounded-[22px] bg-white px-3.5 py-2.5 sm:top-4 sm:px-4">
+          {/* Left: Sidebar Trigger (Desktop Collapse + Mobile Drawer) + Dynamic Breadcrumbs */}
+          <div className="flex min-w-0 items-center gap-2">
+            <SidebarTrigger />
 
-        {/* Right Main Column: Sticky Top Bar + Reactive Bento Canvas */}
-        <div className="flex min-w-0 flex-1 flex-col gap-4">
-          {/* Top Bar (Floating White Bar on #F2F4F8 Canvas) */}
-          <header className="sticky top-3 z-30 flex flex-wrap items-center justify-between gap-3 rounded-[22px] bg-white px-3.5 py-2.5 sm:top-4 sm:px-4">
-            {/* Left: Sidebar Toggle + Dynamic Breadcrumbs */}
-            <div className="flex min-w-0 items-center gap-2">
-              {/* Mobile/Tablet Hamburger */}
-              <Button
-                variant="secondary"
-                size="icon"
-                aria-label="打开导航菜单"
-                onClick={() => setMobileMenuOpen(true)}
-                className="h-9.5 w-9.5 lg:hidden"
-              >
-                <List size={18} weight="bold" />
-              </Button>
-
-              {/* Desktop Collapse/Expand Rail Toggle */}
-              <Tooltip
-                content={sidebarCollapsed ? '展开侧边栏' : '收起为图标栏'}
-                side="bottom"
-              >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'}
-                  onClick={() => setSidebarCollapsed((c) => !c)}
-                  className="hidden h-9.5 w-9.5 lg:inline-flex"
-                >
-                  <SidebarSimple size={18} weight={sidebarCollapsed ? 'fill' : 'duotone'} />
-                </Button>
-              </Tooltip>
-
-              {/* Dynamic Breadcrumbs */}
+            {/* Dynamic Breadcrumbs */}
               <nav aria-label="面包屑导航" className="flex min-w-0 items-center gap-1.5 text-[13px]">
                 <button
                   type="button"
@@ -3222,11 +2973,11 @@ export function AdminShellDemoPage() {
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={() => setSidebarCollapsed((c) => !c)}
+                  onClick={toggleSidebar}
                   className="hidden lg:inline-flex"
                 >
                   <SidebarSimple size={14} weight="bold" />
-                  <span>{sidebarCollapsed ? '展开完整侧栏' : '切换迷你图标栏'}</span>
+                  <span>{isCollapsed ? '展开完整侧栏' : '切换迷你图标栏'}</span>
                 </Button>
                 <Button
                   variant="soft"
@@ -3243,8 +2994,7 @@ export function AdminShellDemoPage() {
 
             {renderMainContent()}
           </main>
-        </div>
-      </div>
+        </SidebarInset>
 
       {/* Command Palette Dialog (⌘K) */}
       <Dialog
@@ -3375,6 +3125,6 @@ export function AdminShellDemoPage() {
           ))}
         </div>
       </Drawer>
-    </div>
+    </>
   )
 }

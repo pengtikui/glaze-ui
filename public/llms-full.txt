@@ -1054,6 +1054,93 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 
 **Data Attributes:** `data-density` (表格密度（compact | comfortable | spacious）), `data-selected` (当前行处于勾选选中态)
 
+## Sidebar (应用侧边栏) — `@glaze/sidebar`
+
+参考 shadcn/ui 架构并结合 Base UI 1.9 与 Glaze 视觉规范打造的可组合侧边栏系统，内置 floating / sidebar / inset 三种布局变体、图标栏收起浮层、多级树形折叠、⌘B 快捷键与移动端抽屉。
+- Install: `npx shadcn@latest add @glaze/sidebar`
+- Import: `import { useSidebar, SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarRail, SidebarHeader, SidebarFooter, SidebarContent, SidebarSeparator, SidebarGroup, SidebarGroupLabel, SidebarGroupAction, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuAction, SidebarMenuBadge, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, SidebarMenuCollapsible, SidebarMenuSkeleton } from '@/components/ui/sidebar'`
+- Registry Deps: @glaze/button, @glaze/motion, @glaze/popover, @glaze/style, @glaze/tooltip
+
+**SidebarProvider Props:**
+- `defaultOpen: boolean` = true — Initial expanded state when uncontrolled (default: true)
+- `open: boolean` — Controlled expanded state
+- `onOpenChange: (open: boolean) => void` — Controlled expanded state change callback
+- `openMobile: boolean` — Controlled mobile drawer open state
+- `onOpenMobileChange: (open: boolean) => void` — Controlled mobile drawer state change callback
+- `variant: SidebarVariant` = 'floating' — Layout variant shared with Sidebar & SidebarInset (default: 'floating')
+- `shortcut: string | false` = 'b' — Keyboard shortcut letter paired with ⌘/Ctrl (default: 'b'; pass false to disable)
+- `sidebarWidth: string` = '280px' — Expanded sidebar width CSS length (default: '280px')
+- `sidebarWidthIcon: string` = '76px' — Collapsed icon-rail width CSS length (default: '76px')
+- `sidebarWidthMobile: string` = '300px' — Mobile drawer width CSS length (default: '300px')
+- `contained: boolean` = false — Render inside a bounded container (e.g. docs preview) instead of full viewport
+
+**Sidebar Props:**
+- `side: SidebarSide` = 'left' — Which side the sidebar docks to (default: 'left')
+- `variant: SidebarVariant` — Visual surface style (inherits from SidebarProvider if omitted)
+- `collapsible: SidebarCollapsible` = 'icon' — Collapse behavior on desktop (default: 'icon')
+- `mobileTitle: React.ReactNode` = '导航菜单' — Header title displayed inside the mobile navigation Drawer
+
+**SidebarTrigger Props:**
+- `icon: React.ReactNode` — Custom icon override
+- `collapseLabel: string` = '收起侧边栏 (⌘B)' — Tooltip text when expanded
+- `expandLabel: string` = '展开侧边栏 (⌘B)' — Tooltip text when collapsed
+
+**SidebarGroupLabel Props:**
+- `collapsible: boolean` = false — Allow clicking the section label to collapse/expand the group
+- `open: boolean` = true — Current open state when collapsible=true
+- `onToggle: () => void` — Toggle handler when collapsible=true
+- `action: React.ReactNode` — Optional inline action slot (e.g. SidebarGroupAction '+' button)
+
+**SidebarGroupAction Props:**
+- `tooltip: string`
+
+**SidebarMenuButton Props:**
+- `isActive: boolean` = false — Highlights the item in Glaze soft periwinkle pill state
+- `size: 'sm' | 'default' | 'lg'` = 'default' — Height size preset
+- `icon: React.ReactNode` — Leading icon element
+- `trailing: React.ReactNode` — Trailing badge, shortcut, or status pill (auto-hidden in collapsed icon-rail)
+- `tooltip: React.ReactNode` — Tooltip shown in collapsed icon-rail mode or always when provided
+- `disabled: boolean` = false — Disable interaction & show muted locked styling
+- `href: string` — Render as external or internal <a> link when provided
+- `target: string` — Link target when href is set
+- `rel: string` — Link rel when href is set
+- `forceExpanded: boolean` = false — Force expanded rendering (e.g. inside a collapsed rail flyout Popover)
+- `onClick: React.MouseEventHandler<HTMLElement>` — Click handler
+- `aria-label: string` — Accessible label
+- `className: string`
+- `children: React.ReactNode`
+
+**SidebarMenuAction Props:**
+- `showOnHover: boolean` = false — Only reveal on parent SidebarMenuItem hover (or when popup is open)
+
+**SidebarMenuSubButton Props:**
+- `isActive: boolean` = false
+- `size: 'sm' | 'md'` = 'md'
+- `icon: React.ReactNode`
+- `trailing: React.ReactNode`
+- `href: string`
+- `onClick: React.MouseEventHandler<HTMLElement>`
+- `className: string`
+- `children: React.ReactNode`
+
+**SidebarMenuCollapsible Props:**
+- `icon: React.ReactNode` (required) — Leading icon
+- `label: string` (required) — Group trigger label
+- `badge: React.ReactNode` — Optional badge shown before the caret (e.g. '3级')
+- `open: boolean` — Controlled open state
+- `defaultOpen: boolean` = false — Initial open state when uncontrolled
+- `onOpenChange: (open: boolean) => void` — Open state change handler
+- `hasActiveChild: boolean` = false — Highlight trigger text & icon when a child route is active
+- `level: 0 | 1` = 0 — Nesting depth (0 = top-level group, 1 = 2nd-level nested group for 3-level trees)
+- `flyoutContent: React.ReactNode` — Popover flyout content displayed when sidebar is collapsed to icon-rail mode
+- `children: React.ReactNode` (required) — Child menu items rendered inside SidebarMenuSub
+
+**SidebarMenuSkeleton Props:**
+- `showIcon: boolean` = true
+- `className: string`
+
+**Data Attributes:** `data-state` (桌面展开或收起态（expanded | collapsed）), `data-collapsible` (收起模式（icon | offcanvas | ""）), `data-variant` (外观变体（floating | sidebar | inset）), `data-side` (停靠方向（left | right）), `data-active` (当前菜单项处于激活路由态)
+
 ## Chart (图表主题与容器) — `@glaze/chart`
 
 Glaze 图表核心基础设施，自动读取父级 Tile 深浅背景色板，提供 ChartContainer、ChartTooltip、ChartLegend 与配色解析器。

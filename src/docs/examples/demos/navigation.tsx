@@ -3,7 +3,11 @@ import {
   ChartLineUp,
   Code,
   FileText,
+  FolderSimple,
+  GearSix,
+  House,
   Pulse,
+  ShieldCheck,
   Terminal,
   TextAlignCenter,
   TextAlignLeft,
@@ -11,8 +15,10 @@ import {
   TextB,
   TextItalic,
   TextUnderline,
+  Tray,
 } from '@phosphor-icons/react'
 import { Accordion, AccordionItem } from '@/components/ui/accordion'
+import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Collapsible } from '@/components/ui/collapsible'
 import { CountBadge } from '@/components/ui/count-badge'
@@ -21,8 +27,30 @@ import { HueTag } from '@/components/ui/hue-tag'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { SegmentedControl } from '@/components/ui/segmented-control'
 import { Select } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuCollapsible,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  type SidebarCollapsible,
+  type SidebarVariant,
+} from '@/components/ui/sidebar'
 import { Slider } from '@/components/ui/slider'
 import { StatusPill } from '@/components/ui/status-pill'
 import { Switch } from '@/components/ui/switch'
@@ -124,6 +152,228 @@ function DataTableShowcaseDemo() {
           </Button>
         )}
       />
+    </div>
+  )
+}
+
+function SidebarHeroDemo() {
+  const [active, setActive] = React.useState('overview')
+  const [analyticsOpen, setAnalyticsOpen] = React.useState(true)
+
+  return (
+    <div className="h-112 w-full">
+      <SidebarProvider contained sidebarWidth="236px" sidebarWidthIcon="68px">
+        <Sidebar>
+          <SidebarHeader>
+            <div className="flex items-center gap-2.5 rounded-[16px] bg-[#F6F7F9] px-2.5 py-2">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#E4E6FD] font-glaze-display text-[12px] font-extrabold text-[#4A4FB8]">
+                GC
+              </span>
+              <div className="min-w-0 flex-1 overflow-hidden group-data-[state=collapsed]/sidebar:hidden">
+                <div className="truncate font-glaze-display text-[13px] font-extrabold text-[#1B1F27]">
+                  Glaze Cloud
+                </div>
+                <div className="truncate text-[11px] text-[#6B7280]">企业工作区</div>
+              </div>
+            </div>
+          </SidebarHeader>
+
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel>工作台</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={active === 'overview'}
+                      icon={<House size={16} weight={active === 'overview' ? 'fill' : 'duotone'} />}
+                      onClick={() => setActive('overview')}
+                    >
+                      总览驾驶舱
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={active === 'inbox'}
+                      icon={<Tray size={16} weight={active === 'inbox' ? 'fill' : 'duotone'} />}
+                      trailing={<CountBadge count={4} hue="coral" />}
+                      onClick={() => setActive('inbox')}
+                    >
+                      消息收件箱
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuCollapsible
+                      icon={<ChartLineUp size={16} weight="duotone" />}
+                      label="数据中心"
+                      open={analyticsOpen}
+                      onOpenChange={setAnalyticsOpen}
+                      hasActiveChild={active.startsWith('analytics/')}
+                      flyoutContent={
+                        <>
+                          <SidebarMenuButton
+                            forceExpanded
+                            size="sm"
+                            isActive={active === 'analytics/traffic'}
+                            onClick={() => setActive('analytics/traffic')}
+                          >
+                            实时流量
+                          </SidebarMenuButton>
+                          <SidebarMenuButton
+                            forceExpanded
+                            size="sm"
+                            isActive={active === 'analytics/funnel'}
+                            onClick={() => setActive('analytics/funnel')}
+                          >
+                            转化漏斗
+                          </SidebarMenuButton>
+                        </>
+                      }
+                    >
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          isActive={active === 'analytics/traffic'}
+                          onClick={() => setActive('analytics/traffic')}
+                        >
+                          实时流量
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          isActive={active === 'analytics/funnel'}
+                          onClick={() => setActive('analytics/funnel')}
+                        >
+                          转化漏斗
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuCollapsible>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+
+          <SidebarFooter>
+            <div className="flex items-center gap-2.5 px-1.5 py-1">
+              <Avatar fallback="林" hue="sky" size="sm" />
+              <div className="min-w-0 flex-1 overflow-hidden group-data-[state=collapsed]/sidebar:hidden">
+                <div className="truncate text-[12.5px] font-bold text-[#1B1F27]">林一</div>
+                <div className="truncate text-[11px] text-[#6B7280]">管理员</div>
+              </div>
+            </div>
+          </SidebarFooter>
+          <SidebarRail />
+        </Sidebar>
+
+        <SidebarInset>
+          <header className="flex items-center justify-between gap-2 rounded-[18px] bg-white px-3.5 py-2">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger />
+              <span className="font-glaze-display text-[14px] font-extrabold text-[#123A5C]">
+                当前路由：{active}
+              </span>
+            </div>
+            <HueTag hue="periwinkle" size="xs">点击图标栏可收起/展开</HueTag>
+          </header>
+          <div className="flex flex-1 flex-col justify-center rounded-tile bg-white p-6">
+            <span className="font-glaze-display text-[18px] font-extrabold text-[#1B1F27]">
+              主内容画布 (SidebarInset)
+            </span>
+            <p className="m-0 mt-1.5 text-[13px] text-[#5B6170]">
+              支持点击顶部触发按钮或侧边边缘轨道一键切换为迷你图标栏，收起态点击「数据中心」自动弹出右侧浮层菜单。
+            </p>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </div>
+  )
+}
+
+function SidebarVariantsDemo() {
+  const [variant, setVariant] = React.useState<SidebarVariant>('floating')
+  const [collapsible, setCollapsible] = React.useState<SidebarCollapsible>('icon')
+  const [active, setActive] = React.useState('projects')
+
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <SegmentedControl
+          size="sm"
+          value={variant}
+          onValueChange={setVariant}
+          options={[
+            { value: 'floating', label: 'Floating 悬浮釉面' },
+            { value: 'sidebar', label: 'Sidebar 贴边栏' },
+            { value: 'inset', label: 'Inset 内嵌画布' },
+          ]}
+        />
+        <SegmentedControl
+          size="sm"
+          value={collapsible}
+          onValueChange={setCollapsible}
+          options={[
+            { value: 'icon', label: '图标栏收起' },
+            { value: 'offcanvas', label: '完全隐藏' },
+          ]}
+        />
+      </div>
+
+      <div className="h-84 w-full">
+        <SidebarProvider contained variant={variant} sidebarWidth="216px" sidebarWidthIcon="68px">
+          <Sidebar collapsible={collapsible}>
+            <SidebarContent className="pt-3">
+              <SidebarGroup>
+                <SidebarGroupLabel>导航变体</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        isActive={active === 'projects'}
+                        icon={<FolderSimple size={16} weight="duotone" />}
+                        onClick={() => setActive('projects')}
+                      >
+                        项目空间
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        isActive={active === 'security'}
+                        icon={<ShieldCheck size={16} weight="duotone" />}
+                        onClick={() => setActive('security')}
+                      >
+                        访问控制
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        isActive={active === 'settings'}
+                        icon={<GearSix size={16} weight="duotone" />}
+                        onClick={() => setActive('settings')}
+                      >
+                        系统设置
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+          </Sidebar>
+
+          <SidebarInset className={variant === 'sidebar' ? 'p-3' : undefined}>
+            <div className="flex h-full flex-col gap-3 p-4">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger />
+                <span className="font-glaze-display text-[14px] font-extrabold text-[#123A5C]">
+                  variant=&quot;{variant}&quot; · collapsible=&quot;{collapsible}&quot;
+                </span>
+              </div>
+              <div className="flex flex-1 items-center justify-center rounded-inner bg-[#F6F7F9] p-4 text-[13px] text-[#5B6170]">
+                点击左上角按钮体验当前变体的展开 / 收起过渡效果
+              </div>
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+      </div>
     </div>
   )
 }
@@ -1166,6 +1416,86 @@ export function Example() {
     </Table>
   )
 }`,
+      },
+    ],
+  },
+
+  sidebar: {
+    hero: {
+      align: 'start',
+      minHeight: 460,
+      surface: 'canvas',
+      render: () => <SidebarHeroDemo />,
+      code: `import { House, Tray, ChartLineUp } from '@phosphor-icons/react'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuCollapsible,
+  SidebarMenuItem,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
+
+export function AppShell() {
+  return (
+    <SidebarProvider>
+      <Sidebar variant="floating" collapsible="icon">
+        <SidebarHeader>{/* Workspace Switcher */}</SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>工作台</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton isActive icon={<House size={16} weight="fill" />}>
+                    总览驾驶舱
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuCollapsible icon={<ChartLineUp size={16} />} label="数据中心" defaultOpen>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton>实时流量</SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuCollapsible>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>{/* User Profile Menu */}</SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset>
+        <header><SidebarTrigger /></header>
+        <main>{/* Dashboard Grid */}</main>
+      </SidebarInset>
+    </SidebarProvider>
+  )
+}`,
+    },
+    examples: [
+      {
+        id: 'variants-and-collapsible',
+        title: '布局变体与收起模式（floating / sidebar / inset）',
+        description: '支持悬浮釉面卡（floating）、贴边白栏（sidebar）与内嵌白画布（inset），并可切换图标栏收起或完全隐藏。',
+        align: 'start',
+        surface: 'canvas',
+        render: () => <SidebarVariantsDemo />,
+        code: `<SidebarProvider variant="inset">
+  <Sidebar collapsible="offcanvas">...</Sidebar>
+  <SidebarInset>...</SidebarInset>
+</SidebarProvider>`,
       },
     ],
   },
