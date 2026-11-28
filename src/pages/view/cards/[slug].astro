@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { CARDS_LIST } from '@/docs/data/catalog'
+import { StandaloneCardIsland } from '@/docs/islands/PageIslands'
+
+export async function getStaticPaths() {
+  return CARDS_LIST.map((card) => ({
+    params: { slug: card.slug },
+    props: { card },
+  }))
+}
+
+const { card } = Astro.props
+---
+
+<BaseLayout title={`${card.cnName} · Glaze Card`} description={`${card.code} ${card.componentName}`} clientRouter={false}>
+  <StandaloneCardIsland slug={card.slug} client:only="react" />
+</BaseLayout>

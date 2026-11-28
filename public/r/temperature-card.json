@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "temperature-card",
-  "type": "registry:block",
-  "title": "S19 温控调节卡 (TemperatureCard)",
-  "description": "温控调节卡（S19 · 尺寸 S）— 房间 · 可交互 ± 调温",
+  "type": "registry:component",
+  "title": "S16 温控调节卡 (TemperatureCard)",
+  "description": "温控调节卡（S16 · 尺寸 S）— 房间 · 可交互 ± 调温",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -14,15 +14,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "controls",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/temperature-card.tsx",
+      "path": "registry/glaze/cards/temperature-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/temperature-card.tsx",
+      "target": "components/cards/temperature-card.tsx",
       "content": "import * as React from 'react'\nimport { Minus, Plus } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { PRESS_CLASS } from '@/lib/motion'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function TemperatureCard({\n  room,\n  initialTemp = 23,\n  mode = '制冷',\n  tone = 'aqua',\n}: {\n  room: string\n  initialTemp?: number\n  mode?: string\n  tone?: TileTone\n}) {\n  const [target, setTarget] = React.useState(initialTemp)\n  const theme = TILE_THEMES[tone]\n  const btnStyle: React.CSSProperties = {\n    backgroundColor: theme.dark\n      ? 'rgba(255,255,255,0.16)'\n      : theme.bg === '#FFFFFF'\n        ? '#F2F3F5'\n        : 'rgba(255,255,255,0.8)',\n    color: theme.ink,\n  }\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"truncate text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {room}\n        </span>\n        <span\n          className=\"shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold whitespace-nowrap\"\n          style={{ backgroundColor: theme.track, color: theme.ink }}\n        >\n          {mode}\n        </span>\n      </div>\n      <div className=\"flex items-center justify-between gap-2\">\n        <button\n          type=\"button\"\n          onClick={() => setTarget((v) => Math.max(16, v - 1))}\n          className={`inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full hover:brightness-95 ${PRESS_CLASS}`}\n          style={btnStyle}\n          aria-label=\"降低温度\"\n        >\n          <Minus size={14} weight=\"bold\" />\n        </button>\n        <div className=\"font-glaze-display text-[44px] leading-none font-extrabold tracking-[-0.03em] whitespace-nowrap\">\n          {target}°\n        </div>\n        <button\n          type=\"button\"\n          onClick={() => setTarget((v) => Math.min(30, v + 1))}\n          className={`inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full hover:brightness-95 ${PRESS_CLASS}`}\n          style={btnStyle}\n          aria-label=\"升高温度\"\n        >\n          <Plus size={14} weight=\"bold\" />\n        </button>\n      </div>\n      <div className=\"truncate text-center text-[12px]\" style={{ color: theme.soft }}>\n        室内实时 {(target + 0.4).toFixed(1)}°C\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

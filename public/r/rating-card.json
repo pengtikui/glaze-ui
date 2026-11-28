@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "rating-card",
-  "type": "registry:block",
-  "title": "S23 星级评分卡 (RatingCard)",
-  "description": "星级评分卡（S23 · 尺寸 S）— 大数字评分 · 五星 · 评价数",
+  "type": "registry:component",
+  "title": "S19 星级评分卡 (RatingCard)",
+  "description": "星级评分卡（S19 · 尺寸 S）— 大数字评分 · 五星 · 评价数",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -13,15 +13,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "metrics",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/rating-card.tsx",
+      "path": "registry/glaze/cards/rating-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/rating-card.tsx",
+      "target": "components/cards/rating-card.tsx",
       "content": "import { Star } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function RatingCard({\n  label,\n  score,\n  reviews,\n  tone = 'lemon',\n}: {\n  label: string\n  score: string\n  reviews: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <div className=\"font-glaze-display text-[48px] leading-none font-extrabold tracking-[-0.03em]\">\n        {score}\n      </div>\n      <div className=\"flex flex-col gap-1\">\n        <div className=\"flex items-center gap-0.5\">\n          {[0, 1, 2, 3, 4].map((i) => (\n            <Star key={i} size={15} weight=\"fill\" style={{ color: theme.accent }} />\n          ))}\n        </div>\n        <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n          {reviews}\n        </span>\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

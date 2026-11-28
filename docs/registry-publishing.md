@@ -1,6 +1,6 @@
 # Glaze shadcn Registry 发布与托管指南
 
-Glaze 完全遵循 [shadcn/ui Custom Registry](https://ui.shadcn.com/docs/registry) 规范，所有组件、设计 Token、112 张业务卡片与 6 个完整 Demo 页面均编译为静态 JSON 文件输出到 `public/r/`。
+Glaze 完全遵循 [shadcn/ui Custom Registry](https://ui.shadcn.com/docs/registry) 规范，所有组件、设计 Token、119 张业务卡片、10 个复合 Blocks 与 15 个完整页面均编译为静态 JSON 文件输出到 `public/r/`。
 
 ---
 
@@ -10,13 +10,13 @@ Glaze 完全遵循 [shadcn/ui Custom Registry](https://ui.shadcn.com/docs/regist
 
 - `registry.json`（仓库根目录，符合 `https://ui.shadcn.com/schema/registry.json`）
 - `public/r/registry.json`（对外静态托管的索引清单）
-- `public/r/<name>.json`（共 179 个独立 item JSON，符合 `https://ui.shadcn.com/schema/registry-item.json`）：
+- `public/r/<name>.json`（共 230 个独立 item JSON，符合 `https://ui.shadcn.com/schema/registry-item.json`）：
   - `style.json` (`registry:style`)：包含 `glaze.css`、Tailwind v4 `cssVars` 与核心 `.glaze-grid` CSS 规则
-  - `tokens.json` (`registry:lib`)：`lib/tokens.ts`
-  - `motion.json` (`registry:lib`)：`lib/motion.ts`
-  - 58 个 `registry:ui`：`button.json`、`dialog.json`、`bar-chart.json` 等
-  - 112 个 `registry:block`：`status-card.json`、`area-trend-card.json`、`data-table-card.json` 等
-  - 6 个 `registry:block` 整页示例：`demo-homelab.json` ~ `demo-cloud-ops.json`
+  - `tokens.json`、`motion.json`、`topology.json` (`registry:lib`)：`lib/*.ts`
+  - 82 个 `registry:ui`：`button.json`、`calendar.json`、`data-table.json`、`resizable.json` 等
+  - 119 个 `registry:component`：`status-card.json`、`date-range-card.json`、`split-compare-card.json` 等（安装至 `components/cards/`）
+  - 10 个 `registry:block`：`auth-login-block.json`、`data-management-block.json`、`calendar-booking-block.json` 等（安装至 `components/blocks/`）
+  - 15 个 `registry:block` 整页示例：`page-mail-desk.json` ~ `page-cloud-ops.json`（安装至 `components/pages/`）
 
 ---
 
@@ -41,7 +41,7 @@ REGISTRY_BASE_URL=https://ui.your-company.com REGISTRY_DEP_MODE=url pnpm run bui
 部署 `dist/` 到任意静态托管平台（Vercel、Cloudflare Pages、Netlify、GitHub Pages、Nginx）后，确保：
 1. `/r/*.json` 返回 `application/json` 且允许 CORS（静态托管默认支持）。
 2. `/llms.txt`、`/llms-full.txt`、`/llms/**/*.md` 可直接静态访问。
-3. SPA 路由（如 `/docs/components/button`、`/view/demos/homelab`）回退到 `index.html`。
+3. 独立预览路由（如 `/view/cards/*`、`/view/blocks/*`、`/view/pages/*`）由 Astro 静态输出，开箱支持直接访问。
 
 ---
 

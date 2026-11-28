@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "price-ticker-card",
-  "type": "registry:block",
-  "title": "T12 自选行情列表 (PriceTickerCard)",
-  "description": "自选行情列表（T12 · 尺寸 T）— 代码 · 现价 · 涨跌胶囊",
+  "type": "registry:component",
+  "title": "T11 自选行情列表 (PriceTickerCard)",
+  "description": "自选行情列表（T11 · 尺寸 T）— 代码 · 现价 · 涨跌胶囊",
   "registryDependencies": [
     "@glaze/status-pill",
     "@glaze/style",
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "metrics",
     "size-t"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/price-ticker-card.tsx",
+      "path": "registry/glaze/cards/price-ticker-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/price-ticker-card.tsx",
+      "target": "components/cards/price-ticker-card.tsx",
       "content": "import { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport type { Status, TileTone } from '@/lib/tokens'\n\nexport function PriceTickerCard({\n  title,\n  tickers,\n  tone = 'white',\n}: {\n  title: string\n  tickers: { symbol: string; name: string; price: string; delta: string; status: Status }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n      <div className=\"flex flex-1 flex-col justify-between gap-2.5\">\n        {tickers.map((t) => (\n          <div\n            key={t.symbol}\n            className=\"flex items-center justify-between gap-2 border-b border-[#EEF0F3] pb-2.5 last:border-b-0 last:pb-0\"\n          >\n            <div>\n              <div className=\"font-glaze-mono text-[13px] font-bold text-[#1B1F27]\">\n                {t.symbol}\n              </div>\n              <div className=\"text-[11px] text-[#8A90A0]\">{t.name}</div>\n            </div>\n            <div className=\"text-right\">\n              <div className=\"font-glaze-display text-[14px] font-extrabold\">{t.price}</div>\n              <StatusPill status={t.status} label={t.delta} showDot={false} size=\"sm\" />\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

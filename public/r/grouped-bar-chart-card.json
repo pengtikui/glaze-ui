@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "grouped-bar-chart-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "L5 分组对比柱图 (GroupedBarChartCard)",
   "description": "分组对比柱图（L5 · 尺寸 L）— 双色并排分组柱状图",
   "registryDependencies": [
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "charts",
     "size-l"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/grouped-bar-chart-card.tsx",
+      "path": "registry/glaze/cards/grouped-bar-chart-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/grouped-bar-chart-card.tsx",
+      "target": "components/cards/grouped-bar-chart-card.tsx",
       "content": "import { BarChart } from '@/components/ui/bar-chart'\nimport { Tile } from '@/components/ui/tile'\nimport type { TileTone } from '@/lib/tokens'\n\nexport function GroupedBarChartCard({\n  title,\n  legendA,\n  legendB,\n  colorA = '#7B80EA',\n  colorB = '#2FA79B',\n  groups,\n  tone = 'white',\n}: {\n  title: string\n  legendA: string\n  legendB: string\n  colorA?: string\n  colorB?: string\n  groups: { label: string; a: number; b: number }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-4\">\n      <div className=\"flex flex-wrap items-center justify-between gap-2\">\n        <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n        <div className=\"flex items-center gap-4 text-[12px] text-[#5B6170]\">\n          <span className=\"inline-flex items-center gap-1.5\">\n            <span className=\"h-2.5 w-2.5 rounded-full\" style={{ backgroundColor: colorA }} />\n            {legendA}\n          </span>\n          <span className=\"inline-flex items-center gap-1.5\">\n            <span className=\"h-2.5 w-2.5 rounded-full\" style={{ backgroundColor: colorB }} />\n            {legendB}\n          </span>\n        </div>\n      </div>\n      <div className=\"min-h-60 flex-1 w-full pt-2\">\n        <BarChart\n          data={groups}\n          xKey=\"label\"\n          series={[\n            { dataKey: 'a', label: legendA, color: colorA },\n            { dataKey: 'b', label: legendB, color: colorB },\n          ]}\n          tone={tone}\n          height=\"100%\"\n          barSize={20}\n          barGap={6}\n          showYAxis\n          className=\"h-full\"\n        />\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

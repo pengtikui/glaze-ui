@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "heatmap-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W6 贡献热力图卡 (HeatmapCard)",
   "description": "贡献热力图卡（W6 · 尺寸 W）— 7×24 活跃色阶方块矩阵",
   "registryDependencies": [
@@ -10,15 +10,15 @@
     "@glaze/tooltip"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "charts",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/heatmap-card.tsx",
+      "path": "registry/glaze/cards/heatmap-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/heatmap-card.tsx",
+      "target": "components/cards/heatmap-card.tsx",
       "content": "import { Tile } from '@/components/ui/tile'\nimport { Tooltip } from '@/components/ui/tooltip'\nimport { DATAVIZ_PALETTES, type TileTone } from '@/lib/tokens'\n\nexport interface HeatmapCardProps {\n  title: string\n  /** 7 rows × 24 cols array of intensity levels 0..4 */\n  matrix?: number[]\n  axisLabels?: string[]\n  tone?: TileTone\n}\n\nconst DEFAULT_HEAT_MATRIX: number[] = (() => {\n  const out: number[] = []\n  for (let r = 0; r < 7; r++) {\n    for (let h = 0; h < 24; h++) {\n      const base =\n        (h >= 9 && h <= 11) || (h >= 19 && h <= 22)\n          ? 3\n          : h >= 7 && h <= 23\n            ? 1\n            : 0\n      const wk = r >= 5 ? (h >= 10 && h <= 22 ? 1 : -1) : 0\n      const jitter = (r * 7 + h * 3) % 5 === 0 ? 1 : 0\n      out.push(Math.max(0, Math.min(4, base + wk + jitter)))\n    }\n  }\n  return out\n})()\n\nconst DAY_NAMES = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']\n\nexport function HeatmapCard({\n  title,\n  matrix = DEFAULT_HEAT_MATRIX,\n  axisLabels = ['00 时', '06 时', '12 时', '18 时', '23 时'],\n  tone = 'white',\n}: HeatmapCardProps) {\n  const levels = DATAVIZ_PALETTES.heatmapLevels\n\n  return (\n    <Tile size=\"w\" tone={tone} className=\"py-5.5 justify-start gap-3\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"text-[17px] font-bold\">{title}</span>\n        <span className=\"flex items-center gap-1 text-[12px] text-[#6B7280]\">\n          <span>少</span>\n          {levels.map((c, i) => (\n            <span\n              key={i}\n              className=\"w-2.5 h-2.5 rounded-[3px]\"\n              style={{ backgroundColor: c }}\n            />\n          ))}\n          <span>多</span>\n        </span>\n      </div>\n      <div className=\"flex-1 grid grid-cols-24 grid-rows-7 gap-0.75\">\n        {matrix.slice(0, 168).map((lvl, idx) => {\n          const day = DAY_NAMES[Math.floor(idx / 24)]\n          const hour = String(idx % 24).padStart(2, '0')\n          return (\n            <Tooltip\n              key={idx}\n              content={`${day} ${hour}:00 · 活跃度 ${lvl}/4`}\n            >\n              <span\n                className=\"rounded-[3px] transition-opacity hover:opacity-80\"\n                style={{ backgroundColor: levels[lvl] ?? levels[0] }}\n              />\n            </Tooltip>\n          )\n        })}\n      </div>\n      <div className=\"flex justify-between text-[11px] text-[#6B7280]\">\n        {axisLabels.map((l, i) => (\n          <span key={i}>{l}</span>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

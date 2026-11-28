@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "weather-forecast-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W15 5 日天气预报卡 (WeatherForecastCard)",
   "description": "5 日天气预报卡（W15 · 尺寸 W）— 5 天最高/最低温与降水率",
   "dependencies": [
@@ -13,15 +13,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/weather-forecast-card.tsx",
+      "path": "registry/glaze/cards/weather-forecast-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/weather-forecast-card.tsx",
+      "target": "components/cards/weather-forecast-card.tsx",
       "content": "import { CloudSun } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function WeatherForecastCard({\n  location,\n  days,\n  tone = 'sky',\n}: {\n  location: string\n  days: { day: string; low: number; high: number; rain: string }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n          {location} · 5 日预报\n        </span>\n        <CloudSun size={18} weight=\"duotone\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"grid grid-cols-5 gap-2\">\n        {days.slice(0, 5).map((d) => (\n          <div\n            key={d.day}\n            className=\"flex min-w-0 flex-col items-center gap-1 rounded-2xl px-1.5 py-2.5\"\n            style={{\n              backgroundColor: theme.dark\n                ? 'rgba(255,255,255,0.1)'\n                : theme.bg === '#FFFFFF'\n                  ? '#F6F7F9'\n                  : 'rgba(255,255,255,0.6)',\n            }}\n          >\n            <span className=\"text-[11px] font-semibold whitespace-nowrap\" style={{ color: theme.soft }}>\n              {d.day}\n            </span>\n            <span className=\"font-glaze-display text-[17px] font-extrabold whitespace-nowrap\">\n              {d.high}°\n            </span>\n            <span className=\"text-[11px] whitespace-nowrap\" style={{ color: theme.soft }}>\n              {d.low}° · {d.rain}\n            </span>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

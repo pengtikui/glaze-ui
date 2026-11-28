@@ -89,8 +89,8 @@ export function NavigationMenu({
                     <CaretDown size={13} weight="bold" />
                   </BaseNav.Icon>
                 </BaseNav.Trigger>
-                <BaseNav.Content className="w-85 p-1">
-                  <div className="grid grid-cols-1 gap-1">
+                <BaseNav.Content className="w-80">
+                  <div className="grid grid-cols-1 gap-0.5">
                     {menu.items.map((sub) => (
                       <BaseNav.Link
                         key={sub.title}
@@ -99,7 +99,7 @@ export function NavigationMenu({
                           e.preventDefault()
                           sub.onClick?.()
                         }}
-                        className="flex flex-col gap-0.5 rounded-control px-3.5 py-2.5 text-left transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)] hover:bg-[#F6F7F9]"
+                        className="flex flex-col gap-0.5 rounded-control px-3 py-2 text-left transition-colors duration-150 ease-[cubic-bezier(0.2,0,0,1)] hover:bg-[#F6F7F9]"
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-[13px] font-bold text-[#1B1F27]">
@@ -141,7 +141,7 @@ export function NavigationMenu({
             className={cn(
               POPUP_SURFACE,
               POPUP_TRANSITION_CLASS,
-              'p-2.5',
+              'p-1.5',
             )}
           >
             <BaseNav.Viewport />

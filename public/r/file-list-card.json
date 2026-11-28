@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "file-list-card",
-  "type": "registry:block",
-  "title": "T7 最近文件列表 (FileListCard)",
-  "description": "最近文件列表（T7 · 尺寸 T）— 文件类型图标 · 体积时间",
+  "type": "registry:component",
+  "title": "T6 最近文件列表 (FileListCard)",
+  "description": "最近文件列表（T6 · 尺寸 T）— 文件类型图标 · 体积时间",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -14,15 +14,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "lists",
+    "cards",
+    "collaboration",
     "size-t"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/file-list-card.tsx",
+      "path": "registry/glaze/cards/file-list-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/file-list-card.tsx",
+      "target": "components/cards/file-list-card.tsx",
       "content": "import { FileCode, FileImage, FilePdf, FileText } from '@phosphor-icons/react'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport function FileListCard({\n  title,\n  files,\n  tone = 'white',\n}: {\n  title: string\n  files: { name: string; type: 'doc' | 'pdf' | 'img' | 'code'; size: string; updated: string }[]\n  tone?: TileTone\n}) {\n  const iconMap = {\n    doc: { icon: <FileText size={16} weight=\"duotone\" />, hue: 'sky' as Hue },\n    pdf: { icon: <FilePdf size={16} weight=\"duotone\" />, hue: 'coral' as Hue },\n    img: { icon: <FileImage size={16} weight=\"duotone\" />, hue: 'lilac' as Hue },\n    code: { icon: <FileCode size={16} weight=\"duotone\" />, hue: 'aqua' as Hue },\n  }\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n      <div className=\"flex flex-1 flex-col justify-between gap-2.5\">\n        {files.map((f) => {\n          const meta = iconMap[f.type]\n          return (\n            <div\n              key={f.name}\n              className=\"flex items-center gap-3 rounded-2xl bg-[#F6F7F9] px-3 py-2.5\"\n            >\n              <IconTile hue={meta.hue} size=\"sm\" radius=\"icon\">\n                {meta.icon}\n              </IconTile>\n              <div className=\"min-w-0 flex-1\">\n                <div className=\"truncate text-[13px] font-semibold text-[#1B1F27]\">{f.name}</div>\n                <div className=\"text-[11px] text-[#8A90A0]\">\n                  {f.size} · {f.updated}\n                </div>\n              </div>\n            </div>\n          )\n        })}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

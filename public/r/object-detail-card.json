@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "object-detail-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W4 对象详情卡 (ObjectDetailCard)",
   "description": "对象详情卡（W4 · 尺寸 W）— 图标 · 标题 · 属性键值",
   "dependencies": [
@@ -14,15 +14,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/object-detail-card.tsx",
+      "path": "registry/glaze/cards/object-detail-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/object-detail-card.tsx",
+      "target": "components/cards/object-detail-card.tsx",
       "content": "import * as React from 'react'\nimport { Cube } from '@phosphor-icons/react'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type Status, type TileTone } from '@/lib/tokens'\n\nexport interface ObjectDetailCardProps {\n  name: string\n  subtitle: string\n  status: Status\n  statusLabel?: string\n  icon?: React.ReactNode\n  iconHue?: Hue\n  fields: { label: string; value: string }[]\n  tone?: TileTone\n}\n\nexport function ObjectDetailCard({\n  name,\n  subtitle,\n  status,\n  statusLabel,\n  icon,\n  iconHue = 'aqua',\n  fields,\n  tone = 'white',\n}: ObjectDetailCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone}>\n      <div className=\"flex items-center gap-3\">\n        <IconTile hue={iconHue} size=\"md\" className=\"w-10 h-10 rounded-[12px]\">\n          {icon ?? <Cube size={20} />}\n        </IconTile>\n        <span className=\"flex-1 min-w-0 flex flex-col gap-0.5\">\n          <span className=\"text-[16px] font-bold truncate\">{name}</span>\n          <span className=\"text-[12px] truncate\" style={{ color: theme.soft }}>\n            {subtitle}\n          </span>\n        </span>\n        <StatusPill status={status}>{statusLabel}</StatusPill>\n      </div>\n      <div className=\"grid grid-cols-2 gap-x-6 gap-y-2.5 text-[13px]\">\n        {fields.map((f, i) => (\n          <span key={i} className=\"flex min-w-0 justify-between gap-2\">\n            <span className=\"shrink-0 whitespace-nowrap\" style={{ color: theme.soft }}>\n              {f.label}\n            </span>\n            <span className=\"font-medium truncate\">{f.value}</span>\n          </span>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

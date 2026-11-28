@@ -3,11 +3,17 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
 import { CliCommandIsland } from '@/docs/islands/CodeIslands'
 import { HomeBentoIsland } from '@/docs/islands/HomeBentoIsland'
-import { BLOCKS_LIST, COMPONENT_CATEGORIES, COMPONENTS_LIST, DEMOS_LIST } from '@/docs/data/catalog'
+import {
+  BLOCKS_LIST,
+  CARDS_LIST,
+  COMPONENT_CATEGORIES,
+  COMPONENTS_LIST,
+  PAGES_LIST,
+} from '@/docs/data/catalog'
 import { TILE_THEMES, type TileTone } from '@/lib/tokens'
 ---
 
-<BaseLayout title="Glaze · Base UI 组件库与 shadcn Registry 文档">
+<BaseLayout title="Glaze · Base UI 组件库、卡片、Blocks 与页面文档">
   <div class="min-h-screen bg-[#F2F4F8] text-[#1B1F27]">
     <SiteHeaderIsland pathname="/" client:load />
 
@@ -19,7 +25,7 @@ import { TILE_THEMES, type TileTone } from '@/lib/tokens'
             Glaze UI
           </h1>
           <p class="m-0 text-[16px] text-[#5B6170]">
-            Base UI 1.9 · Tailwind v4 · Recharts v3 · shadcn Registry · Astro Markdown Docs
+            Base UI 1.9 · Tailwind v4 · Recharts v3 · shadcn Registry
           </p>
         </div>
 
@@ -38,10 +44,22 @@ import { TILE_THEMES, type TileTone } from '@/lib/tokens'
             <span>组件 ({COMPONENTS_LIST.length})</span>
           </a>
           <a
+            href="/cards"
+            class="inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#E8EBF0]"
+          >
+            <span>卡片 ({CARDS_LIST.length})</span>
+          </a>
+          <a
             href="/blocks"
             class="inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#E8EBF0]"
           >
-            <span>卡片 ({BLOCKS_LIST.length})</span>
+            <span>Blocks ({BLOCKS_LIST.length})</span>
+          </a>
+          <a
+            href="/pages"
+            class="inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#E8EBF0]"
+          >
+            <span>页面 ({PAGES_LIST.length})</span>
           </a>
           <a
             href="/docs/ai-agent"
@@ -62,28 +80,80 @@ import { TILE_THEMES, type TileTone } from '@/lib/tokens'
           <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
             卡片预览
           </h2>
-          <a href="/blocks" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
-            <span>全部 {BLOCKS_LIST.length} 张 →</span>
+          <a href="/cards" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
+            <span>全部 {CARDS_LIST.length} 张卡片 →</span>
           </a>
         </div>
 
         <HomeBentoIsland client:only="react" />
       </section>
 
-      {/* Demos */}
+      {/* Blocks */}
       <section class="flex flex-col gap-4">
         <div class="flex items-baseline justify-between gap-2">
           <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
-            示例 Demo
+            通用业务 Blocks
           </h2>
-          <a href="/demos" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
-            <span>全部 Demo →</span>
+          <a href="/blocks" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
+            <span>全部 {BLOCKS_LIST.length} 个 Blocks →</span>
           </a>
         </div>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {DEMOS_LIST.map((demo) => {
-            const theme = TILE_THEMES[(demo.tone as TileTone) || 'sky']
+          {BLOCKS_LIST.slice(0, 6).map((block) => {
+            const theme = TILE_THEMES[(block.tone as TileTone) || 'periwinkle']
+            return (
+              <div class="flex flex-col justify-between gap-3.5 rounded-tile bg-white p-5">
+                <div class="flex items-center justify-between gap-2">
+                  <span
+                    class="rounded-full px-2.5 py-0.5 font-glaze-mono text-[11px] font-bold"
+                    style={`background-color: ${theme.bg}; color: ${theme.ink};`}
+                  >
+                    {block.category.toUpperCase()}
+                  </span>
+                  <a
+                    href={`/view/blocks/${block.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 rounded-full bg-[#F2F3F5] px-3 py-1 text-[12px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#1B1F27] hover:text-white"
+                  >
+                    <span>预览 ↗</span>
+                  </a>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <h3 class="m-0 font-glaze-display text-[17px] font-extrabold text-[#1B1F27]">
+                    {block.title}
+                  </h3>
+                  <p class="m-0 line-clamp-2 text-[12.5px] leading-relaxed text-[#6B7280]">
+                    {block.description}
+                  </p>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-[#8A90A0]">
+                  <span class="font-glaze-mono">@glaze/{block.slug}</span>
+                  <a href={`/blocks#${block.slug}`} class="font-semibold text-[#4A4FB8] no-underline hover:underline">
+                    查看源码 →
+                  </a>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* Pages */}
+      <section class="flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-2">
+          <h2 class="m-0 font-glaze-display text-[20px] font-extrabold text-[#1B1F27]">
+            完整业务页面
+          </h2>
+          <a href="/pages" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
+            <span>全部 {PAGES_LIST.length} 个页面 →</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {PAGES_LIST.slice(0, 9).map((page) => {
+            const theme = TILE_THEMES[(page.tone as TileTone) || 'sky']
             return (
               <div class="flex flex-col justify-between gap-4 rounded-tile bg-white p-5">
                 <div class="flex items-center justify-between gap-2">
@@ -91,10 +161,10 @@ import { TILE_THEMES, type TileTone } from '@/lib/tokens'
                     class="rounded-full px-2.5 py-0.5 font-glaze-mono text-[11px] font-bold"
                     style={`background-color: ${theme.bg}; color: ${theme.ink};`}
                   >
-                    {demo.index} · {demo.badge}
+                    {page.index} · {page.badge}
                   </span>
                   <a
-                    href={`/view/demos/${demo.slug}`}
+                    href={`/view/pages/${page.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-1 rounded-full bg-[#F2F3F5] px-3 py-1 text-[12px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#1B1F27] hover:text-white"
@@ -103,11 +173,11 @@ import { TILE_THEMES, type TileTone } from '@/lib/tokens'
                   </a>
                 </div>
                 <div class="flex items-baseline justify-between gap-2">
-                  <h3 class="m-0 font-glaze-display text-[18px] font-extrabold text-[#1B1F27]">
-                    {demo.title}
+                  <h3 class="m-0 font-glaze-display text-[17px] font-extrabold text-[#1B1F27]">
+                    {page.title}
                   </h3>
                   <span class="font-glaze-mono text-[11px] text-[#8A90A0]">
-                    @glaze/{demo.registryName}
+                    @glaze/{page.registryName}
                   </span>
                 </div>
               </div>

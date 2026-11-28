@@ -5,9 +5,12 @@ import {
   SITE_META,
   COMPONENT_CATEGORIES,
   COMPONENTS_CATALOG,
-  BLOCK_DOMAIN_CATEGORIES,
-  BLOCKS_CATALOG_RAW,
-  DEMOS_CATALOG,
+  CARD_DOMAIN_CATEGORIES,
+  CARDS_CATALOG_RAW,
+  BLOCK_CATEGORIES,
+  BLOCKS_CATALOG,
+  PAGE_CATEGORIES,
+  PAGES_CATALOG,
 } from './catalog-meta.mjs'
 
 const require = createRequire(import.meta.url)
@@ -85,6 +88,9 @@ function analyzeFileDependencies(code, selfName) {
       regDeps.add(depRef('topology'))
     } else if (spec.startsWith('@/components/ui/')) {
       const target = spec.replace('@/components/ui/', '')
+      if (target !== selfName) regDeps.add(depRef(target))
+    } else if (spec.startsWith('@/components/cards/')) {
+      const target = spec.replace('@/components/cards/', '')
       if (target !== selfName) regDeps.add(depRef(target))
     } else if (spec.startsWith('@/components/blocks/')) {
       const target = spec.replace('@/components/blocks/', '')
@@ -365,7 +371,7 @@ function buildStylePayload() {
       '.glaze-grid': {
         display: 'grid',
         'grid-template-columns': 'repeat(4, minmax(0, 1fr))',
-        'grid-auto-rows': 'minmax(200px, auto)',
+        'grid-auto-rows': 'auto',
         'grid-auto-flow': 'row dense',
         gap: '16px',
       },
@@ -524,16 +530,16 @@ for (const meta of COMPONENTS_CATALOG) {
   }
 }
 
-// 3. All 112 Blocks
-const blocksApiList = []
+// 3. All Cards (specialized component dimension)
+const cardsApiList = []
 
-for (const [code, componentName, cnName, slots, domain] of BLOCKS_CATALOG_RAW) {
+for (const [code, componentName, cnName, slots, domain] of CARDS_CATALOG_RAW) {
   const slug = toKebab(componentName)
   const size = code[0].toLowerCase() // s | w | t | l | f
-  const relPath = `registry/glaze/blocks/${slug}.tsx`
+  const relPath = `registry/glaze/cards/${slug}.tsx`
   const absPath = path.join(ROOT, relPath)
   if (!fs.existsSync(absPath)) {
-    throw new Error(`Missing block file for ${componentName}: ${absPath}`)
+    throw new Error(`Missing card file for ${componentName}: ${absPath}`)
   }
   const content = fs.readFileSync(absPath, 'utf8')
   const deps = analyzeFileDependencies(content, slug)
@@ -542,18 +548,18 @@ for (const [code, componentName, cnName, slots, domain] of BLOCKS_CATALOG_RAW) {
   addRegistryItem(
     {
       name: slug,
-      type: 'registry:block',
+      type: 'registry:component',
       title: `${code} ${cnName} (${componentName})`,
       description: `${cnName}（${code} · 尺寸 ${size.toUpperCase()}）— ${slots}`,
       dependencies: deps.dependencies,
       registryDependencies: deps.registryDependencies,
-      categories: ['blocks', domain, `size-${size}`],
-      files: [{ path: relPath, type: 'registry:component', target: `components/blocks/${slug}.tsx` }],
+      categories: ['cards', domain, `size-${size}`],
+      files: [{ path: relPath, type: 'registry:component', target: `components/cards/${slug}.tsx` }],
     },
     new Map([[relPath, content]]),
   )
 
-  blocksApiList.push({
+  cardsApiList.push({
     code,
     slug,
     componentName,
@@ -568,31 +574,70 @@ for (const [code, componentName, cnName, slots, domain] of BLOCKS_CATALOG_RAW) {
   })
 }
 
-// 4. All 6 Demo Pages
-const demosApiList = []
+// 4. All Reusable Business Blocks
+const blocksApiList = []
 
-for (const demo of DEMOS_CATALOG) {
-  const relPath = `registry/glaze/demos/${demo.file}`
+for (const block of BLOCKS_CATALOG) {
+  const relPath = `registry/glaze/blocks/${block.slug}.tsx`
   const absPath = path.join(ROOT, relPath)
+  if (!fs.existsSync(absPath)) {
+    throw new Error(`Missing block file for ${block.slug}: ${absPath}`)
+  }
   const content = fs.readFileSync(absPath, 'utf8')
-  const deps = analyzeFileDependencies(content, demo.registryName)
+  const deps = analyzeFileDependencies(content, block.slug)
+  const api = extractApiInfo(absPath)
 
   addRegistryItem(
     {
-      name: demo.registryName,
+      name: block.slug,
       type: 'registry:block',
-      title: `Demo ${demo.index} · ${demo.title}`,
-      description: demo.description,
+      title: `${block.title} (${block.exportName})`,
+      description: block.description,
       dependencies: deps.dependencies,
       registryDependencies: deps.registryDependencies,
-      categories: ['demos'],
-      files: [{ path: relPath, type: 'registry:page', target: `components/demos/${demo.file}` }],
+      categories: ['blocks', block.category],
+      files: [{ path: relPath, type: 'registry:block', target: `components/blocks/${block.slug}.tsx` }],
     },
     new Map([[relPath, content]]),
   )
 
-  demosApiList.push({
-    ...demo,
+  blocksApiList.push({
+    ...block,
+    dependencies: deps.dependencies,
+    registryDependencies: deps.registryDependencies,
+    props: api.sections[0]?.props || [],
+    sourceCode: content,
+  })
+}
+
+// 5. All Full Application Pages
+const pagesApiList = []
+
+for (const page of PAGES_CATALOG) {
+  const relPath = `registry/glaze/pages/${page.file}`
+  const absPath = path.join(ROOT, relPath)
+  if (!fs.existsSync(absPath)) {
+    throw new Error(`Missing page file for ${page.slug}: ${absPath}`)
+  }
+  const content = fs.readFileSync(absPath, 'utf8')
+  const deps = analyzeFileDependencies(content, page.registryName)
+
+  addRegistryItem(
+    {
+      name: page.registryName,
+      type: 'registry:block',
+      title: `Page ${page.index} · ${page.title}`,
+      description: page.description,
+      dependencies: deps.dependencies,
+      registryDependencies: deps.registryDependencies,
+      categories: ['pages', page.category],
+      files: [{ path: relPath, type: 'registry:page', target: `components/pages/${page.file}` }],
+    },
+    new Map([[relPath, content]]),
+  )
+
+  pagesApiList.push({
+    ...page,
     dependencies: deps.dependencies,
     registryDependencies: deps.registryDependencies,
   })
@@ -613,10 +658,15 @@ fs.writeFileSync(
   'utf8',
 )
 
-// Write docs generated JSON (split components and blocks so Vite bundle stays clean and fast!)
+// Write docs generated JSON
 fs.writeFileSync(
   path.join(GENERATED_DIR, 'components-api.json'),
   JSON.stringify(componentsApiMap, null, 2) + '\n',
+  'utf8',
+)
+fs.writeFileSync(
+  path.join(GENERATED_DIR, 'cards-api.json'),
+  JSON.stringify(cardsApiList, null, 2) + '\n',
   'utf8',
 )
 fs.writeFileSync(
@@ -625,8 +675,8 @@ fs.writeFileSync(
   'utf8',
 )
 fs.writeFileSync(
-  path.join(GENERATED_DIR, 'demos-api.json'),
-  JSON.stringify(demosApiList, null, 2) + '\n',
+  path.join(GENERATED_DIR, 'pages-api.json'),
+  JSON.stringify(pagesApiList, null, 2) + '\n',
   'utf8',
 )
 
@@ -804,17 +854,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 \`\`\`
 
-## 3. Install Components, Blocks, or Full Demos
+## 3. Install Components, Cards, Blocks, or Full Pages
 
 \`\`\`bash
-# Install UI primitives
-npx shadcn@latest add @glaze/button @glaze/dialog @glaze/select @glaze/bar-chart
+# Install UI primitives & charts (${COMPONENTS_CATALOG.length} available)
+npx shadcn@latest add @glaze/button @glaze/dialog @glaze/calendar @glaze/data-table
 
-# Install ready-made business cards (112 available)
+# Install Bento business cards (${cardsApiList.length} available)
 npx shadcn@latest add @glaze/status-card @glaze/area-trend-card @glaze/data-table-card
 
-# Install a complete demo page (6 available)
-npx shadcn@latest add @glaze/demo-homelab
+# Install reusable composite Blocks (${blocksApiList.length} available)
+npx shadcn@latest add @glaze/auth-login-block @glaze/data-management-block @glaze/calendar-booking-block
+
+# Install a complete application Page (${pagesApiList.length} available)
+npx shadcn@latest add @glaze/page-mail-desk
 \`\`\`
 `
 fs.writeFileSync(path.join(PUBLIC_LLMS_DIR, 'getting-started.md'), gettingStartedMd, 'utf8')
@@ -831,6 +884,12 @@ const foundationsMd = `# Glaze Design Foundations & Strict Rules for AI Agents
   - \`rounded-inner\` (\`18px\`): multiline & nested surfaces (\`Textarea\`, \`Fieldset\`, \`Accordion\`, \`Collapsible\`)
   - \`rounded-full\`: ALL single-line controls (\`Button\`, \`Input\`, \`Select\`, \`Combobox\`, \`Autocomplete\`, \`NumberField\`, \`Switch\`, \`Toggle\`, \`Tabs\`, \`SegmentedControl\`, \`Menubar\`, \`Toolbar\`) at standard \`44px\` height (\`h-11\`), soft background \`#F6F7F9\`, borderless by default.
 
+## Four-Layer Architecture
+1. **UI Components** (\`@/components/ui/*\`): ${COMPONENTS_CATALOG.length} atomic Base UI, primitive, chart, AI, and topology components.
+2. **Cards** (\`@/components/cards/*\`, URL \`/cards\`): ${cardsApiList.length} specialized Bento tile components across S/W/T/L/F sizes.
+3. **Blocks** (\`@/components/blocks/*\`, URL \`/blocks\`): ${blocksApiList.length} reusable multi-component business modules (Auth, KPI Overview, CRUD Data Management, Pricing, Calendar Booking, AI Workbench, etc.).
+4. **Pages** (\`@/components/pages/*\`, URL \`/pages\`): ${pagesApiList.length} full end-to-end application pages previewable standalone at \`/view/pages/<slug>\`.
+
 ## Color Tokens
 - **9 Pastel Hue Families** (\`Hue\`): \`sky\`, \`mint\`, \`peach\`, \`lilac\`, \`rose\`, \`lemon\`, \`aqua\`, \`periwinkle\`, \`coral\` — each with 6 shades: \`50, 100, 300, 500, 700, 900\`.
 - **14 Tile Tones** (\`TileTone\`): \`white\` + 9 pastel hues + 4 dark focus tones (\`sky-dark\`, \`lilac-dark\`, \`aqua-dark\`, \`ink\`).
@@ -838,7 +897,7 @@ const foundationsMd = `# Glaze Design Foundations & Strict Rules for AI Agents
 
 ## Base UI v1.9 Conventions (DO NOT USE RADIX PATTERNS)
 - **NEVER** pass \`asChild\` (that is Radix UI). Base UI uses the \`render\` prop (e.g., \`<BaseDialog.Trigger render={<Button>Open</Button>} />\`) or Glaze's explicit \`trigger={<Button>Open</Button>}\` prop.
-- Import directly from single component files: \`@/components/ui/button\`, \`@/components/ui/tile\`, \`@/lib/tokens\`, \`@/lib/motion\`.
+- Import directly from single component files: \`@/components/ui/button\`, \`@/components/cards/status-card\`, \`@/components/blocks/auth-login-block\`, \`@/lib/tokens\`, \`@/lib/motion\`.
 - Utility class merger is \`import { cn } from 'cn'\` (\`shadcn-ui/cn\`).
 - Icons come from \`@phosphor-icons/react\`.
 
@@ -858,45 +917,62 @@ const foundationsMd = `# Glaze Design Foundations & Strict Rules for AI Agents
 `
 fs.writeFileSync(path.join(PUBLIC_LLMS_DIR, 'foundations.md'), foundationsMd, 'utf8')
 
-// Write blocks.md
-const blocksMdLines = [
-  '# Glaze 112 Business Blocks Catalog',
+// Write cards.md
+const cardsMdLines = [
+  `# Glaze ${cardsApiList.length} Specialized Cards Catalog`,
   '',
-  'Every block is independently installable via `npx shadcn@latest add @glaze/<slug>` and imports cleanly from `@/components/blocks/<slug>`.',
+  'Cards are specialized Bento components on the same dimension as UI components. Install any card via `npx shadcn@latest add @glaze/<slug>` and import from `@/components/cards/<slug>`.',
   '',
   '| Code | Component | Registry Name | Size | Domain | Slots / Structure |',
   '| --- | --- | --- | --- | --- | --- |',
 ]
+for (const c of cardsApiList) {
+  cardsMdLines.push(
+    `| ${c.code} | \`${c.componentName}\` | \`@glaze/${c.slug}\` | ${c.size.toUpperCase()} | ${c.domain} | ${c.cnName} — ${c.slots} |`,
+  )
+}
+cardsMdLines.push('')
+fs.writeFileSync(path.join(PUBLIC_LLMS_DIR, 'cards.md'), cardsMdLines.join('\n'), 'utf8')
+
+// Write blocks.md
+const blocksMdLines = [
+  `# Glaze ${blocksApiList.length} Reusable Business Blocks`,
+  '',
+  'Blocks are multi-component composite business sections built on top of Glaze UI primitives and Cards (inspired by shadcn Blocks). View standalone at `/view/blocks/<slug>` or install via `npx shadcn@latest add @glaze/<slug>`.',
+  '',
+  '| Block | Export | Category | Registry CLI | Description |',
+  '| --- | --- | --- | --- | --- |',
+]
 for (const b of blocksApiList) {
   blocksMdLines.push(
-    `| ${b.code} | \`${b.componentName}\` | \`@glaze/${b.slug}\` | ${b.size.toUpperCase()} | ${b.domain} | ${b.cnName} — ${b.slots} |`,
+    `| ${b.title} | \`${b.exportName}\` | ${b.category} | \`npx shadcn@latest add @glaze/${b.slug}\` | ${b.description} |`,
   )
 }
 blocksMdLines.push('')
 fs.writeFileSync(path.join(PUBLIC_LLMS_DIR, 'blocks.md'), blocksMdLines.join('\n'), 'utf8')
 
-// Write demos.md
-const demosMdLines = [
-  '# Glaze 6 Full-Page Business Demos',
+// Write pages.md
+const pagesMdLines = [
+  `# Glaze ${pagesApiList.length} Full Application Pages`,
   '',
-  'Each demo can be viewed standalone at `/view/demos/<slug>` (outside the docs frame) or installed via shadcn CLI.',
+  'Each page can be viewed standalone at `/view/pages/<slug>` (outside the docs frame) or installed via shadcn CLI.',
   '',
-  '| # | Title | Standalone Route | Registry CLI | Description |',
-  '| --- | --- | --- | --- | --- |',
+  '| # | Title | Category | Standalone Route | Registry CLI | Description |',
+  '| --- | --- | --- | --- | --- | --- |',
 ]
-for (const d of demosApiList) {
-  demosMdLines.push(
-    `| ${d.index} | ${d.title} (\`${d.exportName}\`) | \`/view/demos/${d.slug}\` | \`npx shadcn@latest add @glaze/${d.registryName}\` | ${d.description} |`,
+for (const p of pagesApiList) {
+  pagesMdLines.push(
+    `| ${p.index} | ${p.title} (\`${p.exportName}\`) | ${p.category} | \`/view/pages/${p.slug}\` | \`npx shadcn@latest add @glaze/${p.registryName}\` | ${p.description} |`,
   )
 }
-demosMdLines.push('')
-fs.writeFileSync(path.join(PUBLIC_LLMS_DIR, 'demos.md'), demosMdLines.join('\n'), 'utf8')
+pagesMdLines.push('')
+fs.writeFileSync(path.join(PUBLIC_LLMS_DIR, 'pages.md'), pagesMdLines.join('\n'), 'utf8')
 
 // Write public/llms.txt (llmstxt.org standard)
 const llmsTxtLines = [
   `# ${SITE_META.cnName} Design System`,
   '',
-  `> ${SITE_META.tagline}. 58 single-file UI components (39 Base UI 1.9 + 9 design primitives + 10 Recharts v3 charts), 112 independently installable business blocks, and 6 full-page demos published as a shadcn Registry.`,
+  `> ${SITE_META.tagline}. ${COMPONENTS_CATALOG.length} single-file UI components, ${cardsApiList.length} specialized Bento cards, ${blocksApiList.length} reusable business blocks, and ${pagesApiList.length} full application pages published as a shadcn Registry.`,
   '',
   '## Quick CLI Reference',
   '',
@@ -905,14 +981,15 @@ const llmsTxtLines = [
   `- Registry Manifest: \`${REGISTRY_BASE_URL}/r/registry.json\` (or \`/r/registry.json\`)`,
   `- Full Consolidated AI Reference: \`${REGISTRY_BASE_URL}/llms-full.txt\` (or \`/llms-full.txt\`)`,
   '- Install Base Theme & Tokens: `npx shadcn@latest add @glaze/style`',
-  '- Install Any Component or Block: `npx shadcn@latest add @glaze/<name>`',
+  '- Install Any Component, Card, Block, or Page: `npx shadcn@latest add @glaze/<name>`',
   '',
   '## Core Documentation',
   '',
   '- [Getting Started & Registry Setup](/llms/getting-started.md): Configure `components.json`, install `@glaze/style`, and wrap providers.',
   '- [Design Foundations & Strict Rules](/llms/foundations.md): Canvas, shadowless cards, capsule radii, 9 pastel hues, 4-col dense grid, Base UI v1.9 conventions, CSS-first motion rules.',
-  '- [112 Business Blocks Catalog](/llms/blocks.md): Complete index of S/W/T/L/F cards with registry slugs.',
-  '- [6 Standalone Business Demos](/llms/demos.md): Full-page real-world dashboards and their standalone preview routes.',
+  `- [${cardsApiList.length} Specialized Cards Catalog](/llms/cards.md): Complete index of S/W/T/L/F Bento cards (\`/cards\`).`,
+  `- [${blocksApiList.length} Reusable Business Blocks](/llms/blocks.md): Composite multi-component business modules (\`/blocks\`).`,
+  `- [${pagesApiList.length} Full Application Pages](/llms/pages.md): End-to-end pages and their standalone preview routes (\`/pages\`).`,
   '',
 ]
 
@@ -936,18 +1013,20 @@ const llmsFullParts = [
   foundationsMd,
   '---',
   '',
-  demosMdLines.join('\n'),
+  pagesMdLines.join('\n'),
   '---',
   '',
   blocksMdLines.join('\n'),
   '---',
   '',
-  '# UI Components API Reference (58 Components)',
+  cardsMdLines.join('\n'),
+  '---',
+  '',
+  `# UI Components API Reference (${COMPONENTS_CATALOG.length} Components)`,
   '',
 ]
 for (const meta of COMPONENTS_CATALOG) {
   const comp = componentsApiMap[meta.slug]
-  // Concise API without repeating full source code so llms-full.txt stays token-efficient yet complete!
   const lines = []
   lines.push(`## ${comp.title} (${comp.cnTitle}) — \`@glaze/${comp.slug}\``)
   lines.push('')
@@ -983,8 +1062,8 @@ console.log(
   `Built shadcn registry: ${registryItems.length} items -> registry.json & public/r/*.json`,
 )
 console.log(
-  `Generated API metadata -> src/docs/generated/{components,blocks,demos}-api.json`,
+  `Generated API metadata -> src/docs/generated/{components,cards,blocks,pages}-api.json`,
 )
 console.log(
-  `Generated AI Agent docs -> public/llms.txt, public/llms-full.txt & ${COMPONENTS_CATALOG.length + 4} markdown files under public/llms/`,
+  `Generated AI Agent docs -> public/llms.txt, public/llms-full.txt & ${COMPONENTS_CATALOG.length + 5} markdown files under public/llms/`,
 )

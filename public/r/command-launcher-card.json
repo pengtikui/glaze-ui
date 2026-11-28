@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command-launcher-card",
+  "type": "registry:component",
+  "title": "W13 嵌入式命令检索卡 (CommandLauncherCard)",
+  "description": "嵌入式命令检索卡（W13 · 尺寸 W）— 基于 cmdk 的卡片内模糊命令筛选与触发",
+  "registryDependencies": [
+    "@glaze/command",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "cards",
+    "controls",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/cards/command-launcher-card.tsx",
+      "type": "registry:component",
+      "target": "components/cards/command-launcher-card.tsx",
+      "content": "import * as React from 'react'\nimport {\n  Command,\n  CommandEmpty,\n  CommandGroup,\n  CommandInput,\n  CommandItem,\n  CommandList,\n  CommandShortcut,\n} from '@/components/ui/command'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface CommandLauncherItem {\n  label: string\n  shortcut?: string\n  group?: string\n}\n\nexport interface CommandLauncherCardProps {\n  title?: string\n  placeholder?: string\n  items: CommandLauncherItem[]\n  onSelect?: (label: string) => void\n  tone?: TileTone\n}\n\nexport function CommandLauncherCard({\n  title = '快捷命令检索',\n  placeholder = '输入关键词过滤指令…',\n  items,\n  onSelect,\n  tone = 'white',\n}: CommandLauncherCardProps) {\n  const theme = TILE_THEMES[tone]\n  const [lastTriggered, setLastTriggered] = React.useState<string | null>(null)\n\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-2.5 p-5\">\n      <div className=\"flex items-center justify-between gap-2 px-1\">\n        <span className=\"text-[13px] font-bold\" style={{ color: theme.soft }}>\n          {title}\n        </span>\n        {lastTriggered && (\n          <span\n            className=\"rounded-full px-2.5 py-0.5 text-[11px] font-semibold\"\n            style={{ backgroundColor: theme.track, color: theme.ink }}\n          >\n            已执行：{lastTriggered}\n          </span>\n        )}\n      </div>\n\n      <Command className=\"rounded-inner bg-[#F6F7F9]/80\">\n        <CommandInput placeholder={placeholder} className=\"h-10 text-[13px]\" />\n        <CommandList className=\"max-h-30 p-1\">\n          <CommandEmpty className=\"py-4 text-[12px]\">未找到匹配指令</CommandEmpty>\n          <CommandGroup>\n            {items.map((item) => (\n              <CommandItem\n                key={item.label}\n                value={item.label}\n                onSelect={() => {\n                  setLastTriggered(item.label)\n                  onSelect?.(item.label)\n                }}\n                className=\"py-1.5 text-[13px]\"\n              >\n                <span className=\"truncate font-medium\">{item.label}</span>\n                {item.shortcut && <CommandShortcut>{item.shortcut}</CommandShortcut>}\n              </CommandItem>\n            ))}\n          </CommandGroup>\n        </CommandList>\n      </Command>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -13,6 +13,6 @@ export async function getStaticPaths() {
 const { block } = Astro.props
 ---
 
-<BaseLayout title={`${block.cnName} · Glaze Block`} description={`${block.code} ${block.componentName}`} clientRouter={false}>
+<BaseLayout title={`${block.title} · Glaze Block`} description={block.description} clientRouter={false}>
   <StandaloneBlockIsland slug={block.slug} client:only="react" />
 </BaseLayout>

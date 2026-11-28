@@ -9,6 +9,8 @@
     "paths": {
       "@/components/ui": ["./registry/glaze/ui/index.ts"],
       "@/components/ui/*": ["./registry/glaze/ui/*"],
+      "@/components/cards": ["./registry/glaze/cards/index.ts"],
+      "@/components/cards/*": ["./registry/glaze/cards/*"],
       "@/components/blocks": ["./registry/glaze/blocks/index.ts"],
       "@/components/blocks/*": ["./registry/glaze/blocks/*"],
       "@/lib/*": ["./registry/glaze/lib/*"],

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "metric-bars-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "S5 微柱指标卡 (MetricBarsCard)",
   "description": "微柱指标卡（S5 · 尺寸 S）— 标签 · 数值 · 7 天迷你柱",
   "registryDependencies": [
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "metrics",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/metric-bars-card.tsx",
+      "path": "registry/glaze/cards/metric-bars-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/metric-bars-card.tsx",
+      "target": "components/cards/metric-bars-card.tsx",
       "content": "import { SparkChart } from '@/components/ui/spark-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface MetricBarsCardProps {\n  label: string\n  value: string | number\n  unit?: string\n  bars: number[]\n  tone?: TileTone\n  highlightColor?: string\n}\n\nexport function MetricBarsCard({\n  label,\n  value,\n  unit,\n  bars,\n  tone = 'white',\n  highlightColor,\n}: MetricBarsCardProps) {\n  const theme = TILE_THEMES[tone]\n  const hi = highlightColor ?? theme.accent\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <span className=\"flex items-baseline gap-1.5\">\n        <span className=\"font-glaze-display text-[44px] leading-11.5 font-extrabold tracking-[-0.03em]\">\n          {value}\n        </span>\n        {unit && (\n          <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n            {unit}\n          </span>\n        )}\n      </span>\n      <SparkChart\n        data={bars}\n        variant=\"bar\"\n        color={hi}\n        mutedColor={theme.mutedBar}\n        label={label}\n        unit={unit}\n        tone={tone}\n        height={34}\n      />\n    </Tile>\n  )\n}\n"
     }
   ]

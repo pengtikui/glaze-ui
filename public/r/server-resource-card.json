@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "server-resource-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W16 三环资源监控卡 (ServerResourceCard)",
   "description": "三环资源监控卡（W16 · 尺寸 W）— CPU / RAM / Disk 并排环图",
   "registryDependencies": [
@@ -12,16 +12,16 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/server-resource-card.tsx",
+      "path": "registry/glaze/cards/server-resource-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/server-resource-card.tsx",
-      "content": "import { Progress } from '@/components/ui/progress'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function ServerResourceCard({\n  nodeName,\n  cpu,\n  ram,\n  disk,\n  tone = 'white',\n}: {\n  nodeName: string\n  cpu: number\n  ram: number\n  disk: number\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const items: { label: string; val: number; hue: Hue }[] = [\n    { label: 'CPU', val: cpu, hue: 'periwinkle' },\n    { label: '内存', val: ram, hue: 'aqua' },\n    { label: '磁盘', val: disk, hue: 'peach' },\n  ]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n          {nodeName}\n        </span>\n        <StatusPill status=\"normal\" label=\"健康\" size=\"sm\" />\n      </div>\n      <div className=\"grid grid-cols-3 gap-3\">\n        {items.map((it) => (\n          <div key={it.label} className=\"flex min-w-0 items-center gap-2.5\">\n            <Progress\n              variant=\"ring\"\n              value={it.val}\n              size={56}\n              strokeWidth={6}\n              hue={it.hue}\n              trackColor={theme.track}\n              showValue\n              className=\"shrink-0\"\n            />\n            <div className=\"min-w-0\">\n              <div className=\"truncate font-glaze-display text-[14px] font-extrabold\">\n                {it.label}\n              </div>\n              <div className=\"truncate text-[11px]\" style={{ color: theme.soft }}>\n                {it.val >= 80 ? '偏高' : it.val >= 55 ? '中等' : '正常'}\n              </div>\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+      "target": "components/cards/server-resource-card.tsx",
+      "content": "import { Progress } from '@/components/ui/progress'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function ServerResourceCard({\n  nodeName,\n  cpu,\n  ram,\n  disk,\n  tone = 'white',\n}: {\n  nodeName: string\n  cpu: number\n  ram: number\n  disk: number\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const items: { label: string; val: number; hue: Hue }[] = [\n    { label: 'CPU', val: cpu, hue: 'periwinkle' },\n    { label: '内存', val: ram, hue: 'aqua' },\n    { label: '磁盘', val: disk, hue: 'peach' },\n  ]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-4\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"truncate text-[14px] font-semibold\" style={{ color: theme.soft }}>\n          {nodeName}\n        </span>\n        <StatusPill status=\"normal\" label=\"健康\" size=\"sm\" />\n      </div>\n\n      <div className=\"my-auto grid grid-cols-3 gap-4\">\n        {items.map((it) => (\n          <div key={it.label} className=\"flex min-w-0 items-center gap-3.5\">\n            <Progress\n              variant=\"ring\"\n              value={it.val}\n              size={88}\n              strokeWidth={8}\n              hue={it.hue}\n              trackColor={theme.track}\n              showValue\n              className=\"shrink-0\"\n            />\n            <div className=\"flex min-w-0 flex-col gap-0.5\">\n              <div className=\"truncate font-glaze-display text-[15px] font-extrabold\">\n                {it.label}\n              </div>\n              <div className=\"truncate text-[12px] font-medium\" style={{ color: theme.soft }}>\n                {it.val >= 80 ? '偏高' : it.val >= 55 ? '中等' : '正常'}\n              </div>\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]
 }

@@ -10,8 +10,8 @@
 
 Glaze 遵循 [llmstxt.org](https://llmstxt.org/) 规范自动生成实时同步的纯文本 / Markdown 索引，可直接通过 GitHub Raw（或自托管文档站根路径 `/llms.txt`）访问：
 
-- **轻量目录索引**：`https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/llms.txt`（列出所有文档、58 个组件、112 个卡片与 6 个 Demo 的链接）
-- **单文件完整参考**：`https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/llms-full.txt`（包含安装配置、全部视觉/交互红线、112 卡片对照表、58 组件完整 Props & Data Attributes）
+- **轻量目录索引**：`https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/llms.txt`（列出所有文档、82 个组件、119 张卡片、10 个 Blocks 与 15 个页面）
+- **单文件完整参考**：`https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/llms-full.txt`（包含安装配置、全部视觉/交互红线、卡片/Blocks/页面对照表与 82 组件完整 Props & Data Attributes）
 - **按需单组件文档**：`https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/llms/components/<slug>.md`（例如 `dialog.md`，包含完整 TS Props 表格与源码）
 
 ### 方式 B：在项目中放入 `AGENTS.md` / `.cursor/rules/glaze.mdc`
@@ -24,7 +24,7 @@ You are building UI with the Glaze Design System (Base UI 1.9 + Tailwind v4 + Re
 - Canvas background is `#F2F4F8`. Cards (`<Tile>`) MUST have NO border and NO box-shadow.
 - Single-line controls (Button, Input, Select, Combobox, Switch, Tabs, SegmentedControl) are `rounded-full` with `h-11` (44px) and soft `#F6F7F9` surface.
 - Base UI v1.9 uses `render={<Button />}` (NEVER Radix `asChild`).
-- Import directly per file: `@/components/ui/button`, `@/components/blocks/status-card`, `@/lib/tokens`.
+- Import directly per file: `@/components/ui/button`, `@/components/cards/status-card`, `@/components/blocks/auth-login-block`, `@/lib/tokens`.
 - Wrap app root with `<TooltipProvider>` and `<ToastProvider>`.
 - Never add `backdrop-blur` to Dialog/Drawer backdrops; never apply press scaling to popup triggers or Tiles.
 ```
@@ -41,7 +41,7 @@ You are building UI with the Glaze Design System (Base UI 1.9 + Tailwind v4 + Re
 }
 ```
 
-配置了官方 `shadcn` MCP Server 的 AI Agent 即可自动调用 `search_items_in_registries`、`view_items_in_registries` 与 `get_add_command_for_items`，直接搜索 `@glaze` 中的 58 个组件、112 张卡片与 6 个 Demo 并一键安装。
+配置了官方 `shadcn` MCP Server 的 AI Agent 即可自动调用 `search_items_in_registries`、`view_items_in_registries` 与 `get_add_command_for_items`，直接搜索 `@glaze` 中的 82 个组件、119 张卡片、10 个 Blocks 与 15 个页面并一键安装。
 
 ### 方式 D：文档页一键「复制为 Markdown」
 
@@ -67,6 +67,6 @@ You are building UI with the Glaze Design System (Base UI 1.9 + Tailwind v4 + Re
 ## 3. 典型页面生成工作流（推荐给 Agent 的 4 步法）
 
 1. **规划布局**：确定页面主题与所需信息密度，使用 4 列 dense `<Grid>` 规划 `S / W / T / L / F` 卡片组合（保持 60% 白卡 + 30% 柔彩 + ≤10% 深色聚焦卡）。
-2. **检索现有卡片**：优先查阅 `public/llms/blocks.md`（112 种业务卡片），尽量复用现成卡片而非手写重复布局。
+2. **检索现有卡片与 Blocks**：优先查阅 `public/llms/cards.md`（119 张业务卡片）与 `public/llms/blocks.md`（10 个复合业务区块），尽量复用现成模块而非手写重复布局。
 3. **CLI 安装依赖**：通过 `npx shadcn@latest add @glaze/<card-or-component>` 一次性拉齐所需卡片与底层 UI 原语。
 4. **组合交互**：使用 `Dialog` / `Drawer` / `Select` / `Toast`（`useToast()`）为页面补充创建、筛选与反馈闭环。

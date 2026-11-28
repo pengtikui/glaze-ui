@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "switch-card",
-  "type": "registry:block",
-  "title": "S12 开关控制卡 (SwitchCard)",
-  "description": "开关控制卡（S12 · 尺寸 S）— 图标 · 实时 Switch 开关",
+  "type": "registry:component",
+  "title": "S11 开关控制卡 (SwitchCard)",
+  "description": "开关控制卡（S11 · 尺寸 S）— 图标 · 实时 Switch 开关",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -14,15 +14,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "controls",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/switch-card.tsx",
+      "path": "registry/glaze/cards/switch-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/switch-card.tsx",
+      "target": "components/cards/switch-card.tsx",
       "content": "import * as React from 'react'\nimport { ArrowsClockwise } from '@phosphor-icons/react'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { Switch } from '@/components/ui/switch'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface SwitchCardProps {\n  title: string\n  description: string\n  checked?: boolean\n  defaultChecked?: boolean\n  onCheckedChange?: (checked: boolean) => void\n  icon?: React.ReactNode\n  iconHue?: Hue\n  tone?: TileTone\n}\n\nexport function SwitchCard({\n  title,\n  description,\n  checked,\n  defaultChecked = true,\n  onCheckedChange,\n  icon,\n  iconHue = 'mint',\n  tone = 'white',\n}: SwitchCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span className=\"flex items-start justify-between\">\n        <IconTile hue={iconHue} size=\"md\">\n          {icon ?? <ArrowsClockwise size={22} />}\n        </IconTile>\n        <Switch\n          hue={iconHue}\n          checked={checked}\n          defaultChecked={defaultChecked}\n          onCheckedChange={onCheckedChange}\n          aria-label={title}\n        />\n      </span>\n      <span className=\"flex flex-col gap-0.5\">\n        <span className=\"text-[18px] font-bold\">{title}</span>\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          {description}\n        </span>\n      </span>\n    </Tile>\n  )\n}\n"
     }
   ]

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "topology-health-panel-block",
+  "type": "registry:block",
+  "title": "服务拓扑与告警联查区 (TopologyHealthPanelBlock)",
+  "description": "将 TopologyCanvas、NodeHealthChainCard、StatusCard 与 UptimeStripCard 联动封装，一键注入缓存抖动故障并观测全链路变化。",
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/node-health-chain-card",
+    "@glaze/status-card",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/toast",
+    "@glaze/tokens",
+    "@glaze/topology",
+    "@glaze/topology-canvas",
+    "@glaze/topology-controls",
+    "@glaze/uptime-strip-card"
+  ],
+  "categories": [
+    "blocks",
+    "ops"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/topology-health-panel-block.tsx",
+      "type": "registry:block",
+      "target": "components/blocks/topology-health-panel-block.tsx",
+      "content": "import * as React from 'react'\nimport { NodeHealthChainCard } from '@/components/cards/node-health-chain-card'\nimport { StatusCard } from '@/components/cards/status-card'\nimport { UptimeStripCard } from '@/components/cards/uptime-strip-card'\nimport { Button } from '@/components/ui/button'\nimport { Tile } from '@/components/ui/tile'\nimport { TopologyCanvas } from '@/components/ui/topology-canvas'\nimport { TopologyLegend, TopologyToolbar } from '@/components/ui/topology-controls'\nimport { useToast } from '@/components/ui/toast'\nimport type { Status } from '@/lib/tokens'\nimport type { TopologyFlowEdge, TopologyFlowNode } from '@/lib/topology'\n\nconst BASE_NODES: TopologyFlowNode[] = [\n  {\n    id: 'edge',\n    type: 'topologyNode',\n    position: { x: 0, y: 0 },\n    data: { label: 'Edge Gateway', subtitle: '48.2k req/s', kind: 'gateway', hue: 'sky', status: 'normal' },\n  },\n  {\n    id: 'auth',\n    type: 'topologyNode',\n    position: { x: 0, y: 0 },\n    data: { label: 'Auth Service', subtitle: 'P99 8ms', kind: 'service', hue: 'periwinkle', status: 'normal' },\n  },\n  {\n    id: 'api',\n    type: 'topologyNode',\n    position: { x: 0, y: 0 },\n    data: { label: 'Core API', subtitle: 'P99 18ms', kind: 'service', hue: 'mint', status: 'normal' },\n  },\n  {\n    id: 'pg',\n    type: 'topologyNode',\n    position: { x: 0, y: 0 },\n    data: { label: 'Postgres Primary', subtitle: 'CPU 44%', kind: 'database', hue: 'aqua', status: 'normal' },\n  },\n  {\n    id: 'redis',\n    type: 'topologyNode',\n    position: { x: 0, y: 0 },\n    data: { label: 'Redis Cache', subtitle: 'Hit 99.1%', kind: 'cache', hue: 'peach', status: 'normal' },\n  },\n]\n\nconst BASE_EDGES: TopologyFlowEdge[] = [\n  { id: 'e1', source: 'edge', target: 'auth', type: 'topologyEdge', data: { label: 'gRPC · 4ms', status: 'normal', animated: true } },\n  { id: 'e2', source: 'edge', target: 'api', type: 'topologyEdge', data: { label: 'HTTP/3 · 9ms', status: 'normal', animated: true } },\n  { id: 'e3', source: 'api', target: 'pg', type: 'topologyEdge', data: { label: 'SQL · 6ms', status: 'normal', animated: true } },\n  { id: 'e4', source: 'api', target: 'redis', type: 'topologyEdge', data: { label: 'RESP · 1ms', status: 'normal', animated: true } },\n]\n\nconst SLA_30: ('ok' | 'warn' | 'down')[] = Array.from({ length: 30 }, (_, i) =>\n  i === 19 ? 'warn' : 'ok',\n)\n\nexport function TopologyHealthPanelBlock() {\n  const toast = useToast()\n  const [faultInjected, setFaultInjected] = React.useState(false)\n\n  return (\n    <section className=\"flex flex-col gap-4\">\n      <div className=\"grid grid-cols-1 gap-4 lg:grid-cols-4\">\n        <StatusCard\n          tone={faultInjected ? 'coral' : 'mint'}\n          label=\"生产拓扑状态\"\n          statusText={faultInjected ? '缓存降级' : '全链路健康'}\n          description={faultInjected ? '已自动切换只读回源' : '5 核心服务 · 0 丢包'}\n          status={faultInjected ? 'warning' : 'normal'}\n        />\n        <NodeHealthChainCard\n          tone=\"white\"\n          title=\"关键交易路径\"\n          summaryStatus={faultInjected ? 'warning' : 'normal'}\n          summaryLabel={faultInjected ? '回源 32ms' : '端到端 14ms'}\n          nodes={[\n            { id: 'n1', label: 'Edge', kind: 'gateway', hue: 'sky', status: 'normal', latency: '4ms' },\n            { id: 'n2', label: 'Core API', kind: 'service', hue: 'mint', status: 'normal', latency: '9ms' },\n            { id: 'n3', label: 'Redis', kind: 'cache', hue: 'peach', status: faultInjected ? 'warning' : 'normal', latency: faultInjected ? '18ms' : '1ms' },\n          ]}\n        />\n        <Tile tone=\"sky-dark\" className=\"justify-between gap-3\">\n          <span className=\"text-[13px] font-semibold text-white/75\">混沌演练控制</span>\n          <div className=\"font-glaze-display text-[20px] font-extrabold text-white\">\n            {faultInjected ? 'Redis 延迟注入中' : '就绪 · 点击演练'}\n          </div>\n          <Button\n            variant=\"secondary\"\n            size=\"sm\"\n            onClick={() => {\n              const next = !faultInjected\n              setFaultInjected(next)\n              toast({\n                title: next ? '已注入 Redis 延迟故障' : '故障已恢复，拓扑回到健康态',\n                status: next ? 'warning' : 'normal',\n              })\n            }}\n          >\n            {faultInjected ? '恢复健康态' : '注入缓存抖动'}\n          </Button>\n        </Tile>\n      </div>\n\n      <Tile tone=\"white\" className=\"h-[380px] gap-2 p-4\">\n        <TopologyCanvas\n          nodes={BASE_NODES}\n          edges={BASE_EDGES}\n          nodeStatusOverrides={\n            faultInjected ? new Map<string, Status>([['redis', 'warning']]) : undefined\n          }\n          autoLayout\n          direction=\"LR\"\n          surface=\"canvas\"\n          className=\"h-full w-full rounded-inner\"\n        >\n          <TopologyToolbar />\n          <TopologyLegend />\n        </TopologyCanvas>\n      </Tile>\n\n      <UptimeStripCard\n        tone=\"white\"\n        service=\"Core API & Edge Gateway · 30 日可用性\"\n        uptimePct=\"99.97%\"\n        days={SLA_30}\n      />\n    </section>\n  )\n}\n"
+    }
+  ]
+}

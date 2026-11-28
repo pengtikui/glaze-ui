@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "composed-revenue-card",
-  "type": "registry:block",
-  "title": "L15 双轴组合分析大卡 (ComposedRevenueCard)",
-  "description": "双轴组合分析大卡（L15 · 尺寸 L）— 堆叠柱状 + 折线双 Y 轴",
+  "type": "registry:component",
+  "title": "L14 双轴组合分析大卡 (ComposedRevenueCard)",
+  "description": "双轴组合分析大卡（L14 · 尺寸 L）— 堆叠柱状 + 折线双 Y 轴",
   "registryDependencies": [
     "@glaze/composed-chart",
     "@glaze/status-pill",
@@ -12,15 +12,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "charts",
     "size-l"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/composed-revenue-card.tsx",
+      "path": "registry/glaze/cards/composed-revenue-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/composed-revenue-card.tsx",
+      "target": "components/cards/composed-revenue-card.tsx",
       "content": "import { ComposedChart, type ComposedSeries } from '@/components/ui/composed-chart'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface ComposedRevenueCardProps {\n  title: string\n  subtitle?: string\n  delta?: string\n  data: readonly object[]\n  xKey: string\n  series: ComposedSeries[]\n  leftYTickFormatter?: (value: unknown) => string\n  rightYTickFormatter?: (value: unknown) => string\n  tone?: TileTone\n}\n\nexport function ComposedRevenueCard({\n  title,\n  subtitle,\n  delta,\n  data,\n  xKey,\n  series,\n  leftYTickFormatter,\n  rightYTickFormatter,\n  tone = 'white',\n}: ComposedRevenueCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-4\">\n      <div className=\"flex flex-wrap items-start justify-between gap-2\">\n        <div>\n          <div className=\"font-glaze-display text-[20px] font-extrabold\">{title}</div>\n          {subtitle && (\n            <div className=\"mt-0.5 text-[13px]\" style={{ color: theme.soft }}>\n              {subtitle}\n            </div>\n          )}\n        </div>\n        {delta && <StatusPill status=\"normal\" label={delta} showDot={false} size=\"sm\" />}\n      </div>\n      <div className=\"min-h-68 flex-1 w-full\">\n        <ComposedChart\n          data={data}\n          xKey={xKey}\n          series={series}\n          leftYTickFormatter={leftYTickFormatter}\n          rightYTickFormatter={rightYTickFormatter}\n          tone={tone}\n          height={275}\n        />\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

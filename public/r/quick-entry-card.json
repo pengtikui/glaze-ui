@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "quick-entry-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "S8 快捷入口卡 (QuickEntryCard)",
   "description": "快捷入口卡（S8 · 尺寸 S）— 图标底 · 标题 · 跳转箭头",
   "dependencies": [
@@ -13,15 +13,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "controls",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/quick-entry-card.tsx",
+      "path": "registry/glaze/cards/quick-entry-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/quick-entry-card.tsx",
+      "target": "components/cards/quick-entry-card.tsx",
       "content": "import * as React from 'react'\nimport { ArrowUpRight, TerminalWindow } from '@phosphor-icons/react'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface QuickEntryCardProps {\n  title: string\n  subtitle: string\n  icon?: React.ReactNode\n  tone?: TileTone\n  href?: string\n  onClick?: () => void\n}\n\nexport function QuickEntryCard({\n  title,\n  subtitle,\n  icon,\n  tone = 'sky-dark',\n  href,\n  onClick,\n}: QuickEntryCardProps) {\n  const theme = TILE_THEMES[tone]\n  const iconHue =\n    tone in HUE_PALETTES\n      ? (tone as Hue)\n      : theme.dark\n        ? 'dark-glass'\n        : 'sky'\n  return (\n    <Tile size=\"s\" tone={tone} href={href} onClick={onClick} interactive>\n      <span className=\"flex items-start justify-between gap-2\">\n        <IconTile hue={iconHue} size=\"md\">\n          {icon ?? <TerminalWindow size={22} />}\n        </IconTile>\n        <ArrowUpRight size={20} weight=\"bold\" className=\"shrink-0\" />\n      </span>\n      <span className=\"flex min-w-0 flex-col gap-0.5\">\n        <span className=\"truncate text-[20px] font-bold\">{title}</span>\n        <span className=\"truncate text-[13px]\" style={{ color: theme.soft }}>\n          {subtitle}\n        </span>\n      </span>\n    </Tile>\n  )\n}\n"
     }
   ]

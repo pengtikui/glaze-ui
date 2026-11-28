@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "incident-log-card",
-  "type": "registry:block",
-  "title": "L14 告警事件日志大卡 (IncidentLogCard)",
-  "description": "告警事件日志大卡（L14 · 尺寸 L）— 事件编号 · 影响服务 · 状态",
+  "type": "registry:component",
+  "title": "L13 告警事件日志大卡 (IncidentLogCard)",
+  "description": "告警事件日志大卡（L13 · 尺寸 L）— 事件编号 · 影响服务 · 状态",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -15,15 +15,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-l"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/incident-log-card.tsx",
+      "path": "registry/glaze/cards/incident-log-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/incident-log-card.tsx",
+      "target": "components/cards/incident-log-card.tsx",
       "content": "import { WarningCircle } from '@phosphor-icons/react'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport type { Status, TileTone } from '@/lib/tokens'\n\nexport function IncidentLogCard({\n  title,\n  incidents,\n  tone = 'white',\n}: {\n  title: string\n  incidents: { id: string; title: string; service: string; status: Status; statusLabel: string; time: string }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-start gap-4\">\n      <div className=\"flex items-center justify-between\">\n        <div className=\"flex items-center gap-2\">\n          <WarningCircle size={20} weight=\"duotone\" className=\"text-[#E5603B]\" />\n          <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n        </div>\n        <HueTag hue=\"coral\" size=\"sm\">\n          近 24 小时\n        </HueTag>\n      </div>\n      <div className=\"flex flex-1 flex-col justify-between gap-2.5\">\n        {incidents.map((inc) => (\n          <div\n            key={inc.id}\n            className=\"flex items-center justify-between gap-3 rounded-2xl bg-[#F6F7F9] px-4 py-3\"\n          >\n            <div className=\"min-w-0 flex-1\">\n              <div className=\"flex items-center gap-2\">\n                <span className=\"shrink-0 font-glaze-mono text-[11px] font-bold text-[#8A90A0] whitespace-nowrap\">\n                  {inc.id}\n                </span>\n                <span className=\"truncate text-[13px] font-bold text-[#1B1F27]\">\n                  {inc.title}\n                </span>\n              </div>\n              <div className=\"mt-0.5 truncate text-[11px] text-[#6B7280]\">\n                影响：{inc.service} · {inc.time}\n              </div>\n            </div>\n            <StatusPill status={inc.status} label={inc.statusLabel} size=\"sm\" />\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

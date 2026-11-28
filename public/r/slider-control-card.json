@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "slider-control-card",
-  "type": "registry:block",
-  "title": "S27 滑块控制卡 (SliderControlCard)",
-  "description": "滑块控制卡（S27 · 尺寸 S）— 实时数值 · 嵌入式 Slider",
+  "type": "registry:component",
+  "title": "S20 滑块控制卡 (SliderControlCard)",
+  "description": "滑块控制卡（S20 · 尺寸 S）— 实时数值 · 嵌入式 Slider",
   "registryDependencies": [
     "@glaze/slider",
     "@glaze/style",
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "controls",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/slider-control-card.tsx",
+      "path": "registry/glaze/cards/slider-control-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/slider-control-card.tsx",
+      "target": "components/cards/slider-control-card.tsx",
       "content": "import * as React from 'react'\nimport { Slider } from '@/components/ui/slider'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function SliderControlCard({\n  label,\n  defaultValue = 68,\n  unit = '%',\n  hue = 'periwinkle',\n  tone = 'white',\n}: {\n  label: string\n  defaultValue?: number\n  unit?: string\n  hue?: Hue\n  tone?: TileTone\n}) {\n  const [val, setVal] = React.useState(defaultValue)\n  React.useEffect(() => {\n    setVal(defaultValue)\n  }, [defaultValue])\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <div className=\"font-glaze-display text-[40px] leading-none font-extrabold\">\n        {val}\n        <span className=\"ml-0.5 text-[18px] font-bold\" style={{ color: theme.soft }}>\n          {unit}\n        </span>\n      </div>\n      <Slider\n        value={val}\n        onValueChange={(v) => setVal(typeof v === 'number' ? v : v[0])}\n        hue={hue}\n        showValue={false}\n      />\n    </Tile>\n  )\n}\n"
     }
   ]

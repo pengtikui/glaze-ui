@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "otp-verify-card",
+  "type": "registry:component",
+  "title": "W31 2FA 动态口令校验卡 (OtpVerifyCard)",
+  "description": "2FA 动态口令校验卡（W31 · 尺寸 W）— 基于 OTPField 的 6 位安全验证码实时校验",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/icon-tile",
+    "@glaze/otp-field",
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "cards",
+    "controls",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/cards/otp-verify-card.tsx",
+      "type": "registry:component",
+      "target": "components/cards/otp-verify-card.tsx",
+      "content": "import * as React from 'react'\nimport { ShieldCheck } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { OTPField } from '@/components/ui/otp-field'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface OtpVerifyCardProps {\n  title?: string\n  subtitle?: string\n  expectedCode?: string\n  iconHue?: Hue\n  tone?: TileTone\n  onVerify?: (code: string, ok: boolean) => void\n}\n\nexport function OtpVerifyCard({\n  title = '二次验证 (2FA)',\n  subtitle = '输入验证器中的 6 位动态口令',\n  expectedCode = '248910',\n  iconHue = 'periwinkle',\n  tone = 'white',\n  onVerify,\n}: OtpVerifyCardProps) {\n  const theme = TILE_THEMES[tone]\n  const [code, setCode] = React.useState('')\n  const [state, setState] = React.useState<'idle' | 'verified' | 'error'>('idle')\n\n  const handleSubmit = () => {\n    const ok = code.length === 6 && (!expectedCode || code === expectedCode)\n    setState(ok ? 'verified' : 'error')\n    onVerify?.(code, ok)\n  }\n\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex items-center justify-between gap-3\">\n        <div className=\"flex items-center gap-3\">\n          <IconTile hue={iconHue} size=\"sm\">\n            <ShieldCheck size={18} weight=\"fill\" />\n          </IconTile>\n          <div className=\"flex flex-col\">\n            <span className=\"font-glaze-display text-[16px] font-extrabold\">{title}</span>\n            <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n              {subtitle}\n            </span>\n          </div>\n        </div>\n        {state === 'verified' ? (\n          <StatusPill status=\"normal\" label=\"验证通过\" size=\"sm\" />\n        ) : state === 'error' ? (\n          <StatusPill status=\"error\" label=\"口令有误\" size=\"sm\" />\n        ) : (\n          <StatusPill status=\"info\" label={`示例 ${expectedCode}`} size=\"sm\" />\n        )}\n      </div>\n\n      <div className=\"flex flex-wrap items-center justify-between gap-3\">\n        <OTPField\n          value={code}\n          onValueChange={(next) => {\n            setCode(next)\n            if (state !== 'idle') setState('idle')\n          }}\n        />\n        <Button\n          variant=\"primary\"\n          size=\"sm\"\n          disabled={code.length < 6}\n          onClick={handleSubmit}\n        >\n          验证口令\n        </Button>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "pomodoro-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W18 番茄专注钟卡 (PomodoroCard)",
   "description": "番茄专注钟卡（W18 · 尺寸 W）— 可运行倒计时 · 开始/重置",
   "dependencies": [
@@ -14,15 +14,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "productivity",
+    "cards",
+    "collaboration",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/pomodoro-card.tsx",
+      "path": "registry/glaze/cards/pomodoro-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/pomodoro-card.tsx",
+      "target": "components/cards/pomodoro-card.tsx",
       "content": "import * as React from 'react'\nimport { Timer } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function PomodoroCard({\n  task,\n  minutes = 25,\n  tone = 'coral',\n}: {\n  task: string\n  minutes?: number\n  tone?: TileTone\n}) {\n  const [secondsLeft, setSecondsLeft] = React.useState(minutes * 60)\n  const [running, setRunning] = React.useState(false)\n  const theme = TILE_THEMES[tone]\n\n  React.useEffect(() => {\n    if (!running) return\n    const t = window.setInterval(() => {\n      setSecondsLeft((s) => (s > 0 ? s - 1 : 0))\n    }, 1000)\n    return () => window.clearInterval(t)\n  }, [running])\n\n  const mm = String(Math.floor(secondsLeft / 60)).padStart(2, '0')\n  const ss = String(secondsLeft % 60).padStart(2, '0')\n\n  return (\n    <Tile size=\"w\" tone={tone} className=\"flex-row items-center justify-between gap-4\">\n      <div className=\"flex flex-col gap-1.5\">\n        <div className=\"flex items-center gap-1.5 text-[13px] font-semibold\" style={{ color: theme.soft }}>\n          <Timer size={16} weight=\"bold\" />\n          <span>专注番茄钟</span>\n        </div>\n        <div className=\"font-glaze-display text-[48px] leading-none font-extrabold tracking-[-0.03em]\">\n          {mm}:{ss}\n        </div>\n        <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n          {task}\n        </span>\n      </div>\n      <div className=\"flex flex-col gap-2\">\n        <Button size=\"sm\" variant=\"primary\" onClick={() => setRunning((r) => !r)}>\n          {running ? '暂停' : '开始专注'}\n        </Button>\n        <Button\n          size=\"sm\"\n          variant=\"secondary\"\n          onClick={() => {\n            setRunning(false)\n            setSecondsLeft(minutes * 60)\n          }}\n        >\n          重置\n        </Button>\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

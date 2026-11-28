@@ -1,6 +1,7 @@
-import componentsApiRaw from '@/docs/generated/components-api.json'
 import blocksApiRaw from '@/docs/generated/blocks-api.json'
-import demosApiRaw from '@/docs/generated/demos-api.json'
+import cardsApiRaw from '@/docs/generated/cards-api.json'
+import componentsApiRaw from '@/docs/generated/components-api.json'
+import pagesApiRaw from '@/docs/generated/pages-api.json'
 
 export interface PropDoc {
   name: string
@@ -52,7 +53,7 @@ export interface ComponentDocMeta {
   }
 }
 
-export interface BlockDocMeta {
+export interface CardDocMeta {
   code: string
   slug: string
   componentName: string
@@ -66,7 +67,22 @@ export interface BlockDocMeta {
   sourceCode: string
 }
 
-export interface DemoDocMeta {
+export interface BlockDocMeta {
+  slug: string
+  exportName: string
+  title: string
+  enTitle: string
+  category: string
+  tone: string
+  description: string
+  highlights: string[]
+  dependencies: string[]
+  registryDependencies: string[]
+  props: PropDoc[]
+  sourceCode: string
+}
+
+export interface PageDocMeta {
   slug: string
   registryName: string
   file: string
@@ -76,6 +92,8 @@ export interface DemoDocMeta {
   enTitle: string
   badge: string
   tone: string
+  category: string
+  fullBleed: boolean
   description: string
   highlights: string[]
   dependencies: string[]
@@ -103,16 +121,34 @@ export const COMPONENT_CATEGORIES = [
   { id: 'topology', title: '网络与架构拓扑', en: 'Topology & Architecture' },
 ] as const
 
-export const BLOCK_DOMAIN_CATEGORIES = [
+export const CARD_DOMAIN_CATEGORIES = [
   { id: 'all', title: '全部卡片', en: 'All' },
+  { id: 'metrics', title: '指标与 KPI', en: 'Metrics & KPI' },
+  { id: 'charts', title: '图表与分析', en: 'Charts & Analytics' },
+  { id: 'ops', title: '运维、拓扑与 IoT', en: 'Ops, Topology & IoT' },
   { id: 'ai', title: 'AI 与智能体', en: 'AI & Agents' },
-  { id: 'metrics', title: '核心指标与 KPI', en: 'Metrics & KPI' },
-  { id: 'charts', title: 'Recharts 图表卡片', en: 'Charts' },
-  { id: 'monitoring', title: '监控与智能硬件', en: 'Monitoring & IoT' },
-  { id: 'lists', title: '列表、榜单与动态', en: 'Lists & Feeds' },
-  { id: 'productivity', title: '日程、任务与效率', en: 'Productivity' },
-  { id: 'controls', title: '交互控制与快捷入口', en: 'Controls' },
-  { id: 'layout', title: '通栏表格与规划视图', en: 'Tables & Layout' },
+  { id: 'collaboration', title: '列表、日程与协作', en: 'Lists, Schedule & Tasks' },
+  { id: 'controls', title: '交互、表单与控制', en: 'Forms, Controls & Actions' },
+  { id: 'data-views', title: '表格与通栏视图', en: 'Tables & Full-Width' },
+] as const
+
+export const BLOCK_CATEGORIES = [
+  { id: 'all', title: '全部 Block', en: 'All' },
+  { id: 'auth', title: '认证与安全', en: 'Auth & Security' },
+  { id: 'dashboard', title: '仪表盘与数据', en: 'Dashboard & Data' },
+  { id: 'workspace', title: '协作与预约', en: 'Workspace & Booking' },
+  { id: 'ai', title: 'AI 智能体', en: 'AI Workbench' },
+  { id: 'settings', title: '设置与团队', en: 'Settings & Team' },
+  { id: 'commerce', title: '定价与计费', en: 'Pricing & Billing' },
+  { id: 'ops', title: '运维与拓扑', en: 'Ops & Topology' },
+] as const
+
+export const PAGE_CATEGORIES = [
+  { id: 'all', title: '全部页面', en: 'All' },
+  { id: 'app', title: '业务应用与流程', en: 'Applications & Flows' },
+  { id: 'workspace', title: '协作与效率工作台', en: 'Workspace & Productivity' },
+  { id: 'dashboard', title: '数据看板与中控', en: 'Dashboards & Consoles' },
+  { id: 'ops', title: '运维与拓扑观测', en: 'Ops & Topology' },
 ] as const
 
 export const COMPONENTS_MAP = componentsApiRaw as unknown as Record<string, ComponentDocMeta>
@@ -130,11 +166,17 @@ export const COMPONENTS_SIDEBAR_ORDER: ComponentDocMeta[] = COMPONENT_CATEGORIES
   getComponentsByCategory(cat.id),
 )
 
+export const CARDS_LIST = cardsApiRaw as unknown as CardDocMeta[]
+export const CARDS_MAP: Record<string, CardDocMeta> = Object.fromEntries(
+  CARDS_LIST.map((c) => [c.slug, c]),
+)
+
 export const BLOCKS_LIST = blocksApiRaw as unknown as BlockDocMeta[]
 export const BLOCKS_MAP: Record<string, BlockDocMeta> = Object.fromEntries(
   BLOCKS_LIST.map((b) => [b.slug, b]),
 )
-export const DEMOS_LIST = demosApiRaw as unknown as DemoDocMeta[]
-export const DEMOS_MAP: Record<string, DemoDocMeta> = Object.fromEntries(
-  DEMOS_LIST.map((d) => [d.slug, d]),
+
+export const PAGES_LIST = pagesApiRaw as unknown as PageDocMeta[]
+export const PAGES_MAP: Record<string, PageDocMeta> = Object.fromEntries(
+  PAGES_LIST.map((p) => [p.slug, p]),
 )

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "release-changelog-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "F9 版本发布记录卡 (ReleaseChangelogCard)",
   "description": "版本发布记录卡（F9 · 尺寸 F）— 3 列版本卡片 · 亮点列表",
   "registryDependencies": [
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "layout",
+    "cards",
+    "data-views",
     "size-f"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/release-changelog-card.tsx",
+      "path": "registry/glaze/cards/release-changelog-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/release-changelog-card.tsx",
+      "target": "components/cards/release-changelog-card.tsx",
       "content": "import { HueTag } from '@/components/ui/hue-tag'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport function ReleaseChangelogCard({\n  releases,\n  tone = 'white',\n}: {\n  releases: {\n    version: string\n    date: string\n    hue: Hue\n    title: string\n    highlights: string[]\n  }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <span className=\"font-glaze-display text-[20px] font-extrabold\">近期版本发布记录</span>\n      <div className=\"grid grid-cols-1 gap-4 md:grid-cols-3\">\n        {releases.slice(0, 3).map((r) => (\n          <div key={r.version} className=\"flex flex-col gap-2.5 rounded-overlay bg-[#F6F7F9] p-4\">\n            <div className=\"flex items-center justify-between\">\n              <HueTag hue={r.hue} size=\"sm\">\n                {r.version}\n              </HueTag>\n              <span className=\"font-glaze-mono text-[11px] text-[#8A90A0]\">{r.date}</span>\n            </div>\n            <div className=\"font-glaze-display text-[16px] font-extrabold text-[#1B1F27]\">\n              {r.title}\n            </div>\n            <ul className=\"flex flex-col gap-1.5 text-[12px] text-[#5B6170]\">\n              {r.highlights.map((h) => (\n                <li key={h}>· {h}</li>\n              ))}\n            </ul>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

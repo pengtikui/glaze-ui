@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "item-list-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "L3 明细列表大卡 (ItemListCard)",
   "description": "明细列表大卡（L3 · 尺寸 L）— 图标 · 标题 · 状态胶囊列表",
   "registryDependencies": [
@@ -12,15 +12,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "lists",
+    "cards",
+    "collaboration",
     "size-l"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/item-list-card.tsx",
+      "path": "registry/glaze/cards/item-list-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/item-list-card.tsx",
+      "target": "components/cards/item-list-card.tsx",
       "content": "import * as React from 'react'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type Status, type TileTone } from '@/lib/tokens'\n\nexport interface ItemListRow {\n  id?: string\n  mark: React.ReactNode\n  hue: Hue\n  name: string\n  subtitle: string\n  value: string\n  status: Status\n  statusLabel?: string\n  onClick?: () => void\n}\n\nexport interface ItemListCardProps {\n  title: string\n  summary: string\n  rows: ItemListRow[]\n  tone?: TileTone\n}\n\nexport function ItemListCard({\n  title,\n  summary,\n  rows,\n  tone = 'white',\n}: ItemListCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-start gap-2 py-6 px-7\">\n      <div className=\"flex items-baseline justify-between gap-2\">\n        <span className=\"text-[17px] font-bold\">{title}</span>\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          {summary}\n        </span>\n      </div>\n      <div className=\"flex flex-col\">\n        {rows.map((row, i) => (\n          <button\n            key={row.id ?? i}\n            type=\"button\"\n            onClick={row.onClick}\n            className=\"flex items-center gap-3 min-h-11.75 w-full border-0 bg-transparent px-1 -mx-1 rounded-[12px] text-left transition-colors hover:bg-[#F6F7F9] cursor-pointer glaze-focus\"\n            style={{ borderTop: i === 0 ? 'none' : '1px solid #F2F3F5' }}\n          >\n            <IconTile hue={row.hue} size=\"sm\" className=\"w-7.5 h-7.5 rounded-[9px] text-[13px]\">\n              {row.mark}\n            </IconTile>\n            <span className=\"flex-1 min-w-0 flex items-baseline gap-2\">\n              <span className=\"text-[14px] font-semibold text-[#1B1F27] truncate\">\n                {row.name}\n              </span>\n              <span className=\"text-[12px] text-[#6B7280] truncate\">\n                {row.subtitle}\n              </span>\n            </span>\n            <span className=\"text-[13px] text-[#5B6170] shrink-0 whitespace-nowrap\">{row.value}</span>\n            <StatusPill status={row.status} size=\"sm\">\n              {row.statusLabel}\n            </StatusPill>\n          </button>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

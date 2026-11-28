@@ -65,7 +65,7 @@
         ".glaze-grid": {
           "display": "grid",
           "grid-template-columns": "repeat(4, minmax(0, 1fr))",
-          "grid-auto-rows": "minmax(200px, auto)",
+          "grid-auto-rows": "auto",
           "grid-auto-flow": "row dense",
           "gap": "16px"
         },
@@ -2052,7 +2052,7 @@
     },
     {
       "name": "status-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S1 状态卡 (StatusCard)",
       "description": "状态卡（S1 · 尺寸 S）— 标签 · 状态大字 · 呼吸点",
       "registryDependencies": [
@@ -2062,21 +2062,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/status-card.tsx",
+          "path": "registry/glaze/cards/status-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/status-card.tsx"
+          "target": "components/cards/status-card.tsx"
         }
       ]
     },
     {
       "name": "metric-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S2 单一指标卡 (MetricCard)",
       "description": "单一指标卡（S2 · 尺寸 S）— 标签 · 主数字 · 单位 · 图标",
       "dependencies": [
@@ -2088,21 +2088,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/metric-card.tsx",
+          "path": "registry/glaze/cards/metric-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/metric-card.tsx"
+          "target": "components/cards/metric-card.tsx"
         }
       ]
     },
     {
       "name": "progress-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S3 进度条卡 (ProgressCard)",
       "description": "进度条卡（S3 · 尺寸 S）— 标签 · 数值 · 线性进度条",
       "registryDependencies": [
@@ -2112,21 +2112,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/progress-card.tsx",
+          "path": "registry/glaze/cards/progress-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/progress-card.tsx"
+          "target": "components/cards/progress-card.tsx"
         }
       ]
     },
     {
       "name": "ring-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S4 环形进度卡 (RingCard)",
       "description": "环形进度卡（S4 · 尺寸 S）— 标签 · 环形图 · 说明",
       "registryDependencies": [
@@ -2136,21 +2136,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ring-card.tsx",
+          "path": "registry/glaze/cards/ring-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ring-card.tsx"
+          "target": "components/cards/ring-card.tsx"
         }
       ]
     },
     {
       "name": "metric-bars-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S5 微柱指标卡 (MetricBarsCard)",
       "description": "微柱指标卡（S5 · 尺寸 S）— 标签 · 数值 · 7 天迷你柱",
       "registryDependencies": [
@@ -2160,21 +2160,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/metric-bars-card.tsx",
+          "path": "registry/glaze/cards/metric-bars-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/metric-bars-card.tsx"
+          "target": "components/cards/metric-bars-card.tsx"
         }
       ]
     },
     {
       "name": "dot-matrix-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S6 点阵占比卡 (DotMatrixCard)",
       "description": "点阵占比卡（S6 · 尺寸 S）— 标签 · 24 点阵 · 统计",
       "registryDependencies": [
@@ -2183,21 +2183,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/dot-matrix-card.tsx",
+          "path": "registry/glaze/cards/dot-matrix-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/dot-matrix-card.tsx"
+          "target": "components/cards/dot-matrix-card.tsx"
         }
       ]
     },
     {
       "name": "gauge-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S7 仪表盘卡 (GaugeCard)",
       "description": "仪表盘卡（S7 · 尺寸 S）— 标签 · 弧形表盘 · 百分比",
       "registryDependencies": [
@@ -2206,21 +2206,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/gauge-card.tsx",
+          "path": "registry/glaze/cards/gauge-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/gauge-card.tsx"
+          "target": "components/cards/gauge-card.tsx"
         }
       ]
     },
     {
       "name": "quick-entry-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "S8 快捷入口卡 (QuickEntryCard)",
       "description": "快捷入口卡（S8 · 尺寸 S）— 图标底 · 标题 · 跳转箭头",
       "dependencies": [
@@ -2232,92 +2232,68 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/quick-entry-card.tsx",
+          "path": "registry/glaze/cards/quick-entry-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/quick-entry-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "trend-card",
-      "type": "registry:block",
-      "title": "S9 趋势折线卡 (TrendCard)",
-      "description": "趋势折线卡（S9 · 尺寸 S）— 数值 · 环比胶囊 · 迷你曲线",
-      "registryDependencies": [
-        "@glaze/spark-chart",
-        "@glaze/style",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "metrics",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/trend-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/trend-card.tsx"
+          "target": "components/cards/quick-entry-card.tsx"
         }
       ]
     },
     {
       "name": "compare-card",
-      "type": "registry:block",
-      "title": "S10 对比进度小卡 (CompareCard)",
-      "description": "对比进度小卡（S10 · 尺寸 S）— 两项数值对比条 · 差值",
+      "type": "registry:component",
+      "title": "S9 对比进度小卡 (CompareCard)",
+      "description": "对比进度小卡（S9 · 尺寸 S）— 两项数值对比条 · 差值",
       "registryDependencies": [
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/compare-card.tsx",
+          "path": "registry/glaze/cards/compare-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/compare-card.tsx"
+          "target": "components/cards/compare-card.tsx"
         }
       ]
     },
     {
       "name": "countdown-card",
-      "type": "registry:block",
-      "title": "S11 倒计时卡 (CountdownCard)",
-      "description": "倒计时卡（S11 · 尺寸 S）— 事件名 · 剩余天数 · 进度格",
+      "type": "registry:component",
+      "title": "S10 倒计时卡 (CountdownCard)",
+      "description": "倒计时卡（S10 · 尺寸 S）— 事件名 · 剩余天数 · 进度格",
       "registryDependencies": [
         "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/countdown-card.tsx",
+          "path": "registry/glaze/cards/countdown-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/countdown-card.tsx"
+          "target": "components/cards/countdown-card.tsx"
         }
       ]
     },
     {
       "name": "switch-card",
-      "type": "registry:block",
-      "title": "S12 开关控制卡 (SwitchCard)",
-      "description": "开关控制卡（S12 · 尺寸 S）— 图标 · 实时 Switch 开关",
+      "type": "registry:component",
+      "title": "S11 开关控制卡 (SwitchCard)",
+      "description": "开关控制卡（S11 · 尺寸 S）— 图标 · 实时 Switch 开关",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2328,23 +2304,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/switch-card.tsx",
+          "path": "registry/glaze/cards/switch-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/switch-card.tsx"
+          "target": "components/cards/switch-card.tsx"
         }
       ]
     },
     {
       "name": "members-card",
-      "type": "registry:block",
-      "title": "S13 成员叠放卡 (MembersCard)",
-      "description": "成员叠放卡（S13 · 尺寸 S）— 人数 · 头像组 · 活跃说明",
+      "type": "registry:component",
+      "title": "S12 成员叠放卡 (MembersCard)",
+      "description": "成员叠放卡（S12 · 尺寸 S）— 人数 · 头像组 · 活跃说明",
       "registryDependencies": [
         "@glaze/avatar",
         "@glaze/style",
@@ -2352,96 +2328,46 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/members-card.tsx",
+          "path": "registry/glaze/cards/members-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/members-card.tsx"
+          "target": "components/cards/members-card.tsx"
         }
       ]
     },
     {
       "name": "clock-card",
-      "type": "registry:block",
-      "title": "S14 实时时钟卡 (ClockCard)",
-      "description": "实时时钟卡（S14 · 尺寸 S）— 城市 · 实时时间 · 日期",
+      "type": "registry:component",
+      "title": "S13 实时时钟卡 (ClockCard)",
+      "description": "实时时钟卡（S13 · 尺寸 S）— 城市 · 实时时间 · 日期",
       "registryDependencies": [
         "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/clock-card.tsx",
+          "path": "registry/glaze/cards/clock-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/clock-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "notification-card",
-      "type": "registry:block",
-      "title": "S15 通知提醒卡 (NotificationCard)",
-      "description": "通知提醒卡（S15 · 尺寸 S）— 图标 · 未读角标 · 最新预览",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "@glaze/icon-tile",
-        "@glaze/style",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "lists",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/notification-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/notification-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "graphic-metric-card",
-      "type": "registry:block",
-      "title": "S16 图形化指标卡 (GraphicMetricCard)",
-      "description": "图形化指标卡（S16 · 尺寸 S）— 背景几何装饰 · 数值",
-      "registryDependencies": [
-        "@glaze/style",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "metrics",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/graphic-metric-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/graphic-metric-card.tsx"
+          "target": "components/cards/clock-card.tsx"
         }
       ]
     },
     {
       "name": "weather-card",
-      "type": "registry:block",
-      "title": "S17 天气实况卡 (WeatherCard)",
-      "description": "天气实况卡（S17 · 尺寸 S）— 城市 · 温度 · 体感湿度",
+      "type": "registry:component",
+      "title": "S14 天气实况卡 (WeatherCard)",
+      "description": "天气实况卡（S14 · 尺寸 S）— 城市 · 温度 · 体感湿度",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2451,23 +2377,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/weather-card.tsx",
+          "path": "registry/glaze/cards/weather-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/weather-card.tsx"
+          "target": "components/cards/weather-card.tsx"
         }
       ]
     },
     {
       "name": "battery-card",
-      "type": "registry:block",
-      "title": "S18 电量分段卡 (BatteryCard)",
-      "description": "电量分段卡（S18 · 尺寸 S）— 设备 · 5 段电芯 · 剩余时长",
+      "type": "registry:component",
+      "title": "S15 电量分段卡 (BatteryCard)",
+      "description": "电量分段卡（S15 · 尺寸 S）— 设备 · 5 段电芯 · 剩余时长",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2477,23 +2403,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/battery-card.tsx",
+          "path": "registry/glaze/cards/battery-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/battery-card.tsx"
+          "target": "components/cards/battery-card.tsx"
         }
       ]
     },
     {
       "name": "temperature-card",
-      "type": "registry:block",
-      "title": "S19 温控调节卡 (TemperatureCard)",
-      "description": "温控调节卡（S19 · 尺寸 S）— 房间 · 可交互 ± 调温",
+      "type": "registry:component",
+      "title": "S16 温控调节卡 (TemperatureCard)",
+      "description": "温控调节卡（S16 · 尺寸 S）— 房间 · 可交互 ± 调温",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2504,46 +2430,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/temperature-card.tsx",
+          "path": "registry/glaze/cards/temperature-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/temperature-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "speed-card",
-      "type": "registry:block",
-      "title": "S20 半圆速度表卡 (SpeedCard)",
-      "description": "半圆速度表卡（S20 · 尺寸 S）— 弧形速度盘 · 数值单位",
-      "registryDependencies": [
-        "@glaze/radial-chart",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "monitoring",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/speed-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/speed-card.tsx"
+          "target": "components/cards/temperature-card.tsx"
         }
       ]
     },
     {
       "name": "quota-card",
-      "type": "registry:block",
-      "title": "S21 配额消耗卡 (QuotaCard)",
-      "description": "配额消耗卡（S21 · 尺寸 S）— 已用/总量 · 进度 · 重置日",
+      "type": "registry:component",
+      "title": "S17 配额消耗卡 (QuotaCard)",
+      "description": "配额消耗卡（S17 · 尺寸 S）— 已用/总量 · 进度 · 重置日",
       "registryDependencies": [
         "@glaze/progress",
         "@glaze/style",
@@ -2551,23 +2454,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/quota-card.tsx",
+          "path": "registry/glaze/cards/quota-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/quota-card.tsx"
+          "target": "components/cards/quota-card.tsx"
         }
       ]
     },
     {
       "name": "streak-card",
-      "type": "registry:block",
-      "title": "S22 连续打卡卡 (StreakCard)",
-      "description": "连续打卡卡（S22 · 尺寸 S）— 天数 · 7 天完成点阵",
+      "type": "registry:component",
+      "title": "S18 连续打卡卡 (StreakCard)",
+      "description": "连续打卡卡（S18 · 尺寸 S）— 天数 · 7 天完成点阵",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2577,23 +2480,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/streak-card.tsx",
+          "path": "registry/glaze/cards/streak-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/streak-card.tsx"
+          "target": "components/cards/streak-card.tsx"
         }
       ]
     },
     {
       "name": "rating-card",
-      "type": "registry:block",
-      "title": "S23 星级评分卡 (RatingCard)",
-      "description": "星级评分卡（S23 · 尺寸 S）— 大数字评分 · 五星 · 评价数",
+      "type": "registry:component",
+      "title": "S19 星级评分卡 (RatingCard)",
+      "description": "星级评分卡（S19 · 尺寸 S）— 大数字评分 · 五星 · 评价数",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2603,93 +2506,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/rating-card.tsx",
+          "path": "registry/glaze/cards/rating-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/rating-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "quote-card",
-      "type": "registry:block",
-      "title": "S24 每日金句卡 (QuoteCard)",
-      "description": "每日金句卡（S24 · 尺寸 S）— 标签 · 引语 · 署名",
-      "registryDependencies": [
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "productivity",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/quote-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/quote-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "qr-card",
-      "type": "registry:block",
-      "title": "S25 二维码名片卡 (QrCard)",
-      "description": "二维码名片卡（S25 · 尺寸 S）— 标题 · 矢量 QR · 扫码说明",
-      "registryDependencies": [
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "controls",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/qr-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/qr-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "key-shortcut-card",
-      "type": "registry:block",
-      "title": "S26 快捷键指南卡 (KeyShortcutCard)",
-      "description": "快捷键指南卡（S26 · 尺寸 S）— 按键组合键帽 · 功能说明",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "@glaze/style",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "controls",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/key-shortcut-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/key-shortcut-card.tsx"
+          "target": "components/cards/rating-card.tsx"
         }
       ]
     },
     {
       "name": "slider-control-card",
-      "type": "registry:block",
-      "title": "S27 滑块控制卡 (SliderControlCard)",
-      "description": "滑块控制卡（S27 · 尺寸 S）— 实时数值 · 嵌入式 Slider",
+      "type": "registry:component",
+      "title": "S20 滑块控制卡 (SliderControlCard)",
+      "description": "滑块控制卡（S20 · 尺寸 S）— 实时数值 · 嵌入式 Slider",
       "registryDependencies": [
         "@glaze/slider",
         "@glaze/style",
@@ -2697,46 +2530,46 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/slider-control-card.tsx",
+          "path": "registry/glaze/cards/slider-control-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/slider-control-card.tsx"
+          "target": "components/cards/slider-control-card.tsx"
         }
       ]
     },
     {
       "name": "mini-calendar-day-card",
-      "type": "registry:block",
-      "title": "S28 撕页日历卡 (MiniCalendarDayCard)",
-      "description": "撕页日历卡（S28 · 尺寸 S）— 月份胶囊 · 超大日期 · 日程数",
+      "type": "registry:component",
+      "title": "S21 撕页日历卡 (MiniCalendarDayCard)",
+      "description": "撕页日历卡（S21 · 尺寸 S）— 月份胶囊 · 超大日期 · 日程数",
       "registryDependencies": [
         "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/mini-calendar-day-card.tsx",
+          "path": "registry/glaze/cards/mini-calendar-day-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/mini-calendar-day-card.tsx"
+          "target": "components/cards/mini-calendar-day-card.tsx"
         }
       ]
     },
     {
       "name": "currency-card",
-      "type": "registry:block",
-      "title": "S29 汇率行情卡 (CurrencyCard)",
-      "description": "汇率行情卡（S29 · 尺寸 S）— 币种对 · 现价 · 涨跌胶囊",
+      "type": "registry:component",
+      "title": "S22 汇率行情卡 (CurrencyCard)",
+      "description": "汇率行情卡（S22 · 尺寸 S）— 币种对 · 现价 · 涨跌胶囊",
       "registryDependencies": [
         "@glaze/status-pill",
         "@glaze/style",
@@ -2744,23 +2577,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/currency-card.tsx",
+          "path": "registry/glaze/cards/currency-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/currency-card.tsx"
+          "target": "components/cards/currency-card.tsx"
         }
       ]
     },
     {
       "name": "health-pulse-card",
-      "type": "registry:block",
-      "title": "S30 心率脉搏卡 (HealthPulseCard)",
-      "description": "心率脉搏卡（S30 · 尺寸 S）— BPM 大数字 · 心电折线",
+      "type": "registry:component",
+      "title": "S23 心率脉搏卡 (HealthPulseCard)",
+      "description": "心率脉搏卡（S23 · 尺寸 S）— BPM 大数字 · 心电折线",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2771,23 +2604,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/health-pulse-card.tsx",
+          "path": "registry/glaze/cards/health-pulse-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/health-pulse-card.tsx"
+          "target": "components/cards/health-pulse-card.tsx"
         }
       ]
     },
     {
       "name": "water-intake-card",
-      "type": "registry:block",
-      "title": "S31 饮水记录卡 (WaterIntakeCard)",
-      "description": "饮水记录卡（S31 · 尺寸 S）— 杯数统计 · 点击 +1 交互",
+      "type": "registry:component",
+      "title": "S24 饮水记录卡 (WaterIntakeCard)",
+      "description": "饮水记录卡（S24 · 尺寸 S）— 杯数统计 · 点击 +1 交互",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2798,50 +2631,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/water-intake-card.tsx",
+          "path": "registry/glaze/cards/water-intake-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/water-intake-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "audio-now-playing-card",
-      "type": "registry:block",
-      "title": "S32 迷你播放器卡 (AudioNowPlayingCard)",
-      "description": "迷你播放器卡（S32 · 尺寸 S）— 均衡器 · 曲目 · 播停按钮",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "@glaze/button",
-        "@glaze/style",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "controls",
-        "size-s"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/audio-now-playing-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/audio-now-playing-card.tsx"
+          "target": "components/cards/water-intake-card.tsx"
         }
       ]
     },
     {
       "name": "signal-strength-card",
-      "type": "registry:block",
-      "title": "S33 信号强度卡 (SignalStrengthCard)",
-      "description": "信号强度卡（S33 · 尺寸 S）— SSID · 4 格信号柱 · 延迟",
+      "type": "registry:component",
+      "title": "S25 信号强度卡 (SignalStrengthCard)",
+      "description": "信号强度卡（S25 · 尺寸 S）— SSID · 4 格信号柱 · 延迟",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2852,23 +2658,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/signal-strength-card.tsx",
+          "path": "registry/glaze/cards/signal-strength-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/signal-strength-card.tsx"
+          "target": "components/cards/signal-strength-card.tsx"
         }
       ]
     },
     {
       "name": "disk-temp-card",
-      "type": "registry:block",
-      "title": "S34 硬件温度计卡 (DiskTempCard)",
-      "description": "硬件温度计卡（S34 · 尺寸 S）— 温度 · 竖条温度计 · 设备",
+      "type": "registry:component",
+      "title": "S26 硬件温度计卡 (DiskTempCard)",
+      "description": "硬件温度计卡（S26 · 尺寸 S）— 温度 · 竖条温度计 · 设备",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -2878,46 +2684,46 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/disk-temp-card.tsx",
+          "path": "registry/glaze/cards/disk-temp-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/disk-temp-card.tsx"
+          "target": "components/cards/disk-temp-card.tsx"
         }
       ]
     },
     {
       "name": "tag-cloud-card",
-      "type": "registry:block",
-      "title": "S35 标签云小卡 (TagCloudCard)",
-      "description": "标签云小卡（S35 · 尺寸 S）— 标题 · 多色 HueTag 集合",
+      "type": "registry:component",
+      "title": "S27 标签云小卡 (TagCloudCard)",
+      "description": "标签云小卡（S27 · 尺寸 S）— 标题 · 多色 HueTag 集合",
       "registryDependencies": [
         "@glaze/hue-tag",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/tag-cloud-card.tsx",
+          "path": "registry/glaze/cards/tag-cloud-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/tag-cloud-card.tsx"
+          "target": "components/cards/tag-cloud-card.tsx"
         }
       ]
     },
     {
       "name": "quick-action-grid-card",
-      "type": "registry:block",
-      "title": "S36 2×2 快捷网格卡 (QuickActionGridCard)",
-      "description": "2×2 快捷网格卡（S36 · 尺寸 S）— 4 个高密度快捷按钮",
+      "type": "registry:component",
+      "title": "S28 2×2 快捷网格卡 (QuickActionGridCard)",
+      "description": "2×2 快捷网格卡（S28 · 尺寸 S）— 4 个高密度快捷按钮",
       "registryDependencies": [
         "@glaze/icon-tile",
         "@glaze/motion",
@@ -2925,23 +2731,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/quick-action-grid-card.tsx",
+          "path": "registry/glaze/cards/quick-action-grid-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/quick-action-grid-card.tsx"
+          "target": "components/cards/quick-action-grid-card.tsx"
         }
       ]
     },
     {
       "name": "spark-area-card",
-      "type": "registry:block",
-      "title": "S37 面积微趋势小卡 (SparkAreaCard)",
-      "description": "面积微趋势小卡（S37 · 尺寸 S）— KPI · 环比胶囊 · 渐变面积微图",
+      "type": "registry:component",
+      "title": "S29 面积微趋势小卡 (SparkAreaCard)",
+      "description": "面积微趋势小卡（S29 · 尺寸 S）— KPI · 环比胶囊 · 渐变面积微图",
       "registryDependencies": [
         "@glaze/spark-chart",
         "@glaze/style",
@@ -2949,23 +2755,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/spark-area-card.tsx",
+          "path": "registry/glaze/cards/spark-area-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/spark-area-card.tsx"
+          "target": "components/cards/spark-area-card.tsx"
         }
       ]
     },
     {
       "name": "radial-score-card",
-      "type": "registry:block",
-      "title": "S38 径向评分小卡 (RadialScoreCard)",
-      "description": "径向评分小卡（S38 · 尺寸 S）— 多环径向进度 · 中心得分",
+      "type": "registry:component",
+      "title": "S30 径向评分小卡 (RadialScoreCard)",
+      "description": "径向评分小卡（S30 · 尺寸 S）— 多环径向进度 · 中心得分",
       "registryDependencies": [
         "@glaze/radial-chart",
         "@glaze/style",
@@ -2973,23 +2779,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/radial-score-card.tsx",
+          "path": "registry/glaze/cards/radial-score-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/radial-score-card.tsx"
+          "target": "components/cards/radial-score-card.tsx"
         }
       ]
     },
     {
       "name": "ai-token-budget-card",
-      "type": "registry:block",
-      "title": "S39 AI 上下文预算小卡 (AiTokenBudgetCard)",
-      "description": "AI 上下文预算小卡（S39 · 尺寸 S）— Token 环形用量 · 缓存命中 · 费用",
+      "type": "registry:component",
+      "title": "S31 AI 上下文预算小卡 (AiTokenBudgetCard)",
+      "description": "AI 上下文预算小卡（S31 · 尺寸 S）— Token 环形用量 · 缓存命中 · 费用",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -3001,23 +2807,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-token-budget-card.tsx",
+          "path": "registry/glaze/cards/ai-token-budget-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-token-budget-card.tsx"
+          "target": "components/cards/ai-token-budget-card.tsx"
         }
       ]
     },
     {
       "name": "ai-agent-status-card",
-      "type": "registry:block",
-      "title": "S40 智能体运行状态小卡 (AiAgentStatusCard)",
-      "description": "智能体运行状态小卡（S40 · 尺寸 S）— 模型标识 · 呼吸状态点 · 子智能体数",
+      "type": "registry:component",
+      "title": "S32 智能体运行状态小卡 (AiAgentStatusCard)",
+      "description": "智能体运行状态小卡（S32 · 尺寸 S）— 模型标识 · 呼吸状态点 · 子智能体数",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -3029,21 +2835,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-s"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-agent-status-card.tsx",
+          "path": "registry/glaze/cards/ai-agent-status-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-agent-status-card.tsx"
+          "target": "components/cards/ai-agent-status-card.tsx"
         }
       ]
     },
     {
       "name": "area-trend-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W1 面积趋势卡 (AreaTrendCard)",
       "description": "面积趋势卡（W1 · 尺寸 W）— 标题 · 现值 · 面积折线",
       "registryDependencies": [
@@ -3052,21 +2858,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/area-trend-card.tsx",
+          "path": "registry/glaze/cards/area-trend-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/area-trend-card.tsx"
+          "target": "components/cards/area-trend-card.tsx"
         }
       ]
     },
     {
       "name": "app-launcher-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W2 应用发射台卡 (AppLauncherCard)",
       "description": "应用发射台卡（W2 · 尺寸 W）— 8 宫格彩色应用入口",
       "registryDependencies": [
@@ -3076,21 +2882,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/app-launcher-card.tsx",
+          "path": "registry/glaze/cards/app-launcher-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/app-launcher-card.tsx"
+          "target": "components/cards/app-launcher-card.tsx"
         }
       ]
     },
     {
       "name": "steps-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W3 步骤流程横卡 (StepsCard)",
       "description": "步骤流程横卡（W3 · 尺寸 W）— 编号进度 · 当前激活步骤",
       "registryDependencies": [
@@ -3098,21 +2904,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/steps-card.tsx",
+          "path": "registry/glaze/cards/steps-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/steps-card.tsx"
+          "target": "components/cards/steps-card.tsx"
         }
       ]
     },
     {
       "name": "object-detail-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W4 对象详情卡 (ObjectDetailCard)",
       "description": "对象详情卡（W4 · 尺寸 W）— 图标 · 标题 · 属性键值",
       "dependencies": [
@@ -3125,21 +2931,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/object-detail-card.tsx",
+          "path": "registry/glaze/cards/object-detail-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/object-detail-card.tsx"
+          "target": "components/cards/object-detail-card.tsx"
         }
       ]
     },
     {
       "name": "multi-metric-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W5 多指标横排卡 (MultiMetricCard)",
       "description": "多指标横排卡（W5 · 尺寸 W）— 3 列并排大指标",
       "registryDependencies": [
@@ -3148,21 +2954,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/multi-metric-card.tsx",
+          "path": "registry/glaze/cards/multi-metric-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/multi-metric-card.tsx"
+          "target": "components/cards/multi-metric-card.tsx"
         }
       ]
     },
     {
       "name": "heatmap-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W6 贡献热力图卡 (HeatmapCard)",
       "description": "贡献热力图卡（W6 · 尺寸 W）— 7×24 活跃色阶方块矩阵",
       "registryDependencies": [
@@ -3171,21 +2977,21 @@
         "@glaze/tooltip"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/heatmap-card.tsx",
+          "path": "registry/glaze/cards/heatmap-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/heatmap-card.tsx"
+          "target": "components/cards/heatmap-card.tsx"
         }
       ]
     },
     {
       "name": "alert-banner-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W7 告警横幅卡 (AlertBannerCard)",
       "description": "告警横幅卡（W7 · 尺寸 W）— 标题 · 说明 · 动作按钮",
       "dependencies": [
@@ -3199,21 +3005,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/alert-banner-card.tsx",
+          "path": "registry/glaze/cards/alert-banner-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/alert-banner-card.tsx"
+          "target": "components/cards/alert-banner-card.tsx"
         }
       ]
     },
     {
       "name": "distribution-bar-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W8 分段分布条卡 (DistributionBarCard)",
       "description": "分段分布条卡（W8 · 尺寸 W）— 堆叠彩色比例条 · 图例",
       "registryDependencies": [
@@ -3223,21 +3029,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/distribution-bar-card.tsx",
+          "path": "registry/glaze/cards/distribution-bar-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/distribution-bar-card.tsx"
+          "target": "components/cards/distribution-bar-card.tsx"
         }
       ]
     },
     {
       "name": "media-player-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W9 宽格媒体播放器 (MediaPlayerCard)",
       "description": "宽格媒体播放器（W9 · 尺寸 W）— 封面 · 播停切歌 · 进度条",
       "dependencies": [
@@ -3251,21 +3057,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/media-player-card.tsx",
+          "path": "registry/glaze/cards/media-player-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/media-player-card.tsx"
+          "target": "components/cards/media-player-card.tsx"
         }
       ]
     },
     {
       "name": "dual-series-trend-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W10 双曲线对比卡 (DualSeriesTrendCard)",
       "description": "双曲线对比卡（W10 · 尺寸 W）— 实线/虚线双序列对比",
       "registryDependencies": [
@@ -3275,21 +3081,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/dual-series-trend-card.tsx",
+          "path": "registry/glaze/cards/dual-series-trend-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/dual-series-trend-card.tsx"
+          "target": "components/cards/dual-series-trend-card.tsx"
         }
       ]
     },
     {
       "name": "uptime-strip-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W11 30 日 SLA 状态条 (UptimeStripCard)",
       "description": "30 日 SLA 状态条（W11 · 尺寸 W）— 30 根可用性绿条 · Tooltip",
       "registryDependencies": [
@@ -3300,21 +3106,21 @@
         "@glaze/tooltip"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/uptime-strip-card.tsx",
+          "path": "registry/glaze/cards/uptime-strip-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/uptime-strip-card.tsx"
+          "target": "components/cards/uptime-strip-card.tsx"
         }
       ]
     },
     {
       "name": "profile-summary-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W12 人物名片摘要卡 (ProfileSummaryCard)",
       "description": "人物名片摘要卡（W12 · 尺寸 W）— 头像 · 职位 · 状态 · 3 指标",
       "registryDependencies": [
@@ -3325,48 +3131,45 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/profile-summary-card.tsx",
+          "path": "registry/glaze/cards/profile-summary-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/profile-summary-card.tsx"
+          "target": "components/cards/profile-summary-card.tsx"
         }
       ]
     },
     {
-      "name": "quick-search-card",
-      "type": "registry:block",
-      "title": "W13 嵌入式搜索卡 (QuickSearchCard)",
-      "description": "嵌入式搜索卡（W13 · 尺寸 W）— 全圆搜索框 · 热门关键词胶囊",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
+      "name": "command-launcher-card",
+      "type": "registry:component",
+      "title": "W13 嵌入式命令检索卡 (CommandLauncherCard)",
+      "description": "嵌入式命令检索卡（W13 · 尺寸 W）— 基于 cmdk 的卡片内模糊命令筛选与触发",
       "registryDependencies": [
-        "@glaze/input",
-        "@glaze/motion",
+        "@glaze/command",
+        "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/quick-search-card.tsx",
+          "path": "registry/glaze/cards/command-launcher-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/quick-search-card.tsx"
+          "target": "components/cards/command-launcher-card.tsx"
         }
       ]
     },
     {
       "name": "flight-route-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W14 航班行程卡 (FlightRouteCard)",
       "description": "航班行程卡（W14 · 尺寸 W）— 三字码 · 虚线航迹 · 登机口",
       "dependencies": [
@@ -3378,21 +3181,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/flight-route-card.tsx",
+          "path": "registry/glaze/cards/flight-route-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/flight-route-card.tsx"
+          "target": "components/cards/flight-route-card.tsx"
         }
       ]
     },
     {
       "name": "weather-forecast-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W15 5 日天气预报卡 (WeatherForecastCard)",
       "description": "5 日天气预报卡（W15 · 尺寸 W）— 5 天最高/最低温与降水率",
       "dependencies": [
@@ -3404,21 +3207,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/weather-forecast-card.tsx",
+          "path": "registry/glaze/cards/weather-forecast-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/weather-forecast-card.tsx"
+          "target": "components/cards/weather-forecast-card.tsx"
         }
       ]
     },
     {
       "name": "server-resource-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W16 三环资源监控卡 (ServerResourceCard)",
       "description": "三环资源监控卡（W16 · 尺寸 W）— CPU / RAM / Disk 并排环图",
       "registryDependencies": [
@@ -3429,21 +3232,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/server-resource-card.tsx",
+          "path": "registry/glaze/cards/server-resource-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/server-resource-card.tsx"
+          "target": "components/cards/server-resource-card.tsx"
         }
       ]
     },
     {
       "name": "budget-meter-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W17 月度预算计量卡 (BudgetMeterCard)",
       "description": "月度预算计量卡（W17 · 尺寸 W）— 自动语义 Meter · 分类标签",
       "registryDependencies": [
@@ -3454,21 +3257,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/budget-meter-card.tsx",
+          "path": "registry/glaze/cards/budget-meter-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/budget-meter-card.tsx"
+          "target": "components/cards/budget-meter-card.tsx"
         }
       ]
     },
     {
       "name": "pomodoro-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W18 番茄专注钟卡 (PomodoroCard)",
       "description": "番茄专注钟卡（W18 · 尺寸 W）— 可运行倒计时 · 开始/重置",
       "dependencies": [
@@ -3481,21 +3284,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/pomodoro-card.tsx",
+          "path": "registry/glaze/cards/pomodoro-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/pomodoro-card.tsx"
+          "target": "components/cards/pomodoro-card.tsx"
         }
       ]
     },
     {
       "name": "quick-note-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W19 灵感速记便签卡 (QuickNoteCard)",
       "description": "灵感速记便签卡（W19 · 尺寸 W）— 可编辑文本区 · 字数统计",
       "registryDependencies": [
@@ -3504,21 +3307,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/quick-note-card.tsx",
+          "path": "registry/glaze/cards/quick-note-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/quick-note-card.tsx"
+          "target": "components/cards/quick-note-card.tsx"
         }
       ]
     },
     {
       "name": "device-control-strip-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W20 三设备联动控制条 (DeviceControlStripCard)",
       "description": "三设备联动控制条（W20 · 尺寸 W）— 3 组可切换智能设备开关",
       "registryDependencies": [
@@ -3528,21 +3331,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/device-control-strip-card.tsx",
+          "path": "registry/glaze/cards/device-control-strip-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/device-control-strip-card.tsx"
+          "target": "components/cards/device-control-strip-card.tsx"
         }
       ]
     },
     {
       "name": "spark-metric-row-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W21 三列微柱 KPI 带 (SparkMetricRowCard)",
       "description": "三列微柱 KPI 带（W21 · 尺寸 W）— 3 组紧凑 KPI + 迷你柱图",
       "registryDependencies": [
@@ -3552,21 +3355,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/spark-metric-row-card.tsx",
+          "path": "registry/glaze/cards/spark-metric-row-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/spark-metric-row-card.tsx"
+          "target": "components/cards/spark-metric-row-card.tsx"
         }
       ]
     },
     {
       "name": "milestone-banner-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W22 里程碑进度横幅 (MilestoneBannerCard)",
       "description": "里程碑进度横幅（W22 · 尺寸 W）— 版本号 · 进度条 · 负责人头像",
       "registryDependencies": [
@@ -3577,21 +3380,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/milestone-banner-card.tsx",
+          "path": "registry/glaze/cards/milestone-banner-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/milestone-banner-card.tsx"
+          "target": "components/cards/milestone-banner-card.tsx"
         }
       ]
     },
     {
       "name": "code-deploy-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W23 CI/CD 部署状态卡 (CodeDeployCard)",
       "description": "CI/CD 部署状态卡（W23 · 尺寸 W）— 仓库 · 分支 · SHA · 构建耗时",
       "dependencies": [
@@ -3605,21 +3408,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/code-deploy-card.tsx",
+          "path": "registry/glaze/cards/code-deploy-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/code-deploy-card.tsx"
+          "target": "components/cards/code-deploy-card.tsx"
         }
       ]
     },
     {
       "name": "notification-digest-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W24 消息摘要通知卡 (NotificationDigestCard)",
       "description": "消息摘要通知卡（W24 · 尺寸 W）— 未读数 · 分类标签 · 最新预览",
       "dependencies": [
@@ -3633,21 +3436,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/notification-digest-card.tsx",
+          "path": "registry/glaze/cards/notification-digest-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/notification-digest-card.tsx"
+          "target": "components/cards/notification-digest-card.tsx"
         }
       ]
     },
     {
       "name": "stacked-area-trend-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W25 堆叠面积趋势宽卡 (StackedAreaTrendCard)",
       "description": "堆叠面积趋势宽卡（W25 · 尺寸 W）— 多端流量堆叠面积 · 可点击图例",
       "registryDependencies": [
@@ -3657,21 +3460,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/stacked-area-trend-card.tsx",
+          "path": "registry/glaze/cards/stacked-area-trend-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/stacked-area-trend-card.tsx"
+          "target": "components/cards/stacked-area-trend-card.tsx"
         }
       ]
     },
     {
       "name": "horizontal-bar-rank-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W26 横向条形排行宽卡 (HorizontalBarRankCard)",
       "description": "横向条形排行宽卡（W26 · 尺寸 W）— 横向圆角条形图 · 悬停提示",
       "registryDependencies": [
@@ -3680,21 +3483,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/horizontal-bar-rank-card.tsx",
+          "path": "registry/glaze/cards/horizontal-bar-rank-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/horizontal-bar-rank-card.tsx"
+          "target": "components/cards/horizontal-bar-rank-card.tsx"
         }
       ]
     },
     {
       "name": "target-line-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W27 目标基线折线宽卡 (TargetLineCard)",
       "description": "目标基线折线宽卡（W27 · 尺寸 W）— 带参考红线折线 · 状态徽章",
       "registryDependencies": [
@@ -3705,21 +3508,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/target-line-card.tsx",
+          "path": "registry/glaze/cards/target-line-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/target-line-card.tsx"
+          "target": "components/cards/target-line-card.tsx"
         }
       ]
     },
     {
       "name": "ai-prompt-bar-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W28 AI 提示词发射宽卡 (AiPromptBarCard)",
       "description": "AI 提示词发射宽卡（W28 · 尺寸 W）— 模型选择 · 思考联网开关 · 快捷建议",
       "dependencies": [
@@ -3734,21 +3537,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-prompt-bar-card.tsx",
+          "path": "registry/glaze/cards/ai-prompt-bar-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-prompt-bar-card.tsx"
+          "target": "components/cards/ai-prompt-bar-card.tsx"
         }
       ]
     },
     {
       "name": "ai-approval-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "W29 智能体人工审批宽卡 (AiApprovalCard)",
       "description": "智能体人工审批宽卡（W29 · 尺寸 W）— 风险等级 · 命令预览 · 批准/拒绝",
       "registryDependencies": [
@@ -3757,21 +3560,113 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-w"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-approval-card.tsx",
+          "path": "registry/glaze/cards/ai-approval-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-approval-card.tsx"
+          "target": "components/cards/ai-approval-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "date-range-card",
+      "type": "registry:component",
+      "title": "W30 日期区间快选卡 (DateRangeCard)",
+      "description": "日期区间快选卡（W30 · 尺寸 W）— 基于 Calendar + Popover 的跨月区间选择与预设切换",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "date-fns"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/calendar",
+        "@glaze/motion",
+        "@glaze/popover",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "cards",
+        "collaboration",
+        "size-w"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/cards/date-range-card.tsx",
+          "type": "registry:component",
+          "target": "components/cards/date-range-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "otp-verify-card",
+      "type": "registry:component",
+      "title": "W31 2FA 动态口令校验卡 (OtpVerifyCard)",
+      "description": "2FA 动态口令校验卡（W31 · 尺寸 W）— 基于 OTPField 的 6 位安全验证码实时校验",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/icon-tile",
+        "@glaze/otp-field",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "cards",
+        "controls",
+        "size-w"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/cards/otp-verify-card.tsx",
+          "type": "registry:component",
+          "target": "components/cards/otp-verify-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "node-health-chain-card",
+      "type": "registry:component",
+      "title": "W32 服务链路健康宽卡 (NodeHealthChainCard)",
+      "description": "服务链路健康宽卡（W32 · 尺寸 W）— 基于 TopologyKindIcon 的上游依赖延迟链条",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/icon-tile",
+        "@glaze/status-dot",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-node"
+      ],
+      "categories": [
+        "cards",
+        "ops",
+        "size-w"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/cards/node-health-chain-card.tsx",
+          "type": "registry:component",
+          "target": "components/cards/node-health-chain-card.tsx"
         }
       ]
     },
     {
       "name": "bar-list-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "T1 条形排行卡 (BarListCard)",
       "description": "条形排行卡（T1 · 尺寸 T）— 总指标 · 进度条排行列表",
       "registryDependencies": [
@@ -3781,21 +3676,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/bar-list-card.tsx",
+          "path": "registry/glaze/cards/bar-list-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/bar-list-card.tsx"
+          "target": "components/cards/bar-list-card.tsx"
         }
       ]
     },
     {
       "name": "event-timeline-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "T2 事件时间线卡 (EventTimelineCard)",
       "description": "事件时间线卡（T2 · 尺寸 T）— 时间戳 · 状态点 · 事件描述",
       "registryDependencies": [
@@ -3804,21 +3699,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/event-timeline-card.tsx",
+          "path": "registry/glaze/cards/event-timeline-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/event-timeline-card.tsx"
+          "target": "components/cards/event-timeline-card.tsx"
         }
       ]
     },
     {
       "name": "vertical-bars-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "T3 竖柱趋势竖卡 (VerticalBarsCard)",
       "description": "竖柱趋势竖卡（T3 · 尺寸 T）— 大数字 · 多月竖柱",
       "registryDependencies": [
@@ -3828,46 +3723,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/vertical-bars-card.tsx",
+          "path": "registry/glaze/cards/vertical-bars-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/vertical-bars-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "rank-list-card",
-      "type": "registry:block",
-      "title": "T4 数值榜单卡 (RankListCard)",
-      "description": "数值榜单卡（T4 · 尺寸 T）— 名次 · 名称 · 比例条",
-      "registryDependencies": [
-        "@glaze/style",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "lists",
-        "size-t"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/rank-list-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/rank-list-card.tsx"
+          "target": "components/cards/vertical-bars-card.tsx"
         }
       ]
     },
     {
       "name": "checklist-card",
-      "type": "registry:block",
-      "title": "T5 交互待办清单 (ChecklistCard)",
-      "description": "交互待办清单（T5 · 尺寸 T）— 真实 Checkbox · 完成统计",
+      "type": "registry:component",
+      "title": "T4 交互待办清单 (ChecklistCard)",
+      "description": "交互待办清单（T4 · 尺寸 T）— 真实 Checkbox · 完成统计",
       "registryDependencies": [
         "@glaze/checkbox",
         "@glaze/hue-tag",
@@ -3876,23 +3748,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/checklist-card.tsx",
+          "path": "registry/glaze/cards/checklist-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/checklist-card.tsx"
+          "target": "components/cards/checklist-card.tsx"
         }
       ]
     },
     {
       "name": "leaderboard-card",
-      "type": "registry:block",
-      "title": "T6 贡献排行榜 (LeaderboardCard)",
-      "description": "贡献排行榜（T6 · 尺寸 T）— 名次徽章 · 头像 · 得分",
+      "type": "registry:component",
+      "title": "T5 贡献排行榜 (LeaderboardCard)",
+      "description": "贡献排行榜（T5 · 尺寸 T）— 名次徽章 · 头像 · 得分",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -3903,23 +3775,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/leaderboard-card.tsx",
+          "path": "registry/glaze/cards/leaderboard-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/leaderboard-card.tsx"
+          "target": "components/cards/leaderboard-card.tsx"
         }
       ]
     },
     {
       "name": "file-list-card",
-      "type": "registry:block",
-      "title": "T7 最近文件列表 (FileListCard)",
-      "description": "最近文件列表（T7 · 尺寸 T）— 文件类型图标 · 体积时间",
+      "type": "registry:component",
+      "title": "T6 最近文件列表 (FileListCard)",
+      "description": "最近文件列表（T6 · 尺寸 T）— 文件类型图标 · 体积时间",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -3930,23 +3802,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/file-list-card.tsx",
+          "path": "registry/glaze/cards/file-list-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/file-list-card.tsx"
+          "target": "components/cards/file-list-card.tsx"
         }
       ]
     },
     {
       "name": "schedule-agenda-card",
-      "type": "registry:block",
-      "title": "T8 今日议程日程 (ScheduleAgendaCard)",
-      "description": "今日议程日程（T8 · 尺寸 T）— 色条 · 时间 · 会议地点",
+      "type": "registry:component",
+      "title": "T7 今日议程日程 (ScheduleAgendaCard)",
+      "description": "今日议程日程（T7 · 尺寸 T）— 色条 · 时间 · 会议地点",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -3956,23 +3828,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/schedule-agenda-card.tsx",
+          "path": "registry/glaze/cards/schedule-agenda-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/schedule-agenda-card.tsx"
+          "target": "components/cards/schedule-agenda-card.tsx"
         }
       ]
     },
     {
       "name": "disk-partitions-card",
-      "type": "registry:block",
-      "title": "T9 磁盘分区容量 (DiskPartitionsCard)",
-      "description": "磁盘分区容量（T9 · 尺寸 T）— 多卷 Meter · 挂载路径",
+      "type": "registry:component",
+      "title": "T8 磁盘分区容量 (DiskPartitionsCard)",
+      "description": "磁盘分区容量（T8 · 尺寸 T）— 多卷 Meter · 挂载路径",
       "registryDependencies": [
         "@glaze/meter",
         "@glaze/style",
@@ -3980,23 +3852,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/disk-partitions-card.tsx",
+          "path": "registry/glaze/cards/disk-partitions-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/disk-partitions-card.tsx"
+          "target": "components/cards/disk-partitions-card.tsx"
         }
       ]
     },
     {
       "name": "contact-list-card",
-      "type": "registry:block",
-      "title": "T10 值班联系人卡 (ContactListCard)",
-      "description": "值班联系人卡（T10 · 尺寸 T）— 头像 · 角色 · 在线呼吸点",
+      "type": "registry:component",
+      "title": "T9 值班联系人卡 (ContactListCard)",
+      "description": "值班联系人卡（T9 · 尺寸 T）— 头像 · 角色 · 在线呼吸点",
       "registryDependencies": [
         "@glaze/avatar",
         "@glaze/status-dot",
@@ -4005,46 +3877,46 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/contact-list-card.tsx",
+          "path": "registry/glaze/cards/contact-list-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/contact-list-card.tsx"
+          "target": "components/cards/contact-list-card.tsx"
         }
       ]
     },
     {
       "name": "habit-tracker-card",
-      "type": "registry:block",
-      "title": "T11 习惯打卡矩阵 (HabitTrackerCard)",
-      "description": "习惯打卡矩阵（T11 · 尺寸 T）— 多习惯 × 7 日胶囊点阵",
+      "type": "registry:component",
+      "title": "T10 习惯打卡矩阵 (HabitTrackerCard)",
+      "description": "习惯打卡矩阵（T10 · 尺寸 T）— 多习惯 × 7 日胶囊点阵",
       "registryDependencies": [
         "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/habit-tracker-card.tsx",
+          "path": "registry/glaze/cards/habit-tracker-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/habit-tracker-card.tsx"
+          "target": "components/cards/habit-tracker-card.tsx"
         }
       ]
     },
     {
       "name": "price-ticker-card",
-      "type": "registry:block",
-      "title": "T12 自选行情列表 (PriceTickerCard)",
-      "description": "自选行情列表（T12 · 尺寸 T）— 代码 · 现价 · 涨跌胶囊",
+      "type": "registry:component",
+      "title": "T11 自选行情列表 (PriceTickerCard)",
+      "description": "自选行情列表（T11 · 尺寸 T）— 代码 · 现价 · 涨跌胶囊",
       "registryDependencies": [
         "@glaze/status-pill",
         "@glaze/style",
@@ -4052,23 +3924,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/price-ticker-card.tsx",
+          "path": "registry/glaze/cards/price-ticker-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/price-ticker-card.tsx"
+          "target": "components/cards/price-ticker-card.tsx"
         }
       ]
     },
     {
       "name": "quick-settings-card",
-      "type": "registry:block",
-      "title": "T13 偏好开关面板 (QuickSettingsCard)",
-      "description": "偏好开关面板（T13 · 尺寸 T）— 多项真实 Switch 偏好项",
+      "type": "registry:component",
+      "title": "T12 偏好开关面板 (QuickSettingsCard)",
+      "description": "偏好开关面板（T12 · 尺寸 T）— 多项真实 Switch 偏好项",
       "registryDependencies": [
         "@glaze/style",
         "@glaze/switch",
@@ -4076,46 +3948,46 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/quick-settings-card.tsx",
+          "path": "registry/glaze/cards/quick-settings-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/quick-settings-card.tsx"
+          "target": "components/cards/quick-settings-card.tsx"
         }
       ]
     },
     {
       "name": "funnel-card",
-      "type": "registry:block",
-      "title": "T14 转化漏斗竖卡 (FunnelCard)",
-      "description": "转化漏斗竖卡（T14 · 尺寸 T）— 4 阶段递减宽条 · 转化率",
+      "type": "registry:component",
+      "title": "T13 转化漏斗竖卡 (FunnelCard)",
+      "description": "转化漏斗竖卡（T13 · 尺寸 T）— 4 阶段递减宽条 · 转化率",
       "registryDependencies": [
         "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/funnel-card.tsx",
+          "path": "registry/glaze/cards/funnel-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/funnel-card.tsx"
+          "target": "components/cards/funnel-card.tsx"
         }
       ]
     },
     {
       "name": "radial-goals-card",
-      "type": "registry:block",
-      "title": "T15 多环目标达成竖卡 (RadialGoalsCard)",
-      "description": "多环目标达成竖卡（T15 · 尺寸 T）— 3 环径向进度 · 目标明细行",
+      "type": "registry:component",
+      "title": "T14 多环目标达成竖卡 (RadialGoalsCard)",
+      "description": "多环目标达成竖卡（T14 · 尺寸 T）— 3 环径向进度 · 目标明细行",
       "registryDependencies": [
         "@glaze/radial-chart",
         "@glaze/style",
@@ -4123,23 +3995,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/radial-goals-card.tsx",
+          "path": "registry/glaze/cards/radial-goals-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/radial-goals-card.tsx"
+          "target": "components/cards/radial-goals-card.tsx"
         }
       ]
     },
     {
       "name": "stacked-column-card",
-      "type": "registry:block",
-      "title": "T16 堆叠柱状分布竖卡 (StackedColumnCard)",
-      "description": "堆叠柱状分布竖卡（T16 · 尺寸 T）— 总指标 · 多状态堆叠竖柱",
+      "type": "registry:component",
+      "title": "T15 堆叠柱状分布竖卡 (StackedColumnCard)",
+      "description": "堆叠柱状分布竖卡（T15 · 尺寸 T）— 总指标 · 多状态堆叠竖柱",
       "registryDependencies": [
         "@glaze/bar-chart",
         "@glaze/style",
@@ -4147,23 +4019,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/stacked-column-card.tsx",
+          "path": "registry/glaze/cards/stacked-column-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/stacked-column-card.tsx"
+          "target": "components/cards/stacked-column-card.tsx"
         }
       ]
     },
     {
       "name": "ai-plan-queue-card",
-      "type": "registry:block",
-      "title": "T17 Agent 规划与队列竖卡 (AiPlanQueueCard)",
-      "description": "Agent 规划与队列竖卡（T17 · 尺寸 T）— 阶段进度条 · 执行步骤 · 待办队列",
+      "type": "registry:component",
+      "title": "T16 Agent 规划与队列竖卡 (AiPlanQueueCard)",
+      "description": "Agent 规划与队列竖卡（T16 · 尺寸 T）— 阶段进度条 · 执行步骤 · 待办队列",
       "registryDependencies": [
         "@glaze/ai-plan",
         "@glaze/ai-suggestions",
@@ -4171,23 +4043,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-plan-queue-card.tsx",
+          "path": "registry/glaze/cards/ai-plan-queue-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-plan-queue-card.tsx"
+          "target": "components/cards/ai-plan-queue-card.tsx"
         }
       ]
     },
     {
       "name": "ai-sources-card",
-      "type": "registry:block",
-      "title": "T18 RAG 溯源参考竖卡 (AiSourcesCard)",
-      "description": "RAG 溯源参考竖卡（T18 · 尺寸 T）— 语义命中文档 · 相关度 · 摘要跳转",
+      "type": "registry:component",
+      "title": "T17 RAG 溯源参考竖卡 (AiSourcesCard)",
+      "description": "RAG 溯源参考竖卡（T17 · 尺寸 T）— 语义命中文档 · 相关度 · 摘要跳转",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -4199,21 +4071,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-t"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-sources-card.tsx",
+          "path": "registry/glaze/cards/ai-sources-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-sources-card.tsx"
+          "target": "components/cards/ai-sources-card.tsx"
         }
       ]
     },
     {
       "name": "hero-metric-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "L1 主指标英雄大卡 (HeroMetricCard)",
       "description": "主指标英雄大卡（L1 · 尺寸 L）— 深色聚焦 · 趋势线 · 3 副指标",
       "registryDependencies": [
@@ -4223,21 +4095,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/hero-metric-card.tsx",
+          "path": "registry/glaze/cards/hero-metric-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/hero-metric-card.tsx"
+          "target": "components/cards/hero-metric-card.tsx"
         }
       ]
     },
     {
       "name": "donut-chart-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "L2 环形占比图 (DonutChartCard)",
       "description": "环形占比图（L2 · 尺寸 L）— 多段圆环 · 中心汇总 · 图例",
       "registryDependencies": [
@@ -4246,21 +4118,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/donut-chart-card.tsx",
+          "path": "registry/glaze/cards/donut-chart-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/donut-chart-card.tsx"
+          "target": "components/cards/donut-chart-card.tsx"
         }
       ]
     },
     {
       "name": "item-list-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "L3 明细列表大卡 (ItemListCard)",
       "description": "明细列表大卡（L3 · 尺寸 L）— 图标 · 标题 · 状态胶囊列表",
       "registryDependencies": [
@@ -4271,47 +4143,45 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/item-list-card.tsx",
+          "path": "registry/glaze/cards/item-list-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/item-list-card.tsx"
+          "target": "components/cards/item-list-card.tsx"
         }
       ]
     },
     {
       "name": "calendar-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "L4 交互日历大卡 (CalendarCard)",
-      "description": "交互日历大卡（L4 · 尺寸 L）— 月份切换 · 事件标记 · 日期选择",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
+      "description": "交互日历大卡（L4 · 尺寸 L）— 基于 Calendar 原语的月份切换、事件圆点与日期选择",
       "registryDependencies": [
+        "@glaze/calendar",
         "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/calendar-card.tsx",
+          "path": "registry/glaze/cards/calendar-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/calendar-card.tsx"
+          "target": "components/cards/calendar-card.tsx"
         }
       ]
     },
     {
       "name": "grouped-bar-chart-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "L5 分组对比柱图 (GroupedBarChartCard)",
       "description": "分组对比柱图（L5 · 尺寸 L）— 双色并排分组柱状图",
       "registryDependencies": [
@@ -4321,47 +4191,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/grouped-bar-chart-card.tsx",
+          "path": "registry/glaze/cards/grouped-bar-chart-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/grouped-bar-chart-card.tsx"
-        }
-      ]
-    },
-    {
-      "name": "radar-skill-card",
-      "type": "registry:block",
-      "title": "L6 六维雷达评分卡 (RadarSkillCard)",
-      "description": "六维雷达评分卡（L6 · 尺寸 L）— 多边形网格 · 6 维能力评估",
-      "registryDependencies": [
-        "@glaze/radar-chart",
-        "@glaze/style",
-        "@glaze/tile",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "blocks",
-        "charts",
-        "size-l"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/blocks/radar-skill-card.tsx",
-          "type": "registry:component",
-          "target": "components/blocks/radar-skill-card.tsx"
+          "target": "components/cards/grouped-bar-chart-card.tsx"
         }
       ]
     },
     {
       "name": "kanban-mini-card",
-      "type": "registry:block",
-      "title": "L7 双列迷你看板 (KanbanMiniCard)",
-      "description": "双列迷你看板（L7 · 尺寸 L）— 泳道计数 · 任务卡片组",
+      "type": "registry:component",
+      "title": "L6 双列迷你看板 (KanbanMiniCard)",
+      "description": "双列迷你看板（L6 · 尺寸 L）— 泳道计数 · 任务卡片组",
       "registryDependencies": [
         "@glaze/hue-tag",
         "@glaze/style",
@@ -4369,23 +4215,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "productivity",
+        "cards",
+        "collaboration",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/kanban-mini-card.tsx",
+          "path": "registry/glaze/cards/kanban-mini-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/kanban-mini-card.tsx"
+          "target": "components/cards/kanban-mini-card.tsx"
         }
       ]
     },
     {
       "name": "activity-feed-card",
-      "type": "registry:block",
-      "title": "L8 实时动态信息流 (ActivityFeedCard)",
-      "description": "实时动态信息流（L8 · 尺寸 L）— 头像 · 动作目标 · 时间",
+      "type": "registry:component",
+      "title": "L7 实时动态信息流 (ActivityFeedCard)",
+      "description": "实时动态信息流（L7 · 尺寸 L）— 头像 · 动作目标 · 时间",
       "registryDependencies": [
         "@glaze/avatar",
         "@glaze/style",
@@ -4393,23 +4239,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/activity-feed-card.tsx",
+          "path": "registry/glaze/cards/activity-feed-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/activity-feed-card.tsx"
+          "target": "components/cards/activity-feed-card.tsx"
         }
       ]
     },
     {
       "name": "server-rack-card",
-      "type": "registry:block",
-      "title": "L9 机架刀片监控卡 (ServerRackCard)",
-      "description": "机架刀片监控卡（L9 · 尺寸 L）— 深色机柜 · 状态灯 · 负载条",
+      "type": "registry:component",
+      "title": "L8 机架刀片监控卡 (ServerRackCard)",
+      "description": "机架刀片监控卡（L8 · 尺寸 L）— 深色机柜 · 状态灯 · 负载条",
       "registryDependencies": [
         "@glaze/progress",
         "@glaze/status-dot",
@@ -4419,23 +4265,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/server-rack-card.tsx",
+          "path": "registry/glaze/cards/server-rack-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/server-rack-card.tsx"
+          "target": "components/cards/server-rack-card.tsx"
         }
       ]
     },
     {
       "name": "floor-plan-sensor-card",
-      "type": "registry:block",
-      "title": "L10 房间传感器矩阵 (FloorPlanSensorCard)",
-      "description": "房间传感器矩阵（L10 · 尺寸 L）— 4 房间温湿度与灯光状态",
+      "type": "registry:component",
+      "title": "L9 房间传感器矩阵 (FloorPlanSensorCard)",
+      "description": "房间传感器矩阵（L9 · 尺寸 L）— 4 房间温湿度与灯光状态",
       "registryDependencies": [
         "@glaze/hue-tag",
         "@glaze/status-dot",
@@ -4444,23 +4290,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/floor-plan-sensor-card.tsx",
+          "path": "registry/glaze/cards/floor-plan-sensor-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/floor-plan-sensor-card.tsx"
+          "target": "components/cards/floor-plan-sensor-card.tsx"
         }
       ]
     },
     {
       "name": "revenue-breakdown-card",
-      "type": "registry:block",
-      "title": "L11 收入构成大卡 (RevenueBreakdownCard)",
-      "description": "收入构成大卡（L11 · 尺寸 L）— 总营收 · 堆叠条 · 分渠道",
+      "type": "registry:component",
+      "title": "L10 收入构成大卡 (RevenueBreakdownCard)",
+      "description": "收入构成大卡（L10 · 尺寸 L）— 总营收 · 堆叠条 · 分渠道",
       "registryDependencies": [
         "@glaze/status-pill",
         "@glaze/style",
@@ -4468,28 +4314,29 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/revenue-breakdown-card.tsx",
+          "path": "registry/glaze/cards/revenue-breakdown-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/revenue-breakdown-card.tsx"
+          "target": "components/cards/revenue-breakdown-card.tsx"
         }
       ]
     },
     {
       "name": "chat-preview-card",
-      "type": "registry:block",
-      "title": "L12 实时会话预览卡 (ChatPreviewCard)",
-      "description": "实时会话预览卡（L12 · 尺寸 L）— 气泡对话 · 可直接发送回复",
+      "type": "registry:component",
+      "title": "L11 实时会话预览卡 (ChatPreviewCard)",
+      "description": "实时会话预览卡（L11 · 尺寸 L）— 基于 Conversation 原语的团队会话与快捷回复",
       "dependencies": [
         "@phosphor-icons/react"
       ],
       "registryDependencies": [
         "@glaze/button",
+        "@glaze/conversation",
         "@glaze/input",
         "@glaze/status-pill",
         "@glaze/style",
@@ -4497,46 +4344,46 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "controls",
+        "cards",
+        "collaboration",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/chat-preview-card.tsx",
+          "path": "registry/glaze/cards/chat-preview-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/chat-preview-card.tsx"
+          "target": "components/cards/chat-preview-card.tsx"
         }
       ]
     },
     {
       "name": "gallery-mosaic-card",
-      "type": "registry:block",
-      "title": "L13 相册拼图大卡 (GalleryMosaicCard)",
-      "description": "相册拼图大卡（L13 · 尺寸 L）— 2×2 柔彩色块相册封面",
+      "type": "registry:component",
+      "title": "L12 相册拼图大卡 (GalleryMosaicCard)",
+      "description": "相册拼图大卡（L12 · 尺寸 L）— 2×2 柔彩色块相册封面",
       "registryDependencies": [
         "@glaze/style",
         "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "lists",
+        "cards",
+        "collaboration",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/gallery-mosaic-card.tsx",
+          "path": "registry/glaze/cards/gallery-mosaic-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/gallery-mosaic-card.tsx"
+          "target": "components/cards/gallery-mosaic-card.tsx"
         }
       ]
     },
     {
       "name": "incident-log-card",
-      "type": "registry:block",
-      "title": "L14 告警事件日志大卡 (IncidentLogCard)",
-      "description": "告警事件日志大卡（L14 · 尺寸 L）— 事件编号 · 影响服务 · 状态",
+      "type": "registry:component",
+      "title": "L13 告警事件日志大卡 (IncidentLogCard)",
+      "description": "告警事件日志大卡（L13 · 尺寸 L）— 事件编号 · 影响服务 · 状态",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -4548,23 +4395,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/incident-log-card.tsx",
+          "path": "registry/glaze/cards/incident-log-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/incident-log-card.tsx"
+          "target": "components/cards/incident-log-card.tsx"
         }
       ]
     },
     {
       "name": "composed-revenue-card",
-      "type": "registry:block",
-      "title": "L15 双轴组合分析大卡 (ComposedRevenueCard)",
-      "description": "双轴组合分析大卡（L15 · 尺寸 L）— 堆叠柱状 + 折线双 Y 轴",
+      "type": "registry:component",
+      "title": "L14 双轴组合分析大卡 (ComposedRevenueCard)",
+      "description": "双轴组合分析大卡（L14 · 尺寸 L）— 堆叠柱状 + 折线双 Y 轴",
       "registryDependencies": [
         "@glaze/composed-chart",
         "@glaze/status-pill",
@@ -4573,23 +4420,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/composed-revenue-card.tsx",
+          "path": "registry/glaze/cards/composed-revenue-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/composed-revenue-card.tsx"
+          "target": "components/cards/composed-revenue-card.tsx"
         }
       ]
     },
     {
       "name": "scatter-bubble-card",
-      "type": "registry:block",
-      "title": "L16 散点气泡分布大卡 (ScatterBubbleCard)",
-      "description": "散点气泡分布大卡（L16 · 尺寸 L）— 多组 X/Y 散点 · Z 轴气泡映射",
+      "type": "registry:component",
+      "title": "L15 散点气泡分布大卡 (ScatterBubbleCard)",
+      "description": "散点气泡分布大卡（L15 · 尺寸 L）— 多组 X/Y 散点 · Z 轴气泡映射",
       "registryDependencies": [
         "@glaze/hue-tag",
         "@glaze/scatter-chart",
@@ -4598,23 +4445,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/scatter-bubble-card.tsx",
+          "path": "registry/glaze/cards/scatter-bubble-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/scatter-bubble-card.tsx"
+          "target": "components/cards/scatter-bubble-card.tsx"
         }
       ]
     },
     {
       "name": "multi-radar-compare-card",
-      "type": "registry:block",
-      "title": "L17 双方案雷达对比大卡 (MultiRadarCompareCard)",
-      "description": "双方案雷达对比大卡（L17 · 尺寸 L）— 双序列对比 · 多边形/同心圆切换",
+      "type": "registry:component",
+      "title": "L16 多维雷达对比大卡 (MultiRadarCompareCard)",
+      "description": "多维雷达对比大卡（L16 · 尺寸 L）— 单/双序列对比 · 多边形/同心圆切换",
       "registryDependencies": [
         "@glaze/radar-chart",
         "@glaze/segmented-control",
@@ -4623,23 +4470,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/multi-radar-compare-card.tsx",
+          "path": "registry/glaze/cards/multi-radar-compare-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/multi-radar-compare-card.tsx"
+          "target": "components/cards/multi-radar-compare-card.tsx"
         }
       ]
     },
     {
       "name": "ai-assistant-card",
-      "type": "registry:block",
-      "title": "L18 AI 交互对话大卡 (AiAssistantCard)",
-      "description": "AI 交互对话大卡（L18 · 尺寸 L）— 流式推理折叠 · 对话流 · 实时发送",
+      "type": "registry:component",
+      "title": "L17 AI 交互对话大卡 (AiAssistantCard)",
+      "description": "AI 交互对话大卡（L17 · 尺寸 L）— 流式推理折叠 · 对话流 · 实时发送",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -4653,23 +4500,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-assistant-card.tsx",
+          "path": "registry/glaze/cards/ai-assistant-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-assistant-card.tsx"
+          "target": "components/cards/ai-assistant-card.tsx"
         }
       ]
     },
     {
       "name": "ai-trace-inspector-card",
-      "type": "registry:block",
-      "title": "L19 智能体执行链路大卡 (AiTraceInspectorCard)",
-      "description": "智能体执行链路大卡（L19 · 尺寸 L）— 思维链步骤 · 检索胶囊 · 工具入参输出",
+      "type": "registry:component",
+      "title": "L18 智能体执行链路大卡 (AiTraceInspectorCard)",
+      "description": "智能体执行链路大卡（L18 · 尺寸 L）— 思维链步骤 · 检索胶囊 · 工具入参输出",
       "registryDependencies": [
         "@glaze/chain-of-thought",
         "@glaze/hue-tag",
@@ -4679,23 +4526,23 @@
         "@glaze/tool-call"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-trace-inspector-card.tsx",
+          "path": "registry/glaze/cards/ai-trace-inspector-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-trace-inspector-card.tsx"
+          "target": "components/cards/ai-trace-inspector-card.tsx"
         }
       ]
     },
     {
       "name": "service-mesh-card",
-      "type": "registry:block",
-      "title": "L20 服务依赖网格大卡 (ServiceMeshCard)",
-      "description": "服务依赖网格大卡（L20 · 尺寸 L）— 核心指标带 · 紧凑交互拓扑预览",
+      "type": "registry:component",
+      "title": "L19 服务依赖网格大卡 (ServiceMeshCard)",
+      "description": "服务依赖网格大卡（L19 · 尺寸 L）— 核心指标带 · 紧凑交互拓扑预览",
       "registryDependencies": [
         "@glaze/hue-tag",
         "@glaze/status-pill",
@@ -4706,49 +4553,76 @@
         "@glaze/topology-canvas"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-l"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/service-mesh-card.tsx",
+          "path": "registry/glaze/cards/service-mesh-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/service-mesh-card.tsx"
+          "target": "components/cards/service-mesh-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "quick-form-card",
+      "type": "registry:component",
+      "title": "L20 快捷表单提交大卡 (QuickFormCard)",
+      "description": "快捷表单提交大卡（L20 · 尺寸 L）— 基于 TanStack Form 的轻量工单提交与实时校验",
+      "registryDependencies": [
+        "@glaze/form",
+        "@glaze/input",
+        "@glaze/select",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/textarea",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "cards",
+        "controls",
+        "size-l"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/cards/quick-form-card.tsx",
+          "type": "registry:component",
+          "target": "components/cards/quick-form-card.tsx"
         }
       ]
     },
     {
       "name": "data-table-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F1 数据表格通栏卡 (DataTableCard)",
-      "description": "数据表格通栏卡（F1 · 尺寸 F）— 分组标签 · 头像 · 进度条 · 状态",
+      "description": "数据表格通栏卡（F1 · 尺寸 F）— 基于 TanStack DataTable 的排序、搜索、筛选与列显隐通栏卡",
       "registryDependencies": [
         "@glaze/avatar",
+        "@glaze/data-table",
         "@glaze/hue-tag",
         "@glaze/progress",
-        "@glaze/segmented-control",
         "@glaze/status-pill",
         "@glaze/style",
-        "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/data-table-card.tsx",
+          "path": "registry/glaze/cards/data-table-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/data-table-card.tsx"
+          "target": "components/cards/data-table-card.tsx"
         }
       ]
     },
     {
       "name": "hierarchy-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F2 层级架构通栏卡 (HierarchyCard)",
       "description": "层级架构通栏卡（F2 · 尺寸 F）— 根节点 · 多分支节点树",
       "dependencies": [
@@ -4764,21 +4638,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/hierarchy-card.tsx",
+          "path": "registry/glaze/cards/hierarchy-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/hierarchy-card.tsx"
+          "target": "components/cards/hierarchy-card.tsx"
         }
       ]
     },
     {
       "name": "phase-timeline-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F3 阶段时间轴通栏卡 (PhaseTimelineCard)",
       "description": "阶段时间轴通栏卡（F3 · 尺寸 F）— 横向里程碑节点连线",
       "registryDependencies": [
@@ -4787,21 +4661,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/phase-timeline-card.tsx",
+          "path": "registry/glaze/cards/phase-timeline-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/phase-timeline-card.tsx"
+          "target": "components/cards/phase-timeline-card.tsx"
         }
       ]
     },
     {
       "name": "distribution-bus-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F4 分布总线通栏卡 (DistributionBusCard)",
       "description": "分布总线通栏卡（F4 · 尺寸 F）— 横向占比分布与节点明细",
       "registryDependencies": [
@@ -4810,21 +4684,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/distribution-bus-card.tsx",
+          "path": "registry/glaze/cards/distribution-bus-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/distribution-bus-card.tsx"
+          "target": "components/cards/distribution-bus-card.tsx"
         }
       ]
     },
     {
       "name": "kpi-strip-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F5 4 列核心 KPI 指标带 (KpiStripCard)",
       "description": "4 列核心 KPI 指标带（F5 · 尺寸 F）— 4 列通栏大数字与环比",
       "registryDependencies": [
@@ -4834,21 +4708,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "metrics",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/kpi-strip-card.tsx",
+          "path": "registry/glaze/cards/kpi-strip-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/kpi-strip-card.tsx"
+          "target": "components/cards/kpi-strip-card.tsx"
         }
       ]
     },
     {
       "name": "pricing-plans-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F6 三档定价方案卡 (PricingPlansCard)",
       "description": "三档定价方案卡（F6 · 尺寸 F）— 3 栏方案对比 · 推荐高亮",
       "dependencies": [
@@ -4862,21 +4736,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/pricing-plans-card.tsx",
+          "path": "registry/glaze/cards/pricing-plans-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/pricing-plans-card.tsx"
+          "target": "components/cards/pricing-plans-card.tsx"
         }
       ]
     },
     {
       "name": "service-status-matrix-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F7 全站服务状态矩阵 (ServiceStatusMatrixCard)",
       "description": "全站服务状态矩阵（F7 · 尺寸 F）— 多服务可用性条与状态胶囊",
       "registryDependencies": [
@@ -4886,21 +4760,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/service-status-matrix-card.tsx",
+          "path": "registry/glaze/cards/service-status-matrix-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/service-status-matrix-card.tsx"
+          "target": "components/cards/service-status-matrix-card.tsx"
         }
       ]
     },
     {
       "name": "gantt-schedule-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F8 甘特排期通栏卡 (GanttScheduleCard)",
       "description": "甘特排期通栏卡（F8 · 尺寸 F）— 多泳道时间条 · 负责人",
       "registryDependencies": [
@@ -4909,21 +4783,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/gantt-schedule-card.tsx",
+          "path": "registry/glaze/cards/gantt-schedule-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/gantt-schedule-card.tsx"
+          "target": "components/cards/gantt-schedule-card.tsx"
         }
       ]
     },
     {
       "name": "release-changelog-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F9 版本发布记录卡 (ReleaseChangelogCard)",
       "description": "版本发布记录卡（F9 · 尺寸 F）— 3 列版本卡片 · 亮点列表",
       "registryDependencies": [
@@ -4933,21 +4807,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/release-changelog-card.tsx",
+          "path": "registry/glaze/cards/release-changelog-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/release-changelog-card.tsx"
+          "target": "components/cards/release-changelog-card.tsx"
         }
       ]
     },
     {
       "name": "resource-allocation-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F10 资源分摊通栏卡 (ResourceAllocationCard)",
       "description": "资源分摊通栏卡（F10 · 尺寸 F）— 堆叠占比条 · 4 部门配额与头像",
       "registryDependencies": [
@@ -4957,23 +4831,23 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/resource-allocation-card.tsx",
+          "path": "registry/glaze/cards/resource-allocation-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/resource-allocation-card.tsx"
+          "target": "components/cards/resource-allocation-card.tsx"
         }
       ]
     },
     {
       "name": "command-palette-bar-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F11 全局命令栏通栏卡 (CommandPaletteBarCard)",
-      "description": "全局命令栏通栏卡（F11 · 尺寸 F）— 深色命令输入 · 快捷指令胶囊",
+      "description": "全局命令栏通栏卡（F11 · 尺寸 F）— 深色命令输入 · ⌘K CommandDialog 弹窗",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -4985,21 +4859,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "controls",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/command-palette-bar-card.tsx",
+          "path": "registry/glaze/cards/command-palette-bar-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/command-palette-bar-card.tsx"
+          "target": "components/cards/command-palette-bar-card.tsx"
         }
       ]
     },
     {
       "name": "metric-comparison-table-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F12 多维指标对比表 (MetricComparisonTableCard)",
       "description": "多维指标对比表（F12 · 尺寸 F）— 横向指标矩阵 · 最优值高亮",
       "registryDependencies": [
@@ -5008,21 +4882,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
-        "layout",
+        "cards",
+        "data-views",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/metric-comparison-table-card.tsx",
+          "path": "registry/glaze/cards/metric-comparison-table-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/metric-comparison-table-card.tsx"
+          "target": "components/cards/metric-comparison-table-card.tsx"
         }
       ]
     },
     {
       "name": "interactive-analytics-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F13 交互式多视图趋势通栏卡 (InteractiveAnalyticsCard)",
       "description": "交互式多视图趋势通栏卡（F13 · 尺寸 F）— 面积/折线/柱状即时切换 · 3 KPI 摘要带",
       "registryDependencies": [
@@ -5036,21 +4910,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/interactive-analytics-card.tsx",
+          "path": "registry/glaze/cards/interactive-analytics-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/interactive-analytics-card.tsx"
+          "target": "components/cards/interactive-analytics-card.tsx"
         }
       ]
     },
     {
       "name": "composed-overview-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F14 全年经营组合双轴通栏卡 (ComposedOverviewCard)",
       "description": "全年经营组合双轴通栏卡（F14 · 尺寸 F）— 12 月柱状 + 面积 + 折线双轴全景",
       "registryDependencies": [
@@ -5060,21 +4934,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "charts",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/composed-overview-card.tsx",
+          "path": "registry/glaze/cards/composed-overview-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/composed-overview-card.tsx"
+          "target": "components/cards/composed-overview-card.tsx"
         }
       ]
     },
     {
       "name": "ai-workspace-console-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F15 AI 代码产物工作区通栏卡 (AiWorkspaceConsoleCard)",
       "description": "AI 代码产物工作区通栏卡（F15 · 尺寸 F）— 变更文件树 · 代码/Diff 审查 · 终端输出",
       "registryDependencies": [
@@ -5087,21 +4961,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-workspace-console-card.tsx",
+          "path": "registry/glaze/cards/ai-workspace-console-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-workspace-console-card.tsx"
+          "target": "components/cards/ai-workspace-console-card.tsx"
         }
       ]
     },
     {
       "name": "ai-model-eval-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F16 多模型评测路由矩阵通栏卡 (AiModelEvalCard)",
       "description": "多模型评测路由矩阵通栏卡（F16 · 尺寸 F）— 延迟/吞吐/推理得分对比 · 一键切换主路由",
       "dependencies": [
@@ -5117,21 +4991,21 @@
         "@glaze/tokens"
       ],
       "categories": [
-        "blocks",
+        "cards",
         "ai",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/ai-model-eval-card.tsx",
+          "path": "registry/glaze/cards/ai-model-eval-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/ai-model-eval-card.tsx"
+          "target": "components/cards/ai-model-eval-card.tsx"
         }
       ]
     },
     {
       "name": "topology-map-card",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "F17 交互网络拓扑通栏卡 (TopologyMapCard)",
       "description": "交互网络拓扑通栏卡（F17 · 尺寸 F）— 实时流量连线 · 上下游路径追踪 · 缩放工具栏",
       "dependencies": [
@@ -5149,269 +5023,561 @@
         "@glaze/topology-controls"
       ],
       "categories": [
-        "blocks",
-        "monitoring",
+        "cards",
+        "ops",
         "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/blocks/topology-map-card.tsx",
+          "path": "registry/glaze/cards/topology-map-card.tsx",
           "type": "registry:component",
-          "target": "components/blocks/topology-map-card.tsx"
+          "target": "components/cards/topology-map-card.tsx"
         }
       ]
     },
     {
-      "name": "demo-homelab",
-      "type": "registry:block",
-      "title": "Demo 01 · 家庭内网总控中心",
-      "description": "管理物理主机、群晖 NAS、Docker 容器、应用发射台、硬件温度与家庭网络拓扑的内网总控仪表盘。",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
+      "name": "split-compare-card",
+      "type": "registry:component",
+      "title": "F18 可调分栏对比通栏卡 (SplitCompareCard)",
+      "description": "可调分栏对比通栏卡（F18 · 尺寸 F）— 基于 Resizable 的双版本灰度配置与指标拖拽对照",
       "registryDependencies": [
-        "@glaze/app-launcher-card",
-        "@glaze/area-trend-card",
-        "@glaze/bar-list-card",
-        "@glaze/button",
-        "@glaze/dialog",
-        "@glaze/disk-temp-card",
-        "@glaze/distribution-bus-card",
-        "@glaze/dot-matrix-card",
-        "@glaze/field",
-        "@glaze/gauge-card",
-        "@glaze/grid",
-        "@glaze/hierarchy-card",
-        "@glaze/input",
-        "@glaze/menu",
-        "@glaze/metric-card",
-        "@glaze/progress-card",
-        "@glaze/quick-entry-card",
-        "@glaze/select",
-        "@glaze/server-rack-card",
-        "@glaze/signal-strength-card",
-        "@glaze/status-card",
-        "@glaze/status-dot",
+        "@glaze/hue-tag",
+        "@glaze/resizable",
         "@glaze/status-pill",
         "@glaze/style",
-        "@glaze/switch-card",
-        "@glaze/toast",
+        "@glaze/tile",
         "@glaze/tokens"
       ],
       "categories": [
-        "demos"
+        "cards",
+        "data-views",
+        "size-f"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/homelab-demo.tsx",
-          "type": "registry:page",
-          "target": "components/demos/homelab-demo.tsx"
+          "path": "registry/glaze/cards/split-compare-card.tsx",
+          "type": "registry:component",
+          "target": "components/cards/split-compare-card.tsx"
         }
       ]
     },
     {
-      "name": "demo-workspace",
+      "name": "auth-login-block",
       "type": "registry:block",
-      "title": "Demo 02 · 研发协作工作台",
-      "description": "覆盖迭代里程碑、CI/CD 部署状态、双列迷你看板、甘特排期、团队贡献榜与代码热力图的研发协作中心。",
+      "title": "认证登录区块 (AuthLoginBlock)",
+      "description": "基于 TanStack Form 与 OTPField 构建的双栏认证区块，支持密码登录、6 位动态验证码切换、实时校验与 Passkey 入口。",
       "dependencies": [
         "@phosphor-icons/react"
       ],
       "registryDependencies": [
-        "@glaze/alert-banner-card",
         "@glaze/button",
-        "@glaze/calendar-card",
-        "@glaze/checklist-card",
-        "@glaze/code-deploy-card",
-        "@glaze/data-table-card",
-        "@glaze/dialog",
-        "@glaze/event-timeline-card",
-        "@glaze/field",
-        "@glaze/gantt-schedule-card",
-        "@glaze/grid",
-        "@glaze/heatmap-card",
-        "@glaze/hero-metric-card",
+        "@glaze/checkbox",
+        "@glaze/form",
+        "@glaze/hue-tag",
         "@glaze/input",
-        "@glaze/kanban-mini-card",
-        "@glaze/members-card",
-        "@glaze/phase-timeline-card",
-        "@glaze/radio",
-        "@glaze/radio-group",
-        "@glaze/ring-card",
-        "@glaze/select",
-        "@glaze/slider",
-        "@glaze/style",
-        "@glaze/toast",
-        "@glaze/tokens"
-      ],
-      "categories": [
-        "demos"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/demos/workspace-demo.tsx",
-          "type": "registry:page",
-          "target": "components/demos/workspace-demo.tsx"
-        }
-      ]
-    },
-    {
-      "name": "demo-smart-home",
-      "type": "registry:block",
-      "title": "Demo 03 · 全屋智能家居中控",
-      "description": "面向大屏平板与桌面的智能家居控制中心，集成房间传感器矩阵、空调温控、灯光滑块与全屋场景一键联动。",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "@glaze/area-trend-card",
-        "@glaze/battery-card",
-        "@glaze/command-palette-bar-card",
-        "@glaze/device-control-strip-card",
-        "@glaze/floor-plan-sensor-card",
-        "@glaze/grid",
-        "@glaze/media-player-card",
-        "@glaze/metric-card",
-        "@glaze/quick-action-grid-card",
-        "@glaze/quick-settings-card",
-        "@glaze/schedule-agenda-card",
+        "@glaze/otp-field",
         "@glaze/segmented-control",
-        "@glaze/slider-control-card",
         "@glaze/status-pill",
         "@glaze/style",
-        "@glaze/switch-card",
-        "@glaze/temperature-card",
-        "@glaze/toast",
-        "@glaze/weather-card",
-        "@glaze/weather-forecast-card"
+        "@glaze/tile",
+        "@glaze/toast"
       ],
       "categories": [
-        "demos"
+        "blocks",
+        "auth"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/smart-home-demo.tsx",
-          "type": "registry:page",
-          "target": "components/demos/smart-home-demo.tsx"
+          "path": "registry/glaze/blocks/auth-login-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/auth-login-block.tsx"
         }
       ]
     },
     {
-      "name": "demo-analytics",
+      "name": "dashboard-kpi-overview-block",
       "type": "registry:block",
-      "title": "Demo 04 · SaaS 营收与财务驾驶舱",
-      "description": "融合 Recharts v3 交互式多视图趋势、全年双轴组合分析、转化漏斗、收入构成与多维指标对比的经营分析大屏。",
+      "title": "核心指标总览区 (DashboardKpiOverviewBlock)",
+      "description": "组合 StatusCard、SparkAreaCard、AreaTrendCard、MetricCard 与 Calendar 区间选择器的可复用仪表盘顶区模块。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "date-fns"
+      ],
       "registryDependencies": [
-        "@glaze/budget-meter-card",
+        "@glaze/area-trend-card",
         "@glaze/button",
-        "@glaze/composed-revenue-card",
-        "@glaze/currency-card",
-        "@glaze/dual-series-trend-card",
-        "@glaze/funnel-card",
+        "@glaze/calendar",
         "@glaze/grid",
-        "@glaze/grouped-bar-chart-card",
-        "@glaze/interactive-analytics-card",
-        "@glaze/kpi-strip-card",
-        "@glaze/leaderboard-card",
-        "@glaze/metric-comparison-table-card",
-        "@glaze/pricing-plans-card",
-        "@glaze/rating-card",
-        "@glaze/revenue-breakdown-card",
-        "@glaze/select",
-        "@glaze/spark-metric-row-card",
+        "@glaze/metric-card",
+        "@glaze/popover",
+        "@glaze/segmented-control",
+        "@glaze/spark-area-card",
+        "@glaze/status-card",
         "@glaze/style",
         "@glaze/toast"
       ],
       "categories": [
-        "demos"
+        "blocks",
+        "dashboard"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/analytics-demo.tsx",
-          "type": "registry:page",
-          "target": "components/demos/analytics-demo.tsx"
+          "path": "registry/glaze/blocks/dashboard-kpi-overview-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/dashboard-kpi-overview-block.tsx"
         }
       ]
     },
     {
-      "name": "demo-personal-os",
+      "name": "data-management-block",
       "type": "registry:block",
-      "title": "Demo 05 · 个人效率与数字生活 OS",
-      "description": "整合番茄钟、交互待办清单、习惯打卡矩阵、日历议程、心率饮水与灵感速记的个人数字生活仪表盘。",
-      "registryDependencies": [
-        "@glaze/audio-now-playing-card",
-        "@glaze/chat-preview-card",
-        "@glaze/checklist-card",
-        "@glaze/clock-card",
-        "@glaze/flight-route-card",
-        "@glaze/gallery-mosaic-card",
-        "@glaze/grid",
-        "@glaze/habit-tracker-card",
-        "@glaze/health-pulse-card",
-        "@glaze/mini-calendar-day-card",
-        "@glaze/pomodoro-card",
-        "@glaze/profile-summary-card",
-        "@glaze/quick-note-card",
-        "@glaze/quote-card",
-        "@glaze/streak-card",
-        "@glaze/style",
-        "@glaze/water-intake-card"
+      "title": "数据管理工作区 (DataManagementBlock)",
+      "description": "集成 KpiStripCard、TanStack DataTable、侧边详情 Drawer、新建表单 Dialog 与高危删除 AlertDialog 的完整 CRUD 业务块。",
+      "dependencies": [
+        "@phosphor-icons/react"
       ],
-      "categories": [
-        "demos"
-      ],
-      "files": [
-        {
-          "path": "registry/glaze/demos/personal-os-demo.tsx",
-          "type": "registry:page",
-          "target": "components/demos/personal-os-demo.tsx"
-        }
-      ]
-    },
-    {
-      "name": "demo-cloud-ops",
-      "type": "registry:block",
-      "title": "Demo 06 · 云原生运维与可观测性中心",
-      "description": "展示全站 30 日 SLA 状态、集群资源三环监控、告警事件日志、散点延迟分布与全局命令栏的 SRE 运维中心。",
       "registryDependencies": [
+        "@glaze/alert-dialog",
+        "@glaze/avatar",
         "@glaze/button",
-        "@glaze/code-deploy-card",
-        "@glaze/command-palette-bar-card",
-        "@glaze/contact-list-card",
-        "@glaze/disk-partitions-card",
-        "@glaze/grid",
-        "@glaze/incident-log-card",
-        "@glaze/quota-card",
-        "@glaze/radar-skill-card",
-        "@glaze/release-changelog-card",
-        "@glaze/resource-allocation-card",
-        "@glaze/scatter-bubble-card",
-        "@glaze/server-rack-card",
-        "@glaze/server-resource-card",
-        "@glaze/service-status-matrix-card",
-        "@glaze/speed-card",
+        "@glaze/data-table",
+        "@glaze/dialog",
+        "@glaze/drawer",
+        "@glaze/form",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/kpi-strip-card",
+        "@glaze/select",
         "@glaze/status-pill",
         "@glaze/style",
-        "@glaze/target-line-card",
         "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "dashboard"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/data-management-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/data-management-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-comparison-block",
+      "type": "registry:block",
+      "title": "定价方案与账单切换区 (PricingComparisonBlock)",
+      "description": "支持月付/年付 8 折动态折算、NumberField 团队席位实时计价、三档方案高亮对比与 Accordion 常见计费 FAQ。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/accordion",
+        "@glaze/button",
+        "@glaze/hue-tag",
+        "@glaze/number-field",
+        "@glaze/segmented-control",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "commerce"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/pricing-comparison-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/pricing-comparison-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "settings-account-block",
+      "type": "registry:block",
+      "title": "账户与偏好设置区 (SettingsAccountBlock)",
+      "description": "通过 Tabs 聚合个人档案表单、TOTP 2FA 验证器绑定、QuickSettingsCard 通知开关与危险区会话吊销确认。",
+      "registryDependencies": [
+        "@glaze/alert-dialog",
+        "@glaze/avatar",
+        "@glaze/button",
+        "@glaze/form",
+        "@glaze/input",
+        "@glaze/otp-field",
+        "@glaze/quick-settings-card",
+        "@glaze/select",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tabs",
+        "@glaze/textarea",
+        "@glaze/tile",
+        "@glaze/toast"
+      ],
+      "categories": [
+        "blocks",
+        "settings"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/settings-account-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/settings-account-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "calendar-booking-block",
+      "type": "registry:block",
+      "title": "日程预约与时段选择器 (CalendarBookingBlock)",
+      "description": "三栏式预约业务块：左侧 Calendar 选日、中间 ScrollArea 选可用时段、右侧 TanStack Form 确认参会信息。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "date-fns"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/calendar",
+        "@glaze/form",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/motion",
+        "@glaze/scroll-area",
+        "@glaze/select",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/toast"
+      ],
+      "categories": [
+        "blocks",
+        "workspace"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/calendar-booking-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/calendar-booking-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ai-chat-workbench-block",
+      "type": "registry:block",
+      "title": "AI 对话与产物审查区 (AiChatWorkbenchBlock)",
+      "description": "结合 ResizablePanelGroup 可拖拽分栏、Conversation、Reasoning、PromptInput 与 AiArtifact 双态预览的可嵌入 AI 协作区块。",
+      "registryDependencies": [
+        "@glaze/ai-artifact",
+        "@glaze/ai-code-block",
+        "@glaze/ai-context-meter",
+        "@glaze/ai-suggestions",
+        "@glaze/conversation",
+        "@glaze/prompt-input",
+        "@glaze/reasoning",
+        "@glaze/resizable",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile"
+      ],
+      "categories": [
+        "blocks",
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-chat-workbench-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/ai-chat-workbench-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "team-members-block",
+      "type": "registry:block",
+      "title": "团队成员与权限管理区 (TeamMembersBlock)",
+      "description": "组合 MembersCard、QuotaCard、语义 Table 原语、行内 Select 角色切换与邀请成员表单 Dialog 的组织管理区块。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/avatar",
+        "@glaze/button",
+        "@glaze/dialog",
+        "@glaze/form",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/members-card",
+        "@glaze/quota-card",
+        "@glaze/select",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/table",
+        "@glaze/tile",
+        "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "settings"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/team-members-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/team-members-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "split-inbox-block",
+      "type": "registry:block",
+      "title": "可调分栏收件箱与工单流 (SplitInboxBlock)",
+      "description": "基于 ResizablePanelGroup 打造的轻量主从收件箱区块，支持全部/未读/星标筛选、关键字检索、标星归档与底部快捷回复。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/avatar",
+        "@glaze/button",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/resizable",
+        "@glaze/scroll-area",
+        "@glaze/segmented-control",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/textarea",
+        "@glaze/tile",
+        "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "workspace"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/split-inbox-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/split-inbox-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "topology-health-panel-block",
+      "type": "registry:block",
+      "title": "服务拓扑与告警联查区 (TopologyHealthPanelBlock)",
+      "description": "将 TopologyCanvas、NodeHealthChainCard、StatusCard 与 UptimeStripCard 联动封装，一键注入缓存抖动故障并观测全链路变化。",
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/node-health-chain-card",
+        "@glaze/status-card",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/toast",
+        "@glaze/tokens",
+        "@glaze/topology",
+        "@glaze/topology-canvas",
+        "@glaze/topology-controls",
         "@glaze/uptime-strip-card"
       ],
       "categories": [
-        "demos"
+        "blocks",
+        "ops"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/cloud-ops-demo.tsx",
-          "type": "registry:page",
-          "target": "components/demos/cloud-ops-demo.tsx"
+          "path": "registry/glaze/blocks/topology-health-panel-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocks/topology-health-panel-block.tsx"
         }
       ]
     },
     {
-      "name": "demo-admin-shell",
+      "name": "page-mail-desk",
       "type": "registry:block",
-      "title": "Demo 07 · 企业级控制台壳层",
-      "description": "带完整侧边栏与顶部栏的 App Shell 仪表盘示例，大屏侧边栏贴靠最左侧，支持全宽/居中画布与悬浮/贴边侧栏切换，涵盖 15 种常见菜单类型（工作区切换、搜索过滤、2/3 级树形折叠、状态点、动态计数、右键/悬停菜单、内嵌开关、锁定态与迷你图标栏）。",
+      "title": "Page 01 · 邮件与工单分栏工作台",
+      "description": "三栏桌面级邮件与工单协作页面：左侧可折叠 Sidebar 文件夹与标签导航，右侧基于 ResizablePanelGroup 可自由拖拽的会话列表与正文阅读回复区。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/avatar",
+        "@glaze/button",
+        "@glaze/dialog",
+        "@glaze/form",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/resizable",
+        "@glaze/scroll-area",
+        "@glaze/sidebar",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/textarea",
+        "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "pages",
+        "app"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/mail-desk-page.tsx",
+          "type": "registry:page",
+          "target": "components/pages/mail-desk-page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-calendar-planner",
+      "type": "registry:block",
+      "title": "Page 02 · 团队日程与会议预约中心",
+      "description": "融合迷你日历、多日历图层显隐、五日周视图排期看板、新建日程侧边 Drawer，以及一键切换的对外公开预约页模式。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "date-fns"
+      ],
+      "registryDependencies": [
+        "@glaze/avatar",
+        "@glaze/button",
+        "@glaze/calendar",
+        "@glaze/calendar-booking-block",
+        "@glaze/checkbox",
+        "@glaze/drawer",
+        "@glaze/form",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/segmented-control",
+        "@glaze/select",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "pages",
+        "workspace"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/calendar-planner-page.tsx",
+          "type": "registry:page",
+          "target": "components/pages/calendar-planner-page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-crm-pipeline",
+      "type": "registry:block",
+      "title": "Page 03 · CRM 客户关系与商机管线",
+      "description": "支持「订单台账（TanStack DataTable CRUD）」「四阶段商机看板」「转化漏斗与回款预测」三视图切换的企业级 CRM 工作台。",
+      "registryDependencies": [
+        "@glaze/avatar",
+        "@glaze/composed-revenue-card",
+        "@glaze/data-management-block",
+        "@glaze/funnel-card",
+        "@glaze/hue-tag",
+        "@glaze/segmented-control",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "pages",
+        "app"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/crm-pipeline-page.tsx",
+          "type": "registry:page",
+          "target": "components/pages/crm-pipeline-page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-settings-portal",
+      "type": "registry:block",
+      "title": "Page 04 · 工作空间与账单设置中心",
+      "description": "完整的 SaaS 设置门户页面，左侧导航切换账户偏好、团队成员 RBAC 权限、月/年付订阅账单升级以及 CI/CD API 密钥签发与吊销。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/alert-dialog",
+        "@glaze/button",
+        "@glaze/dialog",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/pricing-comparison-block",
+        "@glaze/settings-account-block",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/table",
+        "@glaze/team-members-block",
+        "@glaze/tile",
+        "@glaze/toast"
+      ],
+      "categories": [
+        "pages",
+        "app"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/settings-portal-page.tsx",
+          "type": "registry:page",
+          "target": "components/pages/settings-portal-page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-auth-onboarding",
+      "type": "registry:block",
+      "title": "Page 05 · 认证登录与多步入驻引导",
+      "description": "面向 SaaS 产品入口的全屏认证与入驻流页面，包含双栏登录（密码/2FA/Passkey）与 3 步式工作空间创建、模板选择和成员邀请向导。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/auth-login-block",
+        "@glaze/button",
+        "@glaze/hue-tag",
+        "@glaze/input",
+        "@glaze/progress",
+        "@glaze/radio",
+        "@glaze/radio-group",
+        "@glaze/segmented-control",
+        "@glaze/select",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/toast"
+      ],
+      "categories": [
+        "pages",
+        "app"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/auth-onboarding-page.tsx",
+          "type": "registry:page",
+          "target": "components/pages/auth-onboarding-page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-admin-shell",
+      "type": "registry:block",
+      "title": "Page 06 · 企业级控制台壳层",
+      "description": "带完整侧边栏与顶部栏的 App Shell 控制台，支持全宽/居中画布与悬浮/贴边侧栏切换，涵盖 15 种常见菜单类型与 ⌘K 命令面板。",
       "dependencies": [
         "@phosphor-icons/react",
         "cn"
@@ -5461,21 +5627,22 @@
         "@glaze/tooltip"
       ],
       "categories": [
-        "demos"
+        "pages",
+        "app"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/admin-shell-demo.tsx",
+          "path": "registry/glaze/pages/admin-shell-demo.tsx",
           "type": "registry:page",
-          "target": "components/demos/admin-shell-demo.tsx"
+          "target": "components/pages/admin-shell-demo.tsx"
         }
       ]
     },
     {
-      "name": "demo-ai-studio",
+      "name": "page-ai-studio",
       "type": "registry:block",
-      "title": "Demo 08 · AI 智能体工作台",
-      "description": "集成 12 个 Glaze AI Elements 与 10 张 AI Bento 业务卡片的全景工作台，支持「智能体分栏对话与产物审查」与「AI Ops 四列看板」双模式无缝切换。",
+      "title": "Page 07 · AI 智能体工作台",
+      "description": "集成 12 个 Glaze AI Elements 与 10 张 AI 业务卡片的全景工作台，支持「分栏对话与产物审查」与「AI Ops 四列看板」双模式切换。",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -5513,21 +5680,22 @@
         "@glaze/tool-call"
       ],
       "categories": [
-        "demos"
+        "pages",
+        "workspace"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/ai-studio-demo.tsx",
+          "path": "registry/glaze/pages/ai-studio-demo.tsx",
           "type": "registry:page",
-          "target": "components/demos/ai-studio-demo.tsx"
+          "target": "components/pages/ai-studio-demo.tsx"
         }
       ]
     },
     {
-      "name": "demo-network-topology",
+      "name": "page-network-topology",
       "type": "registry:block",
-      "title": "Demo 09 · 网络与架构拓扑观测台",
-      "description": "基于 @xyflow/react 与 elkjs 构建的通用拓扑监控观测工作台，内置「云原生多可用区微服务架构」与「物理 / VLAN 万兆网络」双场景切换、实时流量动效、上下游路径追踪与故障级联演练。",
+      "title": "Page 08 · 网络与架构拓扑观测台",
+      "description": "基于 @xyflow/react 与 elkjs 构建的拓扑监控观测工作台，内置云原生多可用区与物理 VLAN 万兆网络双场景、上下游追踪与故障演练。",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -5546,21 +5714,22 @@
         "@glaze/topology-inspector"
       ],
       "categories": [
-        "demos"
+        "pages",
+        "ops"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/network-topology-demo.tsx",
+          "path": "registry/glaze/pages/network-topology-demo.tsx",
           "type": "registry:page",
-          "target": "components/demos/network-topology-demo.tsx"
+          "target": "components/pages/network-topology-demo.tsx"
         }
       ]
     },
     {
-      "name": "demo-home-network",
+      "name": "page-home-network",
       "type": "registry:block",
-      "title": "Demo 10 · 家庭内网与 Homelab 架构图",
-      "description": "面向极客家庭与 Homelab 的全屋网络拓扑观测台，支持「全屋物理布线与四区 VLAN」与「自托管服务与 Tailscale 远程回家」双视角切换，基于 elkjs 自动防重叠排布。",
+      "title": "Page 09 · 家庭内网与 Homelab 架构图",
+      "description": "面向极客家庭与 Homelab 的全屋网络拓扑观测台，支持全屋物理布线四区 VLAN 与自托管服务 Tailscale 远程回家双视角切换。",
       "dependencies": [
         "@phosphor-icons/react"
       ],
@@ -5579,13 +5748,266 @@
         "@glaze/topology-inspector"
       ],
       "categories": [
-        "demos"
+        "pages",
+        "ops"
       ],
       "files": [
         {
-          "path": "registry/glaze/demos/home-network-demo.tsx",
+          "path": "registry/glaze/pages/home-network-demo.tsx",
           "type": "registry:page",
-          "target": "components/demos/home-network-demo.tsx"
+          "target": "components/pages/home-network-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-homelab",
+      "type": "registry:block",
+      "title": "Page 10 · 家庭内网总控中心",
+      "description": "管理物理主机、群晖 NAS、Docker 容器、应用发射台、硬件温度与家庭网络拓扑的内网总控仪表盘。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/app-launcher-card",
+        "@glaze/area-trend-card",
+        "@glaze/bar-list-card",
+        "@glaze/button",
+        "@glaze/dialog",
+        "@glaze/disk-temp-card",
+        "@glaze/distribution-bus-card",
+        "@glaze/dot-matrix-card",
+        "@glaze/field",
+        "@glaze/gauge-card",
+        "@glaze/grid",
+        "@glaze/hierarchy-card",
+        "@glaze/input",
+        "@glaze/menu",
+        "@glaze/metric-card",
+        "@glaze/progress-card",
+        "@glaze/quick-entry-card",
+        "@glaze/select",
+        "@glaze/server-rack-card",
+        "@glaze/signal-strength-card",
+        "@glaze/status-card",
+        "@glaze/status-dot",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/switch-card",
+        "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "pages",
+        "dashboard"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/homelab-demo.tsx",
+          "type": "registry:page",
+          "target": "components/pages/homelab-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-workspace",
+      "type": "registry:block",
+      "title": "Page 11 · 研发协作工作台",
+      "description": "覆盖迭代里程碑、CI/CD 部署状态、双列迷你看板、甘特排期、团队贡献榜与代码热力图的研发协作中心。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/alert-banner-card",
+        "@glaze/button",
+        "@glaze/calendar-card",
+        "@glaze/checklist-card",
+        "@glaze/code-deploy-card",
+        "@glaze/data-table-card",
+        "@glaze/dialog",
+        "@glaze/event-timeline-card",
+        "@glaze/field",
+        "@glaze/gantt-schedule-card",
+        "@glaze/grid",
+        "@glaze/heatmap-card",
+        "@glaze/hero-metric-card",
+        "@glaze/input",
+        "@glaze/kanban-mini-card",
+        "@glaze/members-card",
+        "@glaze/phase-timeline-card",
+        "@glaze/radio",
+        "@glaze/radio-group",
+        "@glaze/ring-card",
+        "@glaze/select",
+        "@glaze/slider",
+        "@glaze/style",
+        "@glaze/toast",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "pages",
+        "workspace"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/workspace-demo.tsx",
+          "type": "registry:page",
+          "target": "components/pages/workspace-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-smart-home",
+      "type": "registry:block",
+      "title": "Page 12 · 全屋智能家居中控",
+      "description": "面向大屏平板与桌面的智能家居控制中心，集成房间传感器矩阵、空调温控、灯光滑块与全屋场景一键联动。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/area-trend-card",
+        "@glaze/battery-card",
+        "@glaze/command-palette-bar-card",
+        "@glaze/device-control-strip-card",
+        "@glaze/floor-plan-sensor-card",
+        "@glaze/grid",
+        "@glaze/media-player-card",
+        "@glaze/metric-card",
+        "@glaze/quick-action-grid-card",
+        "@glaze/quick-settings-card",
+        "@glaze/schedule-agenda-card",
+        "@glaze/segmented-control",
+        "@glaze/slider-control-card",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/switch-card",
+        "@glaze/temperature-card",
+        "@glaze/toast",
+        "@glaze/weather-card",
+        "@glaze/weather-forecast-card"
+      ],
+      "categories": [
+        "pages",
+        "dashboard"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/smart-home-demo.tsx",
+          "type": "registry:page",
+          "target": "components/pages/smart-home-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-analytics",
+      "type": "registry:block",
+      "title": "Page 13 · SaaS 营收与财务驾驶舱",
+      "description": "融合 Recharts v3 交互式多视图趋势、全年双轴组合分析、转化漏斗、收入构成与多维指标对比的经营分析大屏。",
+      "registryDependencies": [
+        "@glaze/budget-meter-card",
+        "@glaze/button",
+        "@glaze/composed-revenue-card",
+        "@glaze/currency-card",
+        "@glaze/dual-series-trend-card",
+        "@glaze/funnel-card",
+        "@glaze/grid",
+        "@glaze/grouped-bar-chart-card",
+        "@glaze/interactive-analytics-card",
+        "@glaze/kpi-strip-card",
+        "@glaze/leaderboard-card",
+        "@glaze/metric-comparison-table-card",
+        "@glaze/pricing-plans-card",
+        "@glaze/rating-card",
+        "@glaze/revenue-breakdown-card",
+        "@glaze/select",
+        "@glaze/spark-metric-row-card",
+        "@glaze/style",
+        "@glaze/toast"
+      ],
+      "categories": [
+        "pages",
+        "dashboard"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/analytics-demo.tsx",
+          "type": "registry:page",
+          "target": "components/pages/analytics-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-personal-os",
+      "type": "registry:block",
+      "title": "Page 14 · 个人效率与数字生活 OS",
+      "description": "整合番茄钟、交互待办清单、习惯打卡矩阵、日历议程、心率饮水与灵感速记的个人数字生活仪表盘。",
+      "registryDependencies": [
+        "@glaze/chat-preview-card",
+        "@glaze/checklist-card",
+        "@glaze/clock-card",
+        "@glaze/countdown-card",
+        "@glaze/flight-route-card",
+        "@glaze/gallery-mosaic-card",
+        "@glaze/grid",
+        "@glaze/habit-tracker-card",
+        "@glaze/health-pulse-card",
+        "@glaze/media-player-card",
+        "@glaze/mini-calendar-day-card",
+        "@glaze/pomodoro-card",
+        "@glaze/profile-summary-card",
+        "@glaze/quick-note-card",
+        "@glaze/streak-card",
+        "@glaze/style",
+        "@glaze/water-intake-card"
+      ],
+      "categories": [
+        "pages",
+        "workspace"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/personal-os-demo.tsx",
+          "type": "registry:page",
+          "target": "components/pages/personal-os-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-cloud-ops",
+      "type": "registry:block",
+      "title": "Page 15 · 云原生运维与可观测性中心",
+      "description": "展示全站 30 日 SLA 状态、集群资源三环监控、告警事件日志、散点延迟分布与全局命令栏的 SRE 运维中心。",
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/code-deploy-card",
+        "@glaze/command-palette-bar-card",
+        "@glaze/contact-list-card",
+        "@glaze/disk-partitions-card",
+        "@glaze/gauge-card",
+        "@glaze/grid",
+        "@glaze/incident-log-card",
+        "@glaze/multi-radar-compare-card",
+        "@glaze/quota-card",
+        "@glaze/release-changelog-card",
+        "@glaze/resource-allocation-card",
+        "@glaze/scatter-bubble-card",
+        "@glaze/server-rack-card",
+        "@glaze/server-resource-card",
+        "@glaze/service-status-matrix-card",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/target-line-card",
+        "@glaze/toast",
+        "@glaze/uptime-strip-card"
+      ],
+      "categories": [
+        "pages",
+        "ops"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/pages/cloud-ops-demo.tsx",
+          "type": "registry:page",
+          "target": "components/pages/cloud-ops-demo.tsx"
         }
       ]
     }

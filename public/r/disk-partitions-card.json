@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "disk-partitions-card",
-  "type": "registry:block",
-  "title": "T9 磁盘分区容量 (DiskPartitionsCard)",
-  "description": "磁盘分区容量（T9 · 尺寸 T）— 多卷 Meter · 挂载路径",
+  "type": "registry:component",
+  "title": "T8 磁盘分区容量 (DiskPartitionsCard)",
+  "description": "磁盘分区容量（T8 · 尺寸 T）— 多卷 Meter · 挂载路径",
   "registryDependencies": [
     "@glaze/meter",
     "@glaze/style",
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-t"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/disk-partitions-card.tsx",
+      "path": "registry/glaze/cards/disk-partitions-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/disk-partitions-card.tsx",
+      "target": "components/cards/disk-partitions-card.tsx",
       "content": "import { Meter } from '@/components/ui/meter'\nimport { Tile } from '@/components/ui/tile'\nimport type { TileTone } from '@/lib/tokens'\n\nexport function DiskPartitionsCard({\n  title,\n  volumes,\n  tone = 'white',\n}: {\n  title: string\n  volumes: { name: string; usedGb: number; totalGb: number; mount: string }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n      <div className=\"flex flex-1 flex-col justify-between gap-3\">\n        {volumes.map((v) => (\n          <div key={v.name} className=\"flex flex-col gap-1\">\n            <Meter\n              label={v.name}\n              value={v.usedGb}\n              max={v.totalGb}\n              valueLabel={`${v.usedGb}/${v.totalGb} GB`}\n            />\n            <span className=\"font-glaze-mono text-[11px] text-[#8A90A0]\">{v.mount}</span>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

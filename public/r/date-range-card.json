@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-range-card",
+  "type": "registry:component",
+  "title": "W30 日期区间快选卡 (DateRangeCard)",
+  "description": "日期区间快选卡（W30 · 尺寸 W）— 基于 Calendar + Popover 的跨月区间选择与预设切换",
+  "dependencies": [
+    "@phosphor-icons/react",
+    "date-fns"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/calendar",
+    "@glaze/motion",
+    "@glaze/popover",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "cards",
+    "collaboration",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/cards/date-range-card.tsx",
+      "type": "registry:component",
+      "target": "components/cards/date-range-card.tsx",
+      "content": "import * as React from 'react'\nimport { addDays, differenceInCalendarDays, format } from 'date-fns'\nimport { CalendarBlank } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { Calendar, type DateRange } from '@/components/ui/calendar'\nimport { Popover } from '@/components/ui/popover'\nimport { Tile } from '@/components/ui/tile'\nimport { PRESS_CLASS } from '@/lib/motion'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface DateRangeCardProps {\n  title?: string\n  initialFrom?: Date\n  initialTo?: Date\n  presets?: { label: string; days: number }[]\n  tone?: TileTone\n  accent?: Hue | 'ink'\n  onChange?: (range: DateRange | undefined) => void\n}\n\nconst DEFAULT_FROM = new Date(2026, 10, 12)\nconst DEFAULT_TO = new Date(2026, 10, 26)\n\nexport function DateRangeCard({\n  title = '统计周期',\n  initialFrom = DEFAULT_FROM,\n  initialTo = DEFAULT_TO,\n  presets = [\n    { label: '近 7 天', days: 6 },\n    { label: '近 14 天', days: 13 },\n    { label: '近 30 天', days: 29 },\n  ],\n  tone = 'white',\n  accent = 'periwinkle',\n  onChange,\n}: DateRangeCardProps) {\n  const theme = TILE_THEMES[tone]\n  const [range, setRange] = React.useState<DateRange | undefined>({\n    from: initialFrom,\n    to: initialTo,\n  })\n\n  const dayCount = React.useMemo(() => {\n    if (!range?.from) return 0\n    const end = range.to ?? range.from\n    return Math.max(1, differenceInCalendarDays(end, range.from) + 1)\n  }, [range])\n\n  const applyRange = (next: DateRange | undefined) => {\n    setRange(next)\n    onChange?.(next)\n  }\n\n  const applyPreset = (days: number) => {\n    const end = new Date(2026, 10, 29)\n    applyRange({ from: addDays(end, -days), to: end })\n  }\n\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n          {title}\n        </span>\n        <span\n          className=\"rounded-full px-2.5 py-0.5 font-glaze-mono text-[11px] font-bold tabular-nums\"\n          style={{ backgroundColor: theme.track, color: theme.ink }}\n        >\n          共 {dayCount} 天\n        </span>\n      </div>\n\n      <div className=\"flex flex-wrap items-center justify-between gap-3\">\n        <div className=\"flex flex-col gap-0.5\">\n          <span className=\"font-glaze-display text-[22px] leading-tight font-extrabold tabular-nums\">\n            {range?.from ? format(range.from, 'yyyy/MM/dd') : '选择起始日期'}\n            {' — '}\n            {range?.to ? format(range.to, 'MM/dd') : '待定'}\n          </span>\n          <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n            支持跨月区间选择与快捷周期切换\n          </span>\n        </div>\n\n        <Popover\n          trigger={\n            <Button variant=\"secondary\" size=\"sm\">\n              <CalendarBlank size={15} weight=\"bold\" />\n              <span>修改区间</span>\n            </Button>\n          }\n          side=\"bottom\"\n          align=\"end\"\n          className=\"w-auto p-3\"\n        >\n          <Calendar\n            mode=\"range\"\n            surface=\"embedded\"\n            size=\"sm\"\n            accent={accent}\n            selected={range}\n            onSelect={applyRange}\n            defaultMonth={range?.from ?? DEFAULT_FROM}\n          />\n        </Popover>\n      </div>\n\n      <div className=\"flex flex-wrap items-center gap-1.5\">\n        {presets.map((p) => (\n          <button\n            key={p.label}\n            type=\"button\"\n            onClick={() => applyPreset(p.days)}\n            className={`cursor-pointer rounded-full px-3 py-1 text-[12px] font-semibold transition-colors hover:brightness-95 ${PRESS_CLASS}`}\n            style={{ backgroundColor: theme.track, color: theme.ink }}\n          >\n            {p.label}\n          </button>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dashboard-kpi-overview-block",
+  "type": "registry:block",
+  "title": "核心指标总览区 (DashboardKpiOverviewBlock)",
+  "description": "组合 StatusCard、SparkAreaCard、AreaTrendCard、MetricCard 与 Calendar 区间选择器的可复用仪表盘顶区模块。",
+  "dependencies": [
+    "@phosphor-icons/react",
+    "date-fns"
+  ],
+  "registryDependencies": [
+    "@glaze/area-trend-card",
+    "@glaze/button",
+    "@glaze/calendar",
+    "@glaze/grid",
+    "@glaze/metric-card",
+    "@glaze/popover",
+    "@glaze/segmented-control",
+    "@glaze/spark-area-card",
+    "@glaze/status-card",
+    "@glaze/style",
+    "@glaze/toast"
+  ],
+  "categories": [
+    "blocks",
+    "dashboard"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/dashboard-kpi-overview-block.tsx",
+      "type": "registry:block",
+      "target": "components/blocks/dashboard-kpi-overview-block.tsx",
+      "content": "import * as React from 'react'\nimport { CalendarBlank, DownloadSimple } from '@phosphor-icons/react'\nimport { format } from 'date-fns'\nimport { AreaTrendCard } from '@/components/cards/area-trend-card'\nimport { MetricCard } from '@/components/cards/metric-card'\nimport { SparkAreaCard } from '@/components/cards/spark-area-card'\nimport { StatusCard } from '@/components/cards/status-card'\nimport { Button } from '@/components/ui/button'\nimport { Calendar, type DateRange } from '@/components/ui/calendar'\nimport { Grid } from '@/components/ui/grid'\nimport { Popover } from '@/components/ui/popover'\nimport { SegmentedControl } from '@/components/ui/segmented-control'\nimport { useToast } from '@/components/ui/toast'\n\ntype RangeKey = '7d' | '30d' | '90d'\n\nconst RANGE_DATA: Record<\n  RangeKey,\n  {\n    statusText: string\n    statusDesc: string\n    mrr: string\n    mrrDelta: string\n    mrrPoints: number[]\n    activeUsers: string\n    throughputSummary: string\n    throughputPoints: number[]\n    axisLabels: string[]\n  }\n> = {\n  '7d': {\n    statusText: '运行稳定',\n    statusDesc: '18/18 节点在线 · 零异常',\n    mrr: '284.6',\n    mrrDelta: '+12.4%',\n    mrrPoints: [210, 224, 232, 248, 255, 272, 285],\n    activeUsers: '42.8',\n    throughputSummary: '48.2 k/s · 峰值 61k',\n    throughputPoints: [34, 41, 39, 52, 48, 56, 61, 48],\n    axisLabels: ['周一', '周三', '周五', '周日'],\n  },\n  '30d': {\n    statusText: '99.98%',\n    statusDesc: '健康达标 · 本月 1 次自动扩容',\n    mrr: '1,148',\n    mrrDelta: '+18.9%',\n    mrrPoints: [820, 880, 910, 960, 1020, 1090, 1148],\n    activeUsers: '128.4',\n    throughputSummary: '52.6 k/s · 月环比 +16%',\n    throughputPoints: [38, 44, 49, 46, 55, 58, 52, 64],\n    axisLabels: ['W1', 'W2', 'W3', 'W4'],\n  },\n  '90d': {\n    statusText: '99.99%',\n    statusDesc: 'SLA 达标 · 季度零 P0 故障',\n    mrr: '3,420',\n    mrrDelta: '+34.2%',\n    mrrPoints: [2100, 2380, 2610, 2890, 3050, 3260, 3420],\n    activeUsers: '316.0',\n    throughputSummary: '58.4 k/s · 季同比 +42%',\n    throughputPoints: [29, 36, 42, 48, 51, 56, 59, 66],\n    axisLabels: ['9月', '10月', '11月', '当前'],\n  },\n}\n\nexport interface DashboardKpiOverviewBlockProps {\n  title?: string\n  subtitle?: string\n}\n\nexport function DashboardKpiOverviewBlock({\n  title = '核心指标总览',\n  subtitle = '按统计窗口联动刷新全组指标卡片与趋势图',\n}: DashboardKpiOverviewBlockProps) {\n  const toast = useToast()\n  const [rangeKey, setRangeKey] = React.useState<RangeKey>('30d')\n  const [dateRange, setDateRange] = React.useState<DateRange | undefined>({\n    from: new Date(2026, 10, 1),\n    to: new Date(2026, 10, 29),\n  })\n\n  const d = RANGE_DATA[rangeKey]\n\n  return (\n    <section className=\"flex flex-col gap-5\">\n      <div className=\"flex flex-wrap items-end justify-between gap-4\">\n        <div>\n          <h2 className=\"m-0 font-glaze-display text-[24px] font-extrabold text-[#123A5C]\">\n            {title}\n          </h2>\n          <p className=\"m-0 mt-1 text-[13.5px] text-[#5B6170]\">{subtitle}</p>\n        </div>\n\n        <div className=\"flex flex-wrap items-center gap-2\">\n          <SegmentedControl\n            size=\"sm\"\n            value={rangeKey}\n            onValueChange={setRangeKey}\n            options={[\n              { value: '7d', label: '近 7 天' },\n              { value: '30d', label: '近 30 天' },\n              { value: '90d', label: '近 90 天' },\n            ]}\n          />\n\n          <Popover\n            trigger={\n              <Button variant=\"secondary\" size=\"sm\">\n                <CalendarBlank size={15} weight=\"bold\" />\n                <span className=\"tabular-nums\">\n                  {dateRange?.from ? format(dateRange.from, 'MM/dd') : '起'} –{' '}\n                  {dateRange?.to ? format(dateRange.to, 'MM/dd') : '止'}\n                </span>\n              </Button>\n            }\n            align=\"end\"\n            className=\"w-auto p-3\"\n          >\n            <Calendar\n              mode=\"range\"\n              surface=\"embedded\"\n              size=\"sm\"\n              accent=\"periwinkle\"\n              selected={dateRange}\n              onSelect={setDateRange}\n              defaultMonth={dateRange?.from}\n            />\n          </Popover>\n\n          <Button\n            variant=\"primary\"\n            size=\"sm\"\n            onClick={() =>\n              toast({\n                title: '已导出指标快照',\n                description: `统计窗口：${rangeKey.toUpperCase()} · CSV 与 PDF 已生成`,\n                status: 'normal',\n              })\n            }\n          >\n            <DownloadSimple size={15} weight=\"bold\" />\n            <span>导出报表</span>\n          </Button>\n        </div>\n      </div>\n\n      <Grid>\n        <StatusCard\n          label=\"集群状态\"\n          statusText={d.statusText}\n          description={d.statusDesc}\n          status=\"normal\"\n          tone=\"mint\"\n        />\n        <SparkAreaCard\n          label=\"经常性营收\"\n          value={d.mrr}\n          unit=\"万\"\n          delta={d.mrrDelta}\n          points={d.mrrPoints}\n          tone=\"sky\"\n        />\n        <AreaTrendCard\n          title=\"实时请求吞吐\"\n          summary={d.throughputSummary}\n          points={d.throughputPoints}\n          axisLabels={d.axisLabels}\n          tone=\"white\"\n        />\n        <MetricCard label=\"活跃团队\" value={d.activeUsers} unit=\"k\" tone=\"periwinkle\" />\n        <MetricCard label=\"转化率\" value=\"6.84\" unit=\"%\" tone=\"white\" />\n        <MetricCard label=\"P99 延迟\" value=\"18.4\" unit=\"ms\" tone=\"white\" />\n        <MetricCard label=\"NPS 评分\" value=\"74\" unit=\"分\" tone=\"sky-dark\" />\n      </Grid>\n    </section>\n  )\n}\n"
+    }
+  ]
+}

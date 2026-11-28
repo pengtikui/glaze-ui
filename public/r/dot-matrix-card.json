@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "dot-matrix-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "S6 点阵占比卡 (DotMatrixCard)",
   "description": "点阵占比卡（S6 · 尺寸 S）— 标签 · 24 点阵 · 统计",
   "registryDependencies": [
@@ -10,15 +10,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "metrics",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/dot-matrix-card.tsx",
+      "path": "registry/glaze/cards/dot-matrix-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/dot-matrix-card.tsx",
+      "target": "components/cards/dot-matrix-card.tsx",
       "content": "import { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface DotMatrixCardProps {\n  label: string\n  subLabel?: string\n  active: number\n  total: number\n  tone?: TileTone\n}\n\nexport function DotMatrixCard({\n  label,\n  subLabel,\n  active,\n  total,\n  tone = 'lilac',\n}: DotMatrixCardProps) {\n  const theme = TILE_THEMES[tone]\n  const cols = total > 10 ? 10 : Math.max(total, 5)\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span\n        className=\"flex items-center justify-between gap-2 text-[14px] font-medium\"\n        style={{ color: theme.soft }}\n      >\n        <span className=\"truncate\">{label}</span>\n        {subLabel && <span className=\"shrink-0 whitespace-nowrap\">{subLabel}</span>}\n      </span>\n      <span className=\"font-glaze-display text-[44px] leading-11.5 font-extrabold tracking-[-0.02em] whitespace-nowrap\">\n        {active}\n        <span style={{ opacity: 0.48 }}>/{total}</span>\n      </span>\n      <span\n        aria-hidden=\"true\"\n        className=\"grid justify-items-center gap-1.5\"\n        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}\n      >\n        {Array.from({ length: total }, (_, i) => (\n          <span\n            key={i}\n            className=\"h-3.5 w-3.5 rounded-full\"\n            style={{\n              backgroundColor: i < active ? theme.accent : theme.track,\n            }}\n          />\n        ))}\n      </span>\n    </Tile>\n  )\n}\n"
     }
   ]

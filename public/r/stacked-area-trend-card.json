@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "stacked-area-trend-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W25 堆叠面积趋势宽卡 (StackedAreaTrendCard)",
   "description": "堆叠面积趋势宽卡（W25 · 尺寸 W）— 多端流量堆叠面积 · 可点击图例",
   "registryDependencies": [
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "charts",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/stacked-area-trend-card.tsx",
+      "path": "registry/glaze/cards/stacked-area-trend-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/stacked-area-trend-card.tsx",
+      "target": "components/cards/stacked-area-trend-card.tsx",
       "content": "import { AreaChart, type AreaSeries } from '@/components/ui/area-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface StackedAreaTrendCardProps {\n  title: string\n  totalValue?: string\n  data: readonly object[]\n  xKey: string\n  series: AreaSeries[]\n  tone?: TileTone\n}\n\nexport function StackedAreaTrendCard({\n  title,\n  totalValue,\n  data,\n  xKey,\n  series,\n  tone = 'white',\n}: StackedAreaTrendCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-2 pb-4.5\">\n      <div className=\"flex flex-wrap items-baseline justify-between gap-2\">\n        <span className=\"truncate text-[17px] font-bold\">{title}</span>\n        {totalValue && (\n          <span className=\"shrink-0 font-glaze-display text-[16px] font-extrabold whitespace-nowrap\" style={{ color: theme.ink }}>\n            {totalValue}\n          </span>\n        )}\n      </div>\n      <div className=\"min-h-30 flex-1 w-full\">\n        <AreaChart\n          data={data}\n          xKey={xKey}\n          series={series}\n          stacked\n          showLegend\n          showYAxis={false}\n          tone={tone}\n          height={118}\n        />\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

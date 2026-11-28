@@ -1,6 +1,6 @@
 # Glaze（釉） Design System
 
-> 基于 Base UI 1.9、Tailwind CSS v4 与 Recharts v3 的无障碍设计系统与 shadcn Registry. 58 single-file UI components (39 Base UI 1.9 + 9 design primitives + 10 Recharts v3 charts), 112 independently installable business blocks, and 6 full-page demos published as a shadcn Registry.
+> 基于 Base UI 1.9、Tailwind CSS v4 与 Recharts v3 的无障碍设计系统与 shadcn Registry. 82 single-file UI components, 119 specialized Bento cards, 10 reusable business blocks, and 15 full application pages published as a shadcn Registry.
 
 ## Quick CLI Reference
 
@@ -9,14 +9,15 @@
 - Registry Manifest: `https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/r/registry.json` (or `/r/registry.json`)
 - Full Consolidated AI Reference: `https://raw.githubusercontent.com/pengtikui/glaze-ui/main/public/llms-full.txt` (or `/llms-full.txt`)
 - Install Base Theme & Tokens: `npx shadcn@latest add @glaze/style`
-- Install Any Component or Block: `npx shadcn@latest add @glaze/<name>`
+- Install Any Component, Card, Block, or Page: `npx shadcn@latest add @glaze/<name>`
 
 ## Core Documentation
 
 - [Getting Started & Registry Setup](/llms/getting-started.md): Configure `components.json`, install `@glaze/style`, and wrap providers.
 - [Design Foundations & Strict Rules](/llms/foundations.md): Canvas, shadowless cards, capsule radii, 9 pastel hues, 4-col dense grid, Base UI v1.9 conventions, CSS-first motion rules.
-- [112 Business Blocks Catalog](/llms/blocks.md): Complete index of S/W/T/L/F cards with registry slugs.
-- [6 Standalone Business Demos](/llms/demos.md): Full-page real-world dashboards and their standalone preview routes.
+- [119 Specialized Cards Catalog](/llms/cards.md): Complete index of S/W/T/L/F Bento cards (`/cards`).
+- [10 Reusable Business Blocks](/llms/blocks.md): Composite multi-component business modules (`/blocks`).
+- [15 Full Application Pages](/llms/pages.md): End-to-end pages and their standalone preview routes (`/pages`).
 
 ## Components — Primitives & Layout (布局与设计原语)
 

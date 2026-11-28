@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "schedule-agenda-card",
-  "type": "registry:block",
-  "title": "T8 今日议程日程 (ScheduleAgendaCard)",
-  "description": "今日议程日程（T8 · 尺寸 T）— 色条 · 时间 · 会议地点",
+  "type": "registry:component",
+  "title": "T7 今日议程日程 (ScheduleAgendaCard)",
+  "description": "今日议程日程（T7 · 尺寸 T）— 色条 · 时间 · 会议地点",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -13,15 +13,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "productivity",
+    "cards",
+    "collaboration",
     "size-t"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/schedule-agenda-card.tsx",
+      "path": "registry/glaze/cards/schedule-agenda-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/schedule-agenda-card.tsx",
+      "target": "components/cards/schedule-agenda-card.tsx",
       "content": "import { CalendarBlank } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function ScheduleAgendaCard({\n  dateLabel,\n  events,\n  tone = 'sky',\n}: {\n  dateLabel: string\n  events: { time: string; title: string; room: string; hue: Hue }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const cardBg = theme.dark\n    ? 'rgba(255,255,255,0.1)'\n    : theme.bg === '#FFFFFF'\n      ? '#F6F7F9'\n      : 'rgba(255,255,255,0.75)'\n  return (\n    <Tile size=\"t\" tone={tone} padding=\"compact\" className=\"justify-start gap-3\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <span className=\"truncate font-glaze-display text-[17px] font-extrabold\">{dateLabel}</span>\n        <CalendarBlank size={18} weight=\"duotone\" className=\"shrink-0\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"flex flex-1 flex-col justify-between gap-2\">\n        {events.map((ev) => (\n          <div\n            key={`${ev.time}-${ev.title}`}\n            className=\"flex gap-2.5 rounded-2xl px-3 py-2\"\n            style={{ backgroundColor: cardBg }}\n          >\n            <span\n              className=\"w-1 shrink-0 rounded-full\"\n              style={{ backgroundColor: HUE_PALETTES[ev.hue][500] }}\n            />\n            <div className=\"min-w-0 flex-1\">\n              <div className=\"font-glaze-mono text-[11px] font-bold\" style={{ color: theme.soft }}>\n                {ev.time}\n              </div>\n              <div className=\"truncate text-[13px] font-bold\" style={{ color: theme.ink }}>\n                {ev.title}\n              </div>\n              <div className=\"truncate text-[11px]\" style={{ color: theme.soft }}>\n                {ev.room}\n              </div>\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

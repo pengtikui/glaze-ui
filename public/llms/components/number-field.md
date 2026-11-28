@@ -87,10 +87,10 @@ export function NumberField({
         >
           <Minus size={14} weight="bold" />
         </BaseNumberField.Decrement>
-        <div className="flex flex-1 items-center justify-center gap-1 px-3">
-          <BaseNumberField.Input className="w-16 bg-transparent text-center font-glaze-display text-[15px] font-bold text-[#1B1F27] tabular-nums outline-none" />
+        <div className="flex min-w-0 flex-1 items-center justify-center gap-1 px-2.5">
+          <BaseNumberField.Input className="w-full min-w-10 max-w-20 bg-transparent text-center font-glaze-display text-[15px] font-bold text-[#1B1F27] tabular-nums outline-none" />
           {unit && (
-            <span className="text-[12px] font-medium text-[#6B7280]">{unit}</span>
+            <span className="shrink-0 text-[12px] font-medium text-[#6B7280]">{unit}</span>
           )}
         </div>
         <BaseNumberField.Increment

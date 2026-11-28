@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { PAGES_LIST } from '@/docs/data/catalog'
+import { StandalonePageIsland } from '@/docs/islands/PageIslands'
+
+export async function getStaticPaths() {
+  return PAGES_LIST.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }))
+}
+
+const { page } = Astro.props
+---
+
+<BaseLayout title={`${page.title} · Glaze Page`} description={page.description} clientRouter={false}>
+  <StandalonePageIsland slug={page.slug} client:only="react" />
+</BaseLayout>

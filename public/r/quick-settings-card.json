@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "quick-settings-card",
-  "type": "registry:block",
-  "title": "T13 偏好开关面板 (QuickSettingsCard)",
-  "description": "偏好开关面板（T13 · 尺寸 T）— 多项真实 Switch 偏好项",
+  "type": "registry:component",
+  "title": "T12 偏好开关面板 (QuickSettingsCard)",
+  "description": "偏好开关面板（T12 · 尺寸 T）— 多项真实 Switch 偏好项",
   "registryDependencies": [
     "@glaze/style",
     "@glaze/switch",
@@ -11,16 +11,16 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "controls",
     "size-t"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/quick-settings-card.tsx",
+      "path": "registry/glaze/cards/quick-settings-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/quick-settings-card.tsx",
-      "content": "import * as React from 'react'\nimport { Switch } from '@/components/ui/switch'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport function QuickSettingsCard({\n  title,\n  settings,\n  tone = 'white',\n}: {\n  title: string\n  settings: { id: string; label: string; desc: string; hue: Hue; defaultChecked: boolean }[]\n  tone?: TileTone\n}) {\n  const [map, setMap] = React.useState<Record<string, boolean>>(() =>\n    Object.fromEntries(settings.map((s) => [s.id, s.defaultChecked])),\n  )\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n      <div className=\"flex flex-1 flex-col justify-between gap-3\">\n        {settings.map((s) => (\n          <div key={s.id} className=\"flex items-center justify-between gap-3\">\n            <div className=\"min-w-0\">\n              <div className=\"truncate text-[13px] font-bold text-[#1B1F27]\">{s.label}</div>\n              <div className=\"truncate text-[11px] text-[#6B7280]\">{s.desc}</div>\n            </div>\n            <Switch\n              size=\"sm\"\n              hue={s.hue}\n              checked={Boolean(map[s.id])}\n              onCheckedChange={(v) => setMap((prev) => ({ ...prev, [s.id]: v }))}\n            />\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+      "target": "components/cards/quick-settings-card.tsx",
+      "content": "import * as React from 'react'\nimport { Switch } from '@/components/ui/switch'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport function QuickSettingsCard({\n  title,\n  settings,\n  tone = 'white',\n  className,\n}: {\n  title: string\n  settings: { id: string; label: string; desc: string; hue: Hue; defaultChecked: boolean }[]\n  tone?: TileTone\n  className?: string\n}) {\n  const [map, setMap] = React.useState<Record<string, boolean>>(() =>\n    Object.fromEntries(settings.map((s) => [s.id, s.defaultChecked])),\n  )\n  return (\n    <Tile size=\"t\" tone={tone} className={className ? `justify-start gap-4 ${className}` : 'justify-start gap-4'}>\n      <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n      <div className=\"flex flex-col gap-3.5\">\n        {settings.map((s) => (\n          <div key={s.id} className=\"flex items-center justify-between gap-3\">\n            <div className=\"min-w-0\">\n              <div className=\"truncate text-[13px] font-bold text-[#1B1F27]\">{s.label}</div>\n              <div className=\"truncate text-[11px] text-[#6B7280]\">{s.desc}</div>\n            </div>\n            <Switch\n              size=\"sm\"\n              hue={s.hue}\n              checked={Boolean(map[s.id])}\n              onCheckedChange={(v) => setMap((prev) => ({ ...prev, [s.id]: v }))}\n            />\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]
 }

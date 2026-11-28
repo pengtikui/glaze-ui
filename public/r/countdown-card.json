@@ -1,24 +1,24 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "countdown-card",
-  "type": "registry:block",
-  "title": "S11 倒计时卡 (CountdownCard)",
-  "description": "倒计时卡（S11 · 尺寸 S）— 事件名 · 剩余天数 · 进度格",
+  "type": "registry:component",
+  "title": "S10 倒计时卡 (CountdownCard)",
+  "description": "倒计时卡（S10 · 尺寸 S）— 事件名 · 剩余天数 · 进度格",
   "registryDependencies": [
     "@glaze/style",
     "@glaze/tile",
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "productivity",
+    "cards",
+    "collaboration",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/countdown-card.tsx",
+      "path": "registry/glaze/cards/countdown-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/countdown-card.tsx",
+      "target": "components/cards/countdown-card.tsx",
       "content": "import { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface CountdownCardProps {\n  label: string\n  remaining: number | string\n  unit: string\n  deadlineText: string\n  totalSteps?: number\n  elapsedSteps?: number\n  tone?: TileTone\n}\n\nexport function CountdownCard({\n  label,\n  remaining,\n  unit,\n  deadlineText,\n  totalSteps = 7,\n  elapsedSteps = 4,\n  tone = 'coral',\n}: CountdownCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <span className=\"flex items-baseline gap-1.5\">\n        <span className=\"font-glaze-display text-[52px] leading-13.5 font-extrabold tracking-[-0.03em]\">\n          {remaining}\n        </span>\n        <span className=\"text-[18px] font-bold\">{unit}</span>\n      </span>\n      <span className=\"flex flex-col gap-2\">\n        <span\n          aria-hidden=\"true\"\n          className=\"grid gap-1\"\n          style={{ gridTemplateColumns: `repeat(${totalSteps}, minmax(0, 1fr))` }}\n        >\n          {Array.from({ length: totalSteps }, (_, i) => (\n            <span\n              key={i}\n              className=\"h-2 rounded-sm\"\n              style={{\n                backgroundColor: i < elapsedSteps ? theme.accent : theme.track,\n              }}\n            />\n          ))}\n        </span>\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          {deadlineText}\n        </span>\n      </span>\n    </Tile>\n  )\n}\n"
     }
   ]

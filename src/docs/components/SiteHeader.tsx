@@ -14,8 +14,9 @@ const TOP_NAV = [
       p.startsWith('/docs') && !p.startsWith('/docs/components') && p !== '/docs/ai-agent',
   },
   { label: '组件', to: '/docs/components', match: (p: string) => p.startsWith('/docs/components') },
-  { label: '卡片', to: '/blocks', match: (p: string) => p.startsWith('/blocks') },
-  { label: '示例 Demo', to: '/demos', match: (p: string) => p.startsWith('/demos') },
+  { label: '卡片', to: '/cards', match: (p: string) => p.startsWith('/cards') },
+  { label: 'Blocks', to: '/blocks', match: (p: string) => p.startsWith('/blocks') },
+  { label: '页面', to: '/pages', match: (p: string) => p.startsWith('/pages') },
   { label: 'AI Agent', to: '/docs/ai-agent', match: (p: string) => p === '/docs/ai-agent' },
 ]
 

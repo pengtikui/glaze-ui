@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "alert-banner-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W7 告警横幅卡 (AlertBannerCard)",
   "description": "告警横幅卡（W7 · 尺寸 W）— 标题 · 说明 · 动作按钮",
   "dependencies": [
@@ -15,15 +15,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/alert-banner-card.tsx",
+      "path": "registry/glaze/cards/alert-banner-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/alert-banner-card.tsx",
+      "target": "components/cards/alert-banner-card.tsx",
       "content": "import * as React from 'react'\nimport { Warning } from '@phosphor-icons/react'\nimport { Button } from '@/components/ui/button'\nimport { IconTile } from '@/components/ui/icon-tile'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface AlertBannerCardProps {\n  title: string\n  description: string\n  actionLabel: string\n  onAction?: () => void\n  icon?: React.ReactNode\n  tone?: TileTone\n}\n\nexport function AlertBannerCard({\n  title,\n  description,\n  actionLabel,\n  onAction,\n  icon,\n  tone = 'coral',\n}: AlertBannerCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile\n      size=\"w\"\n      tone={tone}\n      className=\"flex-row items-center gap-5 sm:gap-6 px-7\"\n    >\n      <IconTile hue=\"coral-solid\" size=\"xl\" style={{ backgroundColor: theme.accent }}>\n        {icon ?? <Warning size={30} />}\n      </IconTile>\n      <span className=\"flex-1 min-w-0 flex flex-col gap-1.5\">\n        <span className=\"font-glaze-display text-[20px] sm:text-[22px] leading-7 font-extrabold\">\n          {title}\n        </span>\n        <span className=\"text-[14px] leading-5.5\" style={{ color: theme.soft }}>\n          {description}\n        </span>\n      </span>\n      <Button\n        variant=\"dark-on-coral\"\n        onClick={onAction}\n        style={{ backgroundColor: theme.ink, color: theme.dark ? theme.bg : '#FFFFFF' }}\n        className=\"shrink-0\"\n      >\n        {actionLabel}\n      </Button>\n    </Tile>\n  )\n}\n"
     }
   ]

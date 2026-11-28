@@ -61,15 +61,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## 3. Install Components, Blocks, or Full Demos
+## 3. Install Components, Cards, Blocks, or Full Pages
 
 ```bash
-# Install UI primitives
-npx shadcn@latest add @glaze/button @glaze/dialog @glaze/select @glaze/bar-chart
+# Install UI primitives & charts (82 available)
+npx shadcn@latest add @glaze/button @glaze/dialog @glaze/calendar @glaze/data-table
 
-# Install ready-made business cards (112 available)
+# Install Bento business cards (119 available)
 npx shadcn@latest add @glaze/status-card @glaze/area-trend-card @glaze/data-table-card
 
-# Install a complete demo page (6 available)
-npx shadcn@latest add @glaze/demo-homelab
+# Install reusable composite Blocks (10 available)
+npx shadcn@latest add @glaze/auth-login-block @glaze/data-management-block @glaze/calendar-booking-block
+
+# Install a complete application Page (15 available)
+npx shadcn@latest add @glaze/page-mail-desk
 ```

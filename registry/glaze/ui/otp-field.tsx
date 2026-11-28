@@ -6,12 +6,14 @@ export interface OTPFieldProps
   extends Omit<React.ComponentPropsWithoutRef<typeof BaseOTPField.Root>, 'className' | 'length'> {
   length?: number
   separatorAt?: number
+  surface?: 'soft' | 'white'
   className?: string
 }
 
 export function OTPField({
   length = 6,
   separatorAt = 3,
+  surface = 'soft',
   className,
   ...props
 }: OTPFieldProps) {
@@ -25,9 +27,12 @@ export function OTPField({
         <React.Fragment key={index}>
           <BaseOTPField.Input
             className={cn(
-              'h-12 w-11 rounded-2xl border-0 bg-[#F6F7F9] text-center font-glaze-display text-[18px] font-extrabold text-[#1B1F27] tabular-nums outline-none',
+              'h-12 w-11 rounded-2xl border-0 text-center font-glaze-display text-[18px] font-extrabold text-[#1B1F27] tabular-nums outline-none',
+              surface === 'white'
+                ? 'bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06)] hover:bg-[#FAFBFD]'
+                : 'bg-[#F6F7F9] hover:bg-[#EEF0F4]',
               'transition-[background-color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
-              'hover:bg-[#EEF0F4] focus:bg-white focus:ring-2 focus:ring-inset focus:ring-[#7B80EA]',
+              'focus:bg-white focus:ring-2 focus:ring-inset focus:ring-[#7B80EA]',
               'data-filled:bg-[#E4E6FD]/60 data-filled:text-[#262B7A]',
               'data-disabled:opacity-45',
             )}

@@ -3,7 +3,7 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
-  "description": "Glaze Design System — shadcn Registry, Base UI 1.9 components, 112 blocks, docs site & AI Agent reference",
+  "description": "Glaze Design System — shadcn Registry, Base UI 1.9 components, 119 cards, 10 blocks, 15 pages & AI Agent reference",
   "homepage": "https://github.com/pengtikui/glaze-ui",
   "repository": {
     "type": "git",

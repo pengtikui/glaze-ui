@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "multi-radar-compare-card",
-  "type": "registry:block",
-  "title": "L17 双方案雷达对比大卡 (MultiRadarCompareCard)",
-  "description": "双方案雷达对比大卡（L17 · 尺寸 L）— 双序列对比 · 多边形/同心圆切换",
+  "type": "registry:component",
+  "title": "L16 多维雷达对比大卡 (MultiRadarCompareCard)",
+  "description": "多维雷达对比大卡（L16 · 尺寸 L）— 单/双序列对比 · 多边形/同心圆切换",
   "registryDependencies": [
     "@glaze/radar-chart",
     "@glaze/segmented-control",
@@ -12,15 +12,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "charts",
     "size-l"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/multi-radar-compare-card.tsx",
+      "path": "registry/glaze/cards/multi-radar-compare-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/multi-radar-compare-card.tsx",
+      "target": "components/cards/multi-radar-compare-card.tsx",
       "content": "import * as React from 'react'\nimport { RadarChart, type RadarSeries } from '@/components/ui/radar-chart'\nimport { SegmentedControl } from '@/components/ui/segmented-control'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface MultiRadarCompareCardProps {\n  title: string\n  subtitle?: string\n  data: readonly object[]\n  angleKey: string\n  series: RadarSeries[]\n  tone?: TileTone\n}\n\nexport function MultiRadarCompareCard({\n  title,\n  subtitle,\n  data,\n  angleKey,\n  series,\n  tone = 'white',\n}: MultiRadarCompareCardProps) {\n  const theme = TILE_THEMES[tone]\n  const [gridType, setGridType] = React.useState<'polygon' | 'circle'>('polygon')\n\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex flex-wrap items-start justify-between gap-2\">\n        <div>\n          <div className=\"font-glaze-display text-[20px] font-extrabold\">{title}</div>\n          {subtitle && (\n            <div className=\"mt-0.5 text-[13px]\" style={{ color: theme.soft }}>\n              {subtitle}\n            </div>\n          )}\n        </div>\n        <SegmentedControl\n          size=\"sm\"\n          value={gridType}\n          onValueChange={setGridType}\n          options={[\n            { value: 'polygon', label: '多边形' },\n            { value: 'circle', label: '同心圆' },\n          ]}\n        />\n      </div>\n      <div className=\"min-h-68 flex-1 w-full\">\n        <RadarChart\n          data={data}\n          angleKey={angleKey}\n          series={series}\n          gridType={gridType}\n          showLegend\n          tone={tone}\n          height={275}\n        />\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

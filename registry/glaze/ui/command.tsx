@@ -178,6 +178,18 @@ export const CommandLoading = React.forwardRef<
   )
 })
 
+function scrollElementWithinCommandList(el: HTMLElement) {
+  const list = el.closest('[cmdk-list]') as HTMLElement | null
+  if (!list) return
+  const listRect = list.getBoundingClientRect()
+  const elRect = el.getBoundingClientRect()
+  if (elRect.top < listRect.top) {
+    list.scrollTop -= listRect.top - elRect.top + 4
+  } else if (elRect.bottom > listRect.bottom) {
+    list.scrollTop += elRect.bottom - listRect.bottom + 4
+  }
+}
+
 export interface CommandGroupProps
   extends React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group> {}
 
@@ -185,9 +197,21 @@ export const CommandGroup = React.forwardRef<
   React.ComponentRef<typeof CommandPrimitive.Group>,
   CommandGroupProps
 >(function CommandGroup({ className, ...props }, ref) {
+  const innerRef = React.useRef<HTMLDivElement>(null)
+
+  React.useLayoutEffect(() => {
+    const heading = innerRef.current?.querySelector<HTMLElement>('[cmdk-group-heading]')
+    if (!heading) return
+    heading.scrollIntoView = () => scrollElementWithinCommandList(heading)
+  }, [])
+
   return (
     <CommandPrimitive.Group
-      ref={ref}
+      ref={(node) => {
+        innerRef.current = node
+        if (typeof ref === 'function') ref(node)
+        else if (ref) ref.current = node
+      }}
       className={cn(
         'overflow-hidden text-[#1B1F27] [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-bold [&_[cmdk-group-heading]]:tracking-[0.04em] [&_[cmdk-group-heading]]:text-[#8A90A0] [&_[cmdk-group-heading]]:uppercase',
         className,
@@ -220,9 +244,21 @@ export const CommandItem = React.forwardRef<
   React.ComponentRef<typeof CommandPrimitive.Item>,
   CommandItemProps
 >(function CommandItem({ className, ...props }, ref) {
+  const innerRef = React.useRef<HTMLDivElement>(null)
+
+  React.useLayoutEffect(() => {
+    const el = innerRef.current
+    if (!el) return
+    el.scrollIntoView = () => scrollElementWithinCommandList(el)
+  }, [])
+
   return (
     <CommandPrimitive.Item
-      ref={ref}
+      ref={(node) => {
+        innerRef.current = node
+        if (typeof ref === 'function') ref(node)
+        else if (ref) ref.current = node
+      }}
       className={cn(
         'relative flex cursor-pointer items-center gap-2.5 rounded-[14px] px-3 py-2.5 text-[13.5px] font-medium text-[#1B1F27] outline-none select-none transition-colors duration-150',
         'data-[selected=true]:bg-[#F3F4FE] data-[selected=true]:text-[#262B7A]',

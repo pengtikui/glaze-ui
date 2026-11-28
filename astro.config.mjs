@@ -19,6 +19,8 @@ export default defineConfig({
       alias: [
         { find: /^@\/components\/ui$/, replacement: r('./registry/glaze/ui/index.ts') },
         { find: /^@\/components\/ui\/(.*)$/, replacement: r('./registry/glaze/ui/$1') },
+        { find: /^@\/components\/cards$/, replacement: r('./registry/glaze/cards/index.ts') },
+        { find: /^@\/components\/cards\/(.*)$/, replacement: r('./registry/glaze/cards/$1') },
         { find: /^@\/components\/blocks$/, replacement: r('./registry/glaze/blocks/index.ts') },
         { find: /^@\/components\/blocks\/(.*)$/, replacement: r('./registry/glaze/blocks/$1') },
         { find: /^@\/lib\/(.*)$/, replacement: r('./registry/glaze/lib/$1') },

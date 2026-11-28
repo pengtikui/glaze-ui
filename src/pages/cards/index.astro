@@ -1,0 +1,14 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { CARDS_LIST } from '@/docs/data/catalog'
+import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
+import { CardsIndexIsland } from '@/docs/islands/PageIslands'
+---
+
+<BaseLayout
+  title={`卡片 (${CARDS_LIST.length}) · Glaze UI`}
+  description={`${CARDS_LIST.length} 张可独立安装的 Glaze 专用 Bento 卡片组件`}
+>
+  <SiteHeaderIsland pathname="/cards" client:load />
+  <CardsIndexIsland client:only="react" />
+</BaseLayout>

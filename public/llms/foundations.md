@@ -9,6 +9,12 @@
   - `rounded-inner` (`18px`): multiline & nested surfaces (`Textarea`, `Fieldset`, `Accordion`, `Collapsible`)
   - `rounded-full`: ALL single-line controls (`Button`, `Input`, `Select`, `Combobox`, `Autocomplete`, `NumberField`, `Switch`, `Toggle`, `Tabs`, `SegmentedControl`, `Menubar`, `Toolbar`) at standard `44px` height (`h-11`), soft background `#F6F7F9`, borderless by default.
 
+## Four-Layer Architecture
+1. **UI Components** (`@/components/ui/*`): 82 atomic Base UI, primitive, chart, AI, and topology components.
+2. **Cards** (`@/components/cards/*`, URL `/cards`): 119 specialized Bento tile components across S/W/T/L/F sizes.
+3. **Blocks** (`@/components/blocks/*`, URL `/blocks`): 10 reusable multi-component business modules (Auth, KPI Overview, CRUD Data Management, Pricing, Calendar Booking, AI Workbench, etc.).
+4. **Pages** (`@/components/pages/*`, URL `/pages`): 15 full end-to-end application pages previewable standalone at `/view/pages/<slug>`.
+
 ## Color Tokens
 - **9 Pastel Hue Families** (`Hue`): `sky`, `mint`, `peach`, `lilac`, `rose`, `lemon`, `aqua`, `periwinkle`, `coral` — each with 6 shades: `50, 100, 300, 500, 700, 900`.
 - **14 Tile Tones** (`TileTone`): `white` + 9 pastel hues + 4 dark focus tones (`sky-dark`, `lilac-dark`, `aqua-dark`, `ink`).
@@ -16,7 +22,7 @@
 
 ## Base UI v1.9 Conventions (DO NOT USE RADIX PATTERNS)
 - **NEVER** pass `asChild` (that is Radix UI). Base UI uses the `render` prop (e.g., `<BaseDialog.Trigger render={<Button>Open</Button>} />`) or Glaze's explicit `trigger={<Button>Open</Button>}` prop.
-- Import directly from single component files: `@/components/ui/button`, `@/components/ui/tile`, `@/lib/tokens`, `@/lib/motion`.
+- Import directly from single component files: `@/components/ui/button`, `@/components/cards/status-card`, `@/components/blocks/auth-login-block`, `@/lib/tokens`, `@/lib/motion`.
 - Utility class merger is `import { cn } from 'cn'` (`shadcn-ui/cn`).
 - Icons come from `@phosphor-icons/react`.
 

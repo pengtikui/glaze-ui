@@ -1,23 +1,23 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "compare-card",
-  "type": "registry:block",
-  "title": "S10 对比进度小卡 (CompareCard)",
-  "description": "对比进度小卡（S10 · 尺寸 S）— 两项数值对比条 · 差值",
+  "type": "registry:component",
+  "title": "S9 对比进度小卡 (CompareCard)",
+  "description": "对比进度小卡（S9 · 尺寸 S）— 两项数值对比条 · 差值",
   "registryDependencies": [
     "@glaze/tile",
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "metrics",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/compare-card.tsx",
+      "path": "registry/glaze/cards/compare-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/compare-card.tsx",
+      "target": "components/cards/compare-card.tsx",
       "content": "import { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface CompareCardProps {\n  label: string\n  delta: string\n  primary: { label: string; value: number; display?: string }\n  secondary: { label: string; value: number; display?: string }\n  tone?: TileTone\n}\n\nexport function CompareCard({\n  label,\n  delta,\n  primary,\n  secondary,\n  tone = 'mint',\n}: CompareCardProps) {\n  const theme = TILE_THEMES[tone]\n  const maxVal = Math.max(primary.value, secondary.value, 1)\n  const pPct = Math.round((primary.value / maxVal) * 100)\n  const sPct = Math.round((secondary.value / maxVal) * 100)\n  const mutedFill =\n    tone === 'white'\n      ? '#CDD3DD'\n      : tone in HUE_PALETTES\n        ? HUE_PALETTES[tone as Hue][300]\n        : theme.mutedBar\n\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span\n        className=\"flex items-center justify-between gap-2 text-[14px] font-medium\"\n        style={{ color: theme.soft }}\n      >\n        <span className=\"truncate\">{label}</span>\n        <span className=\"shrink-0 whitespace-nowrap\">{delta}</span>\n      </span>\n      <span className=\"flex flex-col gap-3\">\n        <span className=\"flex flex-col gap-1.5\">\n          <span className=\"flex justify-between gap-2 text-[13px]\">\n            <span className=\"truncate\" style={{ color: theme.soft }}>{primary.label}</span>\n            <span className=\"shrink-0 font-bold whitespace-nowrap\">\n              {primary.display ?? primary.value.toLocaleString('en-US')}\n            </span>\n          </span>\n          <span\n            aria-hidden=\"true\"\n            className=\"h-2.5 rounded-[5px] overflow-hidden\"\n            style={{ backgroundColor: theme.track }}\n          >\n            <span\n              className=\"block h-full rounded-[5px]\"\n              style={{ width: `${pPct}%`, backgroundColor: theme.accent }}\n            />\n          </span>\n        </span>\n        <span className=\"flex flex-col gap-1.5\">\n          <span className=\"flex justify-between gap-2 text-[13px]\">\n            <span className=\"truncate\" style={{ color: theme.soft }}>{secondary.label}</span>\n            <span className=\"shrink-0 font-bold whitespace-nowrap\">\n              {secondary.display ?? secondary.value.toLocaleString('en-US')}\n            </span>\n          </span>\n          <span\n            aria-hidden=\"true\"\n            className=\"h-2.5 rounded-[5px] overflow-hidden\"\n            style={{ backgroundColor: theme.track }}\n          >\n            <span\n              className=\"block h-full rounded-[5px]\"\n              style={{ width: `${sPct}%`, backgroundColor: mutedFill }}\n            />\n          </span>\n        </span>\n      </span>\n    </Tile>\n  )\n}\n"
     }
   ]

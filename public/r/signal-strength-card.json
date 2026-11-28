@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "signal-strength-card",
-  "type": "registry:block",
-  "title": "S33 信号强度卡 (SignalStrengthCard)",
-  "description": "信号强度卡（S33 · 尺寸 S）— SSID · 4 格信号柱 · 延迟",
+  "type": "registry:component",
+  "title": "S25 信号强度卡 (SignalStrengthCard)",
+  "description": "信号强度卡（S25 · 尺寸 S）— SSID · 4 格信号柱 · 延迟",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -14,15 +14,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/signal-strength-card.tsx",
+      "path": "registry/glaze/cards/signal-strength-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/signal-strength-card.tsx",
+      "target": "components/cards/signal-strength-card.tsx",
       "content": "import { WifiHigh } from '@phosphor-icons/react'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function SignalStrengthCard({\n  ssid,\n  bars = 4,\n  latency,\n  band,\n  tone = 'white',\n}: {\n  ssid: string\n  bars?: number\n  latency: string\n  band: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          无线网络\n        </span>\n        <WifiHigh size={18} weight=\"bold\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"flex items-end justify-between gap-3\">\n        <div className=\"min-w-0 flex-1\">\n          <div className=\"truncate font-glaze-display text-[20px] font-extrabold\">{ssid}</div>\n          <div className=\"truncate text-[12px]\" style={{ color: theme.soft }}>\n            {band}\n          </div>\n        </div>\n        <div className=\"flex shrink-0 items-end gap-1\">\n          {[10, 16, 22, 28].map((h, i) => (\n            <span\n              key={i}\n              className=\"w-2 rounded-full\"\n              style={{\n                height: h,\n                backgroundColor: i < bars ? '#49A851' : theme.track,\n              }}\n            />\n          ))}\n        </div>\n      </div>\n      <div className=\"flex items-center gap-1.5 text-[12px]\" style={{ color: theme.soft }}>\n        <StatusDot status=\"normal\" size={7} />\n        <span>延迟 {latency}</span>\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

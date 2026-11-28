@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "distribution-bus-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "F4 分布总线通栏卡 (DistributionBusCard)",
   "description": "分布总线通栏卡（F4 · 尺寸 F）— 横向占比分布与节点明细",
   "registryDependencies": [
@@ -10,15 +10,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "layout",
+    "cards",
+    "data-views",
     "size-f"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/distribution-bus-card.tsx",
+      "path": "registry/glaze/cards/distribution-bus-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/distribution-bus-card.tsx",
+      "target": "components/cards/distribution-bus-card.tsx",
       "content": "import { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface DistributionBusItem {\n  name: string\n  value: number\n  display?: string\n}\n\nexport interface DistributionBusCardProps {\n  label: string\n  totalValue: string | number\n  unit: string\n  subtitle: string\n  items: DistributionBusItem[]\n  footnote?: string\n  tone?: TileTone\n}\n\nexport function DistributionBusCard({\n  label,\n  totalValue,\n  unit,\n  subtitle,\n  items,\n  footnote,\n  tone = 'peach',\n}: DistributionBusCardProps) {\n  const theme = TILE_THEMES[tone]\n  const maxVal = Math.max(...items.map((x) => x.value), 1)\n  return (\n    <Tile\n      size=\"f\"\n      tone={tone}\n      className=\"flex-row flex-wrap gap-8 items-start\"\n    >\n      <div className=\"flex-[0_1_240px] flex flex-col gap-1.5\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <span className=\"flex items-baseline gap-1.5\">\n          <span className=\"font-glaze-display text-[56px] leading-14.5 font-extrabold tracking-[-0.03em]\">\n            {totalValue}\n          </span>\n          <span className=\"text-[16px] font-bold\">{unit}</span>\n        </span>\n        <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n          {subtitle}\n        </span>\n      </div>\n\n      <div className=\"flex-[1_1_560px] min-w-0 flex flex-col gap-4\">\n        <div\n          className=\"grid grid-cols-[repeat(auto-fit,minmax(min(110px,100%),1fr))] gap-x-4 gap-y-3\"\n          style={{ borderTop: `3px solid ${theme.accent}` }}\n        >\n          {items.map((item, i) => {\n            const pct = Math.round((item.value / maxVal) * 100)\n            return (\n              <div key={i} className=\"flex flex-col gap-1.5\">\n                <span\n                  aria-hidden=\"true\"\n                  className=\"w-0.5 h-3 ml-0.5\"\n                  style={{ backgroundColor: theme.accent }}\n                />\n                <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n                  {item.name}\n                </span>\n                <span className=\"font-glaze-display text-[22px] leading-6 font-extrabold\">\n                  {item.display ?? item.value}\n                </span>\n                <span\n                  aria-hidden=\"true\"\n                  className=\"h-1 rounded-xs overflow-hidden\"\n                  style={{ backgroundColor: theme.track }}\n                >\n                  <span\n                    className=\"block h-full\"\n                    style={{\n                      width: `${pct}%`,\n                      backgroundColor: theme.accent,\n                    }}\n                  />\n                </span>\n              </div>\n            )\n          })}\n        </div>\n        {footnote && (\n          <span\n            className=\"text-[13px] leading-5\"\n            style={{ color: theme.soft }}\n          >\n            {footnote}\n          </span>\n        )}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "activity-feed-card",
-  "type": "registry:block",
-  "title": "L8 实时动态信息流 (ActivityFeedCard)",
-  "description": "实时动态信息流（L8 · 尺寸 L）— 头像 · 动作目标 · 时间",
+  "type": "registry:component",
+  "title": "L7 实时动态信息流 (ActivityFeedCard)",
+  "description": "实时动态信息流（L7 · 尺寸 L）— 头像 · 动作目标 · 时间",
   "registryDependencies": [
     "@glaze/avatar",
     "@glaze/style",
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "lists",
+    "cards",
+    "collaboration",
     "size-l"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/activity-feed-card.tsx",
+      "path": "registry/glaze/cards/activity-feed-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/activity-feed-card.tsx",
+      "target": "components/cards/activity-feed-card.tsx",
       "content": "import { Avatar } from '@/components/ui/avatar'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport function ActivityFeedCard({\n  title,\n  feed,\n  tone = 'white',\n}: {\n  title: string\n  feed: { user: string; initials: string; hue: Hue; action: string; target: string; time: string }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-start gap-4\">\n      <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n      <div className=\"flex flex-1 flex-col justify-between gap-2.5\">\n        {feed.map((f, i) => (\n          <div\n            key={i}\n            className=\"flex items-start gap-3 border-b border-[#EEF0F3] pb-2.5 last:border-b-0 last:pb-0\"\n          >\n            <Avatar fallback={f.initials} hue={f.hue} size=\"sm\" />\n            <div className=\"min-w-0 flex-1\">\n              <div className=\"text-[13px] leading-snug text-[#1B1F27]\">\n                <strong className=\"font-bold\">{f.user}</strong>{' '}\n                <span className=\"text-[#5B6170]\">{f.action}</span>{' '}\n                <span className=\"font-semibold text-[#4A4FB8]\">{f.target}</span>\n              </div>\n              <div className=\"mt-0.5 text-[11px] text-[#8A90A0]\">{f.time}</div>\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

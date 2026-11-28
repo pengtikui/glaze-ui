@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "battery-card",
-  "type": "registry:block",
-  "title": "S18 电量分段卡 (BatteryCard)",
-  "description": "电量分段卡（S18 · 尺寸 S）— 设备 · 5 段电芯 · 剩余时长",
+  "type": "registry:component",
+  "title": "S15 电量分段卡 (BatteryCard)",
+  "description": "电量分段卡（S15 · 尺寸 S）— 设备 · 5 段电芯 · 剩余时长",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -13,15 +13,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/battery-card.tsx",
+      "path": "registry/glaze/cards/battery-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/battery-card.tsx",
+      "target": "components/cards/battery-card.tsx",
       "content": "import { BatteryCharging } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function BatteryCard({\n  device,\n  percent,\n  charging = false,\n  remaining,\n  tone = 'mint',\n}: {\n  device: string\n  percent: number\n  charging?: boolean\n  remaining: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const filled = Math.round((percent / 100) * 5)\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {device}\n        </span>\n        {charging && (\n          <BatteryCharging size={18} weight=\"fill\" style={{ color: theme.accent }} />\n        )}\n      </div>\n      <div className=\"font-glaze-display text-[44px] leading-none font-extrabold tracking-[-0.03em]\">\n        {percent}%\n      </div>\n      <div className=\"flex flex-col gap-1.5\">\n        <div className=\"grid grid-cols-5 gap-1.5\">\n          {[0, 1, 2, 3, 4].map((i) => (\n            <div\n              key={i}\n              className=\"h-2 rounded-full\"\n              style={{\n                backgroundColor: i < filled ? theme.accent : theme.track,\n              }}\n            />\n          ))}\n        </div>\n        <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n          {remaining}\n        </span>\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

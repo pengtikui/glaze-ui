@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "ai-workspace-console-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "F15 AI 代码产物工作区通栏卡 (AiWorkspaceConsoleCard)",
   "description": "AI 代码产物工作区通栏卡（F15 · 尺寸 F）— 变更文件树 · 代码/Diff 审查 · 终端输出",
   "registryDependencies": [
@@ -14,15 +14,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "ai",
     "size-f"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/ai-workspace-console-card.tsx",
+      "path": "registry/glaze/cards/ai-workspace-console-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/ai-workspace-console-card.tsx",
+      "target": "components/cards/ai-workspace-console-card.tsx",
       "content": "import * as React from 'react'\nimport { AiArtifact, AiFileTree, type AiFileTreeNode } from '@/components/ui/ai-artifact'\nimport { AiCodeBlock, AiTerminal } from '@/components/ui/ai-code-block'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport type { TileTone } from '@/lib/tokens'\n\nexport interface AiWorkspaceFileEntry {\n  path: string\n  language: string\n  code: string\n  diff?: boolean\n}\n\nexport interface AiWorkspaceConsoleCardProps {\n  title?: string\n  subtitle?: string\n  tree: AiFileTreeNode[]\n  files: Record<string, AiWorkspaceFileEntry>\n  defaultPath: string\n  terminalCommand?: string\n  terminalOutput?: string\n  tone?: TileTone\n}\n\nexport function AiWorkspaceConsoleCard({\n  title = 'AI 代码产物与工作区',\n  subtitle = '文件变更树 · 实时差异审查 · 终端构建验证',\n  tree,\n  files,\n  defaultPath,\n  terminalCommand = 'pnpm run typecheck && pnpm test',\n  terminalOutput = '✓ 12 AI Elements compiled cleanly\\n✓ 0 TypeScript diagnostics\\n✓ 42/42 assertions passed in 1.18s',\n  tone = 'white',\n}: AiWorkspaceConsoleCardProps) {\n  const [selectedPath, setSelectedPath] = React.useState(defaultPath)\n  const activeFile = files[selectedPath] ?? Object.values(files)[0]\n\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-4\">\n      <div className=\"flex flex-wrap items-center justify-between gap-2\">\n        <div>\n          <span className=\"font-glaze-display text-[19px] font-extrabold\">{title}</span>\n          <p className=\"m-0 mt-0.5 text-[13px] text-[#6B7280]\">{subtitle}</p>\n        </div>\n        <div className=\"flex items-center gap-2\">\n          <HueTag hue=\"mint\" size=\"sm\">\n            +3 新增\n          </HueTag>\n          <HueTag hue=\"peach\" size=\"sm\">\n            1 修改\n          </HueTag>\n          <StatusPill status=\"normal\" label=\"测试通过\" size=\"sm\" />\n        </div>\n      </div>\n\n      <div className=\"grid grid-cols-1 gap-4 lg:grid-cols-12\">\n        <div className=\"flex flex-col gap-3 lg:col-span-4\">\n          <AiFileTree\n            nodes={tree}\n            selectedPath={selectedPath}\n            onSelectPath={(p) => {\n              if (files[p]) setSelectedPath(p)\n            }}\n            defaultExpanded={['registry', 'registry/ai']}\n          />\n          <AiTerminal\n            command={terminalCommand}\n            output={terminalOutput}\n            status=\"success\"\n            exitCode={0}\n            maxHeight={160}\n          />\n        </div>\n\n        <div className=\"lg:col-span-8\">\n          {activeFile && (\n            <AiArtifact\n              title={activeFile.path.split('/').pop() ?? activeFile.path}\n              subtitle={activeFile.path}\n              badge={activeFile.language.toUpperCase()}\n              copyText={activeFile.code}\n              className=\"bg-[#F6F7F9]/60\"\n              code={\n                <AiCodeBlock\n                  code={activeFile.code}\n                  language={activeFile.language}\n                  filename={activeFile.path}\n                  diff={activeFile.diff}\n                  maxHeight={300}\n                />\n              }\n            />\n          )}\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

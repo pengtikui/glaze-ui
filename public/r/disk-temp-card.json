@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "disk-temp-card",
-  "type": "registry:block",
-  "title": "S34 硬件温度计卡 (DiskTempCard)",
-  "description": "硬件温度计卡（S34 · 尺寸 S）— 温度 · 竖条温度计 · 设备",
+  "type": "registry:component",
+  "title": "S26 硬件温度计卡 (DiskTempCard)",
+  "description": "硬件温度计卡（S26 · 尺寸 S）— 温度 · 竖条温度计 · 设备",
   "dependencies": [
     "@phosphor-icons/react"
   ],
@@ -13,15 +13,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "monitoring",
+    "cards",
+    "ops",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/disk-temp-card.tsx",
+      "path": "registry/glaze/cards/disk-temp-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/disk-temp-card.tsx",
+      "target": "components/cards/disk-temp-card.tsx",
       "content": "import { Thermometer } from '@phosphor-icons/react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport function DiskTempCard({\n  label,\n  tempC,\n  maxC = 75,\n  device,\n  tone = 'coral',\n}: {\n  label: string\n  tempC: number\n  maxC?: number\n  device: string\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  const pct = Math.min(100, Math.round((tempC / maxC) * 100))\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n          {label}\n        </span>\n        <Thermometer size={18} weight=\"bold\" style={{ color: theme.accent }} />\n      </div>\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <div className=\"font-glaze-display text-[44px] leading-none font-extrabold\">\n            {tempC}°\n          </div>\n          <div className=\"mt-1 text-[12px]\" style={{ color: theme.soft }}>\n            {device}\n          </div>\n        </div>\n        <div\n          className=\"flex h-20 w-4 items-end overflow-hidden rounded-full p-0.5\"\n          style={{ backgroundColor: theme.track }}\n        >\n          <div\n            className=\"w-full rounded-full\"\n            style={{ height: `${pct}%`, backgroundColor: theme.accent }}\n          />\n        </div>\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

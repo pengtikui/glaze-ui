@@ -125,7 +125,12 @@ export function Progress({
           />
         </svg>
         {showValue && (
-          <BaseProgress.Value className="absolute font-glaze-display text-[13px] font-extrabold tabular-nums">
+          <BaseProgress.Value
+            className={cn(
+              'absolute font-glaze-display font-extrabold tabular-nums',
+              size >= 84 ? 'text-[16px]' : 'text-[13px]',
+            )}
+          >
             {() => `${Math.round(pct)}%`}
           </BaseProgress.Value>
         )}

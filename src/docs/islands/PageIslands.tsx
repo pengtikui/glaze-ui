@@ -7,9 +7,14 @@ import { GlazeProviders } from '@/docs/components/GlazeProviders'
 import { COMPONENT_CATEGORIES, COMPONENTS_LIST } from '@/docs/data/catalog'
 import { COMPONENT_DEMOS } from '@/docs/examples/component-demos'
 import { BlocksIndexPage } from '@/docs/pages/BlocksIndexPage'
-import { DemosIndexPage } from '@/docs/pages/DemosIndexPage'
+import { CardsIndexPage } from '@/docs/pages/CardsIndexPage'
 import { FoundationsPage } from '@/docs/pages/FoundationsContent'
-import { StandaloneBlockViewPage, StandaloneDemoViewPage } from '@/docs/pages/StandaloneViewPage'
+import { PagesIndexPage } from '@/docs/pages/PagesIndexPage'
+import {
+  StandaloneBlockViewPage,
+  StandaloneCardViewPage,
+  StandalonePageViewPage,
+} from '@/docs/pages/StandaloneViewPage'
 
 export function FoundationsIsland() {
   return (
@@ -24,7 +29,9 @@ export function AiEndpointsIsland() {
     { title: '/llms.txt', tag: '目录索引', href: '/llms.txt' },
     { title: '/llms-full.txt', tag: '全量参考', href: '/llms-full.txt' },
     { title: '/r/registry.json', tag: 'Registry 清单', href: '/r/registry.json' },
-    { title: '/llms/components/button.md', tag: '单组件 MD', href: '/llms/components/button.md' },
+    { title: '/llms/cards.md', tag: '卡片目录 MD', href: '/llms/cards.md' },
+    { title: '/llms/blocks.md', tag: 'Blocks MD', href: '/llms/blocks.md' },
+    { title: '/llms/pages.md', tag: '页面目录 MD', href: '/llms/pages.md' },
   ]
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -62,7 +69,7 @@ export function ComponentsIndexIsland() {
             <h1 className="m-0 font-glaze-display text-[34px] leading-10 font-extrabold tracking-[-0.02em] text-[#123A5C]">
               组件
             </h1>
-            <span className="text-[14px] text-[#6B7280]">{COMPONENTS_LIST.length} 个组件与图表</span>
+            <span className="text-[14px] text-[#6B7280]">{COMPONENTS_LIST.length} 个基础组件与图表</span>
           </div>
           <div className="w-full sm:w-68">
             <Input
@@ -211,6 +218,14 @@ export function ComponentDemoIsland({
   )
 }
 
+export function CardsIndexIsland() {
+  return (
+    <GlazeProviders pathname="/cards">
+      <CardsIndexPage hideHeader />
+    </GlazeProviders>
+  )
+}
+
 export function BlocksIndexIsland() {
   return (
     <GlazeProviders pathname="/blocks">
@@ -219,18 +234,18 @@ export function BlocksIndexIsland() {
   )
 }
 
-export function DemosIndexIsland() {
+export function PagesIndexIsland() {
   return (
-    <GlazeProviders pathname="/demos">
-      <DemosIndexPage hideHeader />
+    <GlazeProviders pathname="/pages">
+      <PagesIndexPage hideHeader />
     </GlazeProviders>
   )
 }
 
-export function StandaloneDemoIsland({ slug }: { slug: string }) {
+export function StandaloneCardIsland({ slug }: { slug: string }) {
   return (
-    <GlazeProviders pathname={`/view/demos/${slug}`}>
-      <StandaloneDemoViewPage slug={slug} />
+    <GlazeProviders pathname={`/view/cards/${slug}`}>
+      <StandaloneCardViewPage slug={slug} />
     </GlazeProviders>
   )
 }
@@ -239,6 +254,14 @@ export function StandaloneBlockIsland({ slug }: { slug: string }) {
   return (
     <GlazeProviders pathname={`/view/blocks/${slug}`}>
       <StandaloneBlockViewPage slug={slug} />
+    </GlazeProviders>
+  )
+}
+
+export function StandalonePageIsland({ slug }: { slug: string }) {
+  return (
+    <GlazeProviders pathname={`/view/pages/${slug}`}>
+      <StandalonePageViewPage slug={slug} />
     </GlazeProviders>
   )
 }

@@ -140,57 +140,59 @@ body {
 }
 
 /* Glaze Grid System — Artboard 02 Spec */
-.glaze-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: minmax(200px, auto);
-  grid-auto-flow: row dense;
-  gap: 16px;
-}
-
-.glaze-size-s {
-  grid-column: span 1;
-  grid-row: span 1;
-  min-height: 200px;
-}
-.glaze-size-w {
-  grid-column: span 2;
-  grid-row: span 1;
-  min-height: 200px;
-}
-.glaze-size-t {
-  grid-column: span 1;
-  grid-row: span 2;
-  min-height: 416px;
-}
-.glaze-size-l {
-  grid-column: span 2;
-  grid-row: span 2;
-  min-height: 416px;
-}
-.glaze-size-f {
-  grid-column: 1 / -1;
-  grid-row: auto;
-}
-
-@media (max-width: 1023px) {
+@layer components {
   .glaze-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    grid-auto-flow: row dense;
+    gap: 16px;
   }
-}
 
-@media (max-width: 639px) {
-  .glaze-grid {
-    grid-template-columns: 1fr;
-    grid-auto-rows: minmax(160px, auto);
+  .glaze-size-s {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 200px;
   }
-  .glaze-size-w,
-  .glaze-size-l {
-    grid-column: auto;
+  .glaze-size-w {
+    grid-column: span 2;
+    grid-row: span 1;
+    min-height: 200px;
   }
-  .glaze-size-t,
+  .glaze-size-t {
+    grid-column: span 1;
+    grid-row: span 2;
+    min-height: 416px;
+  }
   .glaze-size-l {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 416px;
+  }
+  .glaze-size-f {
+    grid-column: 1 / -1;
     grid-row: auto;
+  }
+
+  @media (max-width: 1023px) {
+    .glaze-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 639px) {
+    .glaze-grid {
+      grid-template-columns: 1fr;
+      grid-auto-rows: auto;
+    }
+    .glaze-size-w,
+    .glaze-size-l {
+      grid-column: auto;
+    }
+    .glaze-size-t,
+    .glaze-size-l {
+      grid-row: auto;
+    }
   }
 }
 

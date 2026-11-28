@@ -1,24 +1,24 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "gallery-mosaic-card",
-  "type": "registry:block",
-  "title": "L13 相册拼图大卡 (GalleryMosaicCard)",
-  "description": "相册拼图大卡（L13 · 尺寸 L）— 2×2 柔彩色块相册封面",
+  "type": "registry:component",
+  "title": "L12 相册拼图大卡 (GalleryMosaicCard)",
+  "description": "相册拼图大卡（L12 · 尺寸 L）— 2×2 柔彩色块相册封面",
   "registryDependencies": [
     "@glaze/style",
     "@glaze/tile",
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "lists",
+    "cards",
+    "collaboration",
     "size-l"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/gallery-mosaic-card.tsx",
+      "path": "registry/glaze/cards/gallery-mosaic-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/gallery-mosaic-card.tsx",
+      "target": "components/cards/gallery-mosaic-card.tsx",
       "content": "import { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function GalleryMosaicCard({\n  title,\n  count,\n  albums,\n  tone = 'white',\n}: {\n  title: string\n  count: string\n  albums: { title: string; items: string; hue: Hue }[]\n  tone?: TileTone\n}) {\n  return (\n    <Tile size=\"l\" tone={tone} className=\"justify-between gap-4\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"font-glaze-display text-[20px] font-extrabold\">{title}</span>\n        <span className=\"text-[12px] font-semibold text-[#6B7280]\">{count}</span>\n      </div>\n      <div className=\"grid flex-1 grid-cols-2 gap-3\">\n        {albums.slice(0, 4).map((al) => (\n          <div\n            key={al.title}\n            className=\"flex flex-col justify-end rounded-overlay p-4\"\n            style={{\n              backgroundColor: HUE_PALETTES[al.hue][100],\n              color: HUE_PALETTES[al.hue][900],\n            }}\n          >\n            <div className=\"font-glaze-display text-[16px] font-extrabold\">{al.title}</div>\n            <div className=\"text-[12px]\" style={{ color: HUE_PALETTES[al.hue][700] }}>\n              {al.items}\n            </div>\n          </div>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

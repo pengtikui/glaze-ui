@@ -1,24 +1,24 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tag-cloud-card",
-  "type": "registry:block",
-  "title": "S35 标签云小卡 (TagCloudCard)",
-  "description": "标签云小卡（S35 · 尺寸 S）— 标题 · 多色 HueTag 集合",
+  "type": "registry:component",
+  "title": "S27 标签云小卡 (TagCloudCard)",
+  "description": "标签云小卡（S27 · 尺寸 S）— 标题 · 多色 HueTag 集合",
   "registryDependencies": [
     "@glaze/hue-tag",
     "@glaze/tile",
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "lists",
+    "cards",
+    "collaboration",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/tag-cloud-card.tsx",
+      "path": "registry/glaze/cards/tag-cloud-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/tag-cloud-card.tsx",
+      "target": "components/cards/tag-cloud-card.tsx",
       "content": "import { HueTag } from '@/components/ui/hue-tag'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function TagCloudCard({\n  label,\n  tags,\n  tone = 'white',\n}: {\n  label: string\n  tags: { text: string; hue: Hue }[]\n  tone?: TileTone\n}) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-start gap-3\">\n      <span className=\"truncate text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <div className=\"flex flex-wrap content-start gap-1.5 overflow-hidden\">\n        {tags.slice(0, 8).map((t) => (\n          <HueTag key={t.text} hue={t.hue} size=\"sm\">\n            {t.text}\n          </HueTag>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "horizontal-bar-rank-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W26 横向条形排行宽卡 (HorizontalBarRankCard)",
   "description": "横向条形排行宽卡（W26 · 尺寸 W）— 横向圆角条形图 · 悬停提示",
   "registryDependencies": [
@@ -10,15 +10,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "charts",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/horizontal-bar-rank-card.tsx",
+      "path": "registry/glaze/cards/horizontal-bar-rank-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/horizontal-bar-rank-card.tsx",
+      "target": "components/cards/horizontal-bar-rank-card.tsx",
       "content": "import { BarChart } from '@/components/ui/bar-chart'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface HorizontalBarRankCardProps {\n  title: string\n  subtitle?: string\n  data: readonly object[]\n  categoryKey: string\n  valueKey: string\n  valueLabel?: string\n  unit?: string\n  color?: string\n  hue?: Hue\n  tone?: TileTone\n}\n\nexport function HorizontalBarRankCard({\n  title,\n  subtitle,\n  data,\n  categoryKey,\n  valueKey,\n  valueLabel = '数值',\n  unit,\n  color,\n  hue = 'periwinkle',\n  tone = 'white',\n}: HorizontalBarRankCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-2 pb-4\">\n      <div className=\"flex items-baseline justify-between gap-2\">\n        <span className=\"truncate text-[17px] font-bold\">{title}</span>\n        {subtitle && (\n          <span className=\"shrink-0 text-[12px] whitespace-nowrap\" style={{ color: theme.soft }}>\n            {subtitle}\n          </span>\n        )}\n      </div>\n      <div className=\"min-h-32 flex-1 w-full\">\n        <BarChart\n          data={data}\n          xKey={categoryKey}\n          orientation=\"horizontal\"\n          series={[{ dataKey: valueKey, label: valueLabel, color, hue, unit }]}\n          showGrid\n          showXAxis={false}\n          showYAxis\n          barSize={14}\n          tone={tone}\n          height={132}\n        />\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

@@ -1,0 +1,14 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { PAGES_LIST } from '@/docs/data/catalog'
+import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
+import { PagesIndexIsland } from '@/docs/islands/PageIslands'
+---
+
+<BaseLayout
+  title={`页面 (${PAGES_LIST.length}) · Glaze UI`}
+  description={`${PAGES_LIST.length} 个完整业务场景页面，支持新窗口独立全屏打开与一键 CLI 安装`}
+>
+  <SiteHeaderIsland pathname="/pages" client:load />
+  <PagesIndexIsland client:load />
+</BaseLayout>

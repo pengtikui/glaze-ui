@@ -4,6 +4,7 @@ import {
   BookOpen,
   Cube,
   House,
+  Layout,
   Robot,
   Stack,
 } from '@phosphor-icons/react'
@@ -17,12 +18,12 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command'
-import { BLOCKS_LIST, COMPONENTS_LIST, DEMOS_LIST } from '@/docs/data/catalog'
+import { BLOCKS_LIST, CARDS_LIST, COMPONENTS_LIST, PAGES_LIST } from '@/docs/data/catalog'
 import { useRouter } from '@/docs/router'
 
 interface SearchItem {
   id: string
-  group: '文档' | '组件' | '卡片' | 'Demo'
+  group: '文档' | '组件' | '卡片' | 'Block' | '页面'
   title: string
   subtitle: string
   to: string
@@ -34,40 +35,40 @@ const DOC_ITEMS: SearchItem[] = [
   {
     id: 'doc-intro',
     group: '文档',
-    title: '简介 Introduction',
-    subtitle: '了解 Glaze 设计系统架构与核心理念',
+    title: '简介',
+    subtitle: '四层架构与核心约束',
     to: '/docs',
     keywords: ['intro', '简介', '概述'],
   },
   {
     id: 'doc-install',
     group: '文档',
-    title: '安装与 Registry 配置',
-    subtitle: '使用 shadcn CLI 与 @glaze 命名空间安装',
+    title: '安装与 Registry',
+    subtitle: 'shadcn CLI 与 @glaze 配置',
     to: '/docs/installation',
     keywords: ['install', 'shadcn', 'cli', 'registry', 'components.json'],
   },
   {
     id: 'doc-foundations',
     group: '文档',
-    title: '设计规范与动效 Foundations',
-    subtitle: '色彩、排版、圆角、4 列栅格与纯 CSS 动效',
+    title: '设计规范',
+    subtitle: '色板、排版、圆角、栅格与动效',
     to: '/docs/foundations',
     keywords: ['tokens', 'colors', 'typography', 'motion', 'grid', '色彩', '动效'],
   },
   {
     id: 'doc-ai',
     group: '文档',
-    title: 'AI Agent 使用指南',
-    subtitle: 'AGENTS.md、llms.txt、llms-full.txt 与 MCP 配置',
+    title: 'AI Agent',
+    subtitle: 'llms.txt、规则片段与 MCP',
     to: '/docs/ai-agent',
     keywords: ['ai', 'agent', 'llms.txt', 'claude', 'cursor', 'mcp'],
   },
   {
     id: 'doc-publish',
     group: '文档',
-    title: 'Registry 发布与托管',
-    subtitle: 'GitHub Raw 默认分发与自托管静态部署',
+    title: 'Registry 发布',
+    subtitle: 'GitHub Raw 与自托管部署',
     to: '/docs/registry-publishing',
     keywords: ['publish', 'deploy', 'github', 'raw', 'self', 'host', '发布', '托管'],
   },
@@ -82,23 +83,32 @@ const COMPONENT_ITEMS: SearchItem[] = COMPONENTS_LIST.map((c) => ({
   keywords: [c.slug, c.title, c.cnTitle, c.category, ...c.parts],
 }))
 
-const DEMO_ITEMS: SearchItem[] = DEMOS_LIST.map((d) => ({
-  id: `demo-${d.slug}`,
-  group: 'Demo',
-  title: `Demo ${d.index} · ${d.title}`,
-  subtitle: `${d.enTitle} · 支持独立打开 /view/demos/${d.slug}`,
-  to: `/view/demos/${d.slug}`,
-  keywords: [d.slug, d.title, d.enTitle, d.badge],
-  external: true,
+const CARD_ITEMS: SearchItem[] = CARDS_LIST.map((c) => ({
+  id: `card-${c.slug}`,
+  group: '卡片',
+  title: `${c.code} ${c.cnName} (${c.componentName})`,
+  subtitle: c.slots,
+  to: `/cards#${c.slug}`,
+  keywords: [c.code, c.slug, c.componentName, c.cnName, c.domain, c.slots],
 }))
 
 const BLOCK_ITEMS: SearchItem[] = BLOCKS_LIST.map((b) => ({
   id: `blk-${b.slug}`,
-  group: '卡片',
-  title: `${b.code} ${b.cnName} (${b.componentName})`,
-  subtitle: b.slots,
+  group: 'Block',
+  title: `${b.title} (${b.exportName})`,
+  subtitle: b.description,
   to: `/blocks#${b.slug}`,
-  keywords: [b.code, b.slug, b.componentName, b.cnName, b.domain, b.slots],
+  keywords: [b.slug, b.title, b.enTitle, b.exportName, b.category],
+}))
+
+const PAGE_ITEMS: SearchItem[] = PAGES_LIST.map((p) => ({
+  id: `page-${p.slug}`,
+  group: '页面',
+  title: `Page ${p.index} · ${p.title}`,
+  subtitle: `${p.enTitle} · 独立预览 /view/pages/${p.slug}`,
+  to: `/view/pages/${p.slug}`,
+  keywords: [p.slug, p.title, p.enTitle, p.badge, p.category],
+  external: true,
 }))
 
 export interface CommandSearchProps {
@@ -141,13 +151,15 @@ export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
     if (group === '文档') return <BookOpen size={15} className="text-[#4A9BD8]" />
     if (group === '组件') return <Cube size={15} className="text-[#7B80EA]" />
     if (group === '卡片') return <Stack size={15} className="text-[#2FA79B]" />
+    if (group === 'Block') return <Layout size={15} className="text-[#E06D94]" />
     return <House size={15} className="text-[#E3A33B]" />
   }
 
   const hasQuery = query.trim().length > 0
-  const visibleComponents = hasQuery ? COMPONENT_ITEMS : COMPONENT_ITEMS.slice(0, 6)
-  const visibleDemos = hasQuery ? DEMO_ITEMS : DEMO_ITEMS.slice(0, 4)
+  const visibleComponents = hasQuery ? COMPONENT_ITEMS : COMPONENT_ITEMS.slice(0, 5)
+  const visibleCards = hasQuery ? CARD_ITEMS : CARD_ITEMS.slice(0, 4)
   const visibleBlocks = hasQuery ? BLOCK_ITEMS : BLOCK_ITEMS.slice(0, 4)
+  const visiblePages = hasQuery ? PAGE_ITEMS : PAGE_ITEMS.slice(0, 5)
 
   const renderEntry = (item: SearchItem) => (
     <CommandItem
@@ -180,13 +192,13 @@ export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
       open={open}
       onOpenChange={onOpenChange}
       title="全局文档搜索"
-      description="按关键字搜索 Glaze 文档、组件、卡片与示例 Demo"
+      description="按关键字搜索 Glaze 文档、组件、卡片、Blocks 与完整页面"
     >
       <CommandInput
         autoFocus
         value={query}
         onValueChange={setQuery}
-        placeholder="搜索文档、组件、卡片或 Demo..."
+        placeholder="搜索文档、组件、卡片、Blocks 或页面..."
       />
       <CommandList className="max-h-[420px]">
         <CommandEmpty>未找到与 “{query}” 匹配的内容</CommandEmpty>
@@ -197,18 +209,23 @@ export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
           {visibleComponents.map(renderEntry)}
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading={hasQuery ? '示例 Demo' : '精选示例 Demo'}>
-          {visibleDemos.map(renderEntry)}
+        <CommandGroup heading={hasQuery ? 'Blocks' : '精选 Blocks'}>
+          {visibleBlocks.map(renderEntry)}
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading={hasQuery ? '页面' : '精选页面'}>
+          {visiblePages.map(renderEntry)}
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading={hasQuery ? '卡片' : '热门卡片'}>
-          {visibleBlocks.map(renderEntry)}
+          {visibleCards.map(renderEntry)}
         </CommandGroup>
       </CommandList>
       <CommandFooter>
         <span>↑↓ 切换 · Enter 打开 · Esc 关闭</span>
         <span>
-          {COMPONENTS_LIST.length} 组件 · {BLOCKS_LIST.length} 卡片 · {DEMOS_LIST.length} Demos
+          {COMPONENTS_LIST.length} 组件 · {CARDS_LIST.length} 卡片 · {BLOCKS_LIST.length} Blocks ·{' '}
+          {PAGES_LIST.length} 页面
         </span>
       </CommandFooter>
     </CommandDialog>

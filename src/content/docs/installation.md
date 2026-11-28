@@ -1,13 +1,13 @@
 ---
 title: 安装与 Registry
 navLabel: 安装与 Registry
-description: 通过 shadcn CLI 与 @glaze 命名空间按需安装组件、业务卡片与完整 Demo 页面。
+description: 通过 shadcn CLI 安装 Glaze 样式、组件、卡片、Blocks 与页面。
 order: 2
 ---
 
 ## 1. 配置 `components.json`
 
-在目标项目根目录的 `components.json` 中注册 `@glaze` 命名空间。默认直接通过 GitHub Raw（`github.com/pengtikui/glaze-ui`）拉取静态 JSON，无需额外部署：
+注册 `@glaze` 命名空间（默认直连 GitHub Raw，无需额外托管）：
 
 ```json
 {
@@ -34,23 +34,19 @@ order: 2
 }
 ```
 
-## 2. 安装基础样式与 Token
-
-首次接入必须先安装 `@glaze/style`，它会自动同步 `glaze.css`、Tailwind v4 主题变量、色板 Token 与动效预设：
+## 2. 安装基础样式
 
 ```bash
 npx shadcn@latest add @glaze/style
 ```
 
-随后在应用入口（例如 `src/main.tsx`）中引入生成的样式表：
+在应用入口引入样式：
 
 ```tsx
 import './styles/glaze.css'
 ```
 
-## 3. 挂载根部 Providers
-
-Glaze 的提示框与 3D 堆叠通知依赖应用根部的 `TooltipProvider` 与 `ToastProvider`（建议同时挂载 Phosphor `IconContext.Provider`）：
+## 3. 挂载 Providers
 
 ```tsx
 import { IconContext } from '@phosphor-icons/react'
@@ -68,28 +64,29 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## 4. 按需安装组件、卡片或 Demo
-
-所有 58 个 UI 组件、112 张业务卡片与 6 个完整 Demo 均可按 kebab-case 名称独立安装并自动补齐依赖：
+## 4. 按需安装
 
 ```bash
-# 安装基础 UI 原语与图表组件
-npx shadcn@latest add @glaze/button @glaze/dialog @glaze/select @glaze/area-chart
+# 基础组件
+npx shadcn@latest add @glaze/button @glaze/dialog @glaze/calendar @glaze/data-table
 
-# 按需安装单张业务卡片
+# 专用卡片
 npx shadcn@latest add @glaze/status-card @glaze/metric-card @glaze/area-trend-card
 
-# 安装完整业务 Demo 页面
-npx shadcn@latest add @glaze/demo-homelab
+# 通用 Blocks
+npx shadcn@latest add @glaze/auth-login-block @glaze/data-management-block
+
+# 完整页面
+npx shadcn@latest add @glaze/page-mail-desk
 ```
 
-## 5. 最小页面示例
+## 5. 最小示例
 
 ```tsx
 import { Grid } from '@/components/ui/grid'
-import { StatusCard } from '@/components/blocks/status-card'
-import { MetricCard } from '@/components/blocks/metric-card'
-import { AreaTrendCard } from '@/components/blocks/area-trend-card'
+import { StatusCard } from '@/components/cards/status-card'
+import { MetricCard } from '@/components/cards/metric-card'
+import { AreaTrendCard } from '@/components/cards/area-trend-card'
 
 export function DashboardExample() {
   return (
@@ -113,12 +110,8 @@ export function DashboardExample() {
 
 ## 6. 自托管构建
 
-如需将 Registry 与文档站部署到企业内网或自定义域名，构建时传入 `REGISTRY_BASE_URL` 即可（详见 [Registry 发布与托管](/docs/registry-publishing)）：
+详见 [Registry 发布](/docs/registry-publishing)：
 
 ```bash
-# 命名空间模式（推荐）
 REGISTRY_BASE_URL=https://ui.example.com pnpm run build
-
-# 零配置直链模式
-REGISTRY_BASE_URL=https://ui.example.com REGISTRY_DEP_MODE=url pnpm run build
 ```

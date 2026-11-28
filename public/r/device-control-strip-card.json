@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "device-control-strip-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W20 三设备联动控制条 (DeviceControlStripCard)",
   "description": "三设备联动控制条（W20 · 尺寸 W）— 3 组可切换智能设备开关",
   "registryDependencies": [
@@ -11,15 +11,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "controls",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/device-control-strip-card.tsx",
+      "path": "registry/glaze/cards/device-control-strip-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/device-control-strip-card.tsx",
+      "target": "components/cards/device-control-strip-card.tsx",
       "content": "import * as React from 'react'\nimport { Switch } from '@/components/ui/switch'\nimport { Tile } from '@/components/ui/tile'\nimport { HUE_PALETTES, TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport function DeviceControlStripCard({\n  title,\n  devices,\n  tone = 'white',\n}: {\n  title: string\n  devices: { id: string; name: string; sub: string; hue: Hue; defaultOn: boolean }[]\n  tone?: TileTone\n}) {\n  const [state, setState] = React.useState<Record<string, boolean>>(() =>\n    Object.fromEntries(devices.map((d) => [d.id, d.defaultOn])),\n  )\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between\">\n      <span className=\"text-[14px] font-semibold\" style={{ color: theme.soft }}>\n        {title}\n      </span>\n      <div className=\"grid grid-cols-3 gap-2.5\">\n        {devices.slice(0, 3).map((d) => {\n          const on = Boolean(state[d.id])\n          return (\n            <div\n              key={d.id}\n              className=\"flex flex-col justify-between gap-3 rounded-inner p-3 transition-colors duration-200\"\n              style={{\n                backgroundColor: on ? HUE_PALETTES[d.hue][50] : '#F6F7F9',\n              }}\n            >\n              <div className=\"flex items-center justify-between gap-2\">\n                <span className=\"truncate text-[13px] font-bold text-[#1B1F27]\">{d.name}</span>\n                <Switch\n                  size=\"sm\"\n                  hue={d.hue}\n                  checked={on}\n                  onCheckedChange={(v) => setState((prev) => ({ ...prev, [d.id]: v }))}\n                />\n              </div>\n              <span className=\"truncate text-[11px] text-[#6B7280]\">{on ? d.sub : '已关闭'}</span>\n            </div>\n          )\n        })}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

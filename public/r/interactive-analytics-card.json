@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "interactive-analytics-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "F13 交互式多视图趋势通栏卡 (InteractiveAnalyticsCard)",
   "description": "交互式多视图趋势通栏卡（F13 · 尺寸 F）— 面积/折线/柱状即时切换 · 3 KPI 摘要带",
   "registryDependencies": [
@@ -15,15 +15,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "charts",
     "size-f"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/interactive-analytics-card.tsx",
+      "path": "registry/glaze/cards/interactive-analytics-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/interactive-analytics-card.tsx",
+      "target": "components/cards/interactive-analytics-card.tsx",
       "content": "import * as React from 'react'\nimport { AreaChart } from '@/components/ui/area-chart'\nimport { BarChart } from '@/components/ui/bar-chart'\nimport { LineChart } from '@/components/ui/line-chart'\nimport { SegmentedControl } from '@/components/ui/segmented-control'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type Status, type TileTone } from '@/lib/tokens'\n\nexport interface AnalyticsSummaryItem {\n  label: string\n  value: string\n  delta: string\n  status?: Status\n}\n\nexport interface InteractiveAnalyticsCardProps {\n  title: string\n  subtitle?: string\n  summaries: AnalyticsSummaryItem[]\n  data: readonly object[]\n  xKey: string\n  series: { dataKey: string; label: string; hue?: Hue; color?: string; unit?: string }[]\n  referenceLine?: { y: number; label?: string }\n  tone?: TileTone\n}\n\nexport function InteractiveAnalyticsCard({\n  title,\n  subtitle,\n  summaries,\n  data,\n  xKey,\n  series,\n  referenceLine,\n  tone = 'white',\n}: InteractiveAnalyticsCardProps) {\n  const theme = TILE_THEMES[tone]\n  const [chartType, setChartType] = React.useState<'area' | 'line' | 'bar'>('area')\n\n  return (\n    <Tile size=\"f\" tone={tone} className=\"gap-5\">\n      <div className=\"flex flex-wrap items-start justify-between gap-3\">\n        <div>\n          <div className=\"font-glaze-display text-[22px] font-extrabold\">{title}</div>\n          {subtitle && (\n            <div className=\"mt-0.5 text-[13px]\" style={{ color: theme.soft }}>\n              {subtitle}\n            </div>\n          )}\n        </div>\n        <SegmentedControl\n          size=\"sm\"\n          value={chartType}\n          onValueChange={setChartType}\n          options={[\n            { value: 'area', label: '面积图' },\n            { value: 'line', label: '折线图' },\n            { value: 'bar', label: '柱状图' },\n          ]}\n        />\n      </div>\n\n      <div className=\"grid grid-cols-1 gap-3 sm:grid-cols-3\">\n        {summaries.slice(0, 3).map((s) => (\n          <div\n            key={s.label}\n            className=\"flex items-center justify-between gap-2 rounded-inner px-4 py-3\"\n            style={{\n              backgroundColor: theme.dark\n                ? 'rgba(255,255,255,0.08)'\n                : theme.bg === '#FFFFFF'\n                  ? '#F6F7F9'\n                  : 'rgba(255,255,255,0.68)',\n            }}\n          >\n            <div>\n              <div className=\"text-[12px]\" style={{ color: theme.soft }}>\n                {s.label}\n              </div>\n              <div className=\"mt-0.5 font-glaze-display text-[24px] leading-7 font-extrabold\">\n                {s.value}\n              </div>\n            </div>\n            <StatusPill status={s.status ?? 'normal'} label={s.delta} showDot={false} size=\"sm\" />\n          </div>\n        ))}\n      </div>\n\n      <div className=\"w-full\">\n        {chartType === 'area' && (\n          <AreaChart\n            data={data}\n            xKey={xKey}\n            series={series}\n            showYAxis\n            showLegend\n            referenceLine={referenceLine}\n            tone={tone}\n            height={260}\n          />\n        )}\n        {chartType === 'line' && (\n          <LineChart\n            data={data}\n            xKey={xKey}\n            series={series}\n            showYAxis\n            showLegend\n            showDots\n            referenceLine={referenceLine}\n            tone={tone}\n            height={260}\n          />\n        )}\n        {chartType === 'bar' && (\n          <BarChart\n            data={data}\n            xKey={xKey}\n            series={series}\n            showYAxis\n            showLegend\n            referenceLine={referenceLine ? { value: referenceLine.y, label: referenceLine.label } : undefined}\n            tone={tone}\n            height={260}\n          />\n        )}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

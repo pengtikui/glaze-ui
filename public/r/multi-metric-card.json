@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "multi-metric-card",
-  "type": "registry:block",
+  "type": "registry:component",
   "title": "W5 多指标横排卡 (MultiMetricCard)",
   "description": "多指标横排卡（W5 · 尺寸 W）— 3 列并排大指标",
   "registryDependencies": [
@@ -10,15 +10,15 @@
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
+    "cards",
     "metrics",
     "size-w"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/multi-metric-card.tsx",
+      "path": "registry/glaze/cards/multi-metric-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/multi-metric-card.tsx",
+      "target": "components/cards/multi-metric-card.tsx",
       "content": "import { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface MultiMetricItem {\n  label: string\n  value: string | number\n  unit?: string\n}\n\nexport interface MultiMetricCardProps {\n  label: string\n  metrics: MultiMetricItem[]\n  tone?: TileTone\n}\n\nexport function MultiMetricCard({\n  label,\n  metrics,\n  tone = 'sky',\n}: MultiMetricCardProps) {\n  const theme = TILE_THEMES[tone]\n  return (\n    <Tile size=\"w\" tone={tone}>\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {label}\n      </span>\n      <div\n        className=\"grid\"\n        style={{ gridTemplateColumns: `repeat(${metrics.length}, minmax(0, 1fr))` }}\n      >\n        {metrics.map((m, i) => (\n          <span\n            key={i}\n            className=\"flex flex-col gap-1\"\n            style={{\n              paddingLeft: i === 0 ? 0 : 20,\n              paddingRight: i === metrics.length - 1 ? 0 : 20,\n              borderLeft: i === 0 ? 'none' : `1px solid ${theme.divider}`,\n            }}\n          >\n            <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n              {m.label}\n            </span>\n            <span className=\"flex items-baseline gap-0.5\">\n              <span className=\"font-glaze-display text-[36px] sm:text-[40px] leading-10.5 font-extrabold tracking-[-0.03em]\">\n                {m.value}\n              </span>\n              {m.unit && (\n                <span className=\"text-[16px] font-bold\">{m.unit}</span>\n              )}\n            </span>\n          </span>\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
     }
   ]

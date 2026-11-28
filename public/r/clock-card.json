@@ -1,24 +1,24 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "clock-card",
-  "type": "registry:block",
-  "title": "S14 实时时钟卡 (ClockCard)",
-  "description": "实时时钟卡（S14 · 尺寸 S）— 城市 · 实时时间 · 日期",
+  "type": "registry:component",
+  "title": "S13 实时时钟卡 (ClockCard)",
+  "description": "实时时钟卡（S13 · 尺寸 S）— 城市 · 实时时间 · 日期",
   "registryDependencies": [
     "@glaze/style",
     "@glaze/tile",
     "@glaze/tokens"
   ],
   "categories": [
-    "blocks",
-    "productivity",
+    "cards",
+    "collaboration",
     "size-s"
   ],
   "files": [
     {
-      "path": "registry/glaze/blocks/clock-card.tsx",
+      "path": "registry/glaze/cards/clock-card.tsx",
       "type": "registry:component",
-      "target": "components/blocks/clock-card.tsx",
+      "target": "components/cards/clock-card.tsx",
       "content": "import * as React from 'react'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface ClockCardProps {\n  weekday?: string\n  time?: string\n  dateText?: string\n  live?: boolean\n  tone?: TileTone\n}\n\nexport function ClockCard({\n  weekday,\n  time,\n  dateText,\n  live = false,\n  tone = 'periwinkle',\n}: ClockCardProps) {\n  const theme = TILE_THEMES[tone]\n  const [now, setNow] = React.useState(() => new Date())\n\n  React.useEffect(() => {\n    if (!live) return\n    const id = window.setInterval(() => setNow(new Date()), 1000)\n    return () => window.clearInterval(id)\n  }, [live])\n\n  const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']\n  const displayWeekday = weekday ?? weekdays[now.getDay()]\n  const displayTime =\n    time ??\n    `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`\n  const displayDate =\n    dateText ??\n    `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日`\n\n  return (\n    <Tile size=\"s\" tone={tone}>\n      <span className=\"text-[14px] font-medium\" style={{ color: theme.soft }}>\n        {displayWeekday}\n      </span>\n      <span className=\"font-glaze-display text-[56px] xl:text-[60px] leading-15.5 font-extrabold tracking-[-0.03em]\">\n        {displayTime}\n      </span>\n      <span className=\"text-[13px]\" style={{ color: theme.soft }}>\n        {displayDate}\n      </span>\n    </Tile>\n  )\n}\n"
     }
   ]

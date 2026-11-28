@@ -80,7 +80,7 @@ export function CalendarDayButton({
 
   React.useEffect(() => {
     if (modifiers.focused) {
-      ref.current?.focus()
+      ref.current?.focus({ preventScroll: true })
     }
   }, [modifiers.focused])
 
