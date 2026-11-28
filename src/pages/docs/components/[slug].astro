@@ -1,19 +1,19 @@
 ---
 import DocsLayout, { type TocItem } from '@/layouts/DocsLayout.astro'
 import { ApiReference } from '@/docs/components/ApiReference'
-import { COMPONENT_CATEGORIES, COMPONENTS_LIST } from '@/docs/data/catalog'
+import { COMPONENT_CATEGORIES, COMPONENTS_SIDEBAR_ORDER } from '@/docs/data/catalog'
 import { COMPONENT_DEMOS } from '@/docs/examples/component-demos'
 import { CliCommandIsland, CodeBlockIsland } from '@/docs/islands/CodeIslands'
 import { ComponentDemoIsland, CopyMarkdownButtonIsland } from '@/docs/islands/PageIslands'
 import { highlightCode } from '@/docs/lib/shiki'
 
 export async function getStaticPaths() {
-  return COMPONENTS_LIST.map((comp, idx) => ({
+  return COMPONENTS_SIDEBAR_ORDER.map((comp, idx) => ({
     params: { slug: comp.slug },
     props: {
       comp,
-      prev: idx > 0 ? COMPONENTS_LIST[idx - 1] : null,
-      next: idx < COMPONENTS_LIST.length - 1 ? COMPONENTS_LIST[idx + 1] : null,
+      prev: idx > 0 ? COMPONENTS_SIDEBAR_ORDER[idx - 1] : null,
+      next: idx < COMPONENTS_SIDEBAR_ORDER.length - 1 ? COMPONENTS_SIDEBAR_ORDER[idx + 1] : null,
     },
   }))
 }

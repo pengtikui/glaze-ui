@@ -117,6 +117,19 @@ export const BLOCK_DOMAIN_CATEGORIES = [
 
 export const COMPONENTS_MAP = componentsApiRaw as unknown as Record<string, ComponentDocMeta>
 export const COMPONENTS_LIST: ComponentDocMeta[] = Object.values(COMPONENTS_MAP)
+
+/** 按组件英文名首字母（A–Z）返回指定分组下的组件列表 */
+export function getComponentsByCategory(categoryId: string): ComponentDocMeta[] {
+  return COMPONENTS_LIST.filter((c) => c.category === categoryId).sort((a, b) =>
+    a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }),
+  )
+}
+
+/** 按侧边栏分组顺序且组内首字母（A–Z）排好序的全量组件列表 */
+export const COMPONENTS_SIDEBAR_ORDER: ComponentDocMeta[] = COMPONENT_CATEGORIES.flatMap((cat) =>
+  getComponentsByCategory(cat.id),
+)
+
 export const BLOCKS_LIST = blocksApiRaw as unknown as BlockDocMeta[]
 export const BLOCKS_MAP: Record<string, BlockDocMeta> = Object.fromEntries(
   BLOCKS_LIST.map((b) => [b.slug, b]),

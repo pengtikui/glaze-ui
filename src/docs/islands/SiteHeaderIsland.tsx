@@ -3,7 +3,7 @@ import { cn } from 'cn'
 import { Drawer } from '@/components/ui/drawer'
 import { GlazeProviders } from '@/docs/components/GlazeProviders'
 import { SiteHeader } from '@/docs/components/SiteHeader'
-import { COMPONENT_CATEGORIES, COMPONENTS_LIST } from '@/docs/data/catalog'
+import { COMPONENT_CATEGORIES, COMPONENTS_LIST, getComponentsByCategory } from '@/docs/data/catalog'
 import { useRouter } from '@/docs/router'
 
 export interface DocsNavItem {
@@ -69,7 +69,7 @@ function SiteHeaderShell({
             )}
 
             {COMPONENT_CATEGORIES.map((cat) => {
-              const items = COMPONENTS_LIST.filter((c) => c.category === cat.id)
+              const items = getComponentsByCategory(cat.id)
               return (
                 <div key={cat.id} className="flex flex-col gap-0.5">
                   <span className="mb-1 px-3 text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">

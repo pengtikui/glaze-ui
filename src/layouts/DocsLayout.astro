@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
-import { COMPONENT_CATEGORIES, COMPONENTS_LIST } from '@/docs/data/catalog'
+import { COMPONENT_CATEGORIES, COMPONENTS_LIST, getComponentsByCategory } from '@/docs/data/catalog'
 
 export interface TocItem {
   id: string
@@ -74,7 +74,7 @@ const docsNav = [
           </div>
 
           {COMPONENT_CATEGORIES.map((cat) => {
-            const items = COMPONENTS_LIST.filter((c) => c.category === cat.id)
+            const items = getComponentsByCategory(cat.id)
             return (
               <div class="flex flex-col gap-0.5">
                 <span class="mb-1 px-3 text-[11px] font-bold tracking-[0.06em] text-[#8A90A0] uppercase">
