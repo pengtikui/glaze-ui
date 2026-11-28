@@ -33,7 +33,7 @@ export interface ComponentDocMeta {
   title: string
   cnTitle: string
   category: string
-  kind: 'primitive' | 'base-ui' | 'chart'
+  kind: 'primitive' | 'base-ui' | 'chart' | 'ai'
   baseUiSlug?: string
   baseUiPackage?: string
   baseUiUrl: string | null
@@ -99,10 +99,12 @@ export const COMPONENT_CATEGORIES = [
   { id: 'overlays', title: '浮层与反馈', en: 'Overlays & Feedback' },
   { id: 'navigation', title: '导航与结构', en: 'Navigation & Structure' },
   { id: 'charts', title: '数据可视化图表', en: 'Charts & DataViz' },
+  { id: 'ai', title: 'AI 智能体元素', en: 'AI Elements' },
 ] as const
 
 export const BLOCK_DOMAIN_CATEGORIES = [
-  { id: 'all', title: '全部 112', en: 'All' },
+  { id: 'all', title: '全部卡片', en: 'All' },
+  { id: 'ai', title: 'AI 与智能体', en: 'AI & Agents' },
   { id: 'metrics', title: '核心指标与 KPI', en: 'Metrics & KPI' },
   { id: 'charts', title: 'Recharts 图表卡片', en: 'Charts' },
   { id: 'monitoring', title: '监控与智能硬件', en: 'Monitoring & IoT' },

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-token-budget-card",
+  "type": "registry:block",
+  "title": "S39 AI 上下文预算小卡 (AiTokenBudgetCard)",
+  "description": "AI 上下文预算小卡（S39 · 尺寸 S）— Token 环形用量 · 缓存命中 · 费用",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/ai-context-meter",
+    "@glaze/progress",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "ai",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/ai-token-budget-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/ai-token-budget-card.tsx",
+      "content": "import { Sparkle } from '@phosphor-icons/react'\nimport { AiContextMeter, type AiContextUsage } from '@/components/ui/ai-context-meter'\nimport { Progress } from '@/components/ui/progress'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type TileTone } from '@/lib/tokens'\n\nexport interface AiTokenBudgetCardProps {\n  label?: string\n  usage: AiContextUsage\n  cacheHitRate?: string\n  hue?: Hue\n  tone?: TileTone\n}\n\nexport function AiTokenBudgetCard({\n  label = '上下文窗口',\n  usage,\n  cacheHitRate = '64%',\n  hue = 'periwinkle',\n  tone = 'white',\n}: AiTokenBudgetCardProps) {\n  const theme = TILE_THEMES[tone]\n  const pct = Math.min(100, Math.round((usage.usedTokens / Math.max(1, usage.maxTokens)) * 100))\n\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <div className=\"flex items-center gap-1.5\">\n          <Sparkle size={14} weight=\"duotone\" style={{ color: theme.accent }} />\n          <span className=\"text-[13px] font-semibold\" style={{ color: theme.soft }}>\n            {label}\n          </span>\n        </div>\n        <AiContextMeter usage={usage} surface={tone === 'white' ? 'soft' : 'white'} />\n      </div>\n\n      <div className=\"flex flex-col gap-1\">\n        <div className=\"flex items-baseline gap-1.5\">\n          <span className=\"font-glaze-display text-[36px] leading-none font-extrabold tracking-[-0.03em]\">\n            {(usage.usedTokens / 1000).toFixed(1)}k\n          </span>\n          <span className=\"text-[13px] font-semibold\" style={{ color: theme.soft }}>\n            / {Math.round(usage.maxTokens / 1000)}k\n          </span>\n        </div>\n        <span className=\"text-[12px]\" style={{ color: theme.soft }}>\n          缓存命中 {cacheHitRate} · {usage.estimatedCost ?? '$0.18'}\n        </span>\n      </div>\n\n      <Progress value={pct} hue={hue} height=\"sm\" />\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

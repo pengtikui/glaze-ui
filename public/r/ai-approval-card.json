@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-approval-card",
+  "type": "registry:block",
+  "title": "W29 智能体人工审批宽卡 (AiApprovalCard)",
+  "description": "智能体人工审批宽卡（W29 · 尺寸 W）— 风险等级 · 命令预览 · 批准/拒绝",
+  "registryDependencies": [
+    "@glaze/ai-confirmation",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "ai",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/ai-approval-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/ai-approval-card.tsx",
+      "content": "import * as React from 'react'\nimport {\n  AiConfirmation,\n  type AiConfirmationRisk,\n  type AiConfirmationState,\n} from '@/components/ui/ai-confirmation'\nimport { Tile } from '@/components/ui/tile'\nimport type { TileTone } from '@/lib/tokens'\n\nexport interface AiApprovalCardProps {\n  title: string\n  description: string\n  command?: string\n  risk?: AiConfirmationRisk\n  initialState?: AiConfirmationState\n  onDecision?: (decision: 'approved' | 'rejected') => void\n  tone?: TileTone\n}\n\nexport function AiApprovalCard({\n  title,\n  description,\n  command,\n  risk = 'high',\n  initialState = 'requested',\n  onDecision,\n  tone = 'white',\n}: AiApprovalCardProps) {\n  const [state, setState] = React.useState<AiConfirmationState>(initialState)\n\n  const decide = (next: 'approved' | 'rejected') => {\n    setState(next)\n    onDecision?.(next)\n  }\n\n  return (\n    <Tile size=\"w\" tone={tone} padding=\"compact\" className=\"justify-between gap-2\">\n      <AiConfirmation\n        state={state}\n        risk={risk}\n        title={title}\n        description={description}\n        command={command}\n        onApprove={() => decide('approved')}\n        onReject={() => decide('rejected')}\n      />\n      {state !== 'requested' && (\n        <div className=\"flex justify-end\">\n          <button\n            type=\"button\"\n            onClick={() => setState('requested')}\n            className=\"cursor-pointer rounded-full bg-[#F2F3F5] px-3 py-1 text-[11px] font-semibold text-[#5B6170] hover:bg-[#E8EBF0] hover:text-[#1B1F27]\"\n          >\n            重置演示状态\n          </button>\n        </div>\n      )}\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

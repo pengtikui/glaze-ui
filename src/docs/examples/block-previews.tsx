@@ -15,6 +15,16 @@ import {
 } from '@phosphor-icons/react'
 import {
   ActivityFeedCard,
+  AiAgentStatusCard,
+  AiApprovalCard,
+  AiAssistantCard,
+  AiModelEvalCard,
+  AiPlanQueueCard,
+  AiPromptBarCard,
+  AiSourcesCard,
+  AiTokenBudgetCard,
+  AiTraceInspectorCard,
+  AiWorkspaceConsoleCard,
   AlertBannerCard,
   AppLauncherCard,
   AreaTrendCard,
@@ -1324,5 +1334,167 @@ export const BLOCK_PREVIEW_RENDERERS: Record<string, (ctx: BlockPreviewContext) 
                       { metric: '月度可用率', values: ['99.99%', '99.97%', '99.98%'], bestIndex: 0 },
                     ]}
                   />
+  ),
+  'ai-token-budget-card': () => (
+    <AiTokenBudgetCard
+      label="上下文预算"
+      usage={{
+        usedTokens: 54_800,
+        maxTokens: 200_000,
+        inputTokens: 21_000,
+        cachedTokens: 24_200,
+        reasoningTokens: 5_800,
+        outputTokens: 3_800,
+        estimatedCost: '$0.16',
+      }}
+      cacheHitRate="64%"
+      tone="white"
+    />
+  ),
+  'ai-agent-status-card': () => (
+    <AiAgentStatusCard
+      agentName="Glaze Coder"
+      modelName="Gemini 3 Pro"
+      status="normal"
+      statusText="自主运行中"
+      activeSubagents={3}
+      ttft="0.42s"
+      tone="mint"
+    />
+  ),
+  'ai-prompt-bar-card': ({ toast }) => (
+    <AiPromptBarCard
+      onSubmitPrompt={(prompt) => toast({ title: '已提交 AI 提示词', description: prompt, status: 'info' })}
+    />
+  ),
+  'ai-approval-card': ({ toast }) => (
+    <AiApprovalCard
+      title="生产网关扩容确认"
+      description="将 inference-gateway 副本由 6 扩展至 10，预计增加预算 $420/月。"
+      command="kubectl scale deploy/inference-gateway --replicas=10 -n prod-ai"
+      risk="high"
+      onDecision={(d) =>
+        toast({
+          title: d === 'approved' ? '已批准 Agent 操作' : '已拒绝 Agent 操作',
+          status: d === 'approved' ? 'normal' : 'warning',
+        })
+      }
+    />
+  ),
+  'ai-plan-queue-card': () => (
+    <AiPlanQueueCard
+      steps={[
+        { id: '1', title: '检索设计 Token 与规范', status: 'done', duration: '0.4s' },
+        { id: '2', title: '编写 12 个 AI Elements', status: 'done', duration: '2.1s' },
+        { id: '3', title: '执行 TypeScript 校验', status: 'running' },
+        { id: '4', title: '发布 Registry 产物', status: 'pending' },
+      ]}
+      queueItems={[
+        { id: 'q1', title: '同步 llms-full.txt', meta: 'Registry', status: 'running' },
+        { id: 'q2', title: '构建 Astro 静态站点', meta: 'Docs', status: 'pending' },
+      ]}
+    />
+  ),
+  'ai-sources-card': () => (
+    <AiSourcesCard
+      sources={[
+        {
+          id: 's1',
+          title: 'Glaze 柔彩圆角与无描边规范',
+          url: 'https://github.com/pengtikui/glaze-ui',
+          domain: 'glaze-ui.dev',
+          snippet: '画布 #F2F4F8，28px 卡片无描边无阴影，依靠底色对比建立层次。',
+          score: 0.98,
+          hue: 'periwinkle',
+        },
+        {
+          id: 's2',
+          title: 'shadcn/ui AI Elements 模式库',
+          url: 'https://ui.shadcn.com/docs/ai-elements',
+          domain: 'ui.shadcn.com',
+          snippet: '涵盖 Conversation、Reasoning、ChainOfThought、Tool 与 Confirmation。',
+          score: 0.94,
+          hue: 'sky',
+        },
+        {
+          id: 's3',
+          title: 'Base UI v1.9 Collapsible 文档',
+          url: 'https://base-ui.com/react/components/collapsible',
+          domain: 'base-ui.com',
+          snippet: '使用 --collapsible-panel-height 实现零卡顿纯 CSS 折叠。',
+          score: 0.91,
+          hue: 'mint',
+        },
+      ]}
+    />
+  ),
+  'ai-assistant-card': () => <AiAssistantCard />,
+  'ai-trace-inspector-card': () => (
+    <AiTraceInspectorCard
+      steps={[
+        { id: '1', label: '检索近 4 小时网关 P99 指标', status: 'complete', duration: '140ms' },
+        {
+          id: '2',
+          label: '关联发布日志与缓存命中率变化',
+          status: 'complete',
+          duration: '260ms',
+          links: [{ label: 'grafana/p99', href: 'https://github.com/pengtikui/glaze-ui' }],
+        },
+        { id: '3', label: '输出限速与副本分流建议', status: 'complete', duration: '310ms' },
+      ]}
+      toolCall={{
+        name: 'query_prometheus',
+        title: '查询延迟指标',
+        state: 'output-available',
+        duration: '140ms',
+        input: { cluster: 'ap-east-1', metric: 'http_p99_ms' },
+        output: { peakMs: 842, baselineMs: 112 },
+      }}
+    />
+  ),
+  'ai-workspace-console-card': () => (
+    <AiWorkspaceConsoleCard
+      tree={[
+        {
+          path: 'registry',
+          name: 'registry/glaze/ui',
+          type: 'folder',
+          children: [
+            { path: 'registry/glaze/ui/reasoning.tsx', name: 'reasoning.tsx', type: 'file', status: 'added' },
+            { path: 'registry/glaze/ui/tool-call.tsx', name: 'tool-call.tsx', type: 'file', status: 'added' },
+            { path: 'registry/glaze/styles/glaze.css', name: 'glaze.css', type: 'file', status: 'modified' },
+          ],
+        },
+      ]}
+      defaultPath="registry/glaze/styles/glaze.css"
+      files={{
+        'registry/glaze/ui/reasoning.tsx': {
+          path: 'registry/glaze/ui/reasoning.tsx',
+          language: 'tsx',
+          code: `export function ReasoningBadge() {\n  return <Reasoning isStreaming duration={2.4}><ReasoningTrigger /></Reasoning>\n}`,
+        },
+        'registry/glaze/ui/tool-call.tsx': {
+          path: 'registry/glaze/ui/tool-call.tsx',
+          language: 'tsx',
+          code: `export function ToolTrace() {\n  return <ToolCall><ToolCallHeader name="build_registry" state="output-available" /></ToolCall>\n}`,
+        },
+        'registry/glaze/styles/glaze.css': {
+          path: 'registry/glaze/styles/glaze.css',
+          language: 'diff',
+          diff: true,
+          code: `--- a/glaze.css\n+++ b/glaze.css\n+ .animate-glaze-shimmer {\n+   animation: glaze-shimmer 2.2s linear infinite;\n+ }`,
+        },
+      }}
+    />
+  ),
+  'ai-model-eval-card': ({ toast }) => (
+    <AiModelEvalCard
+      rows={[
+        { id: 'gemini-3-pro', name: 'Gemini 3 Pro', provider: 'Google', contextWindow: '1M', tag: '推理旗舰', hue: 'periwinkle', ttft: '0.42s', throughput: '118 tok/s', costPer1M: '$1.25', reasoningScore: 96, codingScore: 95, status: 'normal' },
+        { id: 'claude-4-sonnet', name: 'Claude 4 Sonnet', provider: 'Anthropic', contextWindow: '200k', tag: '编码优先', hue: 'peach', ttft: '0.58s', throughput: '92 tok/s', costPer1M: '$3.00', reasoningScore: 93, codingScore: 97, status: 'normal' },
+        { id: 'gpt-5-mini', name: 'GPT-5 Mini', provider: 'OpenAI', contextWindow: '128k', tag: '极速路由', hue: 'mint', ttft: '0.21s', throughput: '185 tok/s', costPer1M: '$0.30', reasoningScore: 86, codingScore: 88, status: 'info' },
+      ]}
+      onSelectDefault={(id) => toast({ title: '已切换主推理模型', description: id, status: 'normal' })}
+    />
   ),
 }

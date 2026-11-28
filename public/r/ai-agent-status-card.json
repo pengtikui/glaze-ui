@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-agent-status-card",
+  "type": "registry:block",
+  "title": "S40 智能体运行状态小卡 (AiAgentStatusCard)",
+  "description": "智能体运行状态小卡（S40 · 尺寸 S）— 模型标识 · 呼吸状态点 · 子智能体数",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/hue-tag",
+    "@glaze/status-dot",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "ai",
+    "size-s"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/ai-agent-status-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/ai-agent-status-card.tsx",
+      "content": "import { Robot } from '@phosphor-icons/react'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { StatusDot } from '@/components/ui/status-dot'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type Hue, type Status, type TileTone } from '@/lib/tokens'\n\nexport interface AiAgentStatusCardProps {\n  agentName: string\n  modelName: string\n  status?: Status\n  statusText?: string\n  activeSubagents?: number\n  ttft?: string\n  hue?: Hue\n  tone?: TileTone\n}\n\nexport function AiAgentStatusCard({\n  agentName,\n  modelName,\n  status = 'normal',\n  statusText = '推理中',\n  activeSubagents = 3,\n  ttft = '0.42s',\n  hue = 'mint',\n  tone = 'mint',\n}: AiAgentStatusCardProps) {\n  const theme = TILE_THEMES[tone]\n\n  return (\n    <Tile size=\"s\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <div className=\"flex items-center gap-2\">\n          <Robot size={16} weight=\"duotone\" style={{ color: theme.ink }} />\n          <span className=\"truncate text-[13px] font-bold\" style={{ color: theme.soft }}>\n            {agentName}\n          </span>\n        </div>\n        <StatusDot status={status} animated size=\"md\" />\n      </div>\n\n      <div className=\"flex flex-col gap-1\">\n        <span className=\"font-glaze-display text-[28px] leading-tight font-extrabold tracking-[-0.02em]\">\n          {statusText}\n        </span>\n        <span className=\"truncate font-glaze-mono text-[12px]\" style={{ color: theme.soft }}>\n          {modelName}\n        </span>\n      </div>\n\n      <div className=\"flex items-center justify-between gap-2\">\n        <HueTag hue={hue} size=\"xs\" tone={theme.dark ? 'solid' : 'neutral'}>\n          {activeSubagents} 子智能体\n        </HueTag>\n        <span className=\"font-glaze-mono text-[11.5px] font-semibold\" style={{ color: theme.soft }}>\n          TTFT {ttft}\n        </span>\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

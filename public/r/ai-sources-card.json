@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-sources-card",
+  "type": "registry:block",
+  "title": "T18 RAG 溯源参考竖卡 (AiSourcesCard)",
+  "description": "RAG 溯源参考竖卡（T18 · 尺寸 T）— 语义命中文档 · 相关度 · 摘要跳转",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/ai-sources",
+    "@glaze/hue-tag",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "ai",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/ai-sources-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/ai-sources-card.tsx",
+      "content": "import { BookOpen } from '@phosphor-icons/react'\nimport { AiSourceItem, type AiSourceEntry } from '@/components/ui/ai-sources'\nimport { HueTag } from '@/components/ui/hue-tag'\nimport { Tile } from '@/components/ui/tile'\nimport { TILE_THEMES, type TileTone } from '@/lib/tokens'\n\nexport interface AiSourcesCardProps {\n  title?: string\n  queryLabel?: string\n  sources: AiSourceEntry[]\n  tone?: TileTone\n}\n\nexport function AiSourcesCard({\n  title = 'RAG 溯源参考',\n  queryLabel = '语义检索 · Top 4',\n  sources,\n  tone = 'white',\n}: AiSourcesCardProps) {\n  const theme = TILE_THEMES[tone]\n\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-3\">\n      <div className=\"flex items-center justify-between gap-2\">\n        <div className=\"flex items-center gap-2\">\n          <BookOpen size={17} weight=\"duotone\" style={{ color: theme.accent }} />\n          <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n        </div>\n        <HueTag hue=\"sky\" size=\"xs\">\n          {sources.length} 篇\n        </HueTag>\n      </div>\n\n      <span className=\"-mt-1 text-[12px]\" style={{ color: theme.soft }}>\n        {queryLabel}\n      </span>\n\n      <div className=\"flex flex-1 flex-col gap-2 overflow-y-auto\">\n        {sources.map((src) => (\n          <AiSourceItem\n            key={src.id}\n            title={src.title}\n            url={src.url}\n            domain={src.domain}\n            snippet={src.snippet}\n            score={src.score}\n            hue={src.hue}\n            className={tone === 'white' ? 'bg-[#F6F7F9] hover:bg-[#EEF0F4]' : undefined}\n          />\n        ))}\n      </div>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

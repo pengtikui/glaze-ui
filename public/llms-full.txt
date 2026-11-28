@@ -129,6 +129,7 @@ Each demo can be viewed standalone at `/view/demos/<slug>` (outside the docs fra
 | 05 | 个人效率与数字生活 OS (`PersonalOsDemoPage`) | `/view/demos/personal-os` | `npx shadcn@latest add @glaze/demo-personal-os` | 整合番茄钟、交互待办清单、习惯打卡矩阵、日历议程、心率饮水与灵感速记的个人数字生活仪表盘。 |
 | 06 | 云原生运维与可观测性中心 (`CloudOpsDemoPage`) | `/view/demos/cloud-ops` | `npx shadcn@latest add @glaze/demo-cloud-ops` | 展示全站 30 日 SLA 状态、集群资源三环监控、告警事件日志、散点延迟分布与全局命令栏的 SRE 运维中心。 |
 | 07 | 企业级控制台壳层 (`AdminShellDemoPage`) | `/view/demos/admin-shell` | `npx shadcn@latest add @glaze/demo-admin-shell` | 带完整侧边栏与顶部栏的 App Shell 仪表盘示例，侧边栏涵盖 15 种常见菜单类型（工作区切换、搜索过滤、2/3 级树形折叠、状态点、动态计数、右键/悬停菜单、内嵌开关、锁定态与迷你图标栏）。 |
+| 08 | AI 智能体工作台 (`AiStudioDemoPage`) | `/view/demos/ai-studio` | `npx shadcn@latest add @glaze/demo-ai-studio` | 集成 12 个 Glaze AI Elements 与 10 张 AI Bento 业务卡片的全景工作台，支持「智能体分栏对话与产物审查」与「AI Ops 四列看板」双模式无缝切换。 |
 
 ---
 
@@ -176,6 +177,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | S36 | `QuickActionGridCard` | `@glaze/quick-action-grid-card` | S | controls | 2×2 快捷网格卡 — 4 个高密度快捷按钮 |
 | S37 | `SparkAreaCard` | `@glaze/spark-area-card` | S | charts | 面积微趋势小卡 — KPI · 环比胶囊 · 渐变面积微图 |
 | S38 | `RadialScoreCard` | `@glaze/radial-score-card` | S | charts | 径向评分小卡 — 多环径向进度 · 中心得分 |
+| S39 | `AiTokenBudgetCard` | `@glaze/ai-token-budget-card` | S | ai | AI 上下文预算小卡 — Token 环形用量 · 缓存命中 · 费用 |
+| S40 | `AiAgentStatusCard` | `@glaze/ai-agent-status-card` | S | ai | 智能体运行状态小卡 — 模型标识 · 呼吸状态点 · 子智能体数 |
 | W1 | `AreaTrendCard` | `@glaze/area-trend-card` | W | charts | 面积趋势卡 — 标题 · 现值 · 面积折线 |
 | W2 | `AppLauncherCard` | `@glaze/app-launcher-card` | W | controls | 应用发射台卡 — 8 宫格彩色应用入口 |
 | W3 | `StepsCard` | `@glaze/steps-card` | W | productivity | 步骤流程横卡 — 编号进度 · 当前激活步骤 |
@@ -203,6 +206,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | W25 | `StackedAreaTrendCard` | `@glaze/stacked-area-trend-card` | W | charts | 堆叠面积趋势宽卡 — 多端流量堆叠面积 · 可点击图例 |
 | W26 | `HorizontalBarRankCard` | `@glaze/horizontal-bar-rank-card` | W | charts | 横向条形排行宽卡 — 横向圆角条形图 · 悬停提示 |
 | W27 | `TargetLineCard` | `@glaze/target-line-card` | W | charts | 目标基线折线宽卡 — 带参考红线折线 · 状态徽章 |
+| W28 | `AiPromptBarCard` | `@glaze/ai-prompt-bar-card` | W | ai | AI 提示词发射宽卡 — 模型选择 · 思考联网开关 · 快捷建议 |
+| W29 | `AiApprovalCard` | `@glaze/ai-approval-card` | W | ai | 智能体人工审批宽卡 — 风险等级 · 命令预览 · 批准/拒绝 |
 | T1 | `BarListCard` | `@glaze/bar-list-card` | T | lists | 条形排行卡 — 总指标 · 进度条排行列表 |
 | T2 | `EventTimelineCard` | `@glaze/event-timeline-card` | T | lists | 事件时间线卡 — 时间戳 · 状态点 · 事件描述 |
 | T3 | `VerticalBarsCard` | `@glaze/vertical-bars-card` | T | charts | 竖柱趋势竖卡 — 大数字 · 多月竖柱 |
@@ -219,6 +224,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | T14 | `FunnelCard` | `@glaze/funnel-card` | T | charts | 转化漏斗竖卡 — 4 阶段递减宽条 · 转化率 |
 | T15 | `RadialGoalsCard` | `@glaze/radial-goals-card` | T | charts | 多环目标达成竖卡 — 3 环径向进度 · 目标明细行 |
 | T16 | `StackedColumnCard` | `@glaze/stacked-column-card` | T | charts | 堆叠柱状分布竖卡 — 总指标 · 多状态堆叠竖柱 |
+| T17 | `AiPlanQueueCard` | `@glaze/ai-plan-queue-card` | T | ai | Agent 规划与队列竖卡 — 阶段进度条 · 执行步骤 · 待办队列 |
+| T18 | `AiSourcesCard` | `@glaze/ai-sources-card` | T | ai | RAG 溯源参考竖卡 — 语义命中文档 · 相关度 · 摘要跳转 |
 | L1 | `HeroMetricCard` | `@glaze/hero-metric-card` | L | metrics | 主指标英雄大卡 — 深色聚焦 · 趋势线 · 3 副指标 |
 | L2 | `DonutChartCard` | `@glaze/donut-chart-card` | L | charts | 环形占比图 — 多段圆环 · 中心汇总 · 图例 |
 | L3 | `ItemListCard` | `@glaze/item-list-card` | L | lists | 明细列表大卡 — 图标 · 标题 · 状态胶囊列表 |
@@ -236,6 +243,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | L15 | `ComposedRevenueCard` | `@glaze/composed-revenue-card` | L | charts | 双轴组合分析大卡 — 堆叠柱状 + 折线双 Y 轴 |
 | L16 | `ScatterBubbleCard` | `@glaze/scatter-bubble-card` | L | charts | 散点气泡分布大卡 — 多组 X/Y 散点 · Z 轴气泡映射 |
 | L17 | `MultiRadarCompareCard` | `@glaze/multi-radar-compare-card` | L | charts | 双方案雷达对比大卡 — 双序列对比 · 多边形/同心圆切换 |
+| L18 | `AiAssistantCard` | `@glaze/ai-assistant-card` | L | ai | AI 交互对话大卡 — 流式推理折叠 · 对话流 · 实时发送 |
+| L19 | `AiTraceInspectorCard` | `@glaze/ai-trace-inspector-card` | L | ai | 智能体执行链路大卡 — 思维链步骤 · 检索胶囊 · 工具入参输出 |
 | F1 | `DataTableCard` | `@glaze/data-table-card` | F | layout | 数据表格通栏卡 — 分组标签 · 头像 · 进度条 · 状态 |
 | F2 | `HierarchyCard` | `@glaze/hierarchy-card` | F | layout | 层级架构通栏卡 — 根节点 · 多分支节点树 |
 | F3 | `PhaseTimelineCard` | `@glaze/phase-timeline-card` | F | layout | 阶段时间轴通栏卡 — 横向里程碑节点连线 |
@@ -250,6 +259,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | F12 | `MetricComparisonTableCard` | `@glaze/metric-comparison-table-card` | F | layout | 多维指标对比表 — 横向指标矩阵 · 最优值高亮 |
 | F13 | `InteractiveAnalyticsCard` | `@glaze/interactive-analytics-card` | F | charts | 交互式多视图趋势通栏卡 — 面积/折线/柱状即时切换 · 3 KPI 摘要带 |
 | F14 | `ComposedOverviewCard` | `@glaze/composed-overview-card` | F | charts | 全年经营组合双轴通栏卡 — 12 月柱状 + 面积 + 折线双轴全景 |
+| F15 | `AiWorkspaceConsoleCard` | `@glaze/ai-workspace-console-card` | F | ai | AI 代码产物工作区通栏卡 — 变更文件树 · 代码/Diff 审查 · 终端输出 |
+| F16 | `AiModelEvalCard` | `@glaze/ai-model-eval-card` | F | ai | 多模型评测路由矩阵通栏卡 — 延迟/吞吐/推理得分对比 · 一键切换主路由 |
 
 ---
 
@@ -1466,3 +1477,367 @@ Glaze 图表核心基础设施，自动读取父级 Tile 深浅背景色板，�
 - `tone: TileTone`
 - `animate: boolean` = true
 - `className: string`
+
+## Conversation (AI 对话流与消息) — `@glaze/conversation`
+
+支持自动贴底滚动、回到底部悬浮胶囊、角色消息气泡、多版本分支切换与一键复制/点赞操作栏的 AI 对话原语。
+- Install: `npx shadcn@latest add @glaze/conversation`
+- Import: `import { useConversation, Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton, Message, MessageAvatar, MessageContent, MessageActions, MessageAction, MessageQuickToolbar, MessageBranch } from '@/components/ui/conversation'`
+- Registry Deps: @glaze/motion, @glaze/style, @glaze/tokens
+
+**Conversation Props:**
+- `autoScroll: boolean` = true — Automatically stick to bottom when children update and user is near bottom
+
+**ConversationEmptyState Props:**
+- `icon: React.ReactNode`
+- `title: React.ReactNode` = '开始一段新对话'
+- `description: React.ReactNode` = '输入问题、粘贴代码或从下方快捷提示开始协作。'
+- `hue: Hue` = 'periwinkle'
+
+**ConversationScrollButton Props:**
+- `forceVisible: boolean` = false — Force visibility regardless of scroll state (useful for previews)
+
+**Message Props:**
+- `from: MessageRole` (required)
+
+**MessageAvatar Props:**
+- `from: MessageRole` = 'assistant'
+- `hue: Hue`
+- `label: string`
+- `icon: React.ReactNode`
+
+**MessageContent Props:**
+- `from: MessageRole` = 'assistant'
+- `variant: 'flat' | 'bubble' | 'tinted'` — Surface appearance override
+- `hue: Hue` = 'periwinkle'
+
+**MessageActions Props:**
+- `alwaysVisible: boolean` = true — Always show actions instead of fading in on hover
+
+**MessageAction Props:**
+- `label: string` (required)
+- `active: boolean` = false
+
+**MessageQuickToolbar Props:**
+- `textToCopy: string`
+- `onRegenerate: () => void`
+- `onFeedback: (value: 'up' | 'down' | null) => void`
+- `className: string`
+
+**MessageBranch Props:**
+- `current: number` (required)
+- `total: number` (required)
+- `onChange: (nextIndex: number) => void` (required)
+- `className: string`
+
+**Data Attributes:** `data-at-bottom` (对话流滚动区当前处于底部), `data-role` (消息发送者角色（user | assistant | system）), `data-active` (消息快捷操作按钮处于激活态)
+
+## PromptInput (智能体提示词输入) — `@glaze/prompt-input`
+
+支持多行自适应增高、附件胶囊、深度思考/联网开关、Enter 发送与流式停止按钮的 AI 提示词编排器。
+- Install: `npx shadcn@latest add @glaze/prompt-input`
+- Import: `import { PromptInput, PromptInputAttachments, PromptInputTextarea, PromptInputToolbar, PromptInputTools, PromptInputAction, PromptInputSubmit } from '@/components/ui/prompt-input'`
+- Registry Deps: @glaze/motion, @glaze/style, @glaze/tokens
+
+**PromptInput Props:**
+- `onSubmit: (event: React.FormEvent<HTMLFormElement>) => void`
+- `surface: 'white' | 'soft'` = 'white' — Visual surface: white (on #F2F4F8 canvas) or soft (inside a white Tile)
+
+**PromptInputAttachments Props:**
+- `items: PromptAttachmentItem[]` (required)
+- `onRemove: (id: string) => void`
+
+**PromptInputTextarea Props:**
+- `submitOnEnter: boolean` = true — Submit parent form on Enter (Shift+Enter inserts newline)
+- `maxRows: number` = 6
+
+**PromptInputAction Props:**
+- `active: boolean` = false
+- `hue: Hue` = 'periwinkle'
+- `icon: React.ReactNode`
+
+**PromptInputSubmit Props:**
+- `status: PromptInputStatus` = 'ready'
+- `onStop: () => void`
+
+**Data Attributes:** `data-active` (工具栏能力开关处于激活态)
+
+## Reasoning (深度推理折叠块) — `@glaze/reasoning`
+
+基于 Base UI Collapsible 的流式思维过程组件，支持流式扫光标题、耗时统计、流式自动展开与完成后平滑折叠。
+- Install: `npx shadcn@latest add @glaze/reasoning`
+- Import: `import { Reasoning, ReasoningTrigger, ReasoningContent } from '@/components/ui/reasoning'`
+- Registry Deps: @glaze/style, @glaze/tokens
+
+**Reasoning Props:**
+- `isStreaming: boolean` = false — Whether the model is actively streaming thoughts
+- `duration: number` — Elapsed thinking time in seconds
+- `open: boolean` — Controlled open state
+- `defaultOpen: boolean` = false — Initial open state
+- `onOpenChange: (open: boolean) => void`
+- `autoCollapse: boolean` = false — Automatically open while streaming and collapse when complete
+- `hue: Hue` = 'lilac'
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**ReasoningTrigger Props:**
+- `title: React.ReactNode`
+- `className: string`
+
+**Data Attributes:** `data-streaming` (推理内容正在流式输出), `data-panel-open` (推理明细面板已展开)
+
+## ChainOfThought (思维链执行轨迹) — `@glaze/chain-of-thought`
+
+参考 shadcn Trace / Chain of Thought 模式，将多步智能体检索、分析与工具步骤折叠为摘要行并展开为时间线。
+- Install: `npx shadcn@latest add @glaze/chain-of-thought`
+- Import: `import { ChainOfThought, ChainOfThoughtHeader, ChainOfThoughtContent, ChainOfThoughtStep, ChainOfThoughtSearchResults, ChainOfThoughtSearchResult } from '@/components/ui/chain-of-thought'`
+- Registry Deps: @glaze/style, @glaze/tokens
+
+**ChainOfThought Props:**
+- `defaultOpen: boolean` = true
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**ChainOfThoughtHeader Props:**
+- `children: React.ReactNode` = '思维链执行轨迹'
+- `badge: React.ReactNode`
+- `className: string`
+
+**ChainOfThoughtStep Props:**
+- `label: React.ReactNode` (required)
+- `description: React.ReactNode`
+- `status: ChainStepStatus` = 'complete'
+- `icon: React.ReactNode`
+- `duration: string`
+
+**ChainOfThoughtSearchResult Props:**
+- `hue: Hue` = 'sky'
+
+**Data Attributes:** `data-status` (步骤状态（complete | active | pending | error）)
+
+## ToolCall (工具调用追踪器) — `@glaze/tool-call`
+
+展示智能体工具调用全生命周期（参数流式生成、执行中、待审批、成功返回、异常报错），支持展开审查入参与输出。
+- Install: `npx shadcn@latest add @glaze/tool-call`
+- Import: `import { ToolCall, ToolCallHeader, ToolCallContent, ToolCallInput, ToolCallOutput } from '@/components/ui/tool-call'`
+- Registry Deps: @glaze/status-pill, @glaze/style, @glaze/tokens
+
+**ToolCall Props:**
+- `defaultOpen: boolean` = false
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**ToolCallHeader Props:**
+- `name: string` (required) — Tool function name, e.g. `query_metrics`
+- `title: string` — Optional friendly Chinese title
+- `state: ToolCallState` (required)
+- `duration: string`
+- `icon: React.ReactNode`
+- `className: string`
+
+**ToolCallInput Props:**
+- `input: unknown` (required)
+- `label: string` = '调用参数'
+- `className: string`
+
+**ToolCallOutput Props:**
+- `output: unknown`
+- `errorText: string`
+- `label: string` = '返回结果'
+- `className: string`
+
+**Data Attributes:** `data-panel-open` (工具入参/输出详情已展开)
+
+## AiPlan (智能体执行计划) — `@glaze/ai-plan`
+
+可视化展示 Agent 拆解的多阶段任务路线图、完成计数、线性进度条与各步骤执行状态。
+- Install: `npx shadcn@latest add @glaze/ai-plan`
+- Import: `import { AiPlan, AiPlanHeader, AiPlanContent, AiPlanStep, AiPlanFooter } from '@/components/ui/ai-plan'`
+- Registry Deps: @glaze/progress, @glaze/style, @glaze/tokens
+
+**AiPlan Props:**
+- `defaultOpen: boolean` = true
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**AiPlanHeader Props:**
+- `title: React.ReactNode` (required)
+- `description: React.ReactNode`
+- `completed: number`
+- `total: number`
+- `hue: Hue` = 'periwinkle'
+- `streaming: boolean` = false
+- `className: string`
+
+**AiPlanStep Props:**
+- `title: React.ReactNode` (required)
+- `detail: React.ReactNode`
+- `status: AiPlanStepStatus` = 'pending'
+- `duration: string`
+
+**Data Attributes:** `data-status` (计划步骤状态（pending | running | done | skipped | error）)
+
+## AiConfirmation (人工审批确认面板) — `@glaze/ai-confirmation`
+
+Human-in-the-loop 敏感操作审批面板，支持低/中/高风险色板映射、待执行命令预览与批准/拒绝状态流转。
+- Install: `npx shadcn@latest add @glaze/ai-confirmation`
+- Import: `import { AiConfirmation } from '@/components/ui/ai-confirmation'`
+- Registry Deps: @glaze/button, @glaze/status-pill, @glaze/style, @glaze/tokens
+
+**AiConfirmation Props:**
+- `state: AiConfirmationState` = 'requested'
+- `risk: AiConfirmationRisk` = 'medium'
+- `title: React.ReactNode` (required)
+- `description: React.ReactNode`
+- `command: string` — Optional tool name or command preview
+- `approveLabel: string` = '批准执行'
+- `rejectLabel: string` = '拒绝'
+- `onApprove: () => void`
+- `onReject: () => void`
+
+**Data Attributes:** `data-state` (审批状态（requested | approved | rejected）), `data-risk` (操作风险等级（low | medium | high）)
+
+## AiSources (引用来源与行内溯源) — `@glaze/ai-sources`
+
+提供可折叠的 RAG / 联网参考来源列表与基于 Base UI PreviewCard 的悬停行内角标引用 InlineCitation。
+- Install: `npx shadcn@latest add @glaze/ai-sources`
+- Import: `import { AiSources, AiSourcesTrigger, AiSourcesContent, AiSourceItem, InlineCitation } from '@/components/ui/ai-sources'`
+- Registry Deps: @glaze/preview-card, @glaze/style, @glaze/tokens
+
+**AiSources Props:**
+- `defaultOpen: boolean` = false
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**AiSourcesTrigger Props:**
+- `count: number` (required)
+- `label: string`
+- `className: string`
+
+**AiSourceItem Props:**
+- `title: string` (required)
+- `url: string` (required)
+- `domain: string`
+- `snippet: string`
+- `score: number`
+- `hue: Hue` = 'sky'
+- `className: string`
+
+**InlineCitation Props:**
+- `index: number | string` (required) — Citation index or short label, e.g. `1` or `docs`
+- `title: string` (required)
+- `url: string` (required)
+- `domain: string`
+- `snippet: string`
+- `hue: Hue` = 'periwinkle'
+- `className: string`
+
+**Data Attributes:** `data-panel-open` (引用来源列表已展开)
+
+## AiCodeBlock (AI 代码块与实时终端) — `@glaze/ai-code-block`
+
+专为智能体输出设计的代码块（支持亮/暗双面、行号、Diff 增删高亮、自动换行与复制）及深色墨色实时终端 AiTerminal。
+- Install: `npx shadcn@latest add @glaze/ai-code-block`
+- Import: `import { AiCodeBlock, AiTerminal } from '@/components/ui/ai-code-block'`
+- Registry Deps: @glaze/motion, @glaze/status-pill, @glaze/style
+
+**AiCodeBlock Props:**
+- `code: string` (required)
+- `language: string` = 'tsx'
+- `filename: string`
+- `showLineNumbers: boolean` = true
+- `diff: boolean` = false — Highlight +/- unified diff lines
+- `variant: 'light' | 'dark'` = 'light' — Surface variant: light (inside white/pastel card) or dark (ink terminal style)
+- `maxHeight: number` = 360
+
+**AiTerminal Props:**
+- `command: string`
+- `output: string` (required)
+- `status: 'running' | 'success' | 'error'` = 'success'
+- `exitCode: number`
+- `cwd: string` = '~/workspace/glaze-ui'
+- `maxHeight: number` = 260
+
+**Data Attributes:** `data-variant` (代码块表面模式（light | dark）)
+
+## AiSuggestions (快捷提示与任务队列) — `@glaze/ai-suggestions`
+
+包含可换行/横滑的快捷提问建议胶囊 AiSuggestions，以及按待执行与已完成分组的实时 Agent 队列 AiQueue。
+- Install: `npx shadcn@latest add @glaze/ai-suggestions`
+- Import: `import { AiSuggestions, AiSuggestion, AiQueue } from '@/components/ui/ai-suggestions'`
+- Registry Deps: @glaze/motion, @glaze/style, @glaze/tokens
+
+**AiSuggestions Props:**
+- `layout: 'wrap' | 'scroll'` = 'wrap' — Wrap chips across lines or scroll horizontally
+
+**AiSuggestion Props:**
+- `suggestion: string` (required)
+- `onSelect: (suggestion: string) => void`
+- `icon: React.ReactNode`
+- `hue: Hue` = 'periwinkle'
+- `variant: 'neutral' | 'tinted'` = 'neutral' — Soft neutral or tinted pastel chip
+
+**AiQueue Props:**
+- `items: AiQueueTask[]` (required)
+- `title: string` = 'Agent 任务队列'
+- `showCompleted: boolean` = true
+
+## AiContextMeter (上下文用量与模型选择器) — `@glaze/ai-context-meter`
+
+基于 Base UI Popover 的上下文 Token 环形仪表与分段构成面板 AiContextMeter，以及带厂商/能力标签的模型选择器 AiModelSelector。
+- Install: `npx shadcn@latest add @glaze/ai-context-meter`
+- Import: `import { AiContextMeter, AiModelSelector } from '@/components/ui/ai-context-meter'`
+- Registry Deps: @glaze/motion, @glaze/progress, @glaze/style, @glaze/tokens
+
+**AiContextMeter Props:**
+- `usage: AiContextUsage` (required)
+- `surface: 'soft' | 'white'` = 'soft' — Trigger button style
+- `className: string`
+
+**AiModelSelector Props:**
+- `models: AiModelOption[]` (required)
+- `value: string` (required)
+- `onValueChange: (modelId: string) => void` (required)
+- `surface: 'soft' | 'white'` = 'soft'
+- `side: 'top' | 'bottom'` = 'top'
+- `className: string`
+
+**Data Attributes:** `data-popup-open` (用量明细或模型选择浮层处于打开态)
+
+## AiArtifact (产物预览、文件树与检查点) — `@glaze/ai-artifact`
+
+提供预览/源码双态切换的 AI 产物面板 AiArtifact、带 A/M/D 变更标记的目录树 AiFileTree 与对话回溯节点 AiCheckpoint。
+- Install: `npx shadcn@latest add @glaze/ai-artifact`
+- Import: `import { AiArtifact, AiFileTree, AiCheckpoint } from '@/components/ui/ai-artifact'`
+- Registry Deps: @glaze/motion, @glaze/segmented-control, @glaze/style, @glaze/tokens
+
+**AiArtifact Props:**
+- `title: string` (required)
+- `subtitle: string`
+- `badge: string`
+- `hue: Hue` = 'periwinkle'
+- `preview: React.ReactNode` — Dual-mode view: interactive preview and raw source code
+- `code: React.ReactNode`
+- `copyText: string`
+- `defaultView: 'preview' | 'code'` = 'preview'
+- `extraActions: React.ReactNode`
+
+**AiFileTree Props:**
+- `nodes: AiFileTreeNode[]` (required)
+- `selectedPath: string`
+- `onSelectPath: (path: string) => void`
+- `defaultExpanded: string[]` = []
+
+**AiCheckpoint Props:**
+- `label: string` = '检查点已保存'
+- `timestamp: string`
+- `onRestore: () => void`
+- `restoreLabel: string` = '回溯到此节点'

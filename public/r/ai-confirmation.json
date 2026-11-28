@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-confirmation",
+  "type": "registry:ui",
+  "title": "AiConfirmation (人工审批确认面板)",
+  "description": "Human-in-the-loop 敏感操作审批面板，支持低/中/高风险色板映射、待执行命令预览与批准/拒绝状态流转。",
+  "dependencies": [
+    "@phosphor-icons/react",
+    "cn"
+  ],
+  "registryDependencies": [
+    "@glaze/button",
+    "@glaze/status-pill",
+    "@glaze/style",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "ai"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/ui/ai-confirmation.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react'\nimport { Check, ShieldCheck, ShieldWarning, X } from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { Button } from '@/components/ui/button'\nimport { StatusPill } from '@/components/ui/status-pill'\nimport { HUE_PALETTES, type Hue } from '@/lib/tokens'\n\nexport type AiConfirmationState = 'requested' | 'approved' | 'rejected'\nexport type AiConfirmationRisk = 'low' | 'medium' | 'high'\n\nconst RISK_HUE: Record<AiConfirmationRisk, Hue> = {\n  low: 'sky',\n  medium: 'peach',\n  high: 'coral',\n}\n\nconst RISK_LABEL: Record<AiConfirmationRisk, string> = {\n  low: '常规操作',\n  medium: '敏感操作',\n  high: '高风险操作',\n}\n\nexport interface AiConfirmationProps\n  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {\n  state?: AiConfirmationState\n  risk?: AiConfirmationRisk\n  title: React.ReactNode\n  description?: React.ReactNode\n  /** Optional tool name or command preview */\n  command?: string\n  approveLabel?: string\n  rejectLabel?: string\n  onApprove?: () => void\n  onReject?: () => void\n}\n\nexport function AiConfirmation({\n  state = 'requested',\n  risk = 'medium',\n  title,\n  description,\n  command,\n  approveLabel = '批准执行',\n  rejectLabel = '拒绝',\n  onApprove,\n  onReject,\n  className,\n  children,\n  ...props\n}: AiConfirmationProps) {\n  const hue: Hue =\n    state === 'approved' ? 'mint' : state === 'rejected' ? 'rose' : RISK_HUE[risk]\n  const palette = HUE_PALETTES[hue]\n\n  return (\n    <div\n      data-state={state}\n      data-risk={risk}\n      className={cn('flex w-full flex-col gap-3 rounded-inner p-4', className)}\n      style={{ backgroundColor: palette[50], color: palette[900] }}\n      {...props}\n    >\n      <div className=\"flex flex-wrap items-start justify-between gap-2\">\n        <div className=\"flex min-w-0 items-start gap-2.5\">\n          <span\n            className=\"mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px]\"\n            style={{ backgroundColor: palette[100], color: palette[700] }}\n          >\n            {state === 'approved' ? (\n              <ShieldCheck size={17} weight=\"duotone\" />\n            ) : (\n              <ShieldWarning size={17} weight=\"duotone\" />\n            )}\n          </span>\n          <div className=\"min-w-0\">\n            <div className=\"flex flex-wrap items-center gap-2\">\n              <span className=\"font-glaze-display text-[14px] font-extrabold\">{title}</span>\n              <span\n                className=\"rounded-full px-2 py-0.5 text-[10.5px] font-bold\"\n                style={{ backgroundColor: palette[100], color: palette[700] }}\n              >\n                {RISK_LABEL[risk]}\n              </span>\n            </div>\n            {description && (\n              <p className=\"m-0 mt-0.5 text-[12.5px] leading-relaxed\" style={{ color: palette[700] }}>\n                {description}\n              </p>\n            )}\n          </div>\n        </div>\n\n        {state === 'approved' && <StatusPill status=\"normal\" label=\"已批准\" size=\"sm\" />}\n        {state === 'rejected' && <StatusPill status=\"error\" label=\"已拒绝\" size=\"sm\" />}\n        {state === 'requested' && <StatusPill status=\"warning\" label=\"等待确认\" size=\"sm\" />}\n      </div>\n\n      {command && (\n        <pre className=\"m-0 overflow-x-auto rounded-[12px] bg-white/85 px-3 py-2 font-glaze-mono text-[12px] text-[#1B1F27]\">\n          <code>{command}</code>\n        </pre>\n      )}\n\n      {children}\n\n      {state === 'requested' && (onApprove || onReject) && (\n        <div className=\"flex flex-wrap items-center justify-end gap-2\">\n          {onReject && (\n            <Button size=\"sm\" variant=\"secondary\" onClick={onReject}>\n              <X size={13} weight=\"bold\" />\n              <span>{rejectLabel}</span>\n            </Button>\n          )}\n          {onApprove && (\n            <Button\n              size=\"sm\"\n              variant={risk === 'high' ? 'dark-on-coral' : 'primary'}\n              onClick={onApprove}\n            >\n              <Check size={13} weight=\"bold\" />\n              <span>{approveLabel}</span>\n            </Button>\n          )}\n        </div>\n      )}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
 import { CliCommandIsland } from '@/docs/islands/CodeIslands'
 import { HomeBentoIsland } from '@/docs/islands/HomeBentoIsland'
-import { COMPONENT_CATEGORIES, COMPONENTS_LIST, DEMOS_LIST } from '@/docs/data/catalog'
+import { BLOCKS_LIST, COMPONENT_CATEGORIES, COMPONENTS_LIST, DEMOS_LIST } from '@/docs/data/catalog'
 import { TILE_THEMES, type TileTone } from '@/lib/tokens'
 ---
 
@@ -41,7 +41,7 @@ import { TILE_THEMES, type TileTone } from '@/lib/tokens'
             href="/blocks"
             class="inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-[#1B1F27] no-underline transition-colors hover:bg-[#E8EBF0]"
           >
-            <span>卡片 (112)</span>
+            <span>卡片 ({BLOCKS_LIST.length})</span>
           </a>
           <a
             href="/docs/ai-agent"
@@ -63,7 +63,7 @@ import { TILE_THEMES, type TileTone } from '@/lib/tokens'
             卡片预览
           </h2>
           <a href="/blocks" class="inline-flex items-center gap-1 text-[13px] font-semibold text-[#4A4FB8] no-underline hover:underline">
-            <span>全部 112 张 →</span>
+            <span>全部 {BLOCKS_LIST.length} 张 →</span>
           </a>
         </div>
 

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useToast } from '@/components/ui/toast'
 import { AdminShellDemoPage } from '@/registry/glaze/demos/admin-shell-demo'
+import { AiStudioDemoPage } from '@/registry/glaze/demos/ai-studio-demo'
 import { AnalyticsDemoPage } from '@/registry/glaze/demos/analytics-demo'
 import { CloudOpsDemoPage } from '@/registry/glaze/demos/cloud-ops-demo'
 import { HomelabDemoPage } from '@/registry/glaze/demos/homelab-demo'
@@ -18,9 +19,10 @@ const DEMO_COMPONENTS: Record<string, React.ComponentType> = {
   'personal-os': PersonalOsDemoPage,
   'cloud-ops': CloudOpsDemoPage,
   'admin-shell': AdminShellDemoPage,
+  'ai-studio': AiStudioDemoPage,
 }
 
-const FULL_BLEED_DEMOS = new Set(['admin-shell'])
+const FULL_BLEED_DEMOS = new Set(['admin-shell', 'ai-studio'])
 
 /**
  * Pure standalone Demo canvas — completely outside the docs site header/sidebar/frame.

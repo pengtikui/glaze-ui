@@ -1,3 +1,4 @@
+import { AI_DEMOS } from '@/docs/examples/demos/ai'
 import { CHARTS_DEMOS } from '@/docs/examples/demos/charts'
 import { INPUTS_DEMOS } from '@/docs/examples/demos/inputs'
 import { NAVIGATION_DEMOS } from '@/docs/examples/demos/navigation'
@@ -15,4 +16,5 @@ export const COMPONENT_DEMOS: Record<string, ComponentDemoGroup> = {
   ...OVERLAYS_DEMOS,
   ...NAVIGATION_DEMOS,
   ...CHARTS_DEMOS,
+  ...AI_DEMOS,
 }

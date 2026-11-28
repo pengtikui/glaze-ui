@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-plan-queue-card",
+  "type": "registry:block",
+  "title": "T17 Agent 规划与队列竖卡 (AiPlanQueueCard)",
+  "description": "Agent 规划与队列竖卡（T17 · 尺寸 T）— 阶段进度条 · 执行步骤 · 待办队列",
+  "registryDependencies": [
+    "@glaze/ai-plan",
+    "@glaze/ai-suggestions",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "ai",
+    "size-t"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/ai-plan-queue-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/ai-plan-queue-card.tsx",
+      "content": "import { AiPlan, AiPlanContent, AiPlanHeader, AiPlanStep, type AiPlanStepItem } from '@/components/ui/ai-plan'\nimport { AiQueue, type AiQueueTask } from '@/components/ui/ai-suggestions'\nimport { Tile } from '@/components/ui/tile'\nimport type { Hue, TileTone } from '@/lib/tokens'\n\nexport interface AiPlanQueueCardProps {\n  planTitle?: string\n  planDescription?: string\n  steps: AiPlanStepItem[]\n  queueItems?: AiQueueTask[]\n  hue?: Hue\n  tone?: TileTone\n}\n\nexport function AiPlanQueueCard({\n  planTitle = '发布自动化迁移计划',\n  planDescription = 'Agent 自动拆解 · 实时追踪进度',\n  steps,\n  queueItems = [],\n  hue = 'periwinkle',\n  tone = 'white',\n}: AiPlanQueueCardProps) {\n  const completed = steps.filter((s) => s.status === 'done').length\n\n  return (\n    <Tile size=\"t\" tone={tone} className=\"justify-start gap-3\">\n      <AiPlan defaultOpen>\n        <AiPlanHeader\n          title={planTitle}\n          description={planDescription}\n          completed={completed}\n          total={steps.length}\n          hue={hue}\n          streaming={steps.some((s) => s.status === 'running')}\n        />\n        <AiPlanContent>\n          {steps.map((step) => (\n            <AiPlanStep\n              key={step.id}\n              title={step.title}\n              detail={step.detail}\n              status={step.status}\n              duration={step.duration}\n            />\n          ))}\n        </AiPlanContent>\n      </AiPlan>\n\n      {queueItems.length > 0 && <AiQueue items={queueItems} title=\"后续排队任务\" />}\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-prompt-bar-card",
+  "type": "registry:block",
+  "title": "W28 AI 提示词发射宽卡 (AiPromptBarCard)",
+  "description": "AI 提示词发射宽卡（W28 · 尺寸 W）— 模型选择 · 思考联网开关 · 快捷建议",
+  "dependencies": [
+    "@phosphor-icons/react"
+  ],
+  "registryDependencies": [
+    "@glaze/ai-context-meter",
+    "@glaze/ai-suggestions",
+    "@glaze/prompt-input",
+    "@glaze/style",
+    "@glaze/tile",
+    "@glaze/tokens"
+  ],
+  "categories": [
+    "blocks",
+    "ai",
+    "size-w"
+  ],
+  "files": [
+    {
+      "path": "registry/glaze/blocks/ai-prompt-bar-card.tsx",
+      "type": "registry:component",
+      "target": "components/blocks/ai-prompt-bar-card.tsx",
+      "content": "import * as React from 'react'\nimport { Brain, Globe } from '@phosphor-icons/react'\nimport { AiModelSelector, type AiModelOption } from '@/components/ui/ai-context-meter'\nimport { AiSuggestion, AiSuggestions } from '@/components/ui/ai-suggestions'\nimport {\n  PromptInput,\n  PromptInputAction,\n  PromptInputSubmit,\n  PromptInputTextarea,\n  PromptInputToolbar,\n  PromptInputTools,\n} from '@/components/ui/prompt-input'\nimport { Tile } from '@/components/ui/tile'\nimport type { TileTone } from '@/lib/tokens'\n\nconst DEFAULT_MODELS: AiModelOption[] = [\n  { id: 'gemini-3-pro', name: 'Gemini 3 Pro', provider: 'Google', contextWindow: '1M', tag: '推理', hue: 'periwinkle' },\n  { id: 'claude-4-sonnet', name: 'Claude 4 Sonnet', provider: 'Anthropic', contextWindow: '200k', tag: '编程', hue: 'peach' },\n  { id: 'gpt-5-mini', name: 'GPT-5 Mini', provider: 'OpenAI', contextWindow: '128k', tag: '极速', hue: 'mint' },\n]\n\nexport interface AiPromptBarCardProps {\n  title?: string\n  placeholder?: string\n  suggestions?: string[]\n  models?: AiModelOption[]\n  onSubmitPrompt?: (prompt: string, opts: { model: string; deepThink: boolean; webSearch: boolean }) => void\n  tone?: TileTone\n}\n\nexport function AiPromptBarCard({\n  title = '向 Glaze AI 提问',\n  placeholder = '描述需求、分析指标或生成组件代码…',\n  suggestions = ['排查线上延迟毛刺', '生成本周营收摘要', '编写单元测试'],\n  models = DEFAULT_MODELS,\n  onSubmitPrompt,\n  tone = 'white',\n}: AiPromptBarCardProps) {\n  const [value, setValue] = React.useState('')\n  const [model, setModel] = React.useState(models[0]?.id ?? 'gemini-3-pro')\n  const [deepThink, setDeepThink] = React.useState(true)\n  const [webSearch, setWebSearch] = React.useState(false)\n  const [lastSent, setLastSent] = React.useState<string | null>(null)\n\n  const submit = (text: string) => {\n    const trimmed = text.trim()\n    if (!trimmed) return\n    setLastSent(trimmed)\n    setValue('')\n    onSubmitPrompt?.(trimmed, { model, deepThink, webSearch })\n  }\n\n  return (\n    <Tile size=\"w\" tone={tone} className=\"justify-between gap-3\">\n      <div className=\"flex flex-wrap items-center justify-between gap-2\">\n        <span className=\"font-glaze-display text-[17px] font-extrabold\">{title}</span>\n        {lastSent && (\n          <span className=\"max-w-[240px] truncate rounded-full bg-[#E4E6FD] px-2.5 py-0.5 text-[11px] font-semibold text-[#262B7A]\">\n            已发送：{lastSent}\n          </span>\n        )}\n      </div>\n\n      <PromptInput surface={tone === 'white' ? 'soft' : 'white'} onSubmit={() => submit(value)}>\n        <PromptInputTextarea\n          value={value}\n          onChange={(e) => setValue(e.target.value)}\n          placeholder={placeholder}\n          maxRows={3}\n        />\n        <PromptInputToolbar>\n          <PromptInputTools>\n            <AiModelSelector\n              models={models}\n              value={model}\n              onValueChange={setModel}\n              surface={tone === 'white' ? 'white' : 'soft'}\n            />\n            <PromptInputAction\n              active={deepThink}\n              hue=\"lilac\"\n              icon={<Brain size={13} weight=\"duotone\" />}\n              onClick={() => setDeepThink((v) => !v)}\n            >\n              思考\n            </PromptInputAction>\n            <PromptInputAction\n              active={webSearch}\n              hue=\"sky\"\n              icon={<Globe size={13} weight=\"bold\" />}\n              onClick={() => setWebSearch((v) => !v)}\n            >\n              联网\n            </PromptInputAction>\n          </PromptInputTools>\n          <PromptInputSubmit disabled={!value.trim()} />\n        </PromptInputToolbar>\n      </PromptInput>\n\n      <AiSuggestions layout=\"scroll\">\n        {suggestions.map((s) => (\n          <AiSuggestion key={s} suggestion={s} onSelect={(text) => submit(text)} />\n        ))}\n      </AiSuggestions>\n    </Tile>\n  )\n}\n"
+    }
+  ]
+}

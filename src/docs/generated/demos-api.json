@@ -317,5 +317,58 @@
       "@glaze/tokens",
       "@glaze/tooltip"
     ]
+  },
+  {
+    "slug": "ai-studio",
+    "registryName": "demo-ai-studio",
+    "file": "ai-studio-demo.tsx",
+    "exportName": "AiStudioDemoPage",
+    "index": "08",
+    "title": "AI 智能体工作台",
+    "enTitle": "AI Agent Studio",
+    "badge": "AI.STUDIO",
+    "tone": "periwinkle",
+    "description": "集成 12 个 Glaze AI Elements 与 10 张 AI Bento 业务卡片的全景工作台，支持「智能体分栏对话与产物审查」与「AI Ops 四列看板」双模式无缝切换。",
+    "highlights": [
+      "流式推理 + 思维链 + 工具调用 + 人工审批闭环",
+      "右侧产物预览 / 实时终端 / 变更文件树三合一审查器",
+      "一键切换至 4 列 AI Ops 智能体运营看板"
+    ],
+    "dependencies": [
+      "@phosphor-icons/react"
+    ],
+    "registryDependencies": [
+      "@glaze/ai-agent-status-card",
+      "@glaze/ai-approval-card",
+      "@glaze/ai-artifact",
+      "@glaze/ai-assistant-card",
+      "@glaze/ai-code-block",
+      "@glaze/ai-confirmation",
+      "@glaze/ai-context-meter",
+      "@glaze/ai-model-eval-card",
+      "@glaze/ai-plan",
+      "@glaze/ai-plan-queue-card",
+      "@glaze/ai-prompt-bar-card",
+      "@glaze/ai-sources",
+      "@glaze/ai-sources-card",
+      "@glaze/ai-suggestions",
+      "@glaze/ai-token-budget-card",
+      "@glaze/ai-trace-inspector-card",
+      "@glaze/ai-workspace-console-card",
+      "@glaze/button",
+      "@glaze/chain-of-thought",
+      "@glaze/conversation",
+      "@glaze/grid",
+      "@glaze/hue-tag",
+      "@glaze/prompt-input",
+      "@glaze/reasoning",
+      "@glaze/segmented-control",
+      "@glaze/status-dot",
+      "@glaze/status-pill",
+      "@glaze/style",
+      "@glaze/tile",
+      "@glaze/toast",
+      "@glaze/tool-call"
+    ]
   }
 ]

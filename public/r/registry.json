@@ -1472,6 +1472,301 @@
       ]
     },
     {
+      "name": "conversation",
+      "type": "registry:ui",
+      "title": "Conversation (AI 对话流与消息)",
+      "description": "支持自动贴底滚动、回到底部悬浮胶囊、角色消息气泡、多版本分支切换与一键复制/点赞操作栏的 AI 对话原语。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/conversation.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "prompt-input",
+      "type": "registry:ui",
+      "title": "PromptInput (智能体提示词输入)",
+      "description": "支持多行自适应增高、附件胶囊、深度思考/联网开关、Enter 发送与流式停止按钮的 AI 提示词编排器。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/prompt-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "reasoning",
+      "type": "registry:ui",
+      "title": "Reasoning (深度推理折叠块)",
+      "description": "基于 Base UI Collapsible 的流式思维过程组件，支持流式扫光标题、耗时统计、流式自动展开与完成后平滑折叠。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/reasoning.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chain-of-thought",
+      "type": "registry:ui",
+      "title": "ChainOfThought (思维链执行轨迹)",
+      "description": "参考 shadcn Trace / Chain of Thought 模式，将多步智能体检索、分析与工具步骤折叠为摘要行并展开为时间线。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/chain-of-thought.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tool-call",
+      "type": "registry:ui",
+      "title": "ToolCall (工具调用追踪器)",
+      "description": "展示智能体工具调用全生命周期（参数流式生成、执行中、待审批、成功返回、异常报错），支持展开审查入参与输出。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/tool-call.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ai-plan",
+      "type": "registry:ui",
+      "title": "AiPlan (智能体执行计划)",
+      "description": "可视化展示 Agent 拆解的多阶段任务路线图、完成计数、线性进度条与各步骤执行状态。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/progress",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/ai-plan.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ai-confirmation",
+      "type": "registry:ui",
+      "title": "AiConfirmation (人工审批确认面板)",
+      "description": "Human-in-the-loop 敏感操作审批面板，支持低/中/高风险色板映射、待执行命令预览与批准/拒绝状态流转。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/button",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/ai-confirmation.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ai-sources",
+      "type": "registry:ui",
+      "title": "AiSources (引用来源与行内溯源)",
+      "description": "提供可折叠的 RAG / 联网参考来源列表与基于 Base UI PreviewCard 的悬停行内角标引用 InlineCitation。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/preview-card",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/ai-sources.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ai-code-block",
+      "type": "registry:ui",
+      "title": "AiCodeBlock (AI 代码块与实时终端)",
+      "description": "专为智能体输出设计的代码块（支持亮/暗双面、行号、Diff 增删高亮、自动换行与复制）及深色墨色实时终端 AiTerminal。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/status-pill",
+        "@glaze/style"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/ai-code-block.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ai-suggestions",
+      "type": "registry:ui",
+      "title": "AiSuggestions (快捷提示与任务队列)",
+      "description": "包含可换行/横滑的快捷提问建议胶囊 AiSuggestions，以及按待执行与已完成分组的实时 Agent 队列 AiQueue。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/ai-suggestions.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ai-context-meter",
+      "type": "registry:ui",
+      "title": "AiContextMeter (上下文用量与模型选择器)",
+      "description": "基于 Base UI Popover 的上下文 Token 环形仪表与分段构成面板 AiContextMeter，以及带厂商/能力标签的模型选择器 AiModelSelector。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/progress",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/ai-context-meter.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ai-artifact",
+      "type": "registry:ui",
+      "title": "AiArtifact (产物预览、文件树与检查点)",
+      "description": "提供预览/源码双态切换的 AI 产物面板 AiArtifact、带 A/M/D 变更标记的目录树 AiFileTree 与对话回溯节点 AiCheckpoint。",
+      "dependencies": [
+        "@phosphor-icons/react",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/segmented-control",
+        "@glaze/style",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "ai"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/ai-artifact.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "status-card",
       "type": "registry:block",
       "title": "S1 状态卡 (StatusCard)",
@@ -2407,6 +2702,62 @@
       ]
     },
     {
+      "name": "ai-token-budget-card",
+      "type": "registry:block",
+      "title": "S39 AI 上下文预算小卡 (AiTokenBudgetCard)",
+      "description": "AI 上下文预算小卡（S39 · 尺寸 S）— Token 环形用量 · 缓存命中 · 费用",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/ai-context-meter",
+        "@glaze/progress",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-s"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-token-budget-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-token-budget-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ai-agent-status-card",
+      "type": "registry:block",
+      "title": "S40 智能体运行状态小卡 (AiAgentStatusCard)",
+      "description": "智能体运行状态小卡（S40 · 尺寸 S）— 模型标识 · 呼吸状态点 · 子智能体数",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/hue-tag",
+        "@glaze/status-dot",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-s"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-agent-status-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-agent-status-card.tsx"
+        }
+      ]
+    },
+    {
       "name": "area-trend-card",
       "type": "registry:block",
       "title": "W1 面积趋势卡 (AreaTrendCard)",
@@ -3083,6 +3434,58 @@
       ]
     },
     {
+      "name": "ai-prompt-bar-card",
+      "type": "registry:block",
+      "title": "W28 AI 提示词发射宽卡 (AiPromptBarCard)",
+      "description": "AI 提示词发射宽卡（W28 · 尺寸 W）— 模型选择 · 思考联网开关 · 快捷建议",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/ai-context-meter",
+        "@glaze/ai-suggestions",
+        "@glaze/prompt-input",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-w"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-prompt-bar-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-prompt-bar-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ai-approval-card",
+      "type": "registry:block",
+      "title": "W29 智能体人工审批宽卡 (AiApprovalCard)",
+      "description": "智能体人工审批宽卡（W29 · 尺寸 W）— 风险等级 · 命令预览 · 批准/拒绝",
+      "registryDependencies": [
+        "@glaze/ai-confirmation",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-w"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-approval-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-approval-card.tsx"
+        }
+      ]
+    },
+    {
       "name": "bar-list-card",
       "type": "registry:block",
       "title": "T1 条形排行卡 (BarListCard)",
@@ -3469,6 +3872,58 @@
           "path": "registry/glaze/blocks/stacked-column-card.tsx",
           "type": "registry:component",
           "target": "components/blocks/stacked-column-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ai-plan-queue-card",
+      "type": "registry:block",
+      "title": "T17 Agent 规划与队列竖卡 (AiPlanQueueCard)",
+      "description": "Agent 规划与队列竖卡（T17 · 尺寸 T）— 阶段进度条 · 执行步骤 · 待办队列",
+      "registryDependencies": [
+        "@glaze/ai-plan",
+        "@glaze/ai-suggestions",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-t"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-plan-queue-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-plan-queue-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ai-sources-card",
+      "type": "registry:block",
+      "title": "T18 RAG 溯源参考竖卡 (AiSourcesCard)",
+      "description": "RAG 溯源参考竖卡（T18 · 尺寸 T）— 语义命中文档 · 相关度 · 摘要跳转",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/ai-sources",
+        "@glaze/hue-tag",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-t"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-sources-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-sources-card.tsx"
         }
       ]
     },
@@ -3897,6 +4352,62 @@
       ]
     },
     {
+      "name": "ai-assistant-card",
+      "type": "registry:block",
+      "title": "L18 AI 交互对话大卡 (AiAssistantCard)",
+      "description": "AI 交互对话大卡（L18 · 尺寸 L）— 流式推理折叠 · 对话流 · 实时发送",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/conversation",
+        "@glaze/prompt-input",
+        "@glaze/reasoning",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-l"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-assistant-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-assistant-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ai-trace-inspector-card",
+      "type": "registry:block",
+      "title": "L19 智能体执行链路大卡 (AiTraceInspectorCard)",
+      "description": "智能体执行链路大卡（L19 · 尺寸 L）— 思维链步骤 · 检索胶囊 · 工具入参输出",
+      "registryDependencies": [
+        "@glaze/chain-of-thought",
+        "@glaze/hue-tag",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens",
+        "@glaze/tool-call"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-l"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-trace-inspector-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-trace-inspector-card.tsx"
+        }
+      ]
+    },
+    {
       "name": "data-table-card",
       "type": "registry:block",
       "title": "F1 数据表格通栏卡 (DataTableCard)",
@@ -4251,6 +4762,63 @@
       ]
     },
     {
+      "name": "ai-workspace-console-card",
+      "type": "registry:block",
+      "title": "F15 AI 代码产物工作区通栏卡 (AiWorkspaceConsoleCard)",
+      "description": "AI 代码产物工作区通栏卡（F15 · 尺寸 F）— 变更文件树 · 代码/Diff 审查 · 终端输出",
+      "registryDependencies": [
+        "@glaze/ai-artifact",
+        "@glaze/ai-code-block",
+        "@glaze/hue-tag",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-f"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-workspace-console-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-workspace-console-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ai-model-eval-card",
+      "type": "registry:block",
+      "title": "F16 多模型评测路由矩阵通栏卡 (AiModelEvalCard)",
+      "description": "多模型评测路由矩阵通栏卡（F16 · 尺寸 F）— 延迟/吞吐/推理得分对比 · 一键切换主路由",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/ai-context-meter",
+        "@glaze/hue-tag",
+        "@glaze/progress",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/tokens"
+      ],
+      "categories": [
+        "blocks",
+        "ai",
+        "size-f"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/blocks/ai-model-eval-card.tsx",
+          "type": "registry:component",
+          "target": "components/blocks/ai-model-eval-card.tsx"
+        }
+      ]
+    },
+    {
       "name": "demo-homelab",
       "type": "registry:block",
       "title": "Demo 01 · 家庭内网总控中心",
@@ -4556,6 +5124,58 @@
           "path": "registry/glaze/demos/admin-shell-demo.tsx",
           "type": "registry:page",
           "target": "components/demos/admin-shell-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "demo-ai-studio",
+      "type": "registry:block",
+      "title": "Demo 08 · AI 智能体工作台",
+      "description": "集成 12 个 Glaze AI Elements 与 10 张 AI Bento 业务卡片的全景工作台，支持「智能体分栏对话与产物审查」与「AI Ops 四列看板」双模式无缝切换。",
+      "dependencies": [
+        "@phosphor-icons/react"
+      ],
+      "registryDependencies": [
+        "@glaze/ai-agent-status-card",
+        "@glaze/ai-approval-card",
+        "@glaze/ai-artifact",
+        "@glaze/ai-assistant-card",
+        "@glaze/ai-code-block",
+        "@glaze/ai-confirmation",
+        "@glaze/ai-context-meter",
+        "@glaze/ai-model-eval-card",
+        "@glaze/ai-plan",
+        "@glaze/ai-plan-queue-card",
+        "@glaze/ai-prompt-bar-card",
+        "@glaze/ai-sources",
+        "@glaze/ai-sources-card",
+        "@glaze/ai-suggestions",
+        "@glaze/ai-token-budget-card",
+        "@glaze/ai-trace-inspector-card",
+        "@glaze/ai-workspace-console-card",
+        "@glaze/button",
+        "@glaze/chain-of-thought",
+        "@glaze/conversation",
+        "@glaze/grid",
+        "@glaze/hue-tag",
+        "@glaze/prompt-input",
+        "@glaze/reasoning",
+        "@glaze/segmented-control",
+        "@glaze/status-dot",
+        "@glaze/status-pill",
+        "@glaze/style",
+        "@glaze/tile",
+        "@glaze/toast",
+        "@glaze/tool-call"
+      ],
+      "categories": [
+        "demos"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/demos/ai-studio-demo.tsx",
+          "type": "registry:page",
+          "target": "components/demos/ai-studio-demo.tsx"
         }
       ]
     }

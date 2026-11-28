@@ -42,6 +42,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | S36 | `QuickActionGridCard` | `@glaze/quick-action-grid-card` | S | controls | 2×2 快捷网格卡 — 4 个高密度快捷按钮 |
 | S37 | `SparkAreaCard` | `@glaze/spark-area-card` | S | charts | 面积微趋势小卡 — KPI · 环比胶囊 · 渐变面积微图 |
 | S38 | `RadialScoreCard` | `@glaze/radial-score-card` | S | charts | 径向评分小卡 — 多环径向进度 · 中心得分 |
+| S39 | `AiTokenBudgetCard` | `@glaze/ai-token-budget-card` | S | ai | AI 上下文预算小卡 — Token 环形用量 · 缓存命中 · 费用 |
+| S40 | `AiAgentStatusCard` | `@glaze/ai-agent-status-card` | S | ai | 智能体运行状态小卡 — 模型标识 · 呼吸状态点 · 子智能体数 |
 | W1 | `AreaTrendCard` | `@glaze/area-trend-card` | W | charts | 面积趋势卡 — 标题 · 现值 · 面积折线 |
 | W2 | `AppLauncherCard` | `@glaze/app-launcher-card` | W | controls | 应用发射台卡 — 8 宫格彩色应用入口 |
 | W3 | `StepsCard` | `@glaze/steps-card` | W | productivity | 步骤流程横卡 — 编号进度 · 当前激活步骤 |
@@ -69,6 +71,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | W25 | `StackedAreaTrendCard` | `@glaze/stacked-area-trend-card` | W | charts | 堆叠面积趋势宽卡 — 多端流量堆叠面积 · 可点击图例 |
 | W26 | `HorizontalBarRankCard` | `@glaze/horizontal-bar-rank-card` | W | charts | 横向条形排行宽卡 — 横向圆角条形图 · 悬停提示 |
 | W27 | `TargetLineCard` | `@glaze/target-line-card` | W | charts | 目标基线折线宽卡 — 带参考红线折线 · 状态徽章 |
+| W28 | `AiPromptBarCard` | `@glaze/ai-prompt-bar-card` | W | ai | AI 提示词发射宽卡 — 模型选择 · 思考联网开关 · 快捷建议 |
+| W29 | `AiApprovalCard` | `@glaze/ai-approval-card` | W | ai | 智能体人工审批宽卡 — 风险等级 · 命令预览 · 批准/拒绝 |
 | T1 | `BarListCard` | `@glaze/bar-list-card` | T | lists | 条形排行卡 — 总指标 · 进度条排行列表 |
 | T2 | `EventTimelineCard` | `@glaze/event-timeline-card` | T | lists | 事件时间线卡 — 时间戳 · 状态点 · 事件描述 |
 | T3 | `VerticalBarsCard` | `@glaze/vertical-bars-card` | T | charts | 竖柱趋势竖卡 — 大数字 · 多月竖柱 |
@@ -85,6 +89,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | T14 | `FunnelCard` | `@glaze/funnel-card` | T | charts | 转化漏斗竖卡 — 4 阶段递减宽条 · 转化率 |
 | T15 | `RadialGoalsCard` | `@glaze/radial-goals-card` | T | charts | 多环目标达成竖卡 — 3 环径向进度 · 目标明细行 |
 | T16 | `StackedColumnCard` | `@glaze/stacked-column-card` | T | charts | 堆叠柱状分布竖卡 — 总指标 · 多状态堆叠竖柱 |
+| T17 | `AiPlanQueueCard` | `@glaze/ai-plan-queue-card` | T | ai | Agent 规划与队列竖卡 — 阶段进度条 · 执行步骤 · 待办队列 |
+| T18 | `AiSourcesCard` | `@glaze/ai-sources-card` | T | ai | RAG 溯源参考竖卡 — 语义命中文档 · 相关度 · 摘要跳转 |
 | L1 | `HeroMetricCard` | `@glaze/hero-metric-card` | L | metrics | 主指标英雄大卡 — 深色聚焦 · 趋势线 · 3 副指标 |
 | L2 | `DonutChartCard` | `@glaze/donut-chart-card` | L | charts | 环形占比图 — 多段圆环 · 中心汇总 · 图例 |
 | L3 | `ItemListCard` | `@glaze/item-list-card` | L | lists | 明细列表大卡 — 图标 · 标题 · 状态胶囊列表 |
@@ -102,6 +108,8 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | L15 | `ComposedRevenueCard` | `@glaze/composed-revenue-card` | L | charts | 双轴组合分析大卡 — 堆叠柱状 + 折线双 Y 轴 |
 | L16 | `ScatterBubbleCard` | `@glaze/scatter-bubble-card` | L | charts | 散点气泡分布大卡 — 多组 X/Y 散点 · Z 轴气泡映射 |
 | L17 | `MultiRadarCompareCard` | `@glaze/multi-radar-compare-card` | L | charts | 双方案雷达对比大卡 — 双序列对比 · 多边形/同心圆切换 |
+| L18 | `AiAssistantCard` | `@glaze/ai-assistant-card` | L | ai | AI 交互对话大卡 — 流式推理折叠 · 对话流 · 实时发送 |
+| L19 | `AiTraceInspectorCard` | `@glaze/ai-trace-inspector-card` | L | ai | 智能体执行链路大卡 — 思维链步骤 · 检索胶囊 · 工具入参输出 |
 | F1 | `DataTableCard` | `@glaze/data-table-card` | F | layout | 数据表格通栏卡 — 分组标签 · 头像 · 进度条 · 状态 |
 | F2 | `HierarchyCard` | `@glaze/hierarchy-card` | F | layout | 层级架构通栏卡 — 根节点 · 多分支节点树 |
 | F3 | `PhaseTimelineCard` | `@glaze/phase-timeline-card` | F | layout | 阶段时间轴通栏卡 — 横向里程碑节点连线 |
@@ -116,3 +124,5 @@ Every block is independently installable via `npx shadcn@latest add @glaze/<slug
 | F12 | `MetricComparisonTableCard` | `@glaze/metric-comparison-table-card` | F | layout | 多维指标对比表 — 横向指标矩阵 · 最优值高亮 |
 | F13 | `InteractiveAnalyticsCard` | `@glaze/interactive-analytics-card` | F | charts | 交互式多视图趋势通栏卡 — 面积/折线/柱状即时切换 · 3 KPI 摘要带 |
 | F14 | `ComposedOverviewCard` | `@glaze/composed-overview-card` | F | charts | 全年经营组合双轴通栏卡 — 12 月柱状 + 面积 + 折线双轴全景 |
+| F15 | `AiWorkspaceConsoleCard` | `@glaze/ai-workspace-console-card` | F | ai | AI 代码产物工作区通栏卡 — 变更文件树 · 代码/Diff 审查 · 终端输出 |
+| F16 | `AiModelEvalCard` | `@glaze/ai-model-eval-card` | F | ai | 多模型评测路由矩阵通栏卡 — 延迟/吞吐/推理得分对比 · 一键切换主路由 |

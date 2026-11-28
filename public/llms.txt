@@ -95,3 +95,18 @@
 - [ScatterChart (散点与气泡图)](/llms/components/scatter-chart.md): 支持多分组 X/Y 坐标分布与 Z 轴气泡半径映射的散点图表。
 - [ComposedChart (双轴组合图表)](/llms/components/composed-chart.md): 在同一画布融合柱状、面积与折线并支持左右双 Y 轴的综合分析图表。
 - [SparkChart (嵌入式微图表)](/llms/components/spark-chart.md): 专为小格卡片设计的零轴线超轻微趋势图，支持 area / line / bar 三种形态。
+
+## Components — AI Elements (AI 智能体元素)
+
+- [Conversation (AI 对话流与消息)](/llms/components/conversation.md): 支持自动贴底滚动、回到底部悬浮胶囊、角色消息气泡、多版本分支切换与一键复制/点赞操作栏的 AI 对话原语。
+- [PromptInput (智能体提示词输入)](/llms/components/prompt-input.md): 支持多行自适应增高、附件胶囊、深度思考/联网开关、Enter 发送与流式停止按钮的 AI 提示词编排器。
+- [Reasoning (深度推理折叠块)](/llms/components/reasoning.md): 基于 Base UI Collapsible 的流式思维过程组件，支持流式扫光标题、耗时统计、流式自动展开与完成后平滑折叠。
+- [ChainOfThought (思维链执行轨迹)](/llms/components/chain-of-thought.md): 参考 shadcn Trace / Chain of Thought 模式，将多步智能体检索、分析与工具步骤折叠为摘要行并展开为时间线。
+- [ToolCall (工具调用追踪器)](/llms/components/tool-call.md): 展示智能体工具调用全生命周期（参数流式生成、执行中、待审批、成功返回、异常报错），支持展开审查入参与输出。
+- [AiPlan (智能体执行计划)](/llms/components/ai-plan.md): 可视化展示 Agent 拆解的多阶段任务路线图、完成计数、线性进度条与各步骤执行状态。
+- [AiConfirmation (人工审批确认面板)](/llms/components/ai-confirmation.md): Human-in-the-loop 敏感操作审批面板，支持低/中/高风险色板映射、待执行命令预览与批准/拒绝状态流转。
+- [AiSources (引用来源与行内溯源)](/llms/components/ai-sources.md): 提供可折叠的 RAG / 联网参考来源列表与基于 Base UI PreviewCard 的悬停行内角标引用 InlineCitation。
+- [AiCodeBlock (AI 代码块与实时终端)](/llms/components/ai-code-block.md): 专为智能体输出设计的代码块（支持亮/暗双面、行号、Diff 增删高亮、自动换行与复制）及深色墨色实时终端 AiTerminal。
+- [AiSuggestions (快捷提示与任务队列)](/llms/components/ai-suggestions.md): 包含可换行/横滑的快捷提问建议胶囊 AiSuggestions，以及按待执行与已完成分组的实时 Agent 队列 AiQueue。
+- [AiContextMeter (上下文用量与模型选择器)](/llms/components/ai-context-meter.md): 基于 Base UI Popover 的上下文 Token 环形仪表与分段构成面板 AiContextMeter，以及带厂商/能力标签的模型选择器 AiModelSelector。
+- [AiArtifact (产物预览、文件树与检查点)](/llms/components/ai-artifact.md): 提供预览/源码双态切换的 AI 产物面板 AiArtifact、带 A/M/D 变更标记的目录树 AiFileTree 与对话回溯节点 AiCheckpoint。
