@@ -128,6 +128,7 @@ Each demo can be viewed standalone at `/view/demos/<slug>` (outside the docs fra
 | 04 | SaaS 营收与财务驾驶舱 (`AnalyticsDemoPage`) | `/view/demos/analytics` | `npx shadcn@latest add @glaze/demo-analytics` | 融合 Recharts v3 交互式多视图趋势、全年双轴组合分析、转化漏斗、收入构成与多维指标对比的经营分析大屏。 |
 | 05 | 个人效率与数字生活 OS (`PersonalOsDemoPage`) | `/view/demos/personal-os` | `npx shadcn@latest add @glaze/demo-personal-os` | 整合番茄钟、交互待办清单、习惯打卡矩阵、日历议程、心率饮水与灵感速记的个人数字生活仪表盘。 |
 | 06 | 云原生运维与可观测性中心 (`CloudOpsDemoPage`) | `/view/demos/cloud-ops` | `npx shadcn@latest add @glaze/demo-cloud-ops` | 展示全站 30 日 SLA 状态、集群资源三环监控、告警事件日志、散点延迟分布与全局命令栏的 SRE 运维中心。 |
+| 07 | 企业级控制台壳层 (`AdminShellDemoPage`) | `/view/demos/admin-shell` | `npx shadcn@latest add @glaze/demo-admin-shell` | 带完整侧边栏与顶部栏的 App Shell 仪表盘示例，侧边栏涵盖 15 种常见菜单类型（工作区切换、搜索过滤、2/3 级树形折叠、状态点、动态计数、右键/悬停菜单、内嵌开关、锁定态与迷你图标栏）。 |
 
 ---
 
@@ -988,6 +989,70 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 - Install: `npx shadcn@latest add @glaze/direction-provider`
 - Import: `import { DirectionProvider } from '@/components/ui/direction-provider'`
 - Base UI: `@base-ui/react/direction-provider` (https://base-ui.com/react/components/direction-provider)
+
+## Table (数据表格) — `@glaze/table`
+
+基于 TanStack Table v9 封装的完备数据表格组件，提供语义化表格原语与开箱即用的 DataTable（排序、搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页）。
+- Install: `npx shadcn@latest add @glaze/table`
+- Import: `import { createGlazeColumnHelper, Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption, DataTable } from '@/components/ui/table'`
+- Registry Deps: @glaze/button, @glaze/checkbox, @glaze/input, @glaze/motion, @glaze/popover, @glaze/segmented-control, @glaze/select, @glaze/style, @glaze/tile, @glaze/tokens
+
+**Table Props:**
+- `density: TableDensity` = 'comfortable' — Row vertical padding density
+- `stickyHeader: boolean` = false — Sticky table header when scrolled vertically
+- `containerClassName: string` — Extra classes on the scrollable container
+
+**TableRow Props:**
+- `selected: boolean` = false
+- `interactive: boolean` = false
+
+**TableHead Props:**
+- `align: 'left' | 'center' | 'right'` = 'left'
+- `sticky: boolean` = false
+
+**TableCell Props:**
+- `align: 'left' | 'center' | 'right'` = 'left'
+
+**DataTable Props:**
+- `data: TData[]` (required) — Data array (keep memoized or state-backed for stable row models)
+- `columns: DataTableColumnDef<TData, any>[]` (required) — TanStack Table v9 column definitions
+- `getRowId: (originalRow: TData, index: number) => string` — Optional stable row ID extractor
+- `title: React.ReactNode` — Optional card title
+- `description: React.ReactNode` — Optional card subtitle / description
+- `tone: TileTone` = 'white' — Card tone when wrapped in Tile (defaults to 'white')
+- `embedded: boolean` = false — Render bare without the outer Glaze Tile wrapper
+- `density: TableDensity` — Controlled row density
+- `defaultDensity: TableDensity` = 'comfortable' — Default row density when uncontrolled
+- `onDensityChange: (density: TableDensity) => void` — Callback when density is changed via the toolbar button
+- `enableDensityToggle: boolean` = false — Show interactive density toggle button in toolbar
+- `searchable: boolean` = true — Enable global keyword search input
+- `searchPlaceholder: string` = '搜索关键字…' — Placeholder text for global search input
+- `facetFilter: DataTableFacetFilter` — Quick segmented filter bound to a specific column
+- `enableSorting: boolean` = true — Enable sorting on sortable columns (default: true)
+- `initialSorting: SortingState` = [] — Initial sorting state
+- `enableRowSelection: boolean` = false — Enable multi-row selection with Glaze checkboxes
+- `rowSelection: RowSelectionState` — Controlled row selection state
+- `onRowSelectionChange: React.Dispatch<React.SetStateAction<RowSelectionState>>` — Controlled row selection updater
+- `bulkActions: (selectedRows: TData[], clearSelection: () => void) => React.ReactNode` — Custom bulk action controls shown when 1+ rows are selected
+- `renderSubComponent: (row: DataTableRow<TData>) => React.ReactNode` — Render an expandable detail panel below each row
+- `getRowCanExpand: (row: DataTableRow<TData>) => boolean` — Optional predicate controlling whether a specific row can expand
+- `enableColumnVisibility: boolean` = false — Enable column visibility selector popover
+- `initialColumnVisibility: Record<string, boolean>` = {} — Initial column visibility map
+- `enablePagination: boolean` = true — Enable client-side pagination footer (default: true)
+- `defaultPageSize: number` = 5 — Initial page size (default: 5)
+- `pageSizeOptions: number[]` = [5, 10, 20, 50] — Page size choices in footer select
+- `stickyHeader: boolean` = false — Sticky header inside a vertically scrollable viewport
+- `striped: boolean` = false — Show subtle alternating stripe background
+- `loading: boolean` = false — Loading skeleton state
+- `onRowClick: (row: TData) => void` — Row click handler (ignored when clicking interactive controls inside a row)
+- `toolbarActions: React.ReactNode` — Extra action buttons placed on the right side of the toolbar
+- `emptyTitle: string` = '暂无匹配数据' — Empty state heading
+- `emptyDescription: string` = '尝试调整搜索关键字或筛选条件后再查看。' — Empty state description
+- `emptyAction: React.ReactNode` — Custom empty state action
+- `minTableWidth: number | string` = 680 — Minimum table width before horizontal scroll activates
+- `className: string` — Extra container classes
+
+**Data Attributes:** `data-density` (表格密度（compact | comfortable | spacious）), `data-selected` (当前行处于勾选选中态)
 
 ## Chart (图表主题与容器) — `@glaze/chart`
 

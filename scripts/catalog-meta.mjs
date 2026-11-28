@@ -760,6 +760,32 @@ export const COMPONENTS_CATALOG = [
     dataAttributes: [],
     cssVars: [],
   },
+  {
+    slug: 'table',
+    title: 'Table',
+    cnTitle: '数据表格',
+    category: 'navigation',
+    kind: 'primitive',
+    description: '基于 TanStack Table v9 封装的完备数据表格组件，提供语义化表格原语与开箱即用的 DataTable（排序、搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页）。',
+    parts: [
+      'DataTable',
+      'Table',
+      'TableHeader',
+      'TableBody',
+      'TableFooter',
+      'TableRow',
+      'TableHead',
+      'TableCell',
+      'TableCaption',
+      'createGlazeColumnHelper',
+      'glazeTableFeatures',
+    ],
+    dataAttributes: [
+      { attr: 'data-density', desc: '表格密度（compact | comfortable | spacious）' },
+      { attr: 'data-selected', desc: '当前行处于勾选选中态' },
+    ],
+    cssVars: ['--radius-tile', '--radius-inner'],
+  },
 
   // 6. Data Visualization & Charts (10)
   {
@@ -1083,5 +1109,18 @@ export const DEMOS_CATALOG = [
     tone: 'aqua',
     description: '展示全站 30 日 SLA 状态、集群资源三环监控、告警事件日志、散点延迟分布与全局命令栏的 SRE 运维中心。',
     highlights: ['全站服务可用性矩阵', '告警事件日志与命令行', '集群资源三环与延迟分布'],
+  },
+  {
+    slug: 'admin-shell',
+    registryName: 'demo-admin-shell',
+    file: 'admin-shell-demo.tsx',
+    exportName: 'AdminShellDemoPage',
+    index: '07',
+    title: '企业级控制台壳层',
+    enTitle: 'Enterprise Admin Shell',
+    badge: 'CONSOLE.OS',
+    tone: 'rose',
+    description: '带完整侧边栏与顶部栏的 App Shell 仪表盘示例，侧边栏涵盖 15 种常见菜单类型（工作区切换、搜索过滤、2/3 级树形折叠、状态点、动态计数、右键/悬停菜单、内嵌开关、锁定态与迷你图标栏）。',
+    highlights: ['15 种侧边栏菜单类型全覆盖', '展开 / 迷你图标栏 + 移动端抽屉', '顶部栏面包屑、⌘K 命令面板与通知中心'],
   },
 ]

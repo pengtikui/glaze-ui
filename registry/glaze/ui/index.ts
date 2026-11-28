@@ -8,6 +8,7 @@ export * from './count-badge'
 export * from './icon-tile'
 export * from './textarea'
 export * from './segmented-control'
+export * from './table'
 
 // Data Visualization & Chart Components (powered by Recharts)
 export * from './chart'

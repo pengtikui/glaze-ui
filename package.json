@@ -19,6 +19,7 @@
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@phosphor-icons/react": "^2.1.10",
+    "@tanstack/react-table": "^9.3.1",
     "cn": "^0.5.2",
     "motion": "^14.14.0",
     "react": "^19.1.0",

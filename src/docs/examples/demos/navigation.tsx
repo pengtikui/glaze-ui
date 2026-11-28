@@ -26,12 +26,107 @@ import { Separator } from '@/components/ui/separator'
 import { Slider } from '@/components/ui/slider'
 import { StatusPill } from '@/components/ui/status-pill'
 import { Switch } from '@/components/ui/switch'
+import {
+  createGlazeColumnHelper,
+  DataTable,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tile } from '@/components/ui/tile'
 import { Toggle } from '@/components/ui/toggle'
 import { ToggleGroup } from '@/components/ui/toggle-group'
 import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarLink, ToolbarSeparator } from '@/components/ui/toolbar'
 import type { ComponentDemoGroup } from '@/docs/examples/types'
+
+const TABLE_DEMO_HELPER = createGlazeColumnHelper<{
+  id: string
+  service: string
+  region: string
+  latency: number
+  status: 'normal' | 'warning' | 'info'
+  statusLabel: string
+  uptime: string
+  notes: string
+}>()
+
+const TABLE_DEMO_DATA = [
+  { id: 's1', service: 'API Gateway Edge', region: '华东 · 上海', latency: 18, status: 'normal' as const, statusLabel: '运行中', uptime: '99.99%', notes: 'HTTP/3 QUIC 已开启，42 个边缘接入点全部健康。' },
+  { id: 's2', service: 'Auth & SSO Core', region: '多活集群', latency: 24, status: 'normal' as const, statusLabel: '运行中', uptime: '100.0%', notes: 'SAML 2.0 与 OIDC 会话平均签发耗时 11ms。' },
+  { id: 's3', service: 'Billing Reconciler', region: '华北 · 北京', latency: 86, status: 'warning' as const, statusLabel: '高负载', uptime: '99.82%', notes: '月末出账批处理队列峰值，已触发自动扩容。' },
+  { id: 's4', service: 'Realtime Telemetry', region: '新加坡', latency: 31, status: 'info' as const, statusLabel: '灰度中', uptime: '99.95%', notes: 'v4.12 压缩管道正在 20% 流量金丝雀验证。' },
+  { id: 's5', service: 'Search Indexer', region: '华南 · 深圳', latency: 42, status: 'normal' as const, statusLabel: '运行中', uptime: '99.94%', notes: '增量索引延迟 < 800ms，缓存命中率 94.6%。' },
+  { id: 's6', service: 'AI Insight Worker', region: '华东 · 上海', latency: 64, status: 'info' as const, statusLabel: '灰度中', uptime: '99.91%', notes: '8 × H100 推理池批处理吞吐稳定。' },
+]
+
+const TABLE_DEMO_COLUMNS = TABLE_DEMO_HELPER.columns([
+  TABLE_DEMO_HELPER.accessor('service', {
+    header: '服务名称',
+    meta: { label: '服务名称' },
+    cell: (info) => <span className="font-bold text-[#1B1F27]">{info.getValue()}</span>,
+  }),
+  TABLE_DEMO_HELPER.accessor('region', {
+    header: '区域',
+    meta: { label: '区域' },
+    cell: (info) => <HueTag hue="sky" size="sm">{info.getValue()}</HueTag>,
+  }),
+  TABLE_DEMO_HELPER.accessor('latency', {
+    header: 'P99 延迟',
+    meta: { label: 'P99 延迟', numeric: true },
+    cell: (info) => <span>{info.getValue()} ms</span>,
+  }),
+  TABLE_DEMO_HELPER.accessor('status', {
+    header: '状态',
+    meta: { label: '状态' },
+    cell: ({ row }) => <StatusPill status={row.original.status}>{row.original.statusLabel}</StatusPill>,
+  }),
+  TABLE_DEMO_HELPER.accessor('uptime', {
+    header: '可用率',
+    meta: { label: '可用率', numeric: true },
+  }),
+])
+
+function DataTableShowcaseDemo() {
+  return (
+    <div className="w-full">
+      <DataTable
+        embedded
+        data={TABLE_DEMO_DATA}
+        columns={TABLE_DEMO_COLUMNS}
+        getRowId={(r) => r.id}
+        searchPlaceholder="搜索服务或区域…"
+        enableRowSelection
+        enableColumnVisibility
+        enableDensityToggle
+        defaultPageSize={4}
+        pageSizeOptions={[4, 6]}
+        facetFilter={{
+          columnId: 'status',
+          options: [
+            { value: 'normal', label: '运行中' },
+            { value: 'info', label: '灰度中' },
+            { value: 'warning', label: '高负载' },
+          ],
+        }}
+        renderSubComponent={(row) => (
+          <div className="text-[12.5px] leading-relaxed text-[#5B6170]">
+            <strong className="text-[#1B1F27]">运行备注：</strong>
+            {row.original.notes}
+          </div>
+        )}
+        bulkActions={(rows, clear) => (
+          <Button size="sm" variant="primary" onClick={clear}>
+            巡检已选 {rows.length} 项
+          </Button>
+        )}
+      />
+    </div>
+  )
+}
 
 function TabsControlledDemo() {
   const [tab, setTab] = React.useState('overview')
@@ -965,6 +1060,110 @@ export function Example() {
         <div dir="rtl"><Slider defaultValue={70} label="RTL" unit="%" /></div>
       </DirectionProvider>
     </div>
+  )
+}`,
+      },
+    ],
+  },
+
+  table: {
+    hero: {
+      align: 'start',
+      minHeight: 360,
+      render: () => <DataTableShowcaseDemo />,
+      code: `import { createGlazeColumnHelper, DataTable } from '@/components/ui/table'
+import { HueTag } from '@/components/ui/hue-tag'
+import { StatusPill } from '@/components/ui/status-pill'
+
+const helper = createGlazeColumnHelper<ServiceRow>()
+const columns = helper.columns([
+  helper.accessor('service', { header: '服务名称' }),
+  helper.accessor('region', {
+    header: '区域',
+    cell: (info) => <HueTag hue="sky" size="sm">{info.getValue()}</HueTag>,
+  }),
+  helper.accessor('latency', {
+    header: 'P99 延迟',
+    meta: { numeric: true },
+    cell: (info) => \`\${info.getValue()} ms\`,
+  }),
+  helper.accessor('status', {
+    header: '状态',
+    cell: ({ row }) => <StatusPill status={row.original.status}>{row.original.statusLabel}</StatusPill>,
+  }),
+])
+
+export function Example() {
+  return (
+    <DataTable
+      data={rows}
+      columns={columns}
+      enableRowSelection
+      enableColumnVisibility
+      enableDensityToggle
+      renderSubComponent={(row) => <div>{row.original.notes}</div>}
+    />
+  )
+}`,
+    },
+    examples: [
+      {
+        id: 'semantic-primitives',
+        title: '语义化基础表格原语（Table / TableRow / TableCell）',
+        description: '不需要复杂交互时，可直接组合语义化原语，自动继承密度上下文与等宽数字排版。',
+        align: 'start',
+        render: () => (
+          <div className="w-full">
+            <Table density="compact">
+              <TableHeader>
+                <tr>
+                  <TableHead>节点</TableHead>
+                  <TableHead>角色</TableHead>
+                  <TableHead align="right">CPU</TableHead>
+                  <TableHead align="right">内存</TableHead>
+                </tr>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="font-bold">k8s-sh-01</TableCell>
+                  <TableCell><HueTag hue="periwinkle" size="sm">Ingress</HueTag></TableCell>
+                  <TableCell align="right" className="font-glaze-mono">38%</TableCell>
+                  <TableCell align="right" className="font-glaze-mono">12.4 GB</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-bold">k8s-sh-02</TableCell>
+                  <TableCell><HueTag hue="mint" size="sm">Postgres</HueTag></TableCell>
+                  <TableCell align="right" className="font-glaze-mono">64%</TableCell>
+                  <TableCell align="right" className="font-glaze-mono">48.2 GB</TableCell>
+                </TableRow>
+                <TableRow selected>
+                  <TableCell className="font-bold">k8s-sg-01</TableCell>
+                  <TableCell><HueTag hue="aqua" size="sm">Worker</HueTag></TableCell>
+                  <TableCell align="right" className="font-glaze-mono">72%</TableCell>
+                  <TableCell align="right" className="font-glaze-mono">29.8 GB</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        ),
+        code: `import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+export function Example() {
+  return (
+    <Table density="compact">
+      <TableHeader>
+        <tr>
+          <TableHead>节点</TableHead>
+          <TableHead align="right">CPU</TableHead>
+        </tr>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell className="font-bold">k8s-sh-01</TableCell>
+          <TableCell align="right">38%</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
   )
 }`,
       },

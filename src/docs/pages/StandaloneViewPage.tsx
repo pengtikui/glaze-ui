@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useToast } from '@/components/ui/toast'
+import { AdminShellDemoPage } from '@/registry/glaze/demos/admin-shell-demo'
 import { AnalyticsDemoPage } from '@/registry/glaze/demos/analytics-demo'
 import { CloudOpsDemoPage } from '@/registry/glaze/demos/cloud-ops-demo'
 import { HomelabDemoPage } from '@/registry/glaze/demos/homelab-demo'
@@ -16,7 +17,10 @@ const DEMO_COMPONENTS: Record<string, React.ComponentType> = {
   analytics: AnalyticsDemoPage,
   'personal-os': PersonalOsDemoPage,
   'cloud-ops': CloudOpsDemoPage,
+  'admin-shell': AdminShellDemoPage,
 }
+
+const FULL_BLEED_DEMOS = new Set(['admin-shell'])
 
 /**
  * Pure standalone Demo canvas — completely outside the docs site header/sidebar/frame.
@@ -30,11 +34,15 @@ export function StandaloneDemoViewPage({ slug }: { slug: string }) {
         <div className="rounded-tile bg-white p-8 text-center">
           <h1 className="m-0 font-glaze-display text-[24px] font-extrabold">未找到 Demo：{slug}</h1>
           <p className="m-0 mt-2 text-[14px] text-[#6B7280]">
-            可用路径：homelab · workspace · smart-home · analytics · personal-os · cloud-ops
+            可用路径：homelab · workspace · smart-home · analytics · personal-os · cloud-ops · admin-shell
           </p>
         </div>
       </div>
     )
+  }
+
+  if (FULL_BLEED_DEMOS.has(slug)) {
+    return <DemoComp />
   }
 
   return (
