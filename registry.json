@@ -714,6 +714,31 @@
       ]
     },
     {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command (命令面板)",
+      "description": "基于 cmdk 与 Base UI Dialog 封装的通用命令菜单与 ⌘K 搜索面板，支持模糊过滤、分组标题、快捷键提示、键盘导航与弹窗模式 CommandDialog。",
+      "dependencies": [
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "cmdk",
+        "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/motion",
+        "@glaze/style"
+      ],
+      "categories": [
+        "selection"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/command.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "menu",
       "type": "registry:ui",
       "title": "Menu (下拉菜单)",
@@ -4667,7 +4692,7 @@
         "@phosphor-icons/react"
       ],
       "registryDependencies": [
-        "@glaze/input",
+        "@glaze/command",
         "@glaze/motion",
         "@glaze/style",
         "@glaze/tile",
@@ -5080,6 +5105,7 @@
         "@glaze/button",
         "@glaze/checklist-card",
         "@glaze/code-deploy-card",
+        "@glaze/command",
         "@glaze/context-menu",
         "@glaze/count-badge",
         "@glaze/dialog",

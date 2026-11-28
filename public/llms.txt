@@ -53,6 +53,7 @@
 - [Select (下拉选择器)](/llms/components/select.md): 全圆胶囊触发器 + 20px 圆角浮层，支持选项分组、副标题说明与快速键盘检索。
 - [Combobox (可搜索组合框)](/llms/components/combobox.md): 支持实时过滤与自定义元信息的单选 Combobox 与多选胶囊标签 MultiCombobox。
 - [Autocomplete (自动补全输入)](/llms/components/autocomplete.md): 允许自由输入同时提供实时建议列表的命令/搜索自动补全控件。
+- [Command (命令面板)](/llms/components/command.md): 基于 cmdk 与 Base UI Dialog 封装的通用命令菜单与 ⌘K 搜索面板，支持模糊过滤、分组标题、快捷键提示、键盘导航与弹窗模式 CommandDialog。
 - [Menu (下拉菜单)](/llms/components/menu.md): 支持图标、快捷键提示、分组分隔线与危险操作高亮的命令菜单。通过 PopupTriggerScope 自动稳定触发按钮。
 - [ContextMenu (右键上下文菜单)](/llms/components/context-menu.md): 在指针右键位置弹出的操作菜单，支持图标、快捷键与危险操作着色。
 - [Menubar (应用菜单栏)](/llms/components/menubar.md): 桌面应用风格的顶部水平菜单栏，支持悬停无缝切换相邻下拉菜单。

@@ -281,6 +281,7 @@
       "@glaze/button",
       "@glaze/checklist-card",
       "@glaze/code-deploy-card",
+      "@glaze/command",
       "@glaze/context-menu",
       "@glaze/count-badge",
       "@glaze/dialog",

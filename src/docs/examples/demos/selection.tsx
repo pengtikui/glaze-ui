@@ -14,6 +14,18 @@ import {
 import { Autocomplete } from '@/components/ui/autocomplete'
 import { Button } from '@/components/ui/button'
 import { Combobox, MultiCombobox, type ComboboxOption } from '@/components/ui/combobox'
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandFooter,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from '@/components/ui/command'
 import { ContextMenu } from '@/components/ui/context-menu'
 import { HueTag } from '@/components/ui/hue-tag'
 import { Menu } from '@/components/ui/menu'
@@ -382,6 +394,129 @@ function NavigationMenuInteractiveDemo() {
         },
       ]}
     />
+  )
+}
+
+function CommandInlineDemo() {
+  const toast = useToast()
+  return (
+    <Command className="max-w-md border border-[#EEF0F3]">
+      <CommandInput placeholder="输入指令或搜索页面..." />
+      <CommandList className="max-h-64">
+        <CommandEmpty>未找到匹配的命令</CommandEmpty>
+        <CommandGroup heading="快捷操作">
+          <CommandItem
+            onSelect={() => toast({ title: '已新建项目空间', status: 'normal' })}
+            keywords={['new', 'project', '创建']}
+          >
+            <FolderPlus size={16} weight="duotone" className="text-[#4A4FB8]" />
+            <span>新建项目空间</span>
+            <CommandShortcut>⌘N</CommandShortcut>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => toast({ title: '已唤起 AI 助手', status: 'info' })}
+            keywords={['ai', 'agent', '智能体']}
+          >
+            <Sparkle size={16} weight="duotone" className="text-[#7B80EA]" />
+            <span>打开 AI 智能体工作台</span>
+            <CommandShortcut>⌘J</CommandShortcut>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => toast({ title: '已导出设计 Token', status: 'normal' })}
+            keywords={['export', 'download', '导出']}
+          >
+            <DownloadSimple size={16} weight="duotone" className="text-[#2FA79B]" />
+            <span>导出 Design Tokens JSON</span>
+            <CommandShortcut>⌘E</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="系统设置">
+          <CommandItem
+            onSelect={() => toast({ title: '打开外观与色板设置', status: 'info' })}
+            keywords={['settings', 'theme', '设置']}
+          >
+            <Gear size={16} weight="duotone" className="text-[#5B6170]" />
+            <span>工作区偏好设置</span>
+            <CommandShortcut>⌘,</CommandShortcut>
+          </CommandItem>
+          <CommandItem disabled>
+            <Trash size={16} weight="duotone" className="text-[#A6360F]" />
+            <span>清空生产缓存（无权限）</span>
+          </CommandItem>
+        </CommandGroup>
+      </CommandList>
+      <CommandFooter>
+        <span>↑↓ 选择 · Enter 执行</span>
+        <span>由 cmdk 驱动</span>
+      </CommandFooter>
+    </Command>
+  )
+}
+
+function CommandDialogDemo() {
+  const toast = useToast()
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <Button variant="primary" onClick={() => setOpen(true)}>
+        <span>打开命令面板</span>
+        <kbd className="rounded bg-white/20 px-1.5 py-0.5 font-glaze-mono text-[11px]">⌘K</kbd>
+      </Button>
+      <span className="text-[12px] text-[#6B7280]">点击按钮体验基于 Base UI Dialog + cmdk 的模态搜索</span>
+
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="演示命令面板"
+        description="搜索并快速执行演示指令"
+      >
+        <CommandInput autoFocus placeholder="搜索路由、组件或操作..." />
+        <CommandList>
+          <CommandEmpty>没有找到匹配结果</CommandEmpty>
+          <CommandGroup heading="常用跳转">
+            <CommandItem
+              onSelect={() => {
+                setOpen(false)
+                toast({ title: '跳转到组件总览', status: 'info' })
+              }}
+            >
+              <GridFour size={16} weight="duotone" className="text-[#4A9BD8]" />
+              <span>浏览全部 Glaze 组件</span>
+              <CommandShortcut>G C</CommandShortcut>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false)
+                toast({ title: '已复制安装命令', status: 'normal' })
+              }}
+            >
+              <Copy size={16} weight="duotone" className="text-[#49A851]" />
+              <span>复制 @glaze/command 安装命令</span>
+              <CommandShortcut>⌘⇧C</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="协作">
+            <CommandItem
+              onSelect={() => {
+                setOpen(false)
+                toast({ title: '已生成分享链接', status: 'normal' })
+              }}
+            >
+              <ShareNetwork size={16} weight="duotone" className="text-[#A970D6]" />
+              <span>分享当前工作区链接</span>
+              <CommandShortcut>⌘⇧S</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+        <CommandFooter>
+          <span>↑↓ 切换 · Enter 确认 · Esc 关闭</span>
+          <span>CommandDialog</span>
+        </CommandFooter>
+      </CommandDialog>
+    </div>
   )
 }
 
@@ -1067,6 +1202,100 @@ export function Example() {
       />
       <Button size="sm">开始使用</Button>
     </header>
+  )
+}`,
+      },
+    ],
+  },
+
+  command: {
+    hero: {
+      surface: 'canvas',
+      render: () => <CommandInlineDemo />,
+      code: `import { FolderPlus, Gear, Sparkle } from '@phosphor-icons/react'
+import {
+  Command,
+  CommandEmpty,
+  CommandFooter,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from '@/components/ui/command'
+
+export function Example() {
+  return (
+    <Command className="max-w-md">
+      <CommandInput placeholder="输入指令或搜索页面..." />
+      <CommandList>
+        <CommandEmpty>未找到匹配的命令</CommandEmpty>
+        <CommandGroup heading="快捷操作">
+          <CommandItem onSelect={() => console.log('new')}>
+            <FolderPlus size={16} />
+            <span>新建项目空间</span>
+            <CommandShortcut>⌘N</CommandShortcut>
+          </CommandItem>
+          <CommandItem onSelect={() => console.log('ai')}>
+            <Sparkle size={16} />
+            <span>打开 AI 智能体工作台</span>
+            <CommandShortcut>⌘J</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="系统设置">
+          <CommandItem onSelect={() => console.log('settings')}>
+            <Gear size={16} />
+            <span>工作区偏好设置</span>
+            <CommandShortcut>⌘,</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+      </CommandList>
+      <CommandFooter>
+        <span>↑↓ 选择 · Enter 执行</span>
+        <span>由 cmdk 驱动</span>
+      </CommandFooter>
+    </Command>
+  )
+}`,
+    },
+    examples: [
+      {
+        id: 'dialog',
+        title: '模态命令面板（CommandDialog）',
+        description: '结合 Base UI Dialog 与 cmdk，用于实现全局 ⌘K 快速搜索与指令启动器（文档站顶部搜索已直接基于此组件构建）。',
+        render: () => <CommandDialogDemo />,
+        code: `import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from '@/components/ui/command'
+
+export function Example() {
+  const [open, setOpen] = React.useState(false)
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>打开命令面板 ⌘K</Button>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandInput autoFocus placeholder="搜索路由、组件或操作..." />
+        <CommandList>
+          <CommandEmpty>没有找到匹配结果</CommandEmpty>
+          <CommandGroup heading="常用跳转">
+            <CommandItem onSelect={() => setOpen(false)}>
+              <span>浏览全部 Glaze 组件</span>
+              <CommandShortcut>G C</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </>
   )
 }`,
       },

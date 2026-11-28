@@ -65,6 +65,16 @@ import { ResourceAllocationCard } from '@/components/blocks/resource-allocation-
 import { StatusCard } from '@/components/blocks/status-card'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandFooter,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command'
 import { ContextMenu } from '@/components/ui/context-menu'
 import { CountBadge } from '@/components/ui/count-badge'
 import { Dialog, DialogClose } from '@/components/ui/dialog'
@@ -1219,34 +1229,39 @@ function AdminShellWorkspace() {
     return ROUTES_META[activeRoute] ?? ROUTES_META.overview
   }, [activeRoute, projects])
 
-  // Command palette items
-  const commandEntries = React.useMemo(() => {
-    const base = [
-      ...Object.values(ROUTES_META).map((r) => ({
+  // Command palette grouped entries (filtered natively by cmdk)
+  const commandRouteEntries = React.useMemo(
+    () =>
+      Object.values(ROUTES_META).map((r) => ({
         id: r.id,
         label: r.title,
         group: r.parent ? `${r.section} › ${r.parent}` : r.section,
         action: () => navigate(r.id),
       })),
-      ...projects.map((p) => ({
+    [navigate],
+  )
+
+  const commandProjectEntries = React.useMemo(
+    () =>
+      projects.map((p) => ({
         id: `project:${p.id}`,
         label: p.name,
         group: '项目空间',
         action: () => navigate(`project:${p.id}`),
       })),
-      ...TAG_VIEWS.map((t) => ({
+    [navigate, projects],
+  )
+
+  const commandTagEntries = React.useMemo(
+    () =>
+      TAG_VIEWS.map((t) => ({
         id: `tag:${t.id}`,
         label: `# ${t.label}`,
         group: '标签视图',
         action: () => navigate(`tag:${t.id}`),
       })),
-    ]
-    const q = cmdQuery.trim().toLowerCase()
-    if (!q) return base
-    return base.filter(
-      (item) => item.label.toLowerCase().includes(q) || item.group.toLowerCase().includes(q),
-    )
-  }, [cmdQuery, navigate, projects])
+    [navigate],
+  )
 
   // Workspace Switcher Menu items
   const workspaceMenuItems: MenuItemConfig[] = [
@@ -2996,46 +3011,100 @@ function AdminShellWorkspace() {
           </main>
         </SidebarInset>
 
-      {/* Command Palette Dialog (⌘K) */}
-      <Dialog
+      {/* Command Palette Dialog (⌘K) — powered by Glaze Command (cmdk) */}
+      <CommandDialog
         open={cmdOpen}
-        onOpenChange={setCmdOpen}
+        onOpenChange={(open) => {
+          setCmdOpen(open)
+          if (!open) setCmdQuery('')
+        }}
         title="全局命令面板"
         description="快速跳转侧边栏任意路由、项目空间或标签视图（快捷键 ⌘K）"
         maxWidth="540px"
       >
-        <div className="flex flex-col gap-3">
-          <Input
-            autoFocus
-            value={cmdQuery}
-            onChange={(e) => setCmdQuery(e.target.value)}
-            placeholder="输入菜单名、项目名或功能关键字..."
-            leadingIcon={<MagnifyingGlass size={16} weight="bold" />}
-          />
-          <div className="flex max-h-72 flex-col gap-1 overflow-y-auto pr-1">
-            {commandEntries.map((entry) => (
-              <button
+        <CommandInput
+          autoFocus
+          value={cmdQuery}
+          onValueChange={setCmdQuery}
+          placeholder="输入菜单名、项目名或功能关键字..."
+        />
+        <CommandList className="max-h-72">
+          <CommandEmpty>未找到与 “{cmdQuery}” 匹配的项目</CommandEmpty>
+
+          <CommandGroup heading="导航路由">
+            {commandRouteEntries.map((entry) => (
+              <CommandItem
                 key={entry.id}
-                type="button"
-                onClick={() => {
+                value={`${entry.label} ${entry.group}`}
+                keywords={[entry.id, entry.group]}
+                onSelect={() => {
                   entry.action()
                   setCmdOpen(false)
                   setCmdQuery('')
                 }}
-                className="flex cursor-pointer items-center justify-between gap-3 rounded-[14px] px-3 py-2.5 text-left transition-colors hover:bg-[#F3F4FE]"
+                className="justify-between gap-3"
               >
-                <span className="text-[13.5px] font-bold text-[#1B1F27]">{entry.label}</span>
+                <span className="text-[13.5px] font-bold">{entry.label}</span>
                 <span className="rounded-full bg-[#F2F3F5] px-2.5 py-0.5 text-[11px] font-semibold text-[#6B7280]">
                   {entry.group}
                 </span>
-              </button>
+              </CommandItem>
             ))}
-            {commandEntries.length === 0 && (
-              <div className="py-8 text-center text-[13px] text-[#8A90A0]">未找到匹配项</div>
-            )}
-          </div>
-        </div>
-      </Dialog>
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          <CommandGroup heading="项目空间">
+            {commandProjectEntries.map((entry) => (
+              <CommandItem
+                key={entry.id}
+                value={entry.label}
+                keywords={['项目', '空间', entry.group]}
+                onSelect={() => {
+                  entry.action()
+                  setCmdOpen(false)
+                  setCmdQuery('')
+                }}
+                className="justify-between gap-3"
+              >
+                <span className="text-[13.5px] font-bold">{entry.label}</span>
+                <span className="rounded-full bg-[#F2F3F5] px-2.5 py-0.5 text-[11px] font-semibold text-[#6B7280]">
+                  {entry.group}
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          <CommandGroup heading="标签视图">
+            {commandTagEntries.map((entry) => (
+              <CommandItem
+                key={entry.id}
+                value={entry.label}
+                keywords={['标签', '视图', entry.group]}
+                onSelect={() => {
+                  entry.action()
+                  setCmdOpen(false)
+                  setCmdQuery('')
+                }}
+                className="justify-between gap-3"
+              >
+                <span className="text-[13.5px] font-bold">{entry.label}</span>
+                <span className="rounded-full bg-[#F2F3F5] px-2.5 py-0.5 text-[11px] font-semibold text-[#6B7280]">
+                  {entry.group}
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+        <CommandFooter>
+          <span>↑↓ 选择 · Enter 跳转 · Esc 关闭</span>
+          <span>
+            {commandRouteEntries.length + commandProjectEntries.length + commandTagEntries.length} 项命令
+          </span>
+        </CommandFooter>
+      </CommandDialog>
 
       {/* New Project Dialog (Triggered from Sidebar Section '+' or Topbar '+ 新建') */}
       <Dialog

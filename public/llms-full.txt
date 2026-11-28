@@ -648,6 +648,33 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 
 **Data Attributes:** `data-popup-open` (建议列表展开态), `data-highlighted` (高亮建议项)
 
+## Command (命令面板) — `@glaze/command`
+
+基于 cmdk 与 Base UI Dialog 封装的通用命令菜单与 ⌘K 搜索面板，支持模糊过滤、分组标题、快捷键提示、键盘导航与弹窗模式 CommandDialog。
+- Install: `npx shadcn@latest add @glaze/command`
+- Import: `import { Command, CommandDialog, CommandInput, CommandList, CommandEmpty, CommandLoading, CommandGroup, CommandSeparator, CommandItem, CommandShortcut, CommandFooter } from '@/components/ui/command'`
+- Registry Deps: @glaze/motion, @glaze/style
+
+**Command Props:**
+- `surface: 'white' | 'soft'` = 'white' — Surface appearance for inline usage on canvas or inside cards
+
+**CommandDialog Props:**
+- `open: boolean`
+- `onOpenChange: (open: boolean) => void`
+- `title: string` = '命令面板' — Accessible title (visually hidden for screen readers)
+- `description: string` = '输入关键字快速搜索命令、页面或操作' — Accessible description (visually hidden for screen readers)
+- `maxWidth: string` = '600px'
+- `showCloseButton: boolean` = true
+- `commandProps: Omit<CommandProps, 'children'>`
+- `className: string`
+- `children: React.ReactNode` (required)
+
+**CommandInput Props:**
+- `leadingIcon: React.ReactNode`
+- `wrapperClassName: string`
+
+**Data Attributes:** `data-selected` (当前键盘或鼠标高亮选中的命令项（cmdk）), `data-disabled` (不可触发的禁用命令项), `data-open` (CommandDialog 模态面板处于打开态)
+
 ## Menu (下拉菜单) — `@glaze/menu`
 
 支持图标、快捷键提示、分组分隔线与危险操作高亮的命令菜单。通过 PopupTriggerScope 自动稳定触发按钮。
