@@ -1,6 +1,8 @@
 import * as React from 'react'
 import {
+  ArrowDown,
   ArrowRight,
+  ArrowUp,
   At,
   BookmarkSimple,
   CircleNotch,
@@ -18,6 +20,7 @@ import {
   TextB,
   TextItalic,
   TextUnderline,
+  Trash,
   X,
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
@@ -25,7 +28,21 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { CheckboxGroup } from '@/components/ui/checkbox-group'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
 import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset'
-import { Form } from '@/components/ui/form'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormErrors,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormReset,
+  FormSubmit,
+  FormSubscribe,
+  formOptions,
+  revalidateLogic,
+  useForm,
+} from '@/components/ui/form'
 import { HueTag } from '@/components/ui/hue-tag'
 import { Input } from '@/components/ui/input'
 import { NumberField } from '@/components/ui/number-field'
@@ -453,8 +470,11 @@ function ToggleGroupMultipleDemo() {
 
 function FieldValidationDemo() {
   return (
-    <Form className="w-full max-w-sm" validationMode="onBlur" onSubmit={(e) => e.preventDefault()}>
-      <Field name="slug">
+    <form
+      className="flex w-full max-w-sm flex-col gap-4"
+      onSubmit={(e) => e.preventDefault()}
+    >
+      <Field name="slug" validationMode="onBlur">
         <FieldLabel>仓库名称</FieldLabel>
         <Input
           required
@@ -468,28 +488,60 @@ function FieldValidationDemo() {
       <Button type="submit" size="sm" className="w-fit">
         验证字段
       </Button>
-    </Form>
+    </form>
   )
 }
 
 function FormHeroDemo() {
   const [msg, setMsg] = React.useState('')
+  const form = useForm({
+    defaultValues: {
+      project: '',
+    },
+    onSubmit: ({ value }) => {
+      setMsg(`项目 "${value.project}" 已通过 TanStack Form 校验并提交！`)
+    },
+  })
+
   return (
-    <Form
-      className="w-full max-w-sm"
-      onSubmit={(e) => {
-        e.preventDefault()
-        setMsg('表单已通过原生约束校验并提交！')
-      }}
-    >
-      <Field name="project">
-        <FieldLabel>项目标识</FieldLabel>
-        <Input required placeholder="例如 glaze-console" />
-        <FieldDescription>仅支持小写字母与连字符</FieldDescription>
-        <FieldError match="valueMissing">请输入项目标识</FieldError>
-      </Field>
+    <Form form={form} className="w-full max-w-sm">
+      <form.Field
+        name="project"
+        validators={{
+          onBlur: ({ value }) => {
+            if (!value.trim()) return '请输入项目标识'
+            if (!/^[a-z0-9-]+$/.test(value)) return '仅支持小写字母、数字与连字符 (-)'
+            return undefined
+          },
+          onSubmit: ({ value }) => {
+            if (!value.trim()) return '请输入项目标识'
+            if (!/^[a-z0-9-]+$/.test(value)) return '仅支持小写字母、数字与连字符 (-)'
+            return undefined
+          },
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>项目标识</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => {
+                  setMsg('')
+                  field.handleChange(e.target.value)
+                }}
+                placeholder="例如 glaze-console"
+              />
+            </FormControl>
+            <FormDescription>仅支持小写字母、数字与连字符</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
       <div className="flex items-center gap-3">
-        <Button type="submit">提交校验</Button>
+        <FormSubmit>提交校验</FormSubmit>
         {msg && <span className="text-[12px] font-medium text-[#2F6B28]">{msg}</span>}
       </div>
     </Form>
@@ -497,38 +549,64 @@ function FormHeroDemo() {
 }
 
 function FormServerErrorsDemo() {
-  const [errors, setErrors] = React.useState<Record<string, string>>({})
-  const [loading, setLoading] = React.useState(false)
   const [ok, setOk] = React.useState(false)
 
-  return (
-    <Form
-      className="w-full max-w-sm"
-      errors={errors}
-      onFormSubmit={(values) => {
-        setLoading(true)
-        setOk(false)
-        window.setTimeout(() => {
-          setLoading(false)
-          if (String(values.username || '').toLowerCase() === 'admin') {
-            setErrors({ username: '用户名 "admin" 已被系统保留，请更换其他名称' })
-          } else {
-            setErrors({})
-            setOk(true)
+  const form = useForm({
+    defaultValues: {
+      username: 'admin',
+    },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        await new Promise((resolve) => window.setTimeout(resolve, 450))
+        if (!value.username.trim()) {
+          return {
+            fields: {
+              username: '请输入管理员账号',
+            },
           }
-        }, 450)
-      }}
-    >
-      <Field name="username">
-        <FieldLabel>管理员账号</FieldLabel>
-        <Input required defaultValue="admin" placeholder="输入非 admin 即可通过" />
-        <FieldDescription>尝试直接提交 &quot;admin&quot; 观察服务端 errors 注入</FieldDescription>
-        <FieldError />
-      </Field>
+        }
+        if (value.username.trim().toLowerCase() === 'admin') {
+          return {
+            form: '服务端拒绝了本次提交，请修正下方冲突字段',
+            fields: {
+              username: '用户名 "admin" 已被系统保留，请更换其他名称',
+            },
+          }
+        }
+        return undefined
+      },
+    },
+    onSubmit: () => {
+      setOk(true)
+    },
+  })
+
+  return (
+    <Form form={form} className="w-full max-w-sm">
+      <FormErrors />
+      <form.Field name="username">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>管理员账号</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => {
+                  setOk(false)
+                  field.handleChange(e.target.value)
+                }}
+                placeholder="输入非 admin 即可通过"
+              />
+            </FormControl>
+            <FormDescription>尝试直接提交 &quot;admin&quot; 观察异步校验与错误映射</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={loading} focusableWhenDisabled>
-          {loading ? '校验中...' : '模拟服务端提交'}
-        </Button>
+        <FormSubmit pendingText="校验中...">模拟服务端提交</FormSubmit>
         {ok && <HueTag hue="mint" size="sm">提交成功</HueTag>}
       </div>
     </Form>
@@ -536,48 +614,848 @@ function FormServerErrorsDemo() {
 }
 
 function FormCompleteDemo() {
-  const [region, setRegion] = React.useState('cn-sh')
   const [submitted, setSubmitted] = React.useState<string | null>(null)
+
+  const form = useForm({
+    defaultValues: {
+      service: 'edge-gateway',
+      region: 'cn-sh',
+      notes: '',
+      tls: true,
+    },
+    onSubmit: ({ value }) => {
+      setSubmitted(JSON.stringify(value, null, 0))
+    },
+  })
+
   return (
-    <Form
-      className="w-full max-w-md"
-      onFormSubmit={(values) => {
-        setSubmitted(JSON.stringify({ ...values, region }, null, 0))
-      }}
-    >
-      <Field name="service">
-        <FieldLabel>服务名称</FieldLabel>
-        <Input required defaultValue="edge-gateway" placeholder="服务名" />
-        <FieldError match="valueMissing">请填写服务名称</FieldError>
-      </Field>
-      <div className="flex flex-col gap-1.5">
-        <span className="text-[13px] font-semibold text-[#1B1F27]">部署区域</span>
-        <Select
-          value={region}
-          onValueChange={setRegion}
-          options={[
-            { value: 'cn-sh', label: '华东 · 上海' },
-            { value: 'ap-sg', label: '亚太 · 新加坡' },
-            { value: 'us-w', label: '美西 · 硅谷' },
-          ]}
-        />
-      </div>
-      <Field name="notes">
-        <FieldLabel>备注说明</FieldLabel>
-        <Textarea rows={2} placeholder="可选发布备注..." />
-      </Field>
-      <Checkbox name="tls" defaultChecked label="强制启用 HTTPS / TLS 1.3" />
+    <Form form={form} className="w-full max-w-md">
+      <form.Field
+        name="service"
+        validators={{
+          onChange: ({ value }) => (!value.trim() ? '请填写服务名称' : undefined),
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>服务名称</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="服务名"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+
+      <form.Field name="region">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel>部署区域</FormLabel>
+            <Select
+              value={field.state.value}
+              onValueChange={(val) => field.handleChange(val)}
+              options={[
+                { value: 'cn-sh', label: '华东 · 上海' },
+                { value: 'ap-sg', label: '亚太 · 新加坡' },
+                { value: 'us-w', label: '美西 · 硅谷' },
+              ]}
+            />
+          </FormItem>
+        )}
+      </form.Field>
+
+      <form.Field name="notes">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel>备注说明</FormLabel>
+            <FormControl>
+              <Textarea
+                name={field.name}
+                rows={2}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="可选发布备注..."
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      </form.Field>
+
+      <form.Field name="tls">
+        {(field) => (
+          <Checkbox
+            name={field.name}
+            checked={field.state.value}
+            onCheckedChange={(checked) => field.handleChange(Boolean(checked))}
+            label="强制启用 HTTPS / TLS 1.3"
+          />
+        )}
+      </form.Field>
+
       <div className="flex items-center gap-2">
-        <Button type="submit">创建服务</Button>
-        <Button type="reset" variant="secondary" onClick={() => setSubmitted(null)}>
-          重置
-        </Button>
+        <FormSubmit>创建服务</FormSubmit>
+        <FormReset onClick={() => setSubmitted(null)}>重置</FormReset>
+        <FormSubscribe selector={(state) => state.isDirty}>
+          {(isDirty) =>
+            isDirty ? <HueTag hue="sky" size="xs">有未保存更改</HueTag> : null
+          }
+        </FormSubscribe>
       </div>
+
       {submitted && (
         <code className="rounded-[12px] bg-[#F6F7F9] px-3 py-2 font-glaze-mono text-[11px] text-[#123A5C]">
           {submitted}
         </code>
       )}
+    </Form>
+  )
+}
+
+const RESERVED_SUBDOMAINS = new Set(['api', 'app', 'admin', 'www', 'docs', 'status'])
+
+function FormAsyncDebounceDemo() {
+  const [claimed, setClaimed] = React.useState<string | null>(null)
+
+  const form = useForm({
+    defaultValues: {
+      subdomain: '',
+    },
+    onSubmit: ({ value }) => {
+      setClaimed(`${value.subdomain}.glaze.app`)
+    },
+  })
+
+  return (
+    <Form form={form} className="w-full max-w-sm">
+      <form.Field
+        name="subdomain"
+        validators={{
+          onChange: ({ value }) => {
+            if (!value.trim()) return '请输入子域名前缀'
+            if (value.length < 3) return '至少需要 3 个字符'
+            if (!/^[a-z0-9-]+$/.test(value)) return '仅支持小写字母、数字和连字符 (-)'
+            return undefined
+          },
+          onChangeAsyncDebounceMs: 400,
+          onChangeAsync: async ({ value, signal }) => {
+            if (!value || value.length < 3 || !/^[a-z0-9-]+$/.test(value)) return undefined
+            await new Promise<void>((resolve, reject) => {
+              const timer = window.setTimeout(resolve, 450)
+              signal.addEventListener(
+                'abort',
+                () => {
+                  window.clearTimeout(timer)
+                  reject(new DOMException('Aborted', 'AbortError'))
+                },
+                { once: true },
+              )
+            })
+            if (RESERVED_SUBDOMAINS.has(value.toLowerCase())) {
+              return `子域名 "${value}" 已被占用，请换一个名称`
+            }
+            return undefined
+          },
+        }}
+      >
+        {(field) => {
+          const isAvailable =
+            field.state.value.length >= 3 &&
+            field.state.meta.isTouched &&
+            !field.state.meta.isValidating &&
+            field.state.meta.errors.length === 0
+
+          return (
+            <FormItem field={field}>
+              <FormLabel required>工作区子域名</FormLabel>
+              <FormControl>
+                <Input
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => {
+                    setClaimed(null)
+                    field.handleChange(e.target.value)
+                  }}
+                  placeholder="尝试输入 api / admin 或自定义名称"
+                  wrapperClassName={
+                    field.state.meta.isTouched && field.state.meta.errors.length > 0
+                      ? 'ring-2 ring-inset ring-[#E5603B]'
+                      : undefined
+                  }
+                  trailingElement={
+                    <span className="font-glaze-mono text-[12px] text-[#8A90A0]">.glaze.app</span>
+                  }
+                />
+              </FormControl>
+              <FormDescription>
+                400ms 防抖后自动请求远端查重（api / app / admin / www 为保留名）
+              </FormDescription>
+              <FormMessage validatingText="正在检查子域名可用性..." />
+              {isAvailable && (
+                <span className="text-[12px] font-medium text-[#2F6B28]">
+                  ✓ {field.state.value}.glaze.app 可用
+                </span>
+              )}
+            </FormItem>
+          )
+        }}
+      </form.Field>
+      <div className="flex items-center gap-3">
+        <FormSubmit disableWhenInvalid>绑定子域名</FormSubmit>
+        {claimed && <HueTag hue="mint" size="sm">已绑定 {claimed}</HueTag>}
+      </div>
+    </Form>
+  )
+}
+
+function FormLinkedFieldsDemo() {
+  const [saved, setSaved] = React.useState(false)
+
+  const form = useForm({
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+    onSubmit: () => {
+      setSaved(true)
+    },
+  })
+
+  return (
+    <Form form={form} className="w-full max-w-sm">
+      <form.Field
+        name="password"
+        validators={{
+          onChange: ({ value }) => {
+            if (!value) return '请输入新密码'
+            if (value.length < 8) return '密码长度至少 8 位'
+            return undefined
+          },
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>新密码</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => {
+                  setSaved(false)
+                  field.handleChange(e.target.value)
+                }}
+                placeholder="至少 8 位字符"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+
+      <form.Field
+        name="confirmPassword"
+        validators={{
+          onChangeListenTo: ['password'],
+          onChange: ({ value, fieldApi }) => {
+            if (!value) return '请再次输入以确认密码'
+            if (value !== fieldApi.form.getFieldValue('password')) {
+              return '两次输入的密码不一致'
+            }
+            return undefined
+          },
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>确认密码</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => {
+                  setSaved(false)
+                  field.handleChange(e.target.value)
+                }}
+                placeholder="再次输入新密码"
+              />
+            </FormControl>
+            <FormDescription>修改上方密码时会自动触发本字段重新校验</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+
+      <div className="flex items-center gap-3">
+        <FormSubmit disableWhenInvalid>更新密码</FormSubmit>
+        {saved && <HueTag hue="mint" size="sm">密码已更新</HueTag>}
+      </div>
+    </Form>
+  )
+}
+
+function FormDynamicArrayDemo() {
+  const [output, setOutput] = React.useState<string | null>(null)
+
+  const form = useForm({
+    defaultValues: {
+      env: [
+        { key: 'NODE_ENV', value: 'production' },
+        { key: 'LOG_LEVEL', value: 'info' },
+      ],
+    },
+    onSubmit: ({ value }) => {
+      setOutput(JSON.stringify(value.env, null, 0))
+    },
+  })
+
+  return (
+    <Form form={form} className="w-full max-w-lg">
+      <form.Field name="env" mode="array">
+        {(arrayField) => (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[13px] font-semibold text-[#1B1F27]">环境变量</span>
+                <HueTag hue="periwinkle" size="xs">
+                  {arrayField.state.value.length} 项
+                </HueTag>
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => arrayField.pushValue({ key: '', value: '' })}
+              >
+                <Plus size={14} weight="bold" />
+                新增变量
+              </Button>
+            </div>
+
+            {arrayField.state.value.length === 0 ? (
+              <div className="rounded-inner bg-[#F6F7F9] px-4 py-5 text-center text-[13px] text-[#6B7280]">
+                暂无环境变量，点击右上角「新增变量」添加
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                {arrayField.state.value.map((_, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 items-start gap-2 rounded-inner bg-[#F6F7F9] p-3 sm:grid-cols-[1fr_1fr_auto]"
+                  >
+                    <form.Field
+                      name={`env[${index}].key`}
+                      validators={{
+                        onBlur: ({ value }) =>
+                          !value.trim()
+                            ? '变量名不能为空'
+                            : !/^[A-Z_][A-Z0-9_]*$/.test(value)
+                              ? '需大写字母与下划线'
+                              : undefined,
+                        onSubmit: ({ value }) =>
+                          !value.trim()
+                            ? '变量名不能为空'
+                            : !/^[A-Z_][A-Z0-9_]*$/.test(value)
+                              ? '需大写字母与下划线'
+                              : undefined,
+                      }}
+                    >
+                      {(subField) => (
+                        <FormItem field={subField}>
+                          <FormControl>
+                            <Input
+                              surface="white"
+                              inputSize="sm"
+                              name={subField.name}
+                              value={subField.state.value}
+                              onBlur={subField.handleBlur}
+                              onChange={(e) => subField.handleChange(e.target.value)}
+                              placeholder="KEY_NAME"
+                              className="font-glaze-mono"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    </form.Field>
+
+                    <form.Field
+                      name={`env[${index}].value`}
+                      validators={{
+                        onSubmit: ({ value }) => (!value.trim() ? '变量值不能为空' : undefined),
+                      }}
+                    >
+                      {(subField) => (
+                        <FormItem field={subField}>
+                          <FormControl>
+                            <Input
+                              surface="white"
+                              inputSize="sm"
+                              name={subField.name}
+                              value={subField.state.value}
+                              onBlur={subField.handleBlur}
+                              onChange={(e) => subField.handleChange(e.target.value)}
+                              placeholder="value"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    </form.Field>
+
+                    <div className="flex items-center gap-1 pt-0.5">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        disabled={index === 0}
+                        aria-label="上移"
+                        onClick={() => arrayField.swapValues(index, index - 1)}
+                      >
+                        <ArrowUp size={14} weight="bold" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        disabled={index === arrayField.state.value.length - 1}
+                        aria-label="下移"
+                        onClick={() => arrayField.swapValues(index, index + 1)}
+                      >
+                        <ArrowDown size={14} weight="bold" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="danger"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        aria-label="删除"
+                        onClick={() => arrayField.removeValue(index)}
+                      >
+                        <Trash size={14} weight="bold" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </form.Field>
+
+      <div className="flex items-center gap-2">
+        <FormSubmit>保存环境变量</FormSubmit>
+        <FormReset onClick={() => setOutput(null)}>重置默认</FormReset>
+      </div>
+
+      {output && (
+        <code className="rounded-[12px] bg-[#F6F7F9] px-3 py-2 font-glaze-mono text-[11px] text-[#123A5C] break-all">
+          {output}
+        </code>
+      )}
+    </Form>
+  )
+}
+
+const COMPUTE_PRESETS: Record<string, { replicas: number; autoScale: boolean }> = {
+  starter: { replicas: 1, autoScale: false },
+  pro: { replicas: 3, autoScale: true },
+  enterprise: { replicas: 8, autoScale: true },
+}
+
+function FormNestedListenersDemo() {
+  const [result, setResult] = React.useState<string | null>(null)
+
+  const form = useForm({
+    defaultValues: {
+      compute: {
+        preset: 'starter',
+        replicas: 1,
+        autoScale: false,
+      },
+      network: {
+        host: 'api.glaze.dev',
+        port: 8443,
+      },
+    },
+    onSubmit: ({ value }) => {
+      setResult(JSON.stringify(value, null, 0))
+    },
+  })
+
+  return (
+    <Form form={form} className="w-full max-w-md">
+      <Fieldset>
+        <FieldsetLegend>计算规格（compute.*）</FieldsetLegend>
+        <form.Field
+          name="compute.preset"
+          listeners={{
+            onChange: ({ value, fieldApi }) => {
+              const preset = COMPUTE_PRESETS[value]
+              if (!preset) return
+              fieldApi.form.setFieldValue('compute.replicas', preset.replicas)
+              fieldApi.form.setFieldValue('compute.autoScale', preset.autoScale)
+            },
+          }}
+        >
+          {(field) => (
+            <FormItem field={field}>
+              <FormLabel>规格模板（切换自动联动副本与弹性伸缩）</FormLabel>
+              <Select
+                surface="white"
+                value={field.state.value}
+                onValueChange={(val) => field.handleChange(val)}
+                options={[
+                  { value: 'starter', label: '入门版 · 1 副本 / 关闭伸缩' },
+                  { value: 'pro', label: '专业版 · 3 副本 / 开启伸缩' },
+                  { value: 'enterprise', label: '企业版 · 8 副本 / 开启伸缩' },
+                ]}
+              />
+            </FormItem>
+          )}
+        </form.Field>
+
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <form.Field name="compute.replicas">
+            {(field) => (
+              <NumberField
+                surface="white"
+                label="实例副本数"
+                unit="个"
+                min={1}
+                max={32}
+                value={field.state.value}
+                onValueChange={(val) => {
+                  if (val !== null) field.handleChange(val)
+                }}
+              />
+            )}
+          </form.Field>
+
+          <form.Field name="compute.autoScale">
+            {(field) => (
+              <label className="flex h-11 cursor-pointer items-center gap-3 text-[13px] font-semibold text-[#1B1F27]">
+                <span>弹性伸缩</span>
+                <Switch
+                  hue="mint"
+                  checked={field.state.value}
+                  onCheckedChange={(checked) => field.handleChange(checked)}
+                />
+              </label>
+            )}
+          </form.Field>
+        </div>
+      </Fieldset>
+
+      <Fieldset>
+        <FieldsetLegend>网络入口（network.*）</FieldsetLegend>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_120px]">
+          <form.Field
+            name="network.host"
+            validators={{
+              onBlur: ({ value }) => (!value.trim() ? '请输入绑定域名' : undefined),
+            }}
+          >
+            {(field) => (
+              <FormItem field={field}>
+                <FormLabel required>绑定域名</FormLabel>
+                <FormControl>
+                  <Input
+                    surface="white"
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          </form.Field>
+
+          <form.Field
+            name="network.port"
+            validators={{
+              onChange: ({ value }) =>
+                value < 1 || value > 65535 ? '端口需在 1-65535' : undefined,
+            }}
+          >
+            {(field) => (
+              <FormItem field={field}>
+                <FormLabel required>端口</FormLabel>
+                <FormControl>
+                  <Input
+                    surface="white"
+                    type="number"
+                    name={field.name}
+                    value={String(field.state.value)}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          </form.Field>
+        </div>
+      </Fieldset>
+
+      <div className="flex items-center gap-2">
+        <FormSubmit>应用集群配置</FormSubmit>
+        <FormReset onClick={() => setResult(null)}>恢复默认</FormReset>
+      </div>
+
+      {result && (
+        <code className="rounded-[12px] bg-[#F6F7F9] px-3 py-2 font-glaze-mono text-[11px] text-[#123A5C] break-all">
+          {result}
+        </code>
+      )}
+    </Form>
+  )
+}
+
+function FormRevalidateLogicDemo() {
+  const [saved, setSaved] = React.useState<string | null>(null)
+
+  const form = useForm({
+    defaultValues: {
+      channel: 'webhook' as 'webhook' | 'email',
+      webhookUrl: '',
+      email: '',
+    },
+    validationLogic: revalidateLogic({
+      mode: 'submit',
+      modeAfterSubmission: 'change',
+    }),
+    validators: {
+      onDynamic: ({ value }) => {
+        if (value.channel === 'webhook' && !/^https:\/\/.+/.test(value.webhookUrl.trim())) {
+          return {
+            fields: {
+              webhookUrl: '请输入以 https:// 开头的有效 Webhook 地址',
+            },
+          }
+        }
+        if (value.channel === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email.trim())) {
+          return {
+            fields: {
+              email: '请输入合法的接收邮箱地址',
+            },
+          }
+        }
+        return undefined
+      },
+    },
+    onSubmit: ({ value }) => {
+      const target = value.channel === 'webhook' ? value.webhookUrl : value.email
+      setSaved(`已启用 ${value.channel.toUpperCase()} 告警：${target}`)
+    },
+  })
+
+  return (
+    <Form form={form} className="w-full max-w-md">
+      <form.Field name="channel">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel>告警通道</FormLabel>
+            <RadioGroup
+              value={field.state.value}
+              onValueChange={(val) => {
+                setSaved(null)
+                field.handleChange(val as 'webhook' | 'email')
+              }}
+              className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+            >
+              <Radio card value="webhook" label="Webhook" description="推送至飞书 / Slack" />
+              <Radio card value="email" label="电子邮件" description="发送至值班邮箱" />
+            </RadioGroup>
+          </FormItem>
+        )}
+      </form.Field>
+
+      <FormSubscribe selector={(state) => state.values.channel as 'webhook' | 'email'}>
+        {(channel) =>
+          channel === 'webhook' ? (
+            <form.Field name="webhookUrl">
+              {(field) => (
+                <FormItem field={field}>
+                  <FormLabel required>Webhook 地址</FormLabel>
+                  <FormControl>
+                    <Input
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => {
+                        setSaved(null)
+                        field.handleChange(e.target.value)
+                      }}
+                      placeholder="https://hooks.glaze.dev/alerts"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    首次提交前输入不打扰；提交失败后自动切换为实时输入重校验
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            </form.Field>
+          ) : (
+            <form.Field name="email">
+              {(field) => (
+                <FormItem field={field}>
+                  <FormLabel required>值班邮箱</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => {
+                        setSaved(null)
+                        field.handleChange(e.target.value)
+                      }}
+                      placeholder="oncall@glaze.dev"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    首次提交前输入不打扰；提交失败后自动切换为实时输入重校验
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            </form.Field>
+          )
+        }
+      </FormSubscribe>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <FormSubmit>保存告警配置</FormSubmit>
+        <FormSubscribe selector={(state) => state.submissionAttempts}>
+          {(attempts) => (
+            <HueTag hue={attempts > 0 ? 'peach' : 'sky'} size="xs">
+              {attempts > 0 ? `已切换为 onChange 实时校验（尝试 ${attempts} 次）` : '当前模式：提交时校验'}
+            </HueTag>
+          )}
+        </FormSubscribe>
+      </div>
+
+      {saved && <span className="text-[12px] font-medium text-[#2F6B28]">{saved}</span>}
+    </Form>
+  )
+}
+
+type ReleaseSubmitMeta = {
+  action: 'draft' | 'publish'
+}
+
+const releaseFormOpts = formOptions({
+  defaultValues: {
+    version: 'v2.4.0',
+    changelog: '',
+  },
+  onSubmitMeta: {
+    action: 'publish',
+  } as ReleaseSubmitMeta,
+})
+
+function FormSubmitMetaDemo() {
+  const [notice, setNotice] = React.useState<{ hue: 'sky' | 'mint'; text: string } | null>(null)
+
+  const form = useForm({
+    ...releaseFormOpts,
+    onSubmit: ({ value, meta }) => {
+      if (meta.action === 'draft') {
+        setNotice({
+          hue: 'sky',
+          text: `已保存草稿 ${value.version}（说明 ${value.changelog.length} 字）`,
+        })
+        return
+      }
+      setNotice({
+        hue: 'mint',
+        text: `已正式发布 ${value.version}！`,
+      })
+    },
+  })
+
+  return (
+    <Form form={form} className="w-full max-w-md">
+      <form.Field
+        name="version"
+        validators={{
+          onSubmit: ({ value }) =>
+            !/^v\d+\.\d+\.\d+$/.test(value.trim()) ? '版本号格式需如 v2.4.0' : undefined,
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>发布版本号</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => {
+                  setNotice(null)
+                  field.handleChange(e.target.value)
+                }}
+                placeholder="v2.4.0"
+                className="font-glaze-mono"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+
+      <form.Field name="changelog">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel>变更说明</FormLabel>
+            <FormControl>
+              <Textarea
+                rows={2}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => {
+                  setNotice(null)
+                  field.handleChange(e.target.value)
+                }}
+                placeholder="填写本次发布的重点更新内容..."
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      </form.Field>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <FormSubmit>发布上线</FormSubmit>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => void form.handleSubmit({ action: 'draft' })}
+        >
+          保存草稿
+        </Button>
+        {notice && (
+          <HueTag hue={notice.hue} size="sm">
+            {notice.text}
+          </HueTag>
+        )}
+      </div>
     </Form>
   )
 }
@@ -1596,13 +2474,12 @@ export function Example() {
         render: () => <FieldValidationDemo />,
         code: `import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
-import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 export function Example() {
   return (
-    <Form validationMode="onBlur" onSubmit={(e) => e.preventDefault()}>
-      <Field name="slug">
+    <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+      <Field name="slug" validationMode="onBlur">
         <FieldLabel>仓库名称</FieldLabel>
         <Input required pattern="^[a-z0-9-]+$" placeholder="glaze-design-system" />
         <FieldDescription>仅小写字母、数字和连字符</FieldDescription>
@@ -1610,7 +2487,7 @@ export function Example() {
         <FieldError match="patternMismatch">只能包含小写字母、数字和连字符 (-)</FieldError>
       </Field>
       <Button type="submit" size="sm">验证字段</Button>
-    </Form>
+    </form>
   )
 }`,
       },
@@ -1765,89 +2642,690 @@ export function Example() {
   form: {
     hero: {
       render: () => <FormHeroDemo />,
-      code: `import { Button } from '@/components/ui/button'
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
-import { Form } from '@/components/ui/form'
+      code: `import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSubmit,
+  useForm,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 export function Example() {
+  const form = useForm({
+    defaultValues: { project: '' },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
-      <Field name="project">
-        <FieldLabel>项目标识</FieldLabel>
-        <Input required placeholder="例如 glaze-console" />
-        <FieldDescription>仅支持小写字母与连字符</FieldDescription>
-        <FieldError match="valueMissing">请输入项目标识</FieldError>
-      </Field>
-      <Button type="submit">提交校验</Button>
+    <Form form={form}>
+      <form.Field
+        name="project"
+        validators={{
+          onBlur: ({ value }) =>
+            !value.trim()
+              ? '请输入项目标识'
+              : !/^[a-z0-9-]+$/.test(value)
+                ? '仅支持小写字母、数字与连字符 (-)'
+                : undefined,
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>项目标识</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="例如 glaze-console"
+              />
+            </FormControl>
+            <FormDescription>仅支持小写字母、数字与连字符</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+      <FormSubmit>提交校验</FormSubmit>
     </Form>
   )
 }`,
     },
     examples: [
       {
-        id: 'server-errors',
-        title: '服务端错误映射（errors + onFormSubmit）',
-        description: '参考 Base UI Form 核心范式：使用 onFormSubmit 直接获取序列化字段对象，并将后端校验错误通过 errors 精准路由到对应 FieldError。',
-        render: () => <FormServerErrorsDemo />,
-        code: `import * as React from 'react'
-import { Button } from '@/components/ui/button'
-import { Field, FieldError, FieldLabel } from '@/components/ui/field'
-import { Form } from '@/components/ui/form'
+        id: 'async-field-debounce',
+        title: '字段级防抖异步校验（onChangeAsync + AbortSignal）',
+        description: '配置 onChangeAsyncDebounceMs 实现输入防抖与自动取消过期请求；校验期间 FormMessage 通过 validatingText 显示加载提示，全部通过前由 FormSubmit disableWhenInvalid 拦截提交。',
+        render: () => <FormAsyncDebounceDemo />,
+        code: `import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSubmit,
+  useForm,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+
+const RESERVED = new Set(['api', 'app', 'admin', 'www'])
+
+export function Example() {
+  const form = useForm({
+    defaultValues: { subdomain: '' },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
+  return (
+    <Form form={form}>
+      <form.Field
+        name="subdomain"
+        validators={{
+          onChange: ({ value }) =>
+            value.length < 3 ? '至少需要 3 个字符' : undefined,
+          onChangeAsyncDebounceMs: 400,
+          onChangeAsync: async ({ value, signal }) => {
+            await new Promise((r) => setTimeout(r, 450))
+            if (signal.aborted) return undefined
+            return RESERVED.has(value) ? \`子域名 "\${value}" 已被占用\` : undefined
+          },
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>工作区子域名</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                trailingElement={<span className="text-[12px] text-[#8A90A0]">.glaze.app</span>}
+              />
+            </FormControl>
+            <FormDescription>400ms 防抖后自动查重</FormDescription>
+            <FormMessage validatingText="正在检查子域名可用性..." />
+          </FormItem>
+        )}
+      </form.Field>
+      <FormSubmit disableWhenInvalid>绑定子域名</FormSubmit>
+    </Form>
+  )
+}`,
+      },
+      {
+        id: 'linked-fields',
+        title: '跨字段联动校验（onChangeListenTo）',
+        description: '通过 onChangeListenTo 监听关联字段变更，无需手写 useEffect 即可在修改主密码时自动重跑确认密码校验。',
+        render: () => <FormLinkedFieldsDemo />,
+        code: `import {
+  Form,
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSubmit,
+  useForm,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 export function Example() {
-  const [errors, setErrors] = React.useState<Record<string, string>>({})
+  const form = useForm({
+    defaultValues: { password: '', confirmPassword: '' },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
   return (
-    <Form
-      errors={errors}
-      onFormSubmit={(values) => {
-        if (values.username === 'admin') {
-          setErrors({ username: '用户名 "admin" 已被系统保留' })
-        } else {
-          setErrors({})
+    <Form form={form}>
+      <form.Field
+        name="password"
+        validators={{
+          onChange: ({ value }) => (value.length < 8 ? '密码长度至少 8 位' : undefined),
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>新密码</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+
+      <form.Field
+        name="confirmPassword"
+        validators={{
+          onChangeListenTo: ['password'],
+          onChange: ({ value, fieldApi }) =>
+            value !== fieldApi.form.getFieldValue('password')
+              ? '两次输入的密码不一致'
+              : undefined,
+        }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>确认密码</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+
+      <FormSubmit disableWhenInvalid>更新密码</FormSubmit>
+    </Form>
+  )
+}`,
+      },
+      {
+        id: 'dynamic-array',
+        title: '动态数组字段（mode="array"）',
+        description: '使用 mode="array" 声明数组字段，内置 pushValue、removeValue、swapValues 操作与强类型索引路径 env[i].key 逐项校验。',
+        render: () => <FormDynamicArrayDemo />,
+        code: `import { Plus, Trash } from '@phosphor-icons/react'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormItem,
+  FormMessage,
+  FormSubmit,
+  useForm,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+
+export function Example() {
+  const form = useForm({
+    defaultValues: {
+      env: [{ key: 'NODE_ENV', value: 'production' }],
+    },
+    onSubmit: ({ value }) => console.log(value.env),
+  })
+
+  return (
+    <Form form={form}>
+      <form.Field name="env" mode="array">
+        {(arrayField) => (
+          <div className="flex flex-col gap-2.5">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => arrayField.pushValue({ key: '', value: '' })}
+            >
+              <Plus size={14} weight="bold" /> 新增变量
+            </Button>
+            {arrayField.state.value.map((_, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <form.Field
+                  name={\`env[\${i}].key\`}
+                  validators={{ onBlur: ({ value }) => (!value ? '必填' : undefined) }}
+                >
+                  {(subField) => (
+                    <FormItem field={subField}>
+                      <FormControl>
+                        <Input
+                          value={subField.state.value}
+                          onBlur={subField.handleBlur}
+                          onChange={(e) => subField.handleChange(e.target.value)}
+                          placeholder="KEY"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                </form.Field>
+                <form.Field name={\`env[\${i}].value\`}>
+                  {(subField) => (
+                    <Input
+                      value={subField.state.value}
+                      onChange={(e) => subField.handleChange(e.target.value)}
+                      placeholder="VALUE"
+                    />
+                  )}
+                </form.Field>
+                <Button
+                  type="button"
+                  variant="danger"
+                  size="sm"
+                  onClick={() => arrayField.removeValue(i)}
+                >
+                  <Trash size={14} weight="bold" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </form.Field>
+      <FormSubmit>保存环境变量</FormSubmit>
+    </Form>
+  )
+}`,
+      },
+      {
+        id: 'nested-and-listeners',
+        title: '嵌套对象路径与字段联动副作用（DeepKeys + listeners）',
+        description: '支持 compute.preset、network.host 等深度嵌套字段路径；借助 listeners.onChange 在切换模板时自动更新 NumberField 副本数与 Switch 弹性伸缩开关。',
+        render: () => <FormNestedListenersDemo />,
+        code: `import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset'
+import { Form, FormItem, FormLabel, FormSubmit, useForm } from '@/components/ui/form'
+import { NumberField } from '@/components/ui/number-field'
+import { Select } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+
+const PRESETS = {
+  starter: { replicas: 1, autoScale: false },
+  pro: { replicas: 3, autoScale: true },
+  enterprise: { replicas: 8, autoScale: true },
+}
+
+export function Example() {
+  const form = useForm({
+    defaultValues: {
+      compute: { preset: 'starter', replicas: 1, autoScale: false },
+    },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
+  return (
+    <Form form={form}>
+      <Fieldset>
+        <FieldsetLegend>计算规格</FieldsetLegend>
+        <form.Field
+          name="compute.preset"
+          listeners={{
+            onChange: ({ value, fieldApi }) => {
+              const p = PRESETS[value as keyof typeof PRESETS]
+              if (!p) return
+              fieldApi.form.setFieldValue('compute.replicas', p.replicas)
+              fieldApi.form.setFieldValue('compute.autoScale', p.autoScale)
+            },
+          }}
+        >
+          {(field) => (
+            <FormItem field={field}>
+              <FormLabel>规格模板</FormLabel>
+              <Select
+                surface="white"
+                value={field.state.value}
+                onValueChange={field.handleChange}
+                options={[
+                  { value: 'starter', label: '入门版 · 1 副本' },
+                  { value: 'pro', label: '专业版 · 3 副本' },
+                  { value: 'enterprise', label: '企业版 · 8 副本' },
+                ]}
+              />
+            </FormItem>
+          )}
+        </form.Field>
+        <form.Field name="compute.replicas">
+          {(field) => (
+            <NumberField
+              surface="white"
+              label="实例副本数"
+              min={1}
+              max={32}
+              value={field.state.value}
+              onValueChange={(v) => v !== null && field.handleChange(v)}
+            />
+          )}
+        </form.Field>
+        <form.Field name="compute.autoScale">
+          {(field) => (
+            <Switch checked={field.state.value} onCheckedChange={field.handleChange} />
+          )}
+        </form.Field>
+      </Fieldset>
+      <FormSubmit>应用配置</FormSubmit>
+    </Form>
+  )
+}`,
+      },
+      {
+        id: 'revalidate-logic',
+        title: '动态校验策略与条件字段（revalidateLogic + FormSubscribe）',
+        description: '通过 revalidateLogic({ mode: "submit", modeAfterSubmission: "change" }) 实现“首次提交前不打扰，提交失败后实时重校验”的渐进式体验，并搭配 FormSubscribe 按所选通道条件渲染不同输入项。',
+        render: () => <FormRevalidateLogicDemo />,
+        code: `import {
+  Form,
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSubmit,
+  FormSubscribe,
+  revalidateLogic,
+  useForm,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Radio } from '@/components/ui/radio'
+import { RadioGroup } from '@/components/ui/radio-group'
+
+export function Example() {
+  const form = useForm({
+    defaultValues: { channel: 'webhook' as 'webhook' | 'email', webhookUrl: '', email: '' },
+    validationLogic: revalidateLogic({ mode: 'submit', modeAfterSubmission: 'change' }),
+    validators: {
+      onDynamic: ({ value }) => {
+        if (value.channel === 'webhook' && !value.webhookUrl.startsWith('https://')) {
+          return { fields: { webhookUrl: '请输入以 https:// 开头的地址' } }
         }
-      }}
-    >
-      <Field name="username">
-        <FieldLabel>管理员账号</FieldLabel>
-        <Input required defaultValue="admin" />
-        <FieldError />
-      </Field>
-      <Button type="submit">提交</Button>
+        if (value.channel === 'email' && !value.email.includes('@')) {
+          return { fields: { email: '请输入合法邮箱' } }
+        }
+        return undefined
+      },
+    },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
+  return (
+    <Form form={form}>
+      <form.Field name="channel">
+        {(field) => (
+          <RadioGroup
+            value={field.state.value}
+            onValueChange={(v) => field.handleChange(v as 'webhook' | 'email')}
+          >
+            <Radio card value="webhook" label="Webhook" />
+            <Radio card value="email" label="电子邮件" />
+          </RadioGroup>
+        )}
+      </form.Field>
+      <FormSubscribe selector={(s) => s.values.channel}>
+        {(channel) =>
+          channel === 'webhook' ? (
+            <form.Field name="webhookUrl">
+              {(field) => (
+                <FormItem field={field}>
+                  <FormLabel required>Webhook 地址</FormLabel>
+                  <FormControl>
+                    <Input
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            </form.Field>
+          ) : (
+            <form.Field name="email">
+              {(field) => (
+                <FormItem field={field}>
+                  <FormLabel required>值班邮箱</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            </form.Field>
+          )
+        }
+      </FormSubscribe>
+      <FormSubmit>保存告警配置</FormSubmit>
+    </Form>
+  )
+}`,
+      },
+      {
+        id: 'server-errors',
+        title: '异步校验与服务端错误映射（onSubmitAsync）',
+        description: '利用 TanStack Form 的 onSubmitAsync 返回 { form, fields } 错误对象，同时在顶部 FormErrors 与对应字段 FormMessage 精准展示错误，FormSubmit 自动切换提交加载态。',
+        render: () => <FormServerErrorsDemo />,
+        code: `import {
+  Form,
+  FormControl,
+  FormErrors,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSubmit,
+  useForm,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+
+export function Example() {
+  const form = useForm({
+    defaultValues: { username: 'admin' },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        if (value.username.toLowerCase() === 'admin') {
+          return {
+            form: '服务端拒绝了本次提交，请修正下方冲突字段',
+            fields: { username: '用户名 "admin" 已被系统保留' },
+          }
+        }
+        return undefined
+      },
+    },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
+  return (
+    <Form form={form}>
+      <FormErrors />
+      <form.Field name="username">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>管理员账号</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+      <FormSubmit pendingText="校验中...">提交</FormSubmit>
+    </Form>
+  )
+}`,
+      },
+      {
+        id: 'submit-meta',
+        title: '多操作提交元数据与配置复用（formOptions + onSubmitMeta）',
+        description: '通过 formOptions 声明可复用表单配置与 onSubmitMeta 类型，同一个表单可支持「发布上线」与「保存草稿」等不同提交意图。',
+        render: () => <FormSubmitMetaDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSubmit,
+  formOptions,
+  useForm,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+
+const releaseFormOpts = formOptions({
+  defaultValues: { version: 'v2.4.0', changelog: '' },
+  onSubmitMeta: { action: 'publish' as 'draft' | 'publish' },
+})
+
+export function Example() {
+  const form = useForm({
+    ...releaseFormOpts,
+    onSubmit: ({ value, meta }) => {
+      console.log(meta.action, value)
+    },
+  })
+
+  return (
+    <Form form={form}>
+      <form.Field name="version">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>发布版本号</FormLabel>
+            <FormControl>
+              <Input
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+      <form.Field name="changelog">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel>变更说明</FormLabel>
+            <FormControl>
+              <Textarea
+                rows={2}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      </form.Field>
+      <div className="flex items-center gap-2">
+        <FormSubmit>发布上线</FormSubmit>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => void form.handleSubmit({ action: 'draft' })}
+        >
+          保存草稿
+        </Button>
+      </div>
     </Form>
   )
 }`,
       },
       {
         id: 'complete-form',
-        title: '综合配置表单（多控件与重置）',
-        description: '组合 Input、Select、Textarea 与 Checkbox，演示原生重置与表单数据汇总。',
+        title: '综合配置表单（多控件、重置与状态订阅）',
+        description: '搭配原封不动的 Glaze Input、Select、Textarea 与 Checkbox，结合 FormSubmit、FormReset 与 FormSubscribe 实现细粒度脏状态追踪。',
         render: () => <FormCompleteDemo />,
-        code: `import * as React from 'react'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Field, FieldLabel } from '@/components/ui/field'
-import { Form } from '@/components/ui/form'
+        code: `import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Form,
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormReset,
+  FormSubmit,
+  FormSubscribe,
+  useForm,
+} from '@/components/ui/form'
+import { HueTag } from '@/components/ui/hue-tag'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 
 export function Example() {
-  const [region, setRegion] = React.useState('cn-sh')
+  const form = useForm({
+    defaultValues: {
+      service: 'edge-gateway',
+      region: 'cn-sh',
+      notes: '',
+      tls: true,
+    },
+    onSubmit: ({ value }) => console.log(value),
+  })
+
   return (
-    <Form onFormSubmit={(values) => console.log({ ...values, region })}>
-      <Field name="service">
-        <FieldLabel>服务名称</FieldLabel>
-        <Input required defaultValue="edge-gateway" />
-      </Field>
-      <Select value={region} onValueChange={setRegion} options={[{ value: 'cn-sh', label: '华东 · 上海' }]} />
-      <Field name="notes">
-        <FieldLabel>备注说明</FieldLabel>
-        <Textarea rows={2} placeholder="可选发布备注..." />
-      </Field>
-      <Checkbox name="tls" defaultChecked label="强制启用 TLS 1.3" />
-      <Button type="submit">创建服务</Button>
+    <Form form={form}>
+      <form.Field
+        name="service"
+        validators={{ onChange: ({ value }) => (!value.trim() ? '请填写服务名称' : undefined) }}
+      >
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel required>服务名称</FormLabel>
+            <FormControl>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </form.Field>
+      <form.Field name="region">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel>部署区域</FormLabel>
+            <Select
+              value={field.state.value}
+              onValueChange={(val) => field.handleChange(val)}
+              options={[{ value: 'cn-sh', label: '华东 · 上海' }]}
+            />
+          </FormItem>
+        )}
+      </form.Field>
+      <form.Field name="notes">
+        {(field) => (
+          <FormItem field={field}>
+            <FormLabel>备注说明</FormLabel>
+            <FormControl>
+              <Textarea
+                rows={2}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="可选发布备注..."
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      </form.Field>
+      <form.Field name="tls">
+        {(field) => (
+          <Checkbox
+            checked={field.state.value}
+            onCheckedChange={(checked) => field.handleChange(Boolean(checked))}
+            label="强制启用 TLS 1.3"
+          />
+        )}
+      </form.Field>
+      <div className="flex items-center gap-2">
+        <FormSubmit>创建服务</FormSubmit>
+        <FormReset>重置</FormReset>
+        <FormSubscribe selector={(state) => state.isDirty}>
+          {(isDirty) => (isDirty ? <HueTag hue="sky" size="xs">有未保存更改</HueTag> : null)}
+        </FormSubscribe>
+      </div>
     </Form>
   )
 }`,

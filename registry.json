@@ -652,10 +652,13 @@
       "name": "form",
       "type": "registry:ui",
       "title": "Form (表单容器)",
-      "description": "原生约束验证与服务端错误信息统一分发容器，与 Field 无缝协作。",
+      "description": "基于 TanStack Form (@tanstack/react-form) 封装的类型安全表单容器与字段原语，内置同步/异步校验、服务端错误映射、细粒度状态订阅，无缝搭配 Input、Select、Textarea、Checkbox 等 Glaze 基础控件。",
       "dependencies": [
-        "@base-ui/react",
+        "@tanstack/react-form",
         "cn"
+      ],
+      "registryDependencies": [
+        "@glaze/button"
       ],
       "categories": [
         "inputs"

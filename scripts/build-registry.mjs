@@ -230,9 +230,9 @@ function extractApiInfo(filePath) {
           }
         }
       }
-    } else if (ts.isExportDeclaration(stmt) && stmt.exportClause && ts.isNamedExports(stmt.exportClause)) {
+    } else if (ts.isExportDeclaration(stmt) && !stmt.isTypeOnly && stmt.exportClause && ts.isNamedExports(stmt.exportClause)) {
       for (const el of stmt.exportClause.elements) {
-        exportedComponents.push(el.name.text)
+        if (!el.isTypeOnly) exportedComponents.push(el.name.text)
       }
     }
   }

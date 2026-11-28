@@ -14,6 +14,9 @@ importers:
       '@phosphor-icons/react':
         specifier: ^2.1.10
         version: 2.1.10(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@tanstack/react-form':
+        specifier: ^1.33.6
+        version: 1.33.6(@types/react@19.3.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@tanstack/react-table':
         specifier: ^9.3.1
         version: 9.3.1(@types/react@19.3.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -1117,6 +1120,26 @@ packages:
     resolution: {integrity: sha512-BCNiY0a1ZjdOHVqw7kyb7U72BwfMF3dfUuN+tQsLWky/J5JOI/r7abibglXfygrZhVO/3u3V+E25kkKTeMkXaQ==}
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
+
+  '@tanstack/devtools-event-client@0.5.1':
+    resolution: {integrity: sha512-MiBx6Ybr65MFatCnk8IJzhGxd4hvsvEap4aT0gXOC274rV4hm0UPNHxznB5KGYtu84aXrIAsJEBElqzdPe+eeg==}
+    engines: {node: '>=18'}
+
+  '@tanstack/form-core@1.33.6':
+    resolution: {integrity: sha512-kyJN+qYVIxv4dXatQzKkay++NwEDkwS2hmZe80lRGxs4i+AbWKAucbKPndYgwSczbEoZms2VRqNeR+WnM4jucg==}
+
+  '@tanstack/pacer-lite@0.1.1':
+    resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
+    engines: {node: '>=18'}
+
+  '@tanstack/react-form@1.33.6':
+    resolution: {integrity: sha512-4JRcQZ0uQrsvkVEd2uZ/d6xIb711Jj/+MQjBLCFpK29xvSIRzz1h6YrA+BsQ+ZjQZNYoOugp1idLmoWpelUSgQ==}
+    peerDependencies:
+      '@tanstack/react-start': '*'
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@tanstack/react-start':
+        optional: true
 
   '@tanstack/react-store@0.11.4':
     resolution: {integrity: sha512-JAQz7LcABVRbxZ6qCd4u/KqDaqBc1qmcOWz7XBTdav1Ib363HQdihCQF1A755nDhoi9VEd6UqZ5thWVKTwIIXw==}
@@ -3420,6 +3443,25 @@ snapshots:
       '@tailwindcss/oxide': 4.3.5
       tailwindcss: 4.3.5
       vite: 8.4.0(jiti@2.7.0)(yaml@2.9.1)
+
+  '@tanstack/devtools-event-client@0.5.1': {}
+
+  '@tanstack/form-core@1.33.6':
+    dependencies:
+      '@tanstack/devtools-event-client': 0.5.1
+      '@tanstack/pacer-lite': 0.1.1
+      '@tanstack/store': 0.11.3
+
+  '@tanstack/pacer-lite@0.1.1': {}
+
+  '@tanstack/react-form@1.33.6(@types/react@19.3.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+    dependencies:
+      '@tanstack/form-core': 1.33.6
+      '@tanstack/react-store': 0.11.4(@types/react@19.3.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
 
   '@tanstack/react-store@0.11.4(@types/react@19.3.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:

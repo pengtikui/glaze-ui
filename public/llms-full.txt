@@ -581,10 +581,52 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 
 ## Form (表单容器) — `@glaze/form`
 
-原生约束验证与服务端错误信息统一分发容器，与 Field 无缝协作。
+基于 TanStack Form (@tanstack/react-form) 封装的类型安全表单容器与字段原语，内置同步/异步校验、服务端错误映射、细粒度状态订阅，无缝搭配 Input、Select、Textarea、Checkbox 等 Glaze 基础控件。
 - Install: `npx shadcn@latest add @glaze/form`
-- Import: `import { Form } from '@/components/ui/form'`
-- Base UI: `@base-ui/react/form` (https://base-ui.com/react/components/form)
+- Import: `import { createFormHook, createFormHookContexts, formOptions, revalidateLogic, useField, useForm, useStore, formatFormError, getFieldErrors, isFieldInvalid, useFormContext, useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormErrors, FormSubscribe, FormSubmit, FormReset } from '@/components/ui/form'`
+- Registry Deps: @glaze/button
+
+**Form Props:**
+- `form: AnyFormApi` — TanStack Form instance created with `useForm()`
+- `onSubmit: React.FormEventHandler<HTMLFormElement>` — Optional submit event handler invoked alongside `form.handleSubmit()`
+- `noValidate: boolean` — Disable native browser validation popups (defaults to `true` when `form` is provided)
+
+**FormItem Props:**
+- `field: AnyFieldApi` — TanStack Form field API from `<form.Field>` or `useField()`
+- `invalid: boolean` — Manually override invalid state
+- `disabled: boolean` = false — Mark the field group as disabled
+- `errorVisibility: FormErrorVisibility` = 'touched' — Control when validation errors become visible
+
+**FormLabel Props:**
+- `required: boolean` = false — Render a visual required indicator next to the label text
+
+**FormControl Props:**
+- `children: React.ReactElement<any>` (required) — Single Glaze input/control element (e.g. Input, Textarea, Select)
+
+**FormMessage Props:**
+- `field: AnyFieldApi` — Optional TanStack Form field override when rendered outside `<FormItem>`
+- `errorVisibility: FormErrorVisibility` = 'touched' — Control when validation errors become visible (used when `field` prop is passed directly)
+- `showAll: boolean` = false — Join all error messages instead of showing only the first
+- `validatingText: React.ReactNode` — Optional hint shown while an async field validator is pending
+
+**FormErrors Props:**
+- `form: AnyFormApi` — Optional TanStack Form instance (defaults to nearest `<Form form={form}>`)
+
+**FormSubscribe Props:**
+- `form: AnyFormApi` — Optional TanStack Form instance (defaults to nearest `<Form form={form}>`)
+- `selector: (state: AnyFormApi['state']) => TSelected` (required) — Selector deriving the subscribed slice from `form.state`
+- `children: (state: TSelected) => React.ReactNode` (required) — Render callback receiving the selected form state slice
+
+**FormSubmit Props:**
+- `form: AnyFormApi` — Optional TanStack Form instance (defaults to nearest `<Form form={form}>`)
+- `pendingText: React.ReactNode` — Label rendered while `form.state.isSubmitting` is true
+- `disableWhenInvalid: boolean` = false — Also disable the submit button whenever `form.state.canSubmit` is false
+
+**FormReset Props:**
+- `form: AnyFormApi` — Optional TanStack Form instance (defaults to nearest `<Form form={form}>`)
+- `disableWhenPristine: boolean` = false — Disable the reset button when the form has no unsaved changes (`!isDirty`)
+
+**Data Attributes:** `data-invalid` (字段校验未通过（自动同步至 FormItem、FormLabel 与 FormControl 子控件）), `data-valid` (字段已触碰且校验通过), `data-dirty` (字段值相对默认值已发生变更), `data-touched` (字段已被触碰或失焦), `data-validating` (异步校验器正在执行), `data-submitting` (FormSubmit 处于异步提交进行中)
 
 ## Select (下拉选择器) — `@glaze/select`
 

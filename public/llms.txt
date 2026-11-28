@@ -46,7 +46,7 @@
 - [ToggleGroup (切换按钮组)](/llms/components/toggle-group.md): 协调一组 Toggle 的单选或多选状态，内置柔灰胶囊轨道容器。
 - [Field (表单字段)](/llms/components/field.md): 自动关联 Label、Control、Description 与 Error 的无障碍表单字段容器。
 - [Fieldset (表单分组)](/llms/components/fieldset.md): 将相关表单字段归类到带标题（FieldsetLegend）的 18px 圆角区块内。
-- [Form (表单容器)](/llms/components/form.md): 原生约束验证与服务端错误信息统一分发容器，与 Field 无缝协作。
+- [Form (表单容器)](/llms/components/form.md): 基于 TanStack Form (@tanstack/react-form) 封装的类型安全表单容器与字段原语，内置同步/异步校验、服务端错误映射、细粒度状态订阅，无缝搭配 Input、Select、Textarea、Checkbox 等 Glaze 基础控件。
 
 ## Components — Selection & Menus (选择与命令)
 
