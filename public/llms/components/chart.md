@@ -270,8 +270,10 @@ export function ChartContainer({
         className={cn(
           'relative w-full min-w-0 select-none font-sans tabular-nums',
           '[&_.recharts-surface]:outline-none [&_.recharts-wrapper]:outline-none',
-          '[&_.recharts-cartesian-axis-tick_text]:text-[11px] [&_.recharts-cartesian-axis-tick_text]:font-medium',
-          '[&_.recharts-polar-angle-axis-tick_text]:text-[11px] [&_.recharts-polar-angle-axis-tick_text]:font-semibold',
+          // Recharts 3 renders tick labels in a sibling `.recharts-cartesian-axis-tick-labels` layer,
+          // so target the `*-tick-value` text class directly instead of `.recharts-cartesian-axis-tick text`.
+          '[&_.recharts-cartesian-axis-tick-value]:text-[11px] [&_.recharts-cartesian-axis-tick-value]:font-medium',
+          '[&_.recharts-polar-angle-axis-tick-value]:text-[11px] [&_.recharts-polar-angle-axis-tick-value]:font-semibold',
           className,
         )}
         style={{
