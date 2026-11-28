@@ -1,6 +1,8 @@
 import * as React from 'react'
 import {
   ArrowsClockwise,
+  ArrowsInLineHorizontal,
+  ArrowsOutLineHorizontal,
   ArrowSquareOut,
   ArrowUpRight,
   Bell,
@@ -25,6 +27,7 @@ import {
   GearSix,
   House,
   Key,
+  Layout,
   Link as LinkIcon,
   LockSimple,
   MagnifyingGlass,
@@ -109,6 +112,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
+  type SidebarVariant,
   useSidebar,
 } from '@/components/ui/sidebar'
 import { StatusDot } from '@/components/ui/status-dot'
@@ -695,25 +699,53 @@ const PRESENCE_META: Record<UserPresence, { label: string; status: Status }> = {
 // Main Demo Page Component
 // ============================================================================
 
-export function AdminShellDemoPage() {
+export type AdminShellContentWidth = 'full' | 'centered'
+export type AdminShellSidebarStyle = Extract<SidebarVariant, 'floating' | 'sidebar'>
+
+export interface AdminShellDemoPageProps {
+  /** 主内容区默认宽度模式：'full' 全宽铺满，'centered' 居中舒适限宽（默认 'full'） */
+  defaultContentWidth?: AdminShellContentWidth
+  /** 侧边栏默认外观：'floating' 悬浮圆角栏，'sidebar' 贴边全高栏（默认 'floating'） */
+  defaultSidebarVariant?: AdminShellSidebarStyle
+}
+
+export function AdminShellDemoPage({
+  defaultContentWidth = 'full',
+  defaultSidebarVariant = 'floating',
+}: AdminShellDemoPageProps = {}) {
   const [sidebarOpen, setSidebarOpen] = React.useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const [sidebarVariant, setSidebarVariant] =
+    React.useState<AdminShellSidebarStyle>(defaultSidebarVariant)
 
   return (
     <SidebarProvider
-      variant="floating"
+      variant={sidebarVariant}
       open={sidebarOpen}
       onOpenChange={setSidebarOpen}
       openMobile={mobileMenuOpen}
       onOpenMobileChange={setMobileMenuOpen}
-      className="mx-auto max-w-[1640px]"
     >
-      <AdminShellWorkspace />
+      <AdminShellWorkspace
+        defaultContentWidth={defaultContentWidth}
+        sidebarVariant={sidebarVariant}
+        onSidebarVariantChange={setSidebarVariant}
+      />
     </SidebarProvider>
   )
 }
 
-function AdminShellWorkspace() {
+interface AdminShellWorkspaceProps {
+  defaultContentWidth: AdminShellContentWidth
+  sidebarVariant: AdminShellSidebarStyle
+  onSidebarVariantChange: (next: AdminShellSidebarStyle) => void
+}
+
+function AdminShellWorkspace({
+  defaultContentWidth,
+  sidebarVariant,
+  onSidebarVariantChange,
+}: AdminShellWorkspaceProps) {
   const toast = useToast()
   const { state: sidebarState, isMobile, setOpenMobile, toggleSidebar } = useSidebar()
   const isCollapsed = !isMobile && sidebarState === 'collapsed'
@@ -722,6 +754,36 @@ function AdminShellWorkspace() {
   const [workspaceId, setWorkspaceId] = React.useState(WORKSPACES[0].id)
   const [activeRoute, setActiveRoute] = React.useState('overview')
   const [sidebarFilter, setSidebarFilter] = React.useState('')
+  const [contentWidth, setContentWidth] =
+    React.useState<AdminShellContentWidth>(defaultContentWidth)
+
+  const isFullWidth = contentWidth === 'full'
+  const isEdgeSidebar = sidebarVariant === 'sidebar'
+
+  const handleSetFullWidth = React.useCallback(
+    (full: boolean) => {
+      setContentWidth(full ? 'full' : 'centered')
+      toast({
+        title: full ? '已切换为全宽画布' : '已切换为居中限宽 (1360px)',
+        description: full
+          ? '顶栏与主内容区将铺满右侧全部可用视口宽度'
+          : '侧边栏保持贴靠最左侧，顶栏与主内容区同宽居中展示',
+        status: 'info',
+      })
+    },
+    [toast],
+  )
+
+  const handleSetEdgeSidebar = React.useCallback(
+    (edge: boolean) => {
+      onSidebarVariantChange(edge ? 'sidebar' : 'floating')
+      toast({
+        title: edge ? '侧边栏已切换为贴边全高模式' : '侧边栏已切换为悬浮釉面模式',
+        status: 'info',
+      })
+    },
+    [onSidebarVariantChange, toast],
+  )
 
   // Collapsible menu tree states (2nd & 3rd levels + collapsible sections)
   const [analyticsOpen, setAnalyticsOpen] = React.useState(true)
@@ -1381,10 +1443,19 @@ function AdminShellWorkspace() {
   const filteredTags = TAG_VIEWS.filter((t) => matchesFilter('标签视图', t.label))
   const showDnd = matchesFilter('免打扰模式', '偏好', '开关')
   const showCompact = matchesFilter('紧凑卡片模式', '密度', '偏好')
+  const showFullWidth = matchesFilter('全宽画布', '全宽', '宽度', '居中', '布局', '偏好')
+  const showEdgeSidebar = matchesFilter('贴边侧栏', '悬浮', '侧边栏', '布局', '偏好')
   const showCmdItem = matchesFilter('全局命令面板', '搜索', 'command')
   const showDocs = matchesFilter('开发者文档', 'api', 'docs', '外链')
   const showVault = matchesFilter('合规审计 Vault', '锁定', 'pro', '禁用')
-  const showUtilityGroup = showDnd || showCompact || showCmdItem || showDocs || showVault
+  const showUtilityGroup =
+    showDnd ||
+    showCompact ||
+    showFullWidth ||
+    showEdgeSidebar ||
+    showCmdItem ||
+    showDocs ||
+    showVault
 
   const hasAnyResult =
     showWorkspaceGroup ||
@@ -1395,7 +1466,7 @@ function AdminShellWorkspace() {
     showUtilityGroup
 
   const sidebarElement = (
-    <Sidebar variant="floating" collapsible="icon" mobileTitle="导航菜单">
+    <Sidebar collapsible="icon" mobileTitle="导航菜单">
       {/* 1. Workspace Switcher + 2. Quick Menu Filter */}
       <SidebarHeader>
         <Menu
@@ -1993,6 +2064,76 @@ function AdminShellWorkspace() {
                         }}
                       />
                     </div>
+                  </SidebarMenuItem>
+                )}
+
+                {showFullWidth && !isCollapsed && (
+                  <SidebarMenuItem>
+                    <div className="flex h-9.5 items-center justify-between gap-2 rounded-full px-3 text-[13px] font-semibold text-[#5B6170] hover:bg-[#F6F7F9]">
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <ArrowsOutLineHorizontal
+                          size={17}
+                          weight={isFullWidth ? 'fill' : 'duotone'}
+                          className={isFullWidth ? 'text-[#4A4FB8]' : 'text-[#6B7280]'}
+                        />
+                        <span className="truncate">全宽画布</span>
+                      </span>
+                      <Switch
+                        size="sm"
+                        hue="periwinkle"
+                        checked={isFullWidth}
+                        onCheckedChange={handleSetFullWidth}
+                      />
+                    </div>
+                  </SidebarMenuItem>
+                )}
+                {showFullWidth && isCollapsed && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={isFullWidth}
+                      icon={
+                        isFullWidth ? (
+                          <ArrowsInLineHorizontal size={17} weight="fill" />
+                        ) : (
+                          <ArrowsOutLineHorizontal size={17} weight="duotone" />
+                        )
+                      }
+                      onClick={() => handleSetFullWidth(!isFullWidth)}
+                    >
+                      {isFullWidth ? '画布宽度：全宽铺满' : '画布宽度：居中 1360px'}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+
+                {showEdgeSidebar && !isCollapsed && (
+                  <SidebarMenuItem>
+                    <div className="flex h-9.5 items-center justify-between gap-2 rounded-full px-3 text-[13px] font-semibold text-[#5B6170] hover:bg-[#F6F7F9]">
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <Layout
+                          size={17}
+                          weight={isEdgeSidebar ? 'fill' : 'duotone'}
+                          className={isEdgeSidebar ? 'text-[#24557F]' : 'text-[#6B7280]'}
+                        />
+                        <span className="truncate">贴边侧栏</span>
+                      </span>
+                      <Switch
+                        size="sm"
+                        hue="sky"
+                        checked={isEdgeSidebar}
+                        onCheckedChange={handleSetEdgeSidebar}
+                      />
+                    </div>
+                  </SidebarMenuItem>
+                )}
+                {showEdgeSidebar && isCollapsed && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={isEdgeSidebar}
+                      icon={<Layout size={17} weight={isEdgeSidebar ? 'fill' : 'duotone'} />}
+                      onClick={() => handleSetEdgeSidebar(!isEdgeSidebar)}
+                    >
+                      {isEdgeSidebar ? '侧栏样式：贴边全高' : '侧栏样式：悬浮圆角'}
+                    </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
 
@@ -2734,9 +2875,30 @@ function AdminShellWorkspace() {
 
       {/* Right Main Column: Sticky Top Bar + Reactive Bento Canvas */}
       <SidebarInset>
-        {/* Top Bar (Floating White Bar on #F2F4F8 Canvas) */}
-        <header className="sticky top-3 z-30 flex flex-wrap items-center justify-between gap-3 rounded-[22px] bg-white px-3.5 py-2.5 sm:top-4 sm:px-4">
-          {/* Left: Sidebar Trigger (Desktop Collapse + Mobile Drawer) + Dynamic Breadcrumbs */}
+        <div
+          className={cn(
+            'flex w-full flex-1 flex-col transition-[max-width] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
+            isEdgeSidebar
+              ? 'max-w-none'
+              : cn('gap-4', isFullWidth ? 'max-w-none' : 'mx-auto max-w-[1360px]'),
+          )}
+        >
+          {/* Top Bar: Floating Pill Bar (floating mode) or Edge-Flush Sticky Bar (sidebar mode) */}
+          <header
+            className={cn(
+              'sticky z-30 w-full bg-white',
+              isEdgeSidebar
+                ? 'top-0 lg:border-l lg:border-[#F2F3F5]'
+                : 'top-3 rounded-[22px] sm:top-4',
+            )}
+          >
+            <div
+              className={cn(
+                'flex w-full flex-wrap items-center justify-between gap-3 py-2.5',
+                isEdgeSidebar ? 'px-4 sm:px-6' : 'px-3.5 sm:px-4',
+              )}
+            >
+              {/* Left: Sidebar Trigger (Desktop Collapse + Mobile Drawer) + Dynamic Breadcrumbs */}
           <div className="flex min-w-0 items-center gap-2">
             <SidebarTrigger />
 
@@ -2950,10 +3112,18 @@ function AdminShellWorkspace() {
                 }
               />
             </div>
+            </div>
           </header>
 
           {/* Main Dashboard View Header & Bento Content */}
-          <main className="flex flex-1 flex-col gap-6 px-1 pt-2 pb-10">
+          <main
+            className={cn(
+              'flex w-full flex-1 flex-col gap-6 pb-10 transition-[max-width] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
+              isEdgeSidebar
+                ? cn('px-4 pt-5 sm:px-6', isFullWidth ? 'max-w-none' : 'mx-auto max-w-[1360px]')
+                : 'pt-2',
+            )}
+          >
             <div className="flex flex-wrap items-end justify-between gap-4 px-1">
               <div className="flex flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-2">
@@ -2985,6 +3155,29 @@ function AdminShellWorkspace() {
                     ]}
                   />
                 </div>
+                <Tooltip
+                  content={
+                    isFullWidth
+                      ? '当前全宽铺满，点击切换居中限宽 (1360px)'
+                      : '当前居中限宽 (1360px)，点击切换全宽铺满'
+                  }
+                  side="bottom"
+                >
+                  <Button
+                    variant={isFullWidth ? 'soft' : 'secondary'}
+                    hue={isFullWidth ? 'periwinkle' : undefined}
+                    size="sm"
+                    onClick={() => handleSetFullWidth(!isFullWidth)}
+                    className="hidden lg:inline-flex"
+                  >
+                    {isFullWidth ? (
+                      <ArrowsInLineHorizontal size={14} weight="bold" />
+                    ) : (
+                      <ArrowsOutLineHorizontal size={14} weight="bold" />
+                    )}
+                    <span>{isFullWidth ? '全宽画布' : '居中限宽'}</span>
+                  </Button>
+                </Tooltip>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -3009,7 +3202,8 @@ function AdminShellWorkspace() {
 
             {renderMainContent()}
           </main>
-        </SidebarInset>
+        </div>
+      </SidebarInset>
 
       {/* Command Palette Dialog (⌘K) — powered by Glaze Command (cmdk) */}
       <CommandDialog
@@ -3097,11 +3291,51 @@ function AdminShellWorkspace() {
               </CommandItem>
             ))}
           </CommandGroup>
+
+          <CommandSeparator />
+
+          <CommandGroup heading="布局偏好">
+            <CommandItem
+              value="切换全宽画布 居中限宽 布局宽度"
+              keywords={['全宽', '宽度', '居中', 'full', 'width', 'layout']}
+              onSelect={() => {
+                handleSetFullWidth(!isFullWidth)
+                setCmdOpen(false)
+                setCmdQuery('')
+              }}
+              className="justify-between gap-3"
+            >
+              <span className="text-[13.5px] font-bold">
+                {isFullWidth ? '切换为居中限宽 (1360px)' : '切换为全宽画布'}
+              </span>
+              <span className="rounded-full bg-[#F2F3F5] px-2.5 py-0.5 text-[11px] font-semibold text-[#6B7280]">
+                当前：{isFullWidth ? '全宽' : '居中'}
+              </span>
+            </CommandItem>
+            <CommandItem
+              value="切换侧边栏外观 悬浮圆角 贴边全高"
+              keywords={['侧边栏', '贴边', '悬浮', 'floating', 'sidebar', 'dock']}
+              onSelect={() => {
+                handleSetEdgeSidebar(!isEdgeSidebar)
+                setCmdOpen(false)
+                setCmdQuery('')
+              }}
+              className="justify-between gap-3"
+            >
+              <span className="text-[13.5px] font-bold">
+                {isEdgeSidebar ? '切换为悬浮圆角侧栏' : '切换为贴边全高侧栏'}
+              </span>
+              <span className="rounded-full bg-[#F2F3F5] px-2.5 py-0.5 text-[11px] font-semibold text-[#6B7280]">
+                当前：{isEdgeSidebar ? '贴边' : '悬浮'}
+              </span>
+            </CommandItem>
+          </CommandGroup>
         </CommandList>
         <CommandFooter>
           <span>↑↓ 选择 · Enter 跳转 · Esc 关闭</span>
           <span>
-            {commandRouteEntries.length + commandProjectEntries.length + commandTagEntries.length} 项命令
+            {commandRouteEntries.length + commandProjectEntries.length + commandTagEntries.length + 2}{' '}
+            项命令
           </span>
         </CommandFooter>
       </CommandDialog>

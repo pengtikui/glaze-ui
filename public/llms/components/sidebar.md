@@ -546,7 +546,12 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
         variant === 'sidebar' && 'bg-white',
         variant === 'inset' && 'bg-transparent',
         side === 'right' && 'order-last',
-        isOffcanvasCollapsed && 'pointer-events-none -mr-4 opacity-0',
+        isOffcanvasCollapsed &&
+          cn(
+            'pointer-events-none opacity-0',
+            variant === 'floating' && (contained ? '-mr-3' : '-mr-4'),
+            variant === 'inset' && (contained ? '-mr-2' : '-mr-3'),
+          ),
         className,
       )}
       {...props}
