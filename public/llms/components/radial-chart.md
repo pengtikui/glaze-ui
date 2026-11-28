@@ -172,7 +172,7 @@ export function RadialChart({
             startAngle={startAngle}
             endAngle={endAngle}
           >
-            <PolarAngleAxis type="number" domain={[0, max]} tick={false} />
+            <PolarAngleAxis type="number" domain={[0, max]} tick={false} axisLine={false} />
             {showTooltip && (
               <ChartTooltip
                 content={(tooltipProps) => (
@@ -280,6 +280,20 @@ export function GaugeChart({
   const h = height ?? (isSemi ? 86 : 96)
   const thickness = barSize ?? (isSemi ? 12 : 10)
 
+  // Recharts resolves percentage radii against `min(width, height) / 2`, which breaks the
+  // semicircle whenever the box is not ~2:1. Resolve the geometry in pixels instead so the
+  // arc always fits and stays centered regardless of the width/height passed in.
+  const EDGE = 1
+  // Rounded caps on the semicircle stick out `thickness / 2` below the baseline.
+  const capPad = isSemi ? thickness / 2 : 0
+  const outerRadius = Math.max(
+    thickness,
+    isSemi ? Math.min(w / 2 - EDGE, h - capPad - EDGE) : Math.min(w, h) / 2 - EDGE,
+  )
+  const innerRadius = Math.max(0, outerRadius - thickness)
+  const cy = isSemi ? (h - (outerRadius + capPad)) / 2 + outerRadius : h / 2
+  const labelBottom = isSemi ? h - cy : undefined
+
   const data = React.useMemo(
     () => [{ name: label, value: clamped, fill: accent }],
     [label, clamped, accent],
@@ -300,16 +314,16 @@ export function GaugeChart({
       <ChartContainer config={config} tone={tone} height="100%">
         <RechartsRadialBarChart
           data={data}
-          cx="50%"
-          cy={isSemi ? '88%' : '50%'}
-          innerRadius={isSemi ? '128%' : '76%'}
-          outerRadius={isSemi ? '160%' : '100%'}
+          cx={w / 2}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
           barSize={thickness}
           startAngle={isSemi ? 180 : 90}
           endAngle={isSemi ? 0 : -270}
           margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
         >
-          <PolarAngleAxis type="number" domain={[0, max]} tick={false} />
+          <PolarAngleAxis type="number" domain={[0, max]} tick={false} axisLine={false} />
           {showTooltip && (
             <ChartTooltip
               content={(tooltipProps) => (
@@ -338,8 +352,9 @@ export function GaugeChart({
       <div
         className={cn(
           'pointer-events-none absolute inset-x-0 flex flex-col items-center justify-center text-center',
-          isSemi ? 'bottom-0' : 'inset-y-0',
+          !isSemi && 'inset-y-0',
         )}
+        style={isSemi ? { bottom: labelBottom } : undefined}
       >
         <span
           className="inline-flex items-baseline gap-0.5 whitespace-nowrap font-glaze-display font-extrabold"
@@ -349,7 +364,7 @@ export function GaugeChart({
             lineHeight: isSemi ? '26px' : '22px',
           }}
         >
-          <span>{valueText ?? `${Math.round((clamped / max) * 100)}%`}</span>
+          <span>{valueText ?? (unit ? clamped : `${Math.round((clamped / max) * 100)}%`)}</span>
           {unit && (
             <span className="text-[11px] font-semibold" style={{ color: theme.axisColor }}>
               {unit}
