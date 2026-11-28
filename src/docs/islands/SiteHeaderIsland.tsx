@@ -4,6 +4,7 @@ import { Drawer } from '@/components/ui/drawer'
 import { GlazeProviders } from '@/docs/components/GlazeProviders'
 import { SiteHeader } from '@/docs/components/SiteHeader'
 import { COMPONENT_CATEGORIES, COMPONENTS_LIST } from '@/docs/data/catalog'
+import { useRouter } from '@/docs/router'
 
 export interface DocsNavItem {
   label: string
@@ -16,15 +17,18 @@ export interface SiteHeaderIslandProps {
   docsNav?: DocsNavItem[]
 }
 
-export function SiteHeaderIsland({
-  pathname,
+function SiteHeaderShell({
   showMobileMenuButton = false,
   docsNav = [],
-}: SiteHeaderIslandProps) {
+}: {
+  showMobileMenuButton?: boolean
+  docsNav?: DocsNavItem[]
+}) {
+  const { pathname } = useRouter()
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
   return (
-    <GlazeProviders pathname={pathname}>
+    <>
       <SiteHeader
         showMobileMenuButton={showMobileMenuButton}
         onOpenMobileMenu={() => setMobileOpen(true)}
@@ -35,7 +39,7 @@ export function SiteHeaderIsland({
           onOpenChange={setMobileOpen}
           side="right"
           title="Glaze 文档导航"
-          description="Markdown 文档与 58 个组件"
+          description={`Markdown 文档与 ${COMPONENTS_LIST.length} 个组件`}
         >
           <div className="flex flex-col gap-6 pb-12">
             {docsNav.length > 0 && (
@@ -97,6 +101,18 @@ export function SiteHeaderIsland({
           </div>
         </Drawer>
       )}
+    </>
+  )
+}
+
+export function SiteHeaderIsland({
+  pathname,
+  showMobileMenuButton = false,
+  docsNav = [],
+}: SiteHeaderIslandProps) {
+  return (
+    <GlazeProviders pathname={pathname}>
+      <SiteHeaderShell showMobileMenuButton={showMobileMenuButton} docsNav={docsNav} />
     </GlazeProviders>
   )
 }

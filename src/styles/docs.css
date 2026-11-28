@@ -1,5 +1,12 @@
 @import "../../registry/glaze/styles/glaze.css";
 
+/* Instant, flicker-free SPA transitions for Astro ClientRouter */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+}
+
 /* Docs site utilities & prose helpers */
 [id] {
   scroll-margin-top: 84px;

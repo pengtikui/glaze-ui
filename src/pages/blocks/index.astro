@@ -1,10 +1,14 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import { BLOCKS_LIST } from '@/docs/data/catalog'
 import { SiteHeaderIsland } from '@/docs/islands/SiteHeaderIsland'
 import { BlocksIndexIsland } from '@/docs/islands/PageIslands'
 ---
 
-<BaseLayout title="业务卡片 (112) · Glaze UI" description="112 张可独立安装的 Glaze 业务卡片模块">
+<BaseLayout
+  title={`业务卡片 (${BLOCKS_LIST.length}) · Glaze UI`}
+  description={`${BLOCKS_LIST.length} 张可独立安装的 Glaze 业务卡片模块`}
+>
   <SiteHeaderIsland pathname="/blocks" client:load />
   <BlocksIndexIsland client:only="react" />
 </BaseLayout>

@@ -11,13 +11,29 @@ function normalizePath(p: string) {
   return clean || '/'
 }
 
+async function performClientNavigate(to: string, replace?: boolean) {
+  if (typeof window === 'undefined') return
+  try {
+    const mod = await import('astro:transitions/client')
+    if (typeof mod.navigate === 'function') {
+      await mod.navigate(to, { history: replace ? 'replace' : 'push' })
+      return
+    }
+  } catch {
+    // Fall back to standard browser navigation when ClientRouter is unavailable
+  }
+  if (replace) {
+    window.location.replace(to)
+  } else {
+    window.location.assign(to)
+  }
+}
+
 const RouterContext = React.createContext<RouterContextValue>({
   pathname: '/',
   hash: '',
-  navigate: (to) => {
-    if (typeof window !== 'undefined') {
-      window.location.assign(to)
-    }
+  navigate: (to, opts) => {
+    void performClientNavigate(to, opts?.replace)
   },
 })
 
@@ -28,7 +44,7 @@ export function RouterProvider({
   children: React.ReactNode
   pathname?: string
 }) {
-  const [pathname] = React.useState(() => {
+  const [pathname, setPathname] = React.useState(() => {
     if (initialPathname) return normalizePath(initialPathname)
     if (typeof window !== 'undefined') return normalizePath(window.location.pathname)
     return '/'
@@ -38,18 +54,26 @@ export function RouterProvider({
   )
 
   React.useEffect(() => {
+    const syncLocation = () => {
+      setPathname(normalizePath(window.location.pathname))
+      setHash(window.location.hash)
+    }
     const onHash = () => setHash(window.location.hash)
+
     window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
+    window.addEventListener('popstate', syncLocation)
+    document.addEventListener('astro:after-swap', syncLocation)
+    document.addEventListener('astro:page-load', syncLocation)
+    return () => {
+      window.removeEventListener('hashchange', onHash)
+      window.removeEventListener('popstate', syncLocation)
+      document.removeEventListener('astro:after-swap', syncLocation)
+      document.removeEventListener('astro:page-load', syncLocation)
+    }
   }, [])
 
   const navigate = React.useCallback((to: string, opts?: { replace?: boolean }) => {
-    if (typeof window === 'undefined') return
-    if (opts?.replace) {
-      window.location.replace(to)
-    } else {
-      window.location.assign(to)
-    }
+    void performClientNavigate(to, opts?.replace)
   }, [])
 
   const value = React.useMemo(

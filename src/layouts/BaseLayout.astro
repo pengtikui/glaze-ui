@@ -1,14 +1,17 @@
 ---
+import { ClientRouter } from 'astro:transitions'
 import '../styles/docs.css'
 
 export interface Props {
   title?: string
   description?: string
+  clientRouter?: boolean
 }
 
 const {
   title = 'Glaze · Base UI 组件库与 shadcn Registry 文档',
   description = '基于 Base UI 1.9、Tailwind CSS v4 与 Recharts v3 的无障碍设计系统与 shadcn Registry',
+  clientRouter = true,
 } = Astro.props
 ---
 
@@ -30,48 +33,58 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
+    {clientRouter && <ClientRouter />}
   </head>
   <body class="min-h-screen bg-[#F2F4F8] text-[#1B1F27] antialiased">
     <slot />
 
     <script is:inline>
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.docs-prose pre.astro-code').forEach((pre) => {
-          if (pre.parentElement && pre.parentElement.classList.contains('docs-md-code-frame')) return
-          const lang = pre.getAttribute('data-language') || 'code'
-          const frame = document.createElement('div')
-          frame.className = 'docs-md-code-frame'
+      ;(function () {
+        function enhanceMarkdownCodeBlocks() {
+          document.querySelectorAll('.docs-prose pre.astro-code').forEach((pre) => {
+            if (pre.parentElement && pre.parentElement.classList.contains('docs-md-code-frame')) return
+            const lang = pre.getAttribute('data-language') || 'code'
+            const frame = document.createElement('div')
+            frame.className = 'docs-md-code-frame'
 
-          const header = document.createElement('div')
-          header.className = 'docs-md-code-header'
+            const header = document.createElement('div')
+            header.className = 'docs-md-code-header'
 
-          const label = document.createElement('span')
-          label.className = 'docs-md-code-lang'
-          label.textContent = lang
+            const label = document.createElement('span')
+            label.className = 'docs-md-code-lang'
+            label.textContent = lang
 
-          const btn = document.createElement('button')
-          btn.type = 'button'
-          btn.className = 'docs-md-code-copy'
-          btn.textContent = '复制'
-          btn.addEventListener('click', () => {
-            const text = pre.textContent || ''
-            navigator.clipboard?.writeText(text.trim()).catch(() => {})
-            btn.setAttribute('data-copied', 'true')
-            btn.textContent = '已复制'
-            window.setTimeout(() => {
-              btn.removeAttribute('data-copied')
-              btn.textContent = '复制'
-            }, 1600)
+            const btn = document.createElement('button')
+            btn.type = 'button'
+            btn.className = 'docs-md-code-copy'
+            btn.textContent = '复制'
+            btn.addEventListener('click', () => {
+              const text = pre.textContent || ''
+              navigator.clipboard?.writeText(text.trim()).catch(() => {})
+              btn.setAttribute('data-copied', 'true')
+              btn.textContent = '已复制'
+              window.setTimeout(() => {
+                btn.removeAttribute('data-copied')
+                btn.textContent = '复制'
+              }, 1600)
+            })
+
+            header.appendChild(label)
+            header.appendChild(btn)
+            pre.classList.add('docs-code-scroll')
+            pre.parentNode?.insertBefore(frame, pre)
+            frame.appendChild(header)
+            frame.appendChild(pre)
           })
+        }
 
-          header.appendChild(label)
-          header.appendChild(btn)
-          pre.classList.add('docs-code-scroll')
-          pre.parentNode?.insertBefore(frame, pre)
-          frame.appendChild(header)
-          frame.appendChild(pre)
-        })
-      })
+        if (!window.__glazeCodeCopyBound) {
+          window.__glazeCodeCopyBound = true
+          document.addEventListener('astro:page-load', enhanceMarkdownCodeBlocks)
+          document.addEventListener('DOMContentLoaded', enhanceMarkdownCodeBlocks)
+        }
+        enhanceMarkdownCodeBlocks()
+      })()
     </script>
   </body>
 </html>
