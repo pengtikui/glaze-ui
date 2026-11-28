@@ -397,14 +397,42 @@ body {
 
 /* ================================================================
    Base UI Authentic Stacked Toast Styles (GPU-composited)
+   Position is driven by `data-position` on the viewport (Base UI
+   "Custom position" pattern). `--glaze-toast-dir` flips the stacking
+   axis: -1 = stack grows upward (bottom-*), 1 = grows downward (top-*).
    ================================================================ */
 .glaze-toast-viewport {
+  --glaze-toast-inset: 24px;
+  --glaze-toast-dir: -1;
   position: fixed;
   z-index: 60;
-  right: 24px;
-  bottom: 24px;
+  right: var(--glaze-toast-inset);
+  bottom: var(--glaze-toast-inset);
   width: min(360px, calc(100vw - 32px));
   outline: none;
+}
+
+.glaze-toast-viewport[data-position^='top'] {
+  --glaze-toast-dir: 1;
+  top: var(--glaze-toast-inset);
+  bottom: auto;
+}
+
+.glaze-toast-viewport[data-position$='left'] {
+  right: auto;
+  left: var(--glaze-toast-inset);
+}
+
+.glaze-toast-viewport[data-position$='center'] {
+  right: 0;
+  left: 0;
+  margin-inline: auto;
+}
+
+@media (max-width: 640px) {
+  .glaze-toast-viewport {
+    --glaze-toast-inset: 16px;
+  }
 }
 
 .glaze-toast-root {
@@ -414,7 +442,7 @@ body {
   --shrink: calc(1 - var(--scale));
   --height: var(--toast-frontmost-height, var(--toast-height));
   --offset-y: calc(
-    var(--toast-offset-y) * -1 + (var(--toast-index) * var(--gap) * -1) +
+    (var(--toast-offset-y) + (var(--toast-index) * var(--gap))) * var(--glaze-toast-dir) +
       var(--toast-swipe-movement-y)
   );
 
@@ -438,8 +466,9 @@ body {
   transform: translate3d(
       var(--toast-swipe-movement-x),
       calc(
-        var(--toast-swipe-movement-y) - (var(--toast-index) * var(--peek)) -
-          (var(--shrink) * var(--height))
+        var(--toast-swipe-movement-y) +
+          ((var(--toast-index) * var(--peek)) + (var(--shrink) * var(--height))) *
+          var(--glaze-toast-dir)
       ),
       0
     )
@@ -448,6 +477,12 @@ body {
     transform var(--glaze-dur-toast) var(--glaze-ease-standard),
     opacity var(--glaze-dur-toast) var(--glaze-ease-standard),
     height var(--glaze-dur-toast) var(--glaze-ease-standard);
+}
+
+.glaze-toast-viewport[data-position^='top'] .glaze-toast-root {
+  top: 0;
+  bottom: auto;
+  transform-origin: top center;
 }
 
 /* Fill vertical gap between expanded toasts so hover never flickers */
@@ -460,6 +495,11 @@ body {
   height: calc(var(--gap) + 2px);
 }
 
+.glaze-toast-viewport[data-position^='top'] .glaze-toast-root::after {
+  top: auto;
+  bottom: 100%;
+}
+
 .glaze-toast-root[data-expanded] {
   height: var(--toast-height);
   transform: translate3d(var(--toast-swipe-movement-x), var(--offset-y), 0) scale(1);
@@ -467,7 +507,7 @@ body {
 
 .glaze-toast-root[data-starting-style] {
   opacity: 0;
-  transform: translate3d(0, 120%, 0) scale(0.96);
+  transform: translate3d(0, calc(-120% * var(--glaze-toast-dir)), 0) scale(0.96);
 }
 
 .glaze-toast-root[data-limited] {
@@ -480,7 +520,7 @@ body {
 }
 
 .glaze-toast-root[data-ending-style]:not([data-limited]):not([data-swipe-direction]) {
-  transform: translate3d(0, 120%, 0) scale(0.96);
+  transform: translate3d(0, calc(-120% * var(--glaze-toast-dir)), 0) scale(0.96);
 }
 
 .glaze-toast-root[data-ending-style][data-swipe-direction='down'] {
@@ -491,9 +531,25 @@ body {
   );
 }
 
+.glaze-toast-root[data-ending-style][data-swipe-direction='up'] {
+  transform: translate3d(
+    var(--toast-swipe-movement-x),
+    calc(var(--toast-swipe-movement-y) - 140%),
+    0
+  );
+}
+
 .glaze-toast-root[data-ending-style][data-swipe-direction='right'] {
   transform: translate3d(
     calc(var(--toast-swipe-movement-x) + 140%),
+    var(--offset-y),
+    0
+  );
+}
+
+.glaze-toast-root[data-ending-style][data-swipe-direction='left'] {
+  transform: translate3d(
+    calc(var(--toast-swipe-movement-x) - 140%),
     var(--offset-y),
     0
   );
@@ -514,6 +570,90 @@ body {
 
 .glaze-toast-content[data-expanded] {
   opacity: 1;
+}
+
+/* Repeat-trigger / upsert scale pulse (uses individual `scale` so stacking `transform` is untouched) */
+@keyframes glaze-toast-bump-a {
+  0% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.045;
+  }
+  70% {
+    scale: 0.985;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes glaze-toast-bump-b {
+  0% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.045;
+  }
+  70% {
+    scale: 0.985;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+.glaze-toast-root[data-bump='a'],
+.glaze-toast-anchored-root[data-bump='a'] {
+  animation: glaze-toast-bump-a 320ms var(--glaze-ease-standard);
+}
+
+.glaze-toast-root[data-bump='b'],
+.glaze-toast-anchored-root[data-bump='b'] {
+  animation: glaze-toast-bump-b 320ms var(--glaze-ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glaze-toast-root[data-bump],
+  .glaze-toast-anchored-root[data-bump] {
+    animation: none;
+  }
+}
+
+/* Base UI Anchored Toasts (Toast.Positioner) */
+.glaze-toast-anchored-viewport {
+  outline: none;
+}
+
+.glaze-toast-positioner {
+  z-index: calc(1000 - var(--toast-index));
+  max-width: min(320px, calc(100vw - 24px));
+  outline: none;
+}
+
+.glaze-toast-anchored-root {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 16px;
+  border: 1px solid rgba(232, 235, 240, 0.95);
+  background: #FFFFFF;
+  padding: 9px 13px;
+  box-shadow: 0 10px 28px rgba(18, 58, 92, 0.12), 0 2px 6px rgba(18, 58, 92, 0.05);
+  transform-origin: var(--transform-origin);
+  will-change: transform, opacity;
+  transition:
+    transform var(--glaze-dur-fast) var(--glaze-ease-crisp),
+    opacity var(--glaze-dur-fast) var(--glaze-ease-crisp);
+}
+
+.glaze-toast-anchored-root[data-starting-style],
+.glaze-toast-anchored-root[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+.glaze-toast-anchored-root[data-ending-style] {
+  transition-duration: var(--glaze-dur-exit);
 }
 
 /* ================================================================

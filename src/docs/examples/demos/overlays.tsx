@@ -26,7 +26,14 @@ import { SparkChart } from '@/components/ui/spark-chart'
 import { StatusDot } from '@/components/ui/status-dot'
 import { StatusPill } from '@/components/ui/status-pill'
 import { Switch } from '@/components/ui/switch'
-import { useToast } from '@/components/ui/toast'
+import {
+  createToaster,
+  TOAST_POSITIONS,
+  ToastProvider,
+  useAnchoredToast,
+  useToast,
+  type ToastPosition,
+} from '@/components/ui/toast'
 import { Tooltip } from '@/components/ui/tooltip'
 import type { ComponentDemoGroup } from '@/docs/examples/types'
 
@@ -326,22 +333,404 @@ function ToastHeroDemo() {
           setCount((c) => c + 1)
         }}
       >
-        触发成功通知
+        成功通知
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => toast({ title: '已开启只读维护模式', description: '当前仅支持查询与日志导出', status: 'info' })}
+      >
+        信息通知
       </Button>
       <Button
         variant="soft"
         hue="peach"
         onClick={() => toast({ title: '存储水位偏高', description: 'NAS 卷 2 已使用 86%', status: 'warning' })}
       >
-        触发警告
+        警告通知
       </Button>
       <Button
         variant="danger"
         onClick={() => toast({ title: '节点连接超时', description: 'ap-sg-02 心跳中断 15s', status: 'error' })}
       >
-        触发异常
+        异常通知
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => toast({ title: '自动扩容已暂停', description: '已由管理员手动冻结策略', status: 'disabled' })}
+      >
+        禁用态
       </Button>
     </div>
+  )
+}
+
+const TOAST_POSITION_LABEL: Record<ToastPosition, string> = {
+  'top-left': '左上',
+  'top-center': '顶部居中',
+  'top-right': '右上',
+  'bottom-left': '左下',
+  'bottom-center': '底部居中',
+  'bottom-right': '右下',
+}
+
+function ToastPositionDemo() {
+  const [position, setPosition] = React.useState<ToastPosition>('top-center')
+  return (
+    <ToastProvider position={position}>
+      <ToastPositionPicker position={position} onPositionChange={setPosition} />
+    </ToastProvider>
+  )
+}
+
+function ToastPositionPicker({
+  position,
+  onPositionChange,
+}: {
+  position: ToastPosition
+  onPositionChange: (position: ToastPosition) => void
+}) {
+  const toast = useToast()
+  return (
+    <div className="grid w-full max-w-md grid-cols-3 gap-2">
+      {TOAST_POSITIONS.map((item) => (
+        <Button
+          key={item}
+          size="sm"
+          variant={item === position ? 'primary' : 'secondary'}
+          onClick={() => {
+            onPositionChange(item)
+            toast({
+              title: `通知已停靠在「${TOAST_POSITION_LABEL[item]}」`,
+              description: `position="${item}"，支持沿对应屏幕边缘方向滑动关闭`,
+              status: 'info',
+            })
+          }}
+        >
+          {TOAST_POSITION_LABEL[item]}
+        </Button>
+      ))}
+    </div>
+  )
+}
+
+function ToastAnchoredDemo() {
+  const anchored = useAnchoredToast()
+  const copyRef = React.useRef<HTMLButtonElement>(null)
+  const saveRef = React.useRef<HTMLButtonElement>(null)
+  const rightRef = React.useRef<HTMLButtonElement>(null)
+  const [copyCount, setCopyCount] = React.useState(0)
+
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      <Button
+        ref={copyRef}
+        variant="primary"
+        onClick={() => {
+          const next = copyCount + 1
+          setCopyCount(next)
+          anchored({
+            id: 'anchored-copy',
+            anchor: copyRef.current,
+            side: 'top',
+            title: next > 1 ? `已复制链接（×${next}）` : '已复制链接',
+            status: 'normal',
+            onRemove: () => setCopyCount(0),
+          })
+        }}
+      >
+        <Copy size={15} />
+        <span>上方锚定提示</span>
+      </Button>
+      <Button
+        ref={saveRef}
+        variant="secondary"
+        onClick={() =>
+          anchored({
+            id: 'anchored-save',
+            anchor: saveRef.current,
+            side: 'bottom',
+            title: '草稿已保存',
+            description: '2 秒前同步至云端',
+            status: 'info',
+          })
+        }
+      >
+        下方锚定提示
+      </Button>
+      <Button
+        ref={rightRef}
+        variant="soft"
+        hue="peach"
+        onClick={() =>
+          anchored({
+            id: 'anchored-warn',
+            anchor: rightRef.current,
+            side: 'right',
+            title: '请先选择目标节点',
+            status: 'warning',
+          })
+        }
+      >
+        右侧锚定提示
+      </Button>
+    </div>
+  )
+}
+
+function ToastDurationDemo() {
+  const toast = useToast()
+  return (
+    <div className="flex flex-wrap items-center gap-2.5">
+      <Button
+        variant="secondary"
+        onClick={() => toast({ title: '链接已复制', status: 'normal', timeout: 1500 })}
+      >
+        <Copy size={15} />
+        <span>1.5 秒后消失</span>
+      </Button>
+      <Button
+        variant="soft"
+        hue="peach"
+        onClick={() =>
+          toast({
+            title: 'TLS 证书将于 7 天后过期',
+            description: '停留 10 秒，悬停或聚焦时暂停计时',
+            status: 'warning',
+            timeout: 10000,
+          })
+        }
+      >
+        停留 10 秒
+      </Button>
+      <Button
+        variant="danger"
+        onClick={() =>
+          toast({
+            title: '磁盘阵列已降级',
+            description: 'RAID-5 缺失 1 块成员盘，需手动确认后关闭',
+            status: 'error',
+            timeout: 0,
+          })
+        }
+      >
+        常驻通知（timeout: 0）
+      </Button>
+    </div>
+  )
+}
+
+function ToastUpdateDemo() {
+  const toast = useToast()
+  const [running, setRunning] = React.useState(false)
+  const timerRef = React.useRef<number | undefined>(undefined)
+
+  React.useEffect(() => () => window.clearInterval(timerRef.current), [])
+
+  const start = () => {
+    setRunning(true)
+    const id = toast({ title: '正在上传 backup.tar.gz', description: '已完成 0%', status: 'loading' })
+    let progress = 0
+    timerRef.current = window.setInterval(() => {
+      progress += 20
+      if (progress < 100) {
+        toast.update(id, { description: `已完成 ${progress}%` })
+        return
+      }
+      window.clearInterval(timerRef.current)
+      toast.update(id, {
+        title: '上传完成',
+        description: 'backup.tar.gz · 2.4 GB 已写入对象存储',
+        status: 'normal',
+      })
+      setRunning(false)
+    }, 700)
+  }
+
+  return (
+    <Button variant="primary" disabled={running} onClick={start}>
+      {running ? '上传中…' : '开始上传并实时更新通知'}
+    </Button>
+  )
+}
+
+function fakeSyncRequest(ok: boolean) {
+  return new Promise<{ nodes: number }>((resolve, reject) => {
+    window.setTimeout(() => {
+      if (ok) resolve({ nodes: 14 })
+      else reject(new Error('ap-sg-02 健康检查失败'))
+    }, 1800)
+  })
+}
+
+function ToastPromiseDemo() {
+  const toast = useToast()
+  const run = (ok: boolean) => {
+    toast
+      .promise(fakeSyncRequest(ok), {
+        loading: { title: '正在同步配置…', description: '推送至全部边缘节点' },
+        success: (result) => ({ title: '配置同步完成', description: `${result.nodes} 个节点已生效` }),
+        error: (error) => ({
+          title: '配置同步失败',
+          description: error instanceof Error ? error.message : '未知错误',
+          actionLabel: '重试',
+          onAction: () => run(true),
+        }),
+      })
+      .catch(() => {})
+  }
+  return (
+    <div className="flex flex-wrap items-center gap-2.5">
+      <Button variant="primary" onClick={() => run(true)}>
+        模拟成功请求
+      </Button>
+      <Button variant="soft" hue="coral" onClick={() => run(false)}>
+        模拟失败请求
+      </Button>
+    </div>
+  )
+}
+
+function ToastDedupeDemo() {
+  const toast = useToast()
+  const retriesRef = React.useRef(0)
+  return (
+    <Button
+      variant="soft"
+      hue="peach"
+      onClick={() => {
+        retriesRef.current += 1
+        toast({
+          id: 'network-unstable',
+          title: '网络连接不稳定',
+          description: `已重试 ${retriesRef.current} 次 · 相同 ID 只保留一条通知并重置计时`,
+          status: 'warning',
+          onRemove: () => {
+            retriesRef.current = 0
+          },
+        })
+      }}
+    >
+      重复点击触发同一条通知
+    </Button>
+  )
+}
+
+function ToastCloseDemo() {
+  const toast = useToast()
+  const seqRef = React.useRef(0)
+  const [openIds, setOpenIds] = React.useState<string[]>([])
+  const [logs, setLogs] = React.useState<string[]>([])
+  const log = (message: string) => setLogs((prev) => [message, ...prev].slice(0, 4))
+
+  const open = () => {
+    seqRef.current += 1
+    const seq = seqRef.current
+    const id = toast({
+      title: `后台任务 #${seq} 运行中`,
+      description: '常驻通知，需通过代码或关闭按钮移除',
+      status: 'info',
+      timeout: 0,
+      onClose: () => {
+        setOpenIds((prev) => prev.filter((item) => item !== id))
+        log(`#${seq} onClose`)
+      },
+      onRemove: () => log(`#${seq} onRemove`),
+    })
+    setOpenIds((prev) => [...prev, id])
+  }
+
+  return (
+    <div className="flex w-full flex-col items-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-2.5">
+        <Button variant="primary" onClick={open}>
+          新增常驻通知
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={openIds.length === 0}
+          onClick={() => toast.close(openIds[openIds.length - 1])}
+        >
+          关闭最新一条
+        </Button>
+        <Button variant="danger" disabled={openIds.length === 0} onClick={() => toast.close()}>
+          关闭全部（{openIds.length}）
+        </Button>
+      </div>
+      <div className="min-h-[20px] font-glaze-mono text-[12px] text-[#8A90A0]">
+        {logs.length ? logs.join('  ·  ') : '回调日志：等待操作'}
+      </div>
+    </div>
+  )
+}
+
+function ToastPriorityDemo() {
+  const toast = useToast()
+  return (
+    <div className="flex flex-wrap items-center gap-2.5">
+      <Button
+        variant="secondary"
+        onClick={() => toast({ title: '草稿已自动保存', status: 'normal' })}
+      >
+        礼貌播报（low）
+      </Button>
+      <Button
+        variant="danger"
+        onClick={() =>
+          toast({
+            title: '支付网关不可用',
+            description: (
+              <span>
+                <code className="rounded bg-[#F2F3F5] px-1 font-glaze-mono text-[11px] text-[#1B1F27]">
+                  POST /v2/charge
+                </code>{' '}
+                返回 503，已自动切换至备用通道
+              </span>
+            ),
+            status: 'error',
+            priority: 'high',
+          })
+        }
+      >
+        紧急播报（high）
+      </Button>
+    </div>
+  )
+}
+
+const demoToaster = createToaster()
+
+function syncRegistryOutsideReact() {
+  return demoToaster
+    .promise(new Promise((resolve) => window.setTimeout(resolve, 1400)), {
+      loading: '正在拉取 Registry 索引…',
+      success: 'Registry 已更新至 v2.4.0',
+      error: 'Registry 拉取失败',
+    })
+    .catch(() => {})
+}
+
+function ToastGlobalManagerDemo() {
+  return (
+    <ToastProvider toastManager={demoToaster} position="top-right">
+      <div className="flex flex-wrap items-center gap-2.5">
+        <Button
+          variant="primary"
+          onClick={() =>
+            demoToaster({
+              title: '来自组件外部的通知',
+              description: 'createToaster() 实例可在任意模块中直接调用',
+              status: 'info',
+            })
+          }
+        >
+          <Bell size={15} />
+          <span>直接调用 toaster()</span>
+        </Button>
+        <Button variant="secondary" onClick={() => void syncRegistryOutsideReact()}>
+          在普通函数中触发 promise
+        </Button>
+      </div>
+    </ToastProvider>
   )
 }
 
@@ -1076,9 +1465,12 @@ import { useToast } from '@/components/ui/toast'
 export function Example() {
   const toast = useToast()
   return (
-    <div className="flex gap-2.5">
+    <div className="flex flex-wrap gap-2.5">
       <Button onClick={() => toast({ title: '部署成功', description: '全部节点已生效', status: 'normal' })}>
         成功通知
+      </Button>
+      <Button variant="secondary" onClick={() => toast({ title: '已开启维护模式', status: 'info' })}>
+        信息通知
       </Button>
       <Button variant="soft" hue="peach" onClick={() => toast({ title: '存储水位偏高', status: 'warning' })}>
         警告通知
@@ -1086,15 +1478,136 @@ export function Example() {
       <Button variant="danger" onClick={() => toast({ title: '节点连接超时', status: 'error' })}>
         异常通知
       </Button>
+      <Button variant="ghost" onClick={() => toast({ title: '自动扩容已暂停', status: 'disabled' })}>
+        禁用态
+      </Button>
     </div>
   )
 }`,
     },
     examples: [
       {
+        id: 'position',
+        title: '自定义停靠位置（position）',
+        description: '遵循 Base UI Custom Position 范式，支持 6 个屏幕方位，并自动切换堆叠增长轴、入场方向与滑动关闭手势。',
+        minHeight: 160,
+        render: () => <ToastPositionDemo />,
+        code: `import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { ToastProvider, useToast, type ToastPosition } from '@/components/ui/toast'
+
+export function Example() {
+  const [position, setPosition] = React.useState<ToastPosition>('top-center')
+  return (
+    <ToastProvider position={position}>
+      <PositionButtons position={position} onChange={setPosition} />
+    </ToastProvider>
+  )
+}
+
+function PositionButtons({
+  position,
+  onChange,
+}: {
+  position: ToastPosition
+  onChange: (pos: ToastPosition) => void
+}) {
+  const toast = useToast()
+  return (
+    <Button
+      onClick={() => {
+        onChange('top-center')
+        toast({ title: '通知已停靠在顶部居中', description: \`position="\${position}"\`, status: 'info' })
+      }}
+    >
+      切换至顶部居中
+    </Button>
+  )
+}`,
+      },
+      {
+        id: 'anchored',
+        title: '锚定元素通知（Anchored Toasts / useAnchoredToast）',
+        description: '遵循 Base UI Anchored Toasts 规范，基于 Toast.Positioner 在触发元素附近弹出轻提示，支持 top / bottom / left / right 与重复点击缩放提醒。',
+        minHeight: 160,
+        render: () => <ToastAnchoredDemo />,
+        code: `import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { useAnchoredToast } from '@/components/ui/toast'
+
+export function Example() {
+  const anchored = useAnchoredToast()
+  const btnRef = React.useRef<HTMLButtonElement>(null)
+
+  return (
+    <Button
+      ref={btnRef}
+      onClick={() =>
+        anchored({
+          id: 'copy-link',
+          anchor: btnRef.current,
+          side: 'top',
+          title: '已复制链接',
+          status: 'normal',
+        })
+      }
+    >
+      复制链接
+    </Button>
+  )
+}`,
+      },
+      {
+        id: 'promise',
+        title: '异步 Promise 状态流转（toast.promise）',
+        description: '对应 Base UI Promise Toast：进行中自动显示 loading 旋转态且不超时，resolve/reject 后自动切换为成功或异常状态。',
+        minHeight: 150,
+        render: () => <ToastPromiseDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
+
+export function Example() {
+  const toast = useToast()
+  const sync = () => {
+    toast.promise(fetch('/api/sync'), {
+      loading: { title: '正在同步配置…', description: '推送至全部边缘节点' },
+      success: { title: '配置同步完成', description: '14 个节点已生效' },
+      error: (err) => ({
+        title: '配置同步失败',
+        description: err instanceof Error ? err.message : '未知错误',
+        actionLabel: '重试',
+        onAction: () => sync(),
+      }),
+    })
+  }
+  return <Button onClick={sync}>同步配置</Button>
+}`,
+      },
+      {
+        id: 'update-progress',
+        title: '原地更新通知内容（toast.update）',
+        description: '使用 loading 状态发起常驻通知，再通过 toast.update(id, patch) 实时刷新进度并在完成后切换为成功态自动关闭。',
+        minHeight: 150,
+        render: () => <ToastUpdateDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
+
+export function Example() {
+  const toast = useToast()
+  const upload = () => {
+    const id = toast({ title: '正在上传 backup.tar.gz', description: '已完成 0%', status: 'loading' })
+    setTimeout(() => toast.update(id, { description: '已完成 50%' }), 700)
+    setTimeout(() => {
+      toast.update(id, { title: '上传完成', description: '2.4 GB 已写入对象存储', status: 'normal' })
+    }, 1400)
+  }
+  return <Button onClick={upload}>开始上传</Button>
+}`,
+      },
+      {
         id: 'undo-action',
         title: '带撤销操作按钮的通知（actionLabel + onAction）',
-        description: '参考 Base UI Undo Toast 范式：在非破坏性或可逆操作后提供一键撤销入口。',
+        description: '参考 Base UI Undo Toast 范式：在非破坏性或可逆操作后提供一键撤销入口，点击操作按钮默认自动关闭通知（可设 closeOnAction: false）。',
         minHeight: 150,
         render: () => <ToastUndoActionDemo />,
         code: `import { Button } from '@/components/ui/button'
@@ -1121,9 +1634,61 @@ export function Example() {
 }`,
       },
       {
+        id: 'duration',
+        title: '自定义停留时长与常驻通知（timeout）',
+        description: '单条通知可覆盖 ToastProvider 的默认 timeout；设为 0 时常驻不自动关闭，悬停或聚焦任意通知会自动暂停倒计时。',
+        minHeight: 150,
+        render: () => <ToastDurationDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
+
+export function Example() {
+  const toast = useToast()
+  return (
+    <div className="flex gap-2.5">
+      <Button variant="secondary" onClick={() => toast({ title: '链接已复制', status: 'normal', timeout: 1500 })}>
+        1.5 秒后消失
+      </Button>
+      <Button variant="danger" onClick={() => toast({ title: '磁盘阵列已降级', status: 'error', timeout: 0 })}>
+        常驻通知
+      </Button>
+    </div>
+  )
+}`,
+      },
+      {
+        id: 'dedupe-upsert',
+        title: '固定 ID 去重、原地刷新与缩放提醒（id）',
+        description: '传入相同 id 时不会产生重复堆叠，而是原地更新内容、重置倒计时并触发轻量缩放提醒动效（data-bump），适合网络重试或高频告警。',
+        minHeight: 150,
+        render: () => <ToastDedupeDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
+
+export function Example() {
+  const toast = useToast()
+  return (
+    <Button
+      variant="soft"
+      hue="peach"
+      onClick={() =>
+        toast({
+          id: 'network-unstable',
+          title: '网络连接不稳定',
+          description: '相同 ID 只保留一条通知并重置计时',
+          status: 'warning',
+        })
+      }
+    >
+      触发去重通知
+    </Button>
+  )
+}`,
+      },
+      {
         id: 'stacked-batch',
         title: '多条通知自动堆叠与悬停展开',
-        description: 'ToastProvider 默认支持最多 4 条通知层叠呈现，悬停可展开全部并支持向右/向下滑动关闭。',
+        description: 'ToastProvider 默认支持最多 4 条通知层叠呈现（limit 可配），超出上限自动标记 data-limited 隐藏，悬停可展开全部并滑动关闭。',
         minHeight: 150,
         render: () => <ToastStackingDemo />,
         code: `import { Button } from '@/components/ui/button'
@@ -1137,6 +1702,96 @@ export function Example() {
     setTimeout(() => toast({ title: '3/3 已更新 llms-full.txt', status: 'normal' }), 520)
   }
   return <Button variant="secondary" onClick={fireBatch}>连续发送 3 条堆叠通知</Button>
+}`,
+      },
+      {
+        id: 'programmatic-close',
+        title: '编程式关闭与生命周期回调（close / onClose / onRemove）',
+        description: '支持按 ID 关闭单条通知或无参关闭全部通知，并监听开始退场（onClose）与动画结束移除（onRemove）两个生命周期钩子。',
+        minHeight: 170,
+        render: () => <ToastCloseDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
+
+export function Example() {
+  const toast = useToast()
+  const open = () => {
+    const id = toast({
+      title: '后台任务运行中',
+      timeout: 0,
+      onClose: () => console.log('开始关闭', id),
+      onRemove: () => console.log('动画结束并移除', id),
+    })
+    return id
+  }
+  return (
+    <div className="flex gap-2.5">
+      <Button onClick={open}>新增常驻通知</Button>
+      <Button variant="danger" onClick={() => toast.close()}>关闭全部</Button>
+    </div>
+  )
+}`,
+      },
+      {
+        id: 'priority-custom-content',
+        title: '无障碍播报优先级与富文本内容（priority + ReactNode）',
+        description: 'priority 默认 low（polite 礼貌播报），关键故障可设为 high（assertive 立即播报）；title 与 description 均支持自定义 JSX。',
+        minHeight: 150,
+        render: () => <ToastPriorityDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
+
+export function Example() {
+  const toast = useToast()
+  return (
+    <Button
+      variant="danger"
+      onClick={() =>
+        toast({
+          title: '支付网关不可用',
+          description: (
+            <span>
+              <code>POST /v2/charge</code> 返回 503，已自动切换至备用通道
+            </span>
+          ),
+          status: 'error',
+          priority: 'high',
+        })
+      }
+    >
+      紧急播报（high）
+    </Button>
+  )
+}`,
+      },
+      {
+        id: 'global-manager',
+        title: '在 React 组件外部触发通知（createToaster）',
+        description: '对应 Base UI Global Toast Manager：通过 createToaster() 创建独立实例并注入 ToastProvider，即可在请求拦截器或普通模块函数中直接触发。',
+        minHeight: 150,
+        render: () => <ToastGlobalManagerDemo />,
+        code: `import { Button } from '@/components/ui/button'
+import { createToaster, ToastProvider } from '@/components/ui/toast'
+
+// 可在任意非 React 模块中导出并调用
+export const toaster = createToaster()
+
+export function Example() {
+  return (
+    <ToastProvider toastManager={toaster} position="top-right">
+      <Button
+        onClick={() =>
+          toaster({
+            title: '来自组件外部的通知',
+            description: '无需依赖 React Context 即可触发',
+            status: 'info',
+          })
+        }
+      >
+        直接调用 toaster()
+      </Button>
+    </ToastProvider>
+  )
 }`,
       },
     ],

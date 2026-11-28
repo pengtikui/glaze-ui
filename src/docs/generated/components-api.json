@@ -4057,12 +4057,27 @@
     "kind": "base-ui",
     "baseUiSlug": "toast",
     "baseUiPackage": "@base-ui/react/toast",
-    "description": "基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持悬停展开、右滑/下滑手势关闭与 5 种语义状态。",
+    "description": "基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持 6 个停靠方位、锚定元素提示（Anchored Toasts）、悬停展开、全方向滑动关闭、重复触发缩放提醒、Promise 状态流转与跨模块全局通知。",
     "parts": [
       "ToastProvider",
-      "useToast"
+      "AnchoredToastProvider",
+      "useToast",
+      "useAnchoredToast",
+      "createToaster"
     ],
     "dataAttributes": [
+      {
+        "attr": "data-position",
+        "desc": "视口停靠位置（top/bottom × left/center/right）"
+      },
+      {
+        "attr": "data-status",
+        "desc": "当前通知语义状态（normal / warning / error / info / disabled / loading）"
+      },
+      {
+        "attr": "data-bump",
+        "desc": "重复触发同一 ID 或状态更新时的缩放提醒动效标记（a / b）"
+      },
       {
         "attr": "data-expanded",
         "desc": "通知堆叠处于展开态"
@@ -4076,6 +4091,10 @@
         "desc": "正在滑动关闭"
       },
       {
+        "attr": "data-swipe-direction",
+        "desc": "滑动关闭方向（up / down / left / right）"
+      },
+      {
         "attr": "data-limited",
         "desc": "超出最大显示数量被隐藏"
       }
@@ -4084,6 +4103,8 @@
       "--toast-index",
       "--toast-offset-y",
       "--toast-height",
+      "--glaze-toast-dir",
+      "--glaze-toast-inset",
       "--glaze-dur-toast"
     ],
     "baseUiUrl": "https://base-ui.com/react/components/toast",
@@ -4099,10 +4120,19 @@
     ],
     "api": {
       "exportedComponents": [
+        "TOAST_POSITIONS",
         "ToastProvider",
-        "useToast"
+        "AnchoredToastProvider",
+        "createToaster",
+        "useToast",
+        "useAnchoredToast"
       ],
       "sections": [
+        {
+          "name": "TOAST_POSITIONS",
+          "extends": "",
+          "props": []
+        },
         {
           "name": "ToastProvider",
           "extends": "",
@@ -4110,14 +4140,107 @@
             {
               "name": "children",
               "type": "React.ReactNode",
-              "required": true,
+              "required": false,
               "defaultValue": null,
               "description": ""
+            },
+            {
+              "name": "position",
+              "type": "ToastPosition",
+              "required": false,
+              "defaultValue": "'bottom-right'",
+              "description": "通知视口停靠位置；同时决定入场方向、堆叠方向与默认滑动关闭方向。 @default 'bottom-right'"
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "required": false,
+              "defaultValue": "4",
+              "description": "同时可见的最大通知数，超出的旧通知会标记 `data-limited` 并淡出。 @default 4"
+            },
+            {
+              "name": "timeout",
+              "type": "number",
+              "required": false,
+              "defaultValue": "4200",
+              "description": "默认自动关闭时长（ms），`0` 表示不自动关闭。 @default 4200"
+            },
+            {
+              "name": "swipeDirection",
+              "type": "ToastSwipeDirection | ToastSwipeDirection[]",
+              "required": false,
+              "defaultValue": null,
+              "description": "自定义滑动关闭方向，默认根据 `position` 推导（如 `top-right` → `['up', 'right']`）。"
+            },
+            {
+              "name": "toastManager",
+              "type": "Toaster | ToastManager",
+              "required": false,
+              "defaultValue": null,
+              "description": "由 `createToaster()` 创建的全局通知器（或 Base UI `createToastManager()`），用于在 React 组件外部触发通知。"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "附加到通知视口（`Toast.Viewport`）的类名"
             }
           ]
         },
         {
+          "name": "AnchoredToastProvider",
+          "extends": "",
+          "props": [
+            {
+              "name": "children",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "required": false,
+              "defaultValue": "3",
+              "description": "同时可见的最大锚定通知数。 @default 3"
+            },
+            {
+              "name": "timeout",
+              "type": "number",
+              "required": false,
+              "defaultValue": "2600",
+              "description": "锚定通知默认自动关闭时长（ms），`0` 表示不自动关闭。 @default 2600"
+            },
+            {
+              "name": "toastManager",
+              "type": "Toaster | ToastManager",
+              "required": false,
+              "defaultValue": null,
+              "description": "由 `createToaster()` 创建的独立锚定通知器"
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "required": false,
+              "defaultValue": null,
+              "description": "附加到锚定通知视口（`Toast.Viewport`）的类名"
+            }
+          ]
+        },
+        {
+          "name": "createToaster",
+          "extends": "",
+          "props": []
+        },
+        {
           "name": "useToast",
+          "extends": "",
+          "props": []
+        },
+        {
+          "name": "useAnchoredToast",
           "extends": "",
           "props": []
         }
@@ -4129,8 +4252,35 @@
           "props": [
             {
               "name": "status",
-              "type": "Status",
+              "type": "ToastStatus",
               "required": false,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "closeOnAction",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "点击操作按钮后是否自动关闭该通知，默认 `true`"
+            }
+          ]
+        },
+        {
+          "name": "ViewportRegistryEntry",
+          "extends": "",
+          "props": [
+            {
+              "name": "owner",
+              "type": "symbol | null",
+              "required": true,
+              "defaultValue": null,
+              "description": ""
+            },
+            {
+              "name": "listeners",
+              "type": "Map<symbol, (isOwner: boolean) => void>",
+              "required": true,
               "defaultValue": null,
               "description": ""
             }
@@ -4142,45 +4292,221 @@
           "props": [
             {
               "name": "title",
-              "type": "string",
+              "type": "React.ReactNode",
               "required": true,
               "defaultValue": null,
-              "description": ""
+              "description": "通知标题"
             },
             {
               "name": "description",
-              "type": "string",
+              "type": "React.ReactNode",
               "required": false,
               "defaultValue": null,
-              "description": ""
+              "description": "通知描述，支持任意 ReactNode"
             },
             {
               "name": "status",
-              "type": "Status",
+              "type": "ToastStatus",
               "required": false,
               "defaultValue": null,
-              "description": ""
+              "description": "语义状态；`loading` 会显示旋转图标并暂停自动关闭，直到被 `update` 为其它状态。 @default 'info'"
             },
             {
-              "name": "actionLabel",
+              "name": "id",
               "type": "string",
               "required": false,
               "defaultValue": null,
-              "description": ""
+              "description": "自定义 ID：使用已存在的 ID 会原地更新该通知、重置计时并触发缩放提醒动效（去重 / upsert）。"
+            },
+            {
+              "name": "timeout",
+              "type": "number",
+              "required": false,
+              "defaultValue": null,
+              "description": "本条通知的自动关闭时长（ms），`0` 表示常驻直到手动关闭；默认继承 `ToastProvider.timeout`。"
+            },
+            {
+              "name": "priority",
+              "type": "'low' | 'high'",
+              "required": false,
+              "defaultValue": null,
+              "description": "读屏播报优先级：`low` 礼貌播报（polite），`high` 立即打断播报（assertive）。 @default 'low'"
+            },
+            {
+              "name": "actionLabel",
+              "type": "React.ReactNode",
+              "required": false,
+              "defaultValue": null,
+              "description": "操作按钮文案（如「撤销」）"
             },
             {
               "name": "onAction",
               "type": "() => void",
               "required": false,
               "defaultValue": null,
-              "description": ""
+              "description": "点击操作按钮的回调"
+            },
+            {
+              "name": "closeOnAction",
+              "type": "boolean",
+              "required": false,
+              "defaultValue": null,
+              "description": "点击操作按钮后是否自动关闭本条通知。 @default true"
+            },
+            {
+              "name": "onClose",
+              "type": "() => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "通知开始关闭时触发（自动超时、手动关闭、滑动关闭均会触发）"
+            },
+            {
+              "name": "onRemove",
+              "type": "() => void",
+              "required": false,
+              "defaultValue": null,
+              "description": "通知退场动画结束、从列表中移除后触发"
+            },
+            {
+              "name": "anchor",
+              "type": "Element | null",
+              "required": false,
+              "defaultValue": null,
+              "description": "锚定通知的目标 DOM 元素（配合 `useAnchoredToast()` 使用，对应 `positionerProps.anchor`）"
+            },
+            {
+              "name": "side",
+              "type": "ToastAnchorSide",
+              "required": false,
+              "defaultValue": null,
+              "description": "锚定通知相对锚点的停靠方位（默认 `'top'`）"
+            },
+            {
+              "name": "align",
+              "type": "ToastAnchorAlign",
+              "required": false,
+              "defaultValue": null,
+              "description": "锚定通知相对锚点的对齐方式（默认 `'center'`）"
+            },
+            {
+              "name": "sideOffset",
+              "type": "number",
+              "required": false,
+              "defaultValue": null,
+              "description": "锚定通知与锚点之间的像素间距（默认 `8`）"
+            },
+            {
+              "name": "positionerProps",
+              "type": "ToastManagerPositionerProps",
+              "required": false,
+              "defaultValue": null,
+              "description": "透传给 Base UI `Toast.Positioner` 的完整定位参数"
+            }
+          ]
+        },
+        {
+          "name": "ToastPromiseOptions",
+          "extends": "",
+          "props": [
+            {
+              "name": "loading",
+              "type": "string | ToastUpdateOptions",
+              "required": true,
+              "defaultValue": null,
+              "description": "Promise 进行中的展示内容（自动使用 `loading` 状态）"
+            },
+            {
+              "name": "success",
+              "type": "ToastPromiseStage<Value>",
+              "required": true,
+              "defaultValue": null,
+              "description": "Promise resolve 后的展示内容（默认 `normal` 状态），可传函数读取结果"
+            },
+            {
+              "name": "error",
+              "type": "ToastPromiseStage<unknown>",
+              "required": true,
+              "defaultValue": null,
+              "description": "Promise reject 后的展示内容（默认 `error` 状态），可传函数读取错误"
+            }
+          ]
+        },
+        {
+          "name": "Toaster",
+          "extends": "",
+          "props": [
+            {
+              "name": "notify",
+              "type": "(options: NotifyOptions) => string",
+              "required": true,
+              "defaultValue": null,
+              "description": "同调用本身：新增一条通知并返回 ID"
+            },
+            {
+              "name": "update",
+              "type": "(id: string, options: ToastUpdateOptions) => void",
+              "required": true,
+              "defaultValue": null,
+              "description": "局部更新指定通知（标题、描述、状态、计时等）"
+            },
+            {
+              "name": "close",
+              "type": "(id?: string) => void",
+              "required": true,
+              "defaultValue": null,
+              "description": "关闭指定通知；不传 ID 时关闭全部"
+            },
+            {
+              "name": "promise",
+              "type": "<Value>(promise: Promise<Value>, options: ToastPromiseOptions<Value>) => Promise<Value>",
+              "required": true,
+              "defaultValue": null,
+              "description": "绑定 Promise：进行中显示 loading，结束后自动切换为成功 / 失败通知"
+            },
+            {
+              "name": "manager",
+              "type": "ToastManager<ToastData>",
+              "required": false,
+              "defaultValue": null,
+              "description": "仅 `createToaster()` 返回：底层 Base UI ToastManager，用于传给 `ToastProvider` / `AnchoredToastProvider`"
             }
           ]
         }
       ],
-      "typeAliases": []
+      "typeAliases": [
+        {
+          "name": "ToastPosition",
+          "definition": "| 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+          "description": "通知视口在屏幕中的 6 个停靠位置（遵循 Base UI「Custom position」范式，通过 `data-position` 驱动 CSS）。"
+        },
+        {
+          "name": "ToastSwipeDirection",
+          "definition": "'up' | 'down' | 'left' | 'right'",
+          "description": ""
+        },
+        {
+          "name": "ToastAnchorSide",
+          "definition": "'top' | 'bottom' | 'left' | 'right'",
+          "description": "锚定通知相对于锚点元素的停靠方位"
+        },
+        {
+          "name": "ToastAnchorAlign",
+          "definition": "'start' | 'center' | 'end'",
+          "description": "锚定通知相对于锚点元素的对齐方式"
+        },
+        {
+          "name": "ToastStatus",
+          "definition": "Status | 'loading'",
+          "description": "5 种语义状态 + `loading`（加载中：显示旋转图标且暂停自动关闭计时）。"
+        },
+        {
+          "name": "ToastUpdateOptions",
+          "definition": "Partial<Omit<NotifyOptions, 'id'>>",
+          "description": "`toast.update(id, options)` 可局部更新的字段"
+        }
+      ]
     },
-    "sourceCode": "import * as React from 'react'\nimport { Toast as BaseToast } from '@base-ui/react/toast'\nimport {\n  CheckCircle,\n  Info,\n  Warning,\n  WarningCircle,\n  X,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { SEMANTIC_TOKENS, type Status } from '@/lib/tokens'\nimport { PRESS_CLASS } from '@/lib/motion'\n\nexport interface ToastData {\n  status?: Status\n}\n\nexport function ToastProvider({ children }: { children: React.ReactNode }) {\n  return (\n    <BaseToast.Provider limit={4} timeout={4200}>\n      {children}\n      <ToastViewport />\n    </BaseToast.Provider>\n  )\n}\n\nfunction ToastViewport() {\n  const { toasts } = BaseToast.useToastManager()\n\n  return (\n    <BaseToast.Portal>\n      <BaseToast.Viewport className=\"glaze-toast-viewport\">\n        {toasts.map((toast) => {\n          const data = (toast.data ?? {}) as ToastData\n          const status: Status = data.status ?? 'info'\n          const token = SEMANTIC_TOKENS[status]\n\n          const Icon =\n            status === 'normal'\n              ? CheckCircle\n              : status === 'warning'\n                ? Warning\n                : status === 'error'\n                  ? WarningCircle\n                  : Info\n\n          return (\n            <BaseToast.Root\n              key={toast.id}\n              toast={toast}\n              swipeDirection={['down', 'right']}\n              className=\"glaze-toast-root\"\n            >\n              <BaseToast.Content className=\"glaze-toast-content flex items-start gap-3\">\n                <span\n                  className=\"mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full\"\n                  style={{ backgroundColor: token.pillBg, color: token.ink }}\n                >\n                  <Icon size={17} weight=\"fill\" />\n                </span>\n                <div className=\"min-w-0 flex-1\">\n                  {toast.title && (\n                    <BaseToast.Title className=\"text-[14px] font-bold text-[#1B1F27]\">\n                      {toast.title}\n                    </BaseToast.Title>\n                  )}\n                  {toast.description && (\n                    <BaseToast.Description className=\"mt-0.5 text-[12px] leading-relaxed text-[#6B7280]\">\n                      {toast.description}\n                    </BaseToast.Description>\n                  )}\n                  {toast.actionProps && (\n                    <BaseToast.Action\n                      {...toast.actionProps}\n                      className={cn(\n                        'mt-2 inline-flex cursor-pointer items-center rounded-full bg-[#F2F3F5] px-3 py-1 text-[12px] font-semibold text-[#1B1F27] hover:bg-[#E8EBF0]',\n                        PRESS_CLASS,\n                      )}\n                    />\n                  )}\n                </div>\n                <BaseToast.Close\n                  aria-label=\"关闭通知\"\n                  className={cn(\n                    'inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#F2F3F5] hover:text-[#1B1F27]',\n                    PRESS_CLASS,\n                  )}\n                >\n                  <X size={14} weight=\"bold\" />\n                </BaseToast.Close>\n              </BaseToast.Content>\n            </BaseToast.Root>\n          )\n        })}\n      </BaseToast.Viewport>\n    </BaseToast.Portal>\n  )\n}\n\nexport interface NotifyOptions {\n  title: string\n  description?: string\n  status?: Status\n  actionLabel?: string\n  onAction?: () => void\n}\n\nexport function useToast() {\n  const manager = BaseToast.useToastManager()\n  return React.useMemo(() => {\n    const fn = (opts: NotifyOptions) =>\n      manager.add({\n        title: opts.title,\n        description: opts.description,\n        data: { status: opts.status ?? 'info' } satisfies ToastData,\n        actionProps: opts.actionLabel\n          ? { children: opts.actionLabel, onClick: opts.onAction }\n          : undefined,\n      })\n    return Object.assign(fn, {\n      notify: fn,\n      close: manager.close,\n    })\n  }, [manager])\n}\n"
+    "sourceCode": "import * as React from 'react'\nimport { Toast as BaseToast } from '@base-ui/react/toast'\nimport type {\n  ToastManager,\n  ToastManagerAddOptions,\n  ToastManagerPositionerProps,\n  ToastManagerUpdateOptions,\n  ToastObject,\n} from '@base-ui/react/toast'\nimport {\n  CheckCircle,\n  CircleNotch,\n  Info,\n  Warning,\n  WarningCircle,\n  X,\n} from '@phosphor-icons/react'\nimport { cn } from 'cn'\nimport { SEMANTIC_TOKENS, type Status } from '@/lib/tokens'\nimport { PRESS_CLASS } from '@/lib/motion'\n\n/** 通知视口在屏幕中的 6 个停靠位置（遵循 Base UI「Custom position」范式，通过 `data-position` 驱动 CSS）。 */\nexport type ToastPosition =\n  | 'top-left'\n  | 'top-center'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-center'\n  | 'bottom-right'\n\nexport type ToastSwipeDirection = 'up' | 'down' | 'left' | 'right'\n\n/** 锚定通知相对于锚点元素的停靠方位 */\nexport type ToastAnchorSide = 'top' | 'bottom' | 'left' | 'right'\n\n/** 锚定通知相对于锚点元素的对齐方式 */\nexport type ToastAnchorAlign = 'start' | 'center' | 'end'\n\n/** 5 种语义状态 + `loading`（加载中：显示旋转图标且暂停自动关闭计时）。 */\nexport type ToastStatus = Status | 'loading'\n\nexport interface ToastData {\n  status?: ToastStatus\n  /** 点击操作按钮后是否自动关闭该通知，默认 `true` */\n  closeOnAction?: boolean\n}\n\nexport const TOAST_POSITIONS: ToastPosition[] = [\n  'top-left',\n  'top-center',\n  'top-right',\n  'bottom-left',\n  'bottom-center',\n  'bottom-right',\n]\n\nconst DEFAULT_SWIPE: Record<ToastPosition, ToastSwipeDirection[]> = {\n  'top-left': ['up', 'left'],\n  'top-center': ['up'],\n  'top-right': ['up', 'right'],\n  'bottom-left': ['down', 'left'],\n  'bottom-center': ['down'],\n  'bottom-right': ['down', 'right'],\n}\n\ntype ManagerLike = Pick<ToastManager<ToastData>, 'add' | 'close' | 'update' | 'promise'>\n\nconst ToasterContext = React.createContext<Toaster | null>(null)\nconst AnchoredToastContext = React.createContext<Toaster | null>(null)\n\ninterface ViewportRegistryEntry {\n  owner: symbol | null\n  listeners: Map<symbol, (isOwner: boolean) => void>\n}\n\nconst managerViewportRegistry = new WeakMap<ToastManager<any>, ViewportRegistryEntry>()\nlet nextViewportLayer = 60\n\nfunction useIsViewportOwner(manager?: ToastManager<any>) {\n  const tokenRef = React.useRef<symbol | null>(null)\n  if (!tokenRef.current) tokenRef.current = Symbol('toast-viewport')\n  const [isOwner, setIsOwner] = React.useState(!manager)\n\n  React.useEffect(() => {\n    if (!manager) {\n      setIsOwner(true)\n      return\n    }\n    const token = tokenRef.current!\n    let entry = managerViewportRegistry.get(manager)\n    if (!entry) {\n      entry = { owner: null, listeners: new Map() }\n      managerViewportRegistry.set(manager, entry)\n    }\n    entry.listeners.set(token, setIsOwner)\n    if (entry.owner === null) {\n      entry.owner = token\n    }\n    setIsOwner(entry.owner === token)\n\n    return () => {\n      entry!.listeners.delete(token)\n      if (entry!.owner === token) {\n        const nextEntry = entry!.listeners.entries().next()\n        if (!nextEntry.done) {\n          const [nextToken, notifyNext] = nextEntry.value\n          entry!.owner = nextToken\n          notifyNext(true)\n        } else {\n          entry!.owner = null\n          managerViewportRegistry.delete(manager)\n        }\n      }\n    }\n  }, [manager])\n\n  return isOwner\n}\n\nexport interface ToastProviderProps {\n  children?: React.ReactNode\n  /**\n   * 通知视口停靠位置；同时决定入场方向、堆叠方向与默认滑动关闭方向。\n   * @default 'bottom-right'\n   */\n  position?: ToastPosition\n  /**\n   * 同时可见的最大通知数，超出的旧通知会标记 `data-limited` 并淡出。\n   * @default 4\n   */\n  limit?: number\n  /**\n   * 默认自动关闭时长（ms），`0` 表示不自动关闭。\n   * @default 4200\n   */\n  timeout?: number\n  /** 自定义滑动关闭方向，默认根据 `position` 推导（如 `top-right` → `['up', 'right']`）。 */\n  swipeDirection?: ToastSwipeDirection | ToastSwipeDirection[]\n  /** 由 `createToaster()` 创建的全局通知器（或 Base UI `createToastManager()`），用于在 React 组件外部触发通知。 */\n  toastManager?: Toaster | ToastManager\n  /** 附加到通知视口（`Toast.Viewport`）的类名 */\n  className?: string\n}\n\nexport function ToastProvider({\n  children,\n  position = 'bottom-right',\n  limit = 4,\n  timeout = 4200,\n  swipeDirection,\n  toastManager,\n  className,\n}: ToastProviderProps) {\n  const manager =\n    typeof toastManager === 'function' ? toastManager.manager : toastManager\n  const isViewportOwner = useIsViewportOwner(manager)\n  const sharedToaster = React.useMemo(\n    () => (manager ? buildToaster(manager) : null),\n    [manager],\n  )\n  const anchoredToaster = React.useMemo(() => createToaster(), [])\n\n  return (\n    <BaseToast.Provider\n      limit={limit}\n      timeout={timeout}\n      toastManager={isViewportOwner ? manager : undefined}\n    >\n      <ToasterContext.Provider value={sharedToaster}>\n        <AnchoredToastContext.Provider value={anchoredToaster}>\n          {children}\n        </AnchoredToastContext.Provider>\n      </ToasterContext.Provider>\n      {isViewportOwner && (\n        <ToastViewport\n          position={position}\n          swipeDirection={swipeDirection ?? DEFAULT_SWIPE[position]}\n          className={className}\n        />\n      )}\n      <AnchoredToastProvider toastManager={anchoredToaster} />\n    </BaseToast.Provider>\n  )\n}\n\nexport interface AnchoredToastProviderProps {\n  children?: React.ReactNode\n  /**\n   * 同时可见的最大锚定通知数。\n   * @default 3\n   */\n  limit?: number\n  /**\n   * 锚定通知默认自动关闭时长（ms），`0` 表示不自动关闭。\n   * @default 2600\n   */\n  timeout?: number\n  /** 由 `createToaster()` 创建的独立锚定通知器 */\n  toastManager?: Toaster | ToastManager\n  /** 附加到锚定通知视口（`Toast.Viewport`）的类名 */\n  className?: string\n}\n\n/**\n * 独立的锚定通知 Provider（遵循 Base UI Anchored Toasts 规范，基于 `Toast.Positioner`）。\n * `<ToastProvider>` 已内置一份默认实例，通常直接使用 `useAnchoredToast()` 即可；如需自定义超时、上限或全局实例，可单独挂载本组件。\n */\nexport function AnchoredToastProvider({\n  children,\n  limit = 3,\n  timeout = 2600,\n  toastManager,\n  className,\n}: AnchoredToastProviderProps) {\n  const fallbackToaster = React.useMemo(() => createToaster(), [])\n  const resolvedToaster =\n    typeof toastManager === 'function' ? toastManager : fallbackToaster\n  const manager =\n    typeof toastManager === 'function'\n      ? toastManager.manager\n      : (toastManager ?? fallbackToaster.manager)\n\n  return (\n    <BaseToast.Provider limit={limit} timeout={timeout} toastManager={manager}>\n      {children ? (\n        <AnchoredToastContext.Provider value={resolvedToaster}>\n          {children}\n        </AnchoredToastContext.Provider>\n      ) : null}\n      <AnchoredToastViewport className={className} />\n    </BaseToast.Provider>\n  )\n}\n\nfunction resolveStatus(toast: ToastObject<ToastData>): ToastStatus {\n  if (toast.type === 'loading') return 'loading'\n  return toast.data?.status ?? 'info'\n}\n\nfunction resolveBump(toast: ToastObject<ToastData>, status: ToastStatus): 'a' | 'b' | undefined {\n  if (!toast.updateKey || toast.updateKey <= 0 || status === 'loading') return undefined\n  return toast.updateKey % 2 === 1 ? 'a' : 'b'\n}\n\nconst STATUS_ICON = {\n  normal: CheckCircle,\n  warning: Warning,\n  error: WarningCircle,\n  info: Info,\n  disabled: Info,\n} as const\n\nfunction ToastViewport({\n  position,\n  swipeDirection,\n  className,\n}: {\n  position: ToastPosition\n  swipeDirection: ToastSwipeDirection | ToastSwipeDirection[]\n  className?: string\n}) {\n  const { toasts, close } = BaseToast.useToastManager<ToastData>()\n  const [layer, setLayer] = React.useState(60)\n  const frontKey = toasts[0] ? `${toasts[0].id}:${toasts[0].updateKey ?? 0}` : null\n  const prevFrontKeyRef = React.useRef<string | null>(null)\n\n  React.useEffect(() => {\n    if (frontKey && frontKey !== prevFrontKeyRef.current) {\n      nextViewportLayer += 1\n      setLayer(nextViewportLayer)\n    }\n    prevFrontKeyRef.current = frontKey\n  }, [frontKey])\n\n  return (\n    <BaseToast.Portal>\n      <BaseToast.Viewport\n        data-position={position}\n        style={{ zIndex: layer }}\n        className={cn('glaze-toast-viewport', className)}\n      >\n        {toasts.map((toast) => {\n          const status = resolveStatus(toast)\n          const token = SEMANTIC_TOKENS[status === 'loading' ? 'info' : status]\n          const Icon = status === 'loading' ? CircleNotch : STATUS_ICON[status]\n          const bump = resolveBump(toast, status)\n          const { onClick: onActionClick, ...actionProps } = toast.actionProps ?? {}\n\n          return (\n            <BaseToast.Root\n              key={toast.id}\n              toast={toast}\n              swipeDirection={swipeDirection}\n              data-status={status}\n              data-bump={bump}\n              className=\"glaze-toast-root\"\n            >\n              <BaseToast.Content className=\"glaze-toast-content flex items-start gap-3\">\n                <span\n                  className=\"mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full\"\n                  style={{ backgroundColor: token.pillBg, color: token.ink }}\n                >\n                  <Icon\n                    size={17}\n                    weight={status === 'loading' ? 'bold' : 'fill'}\n                    className={status === 'loading' ? 'animate-spin' : undefined}\n                  />\n                </span>\n                <div className=\"min-w-0 flex-1\">\n                  {toast.title && (\n                    <BaseToast.Title className=\"text-[14px] font-bold text-[#1B1F27]\">\n                      {toast.title}\n                    </BaseToast.Title>\n                  )}\n                  {toast.description && (\n                    <BaseToast.Description className=\"mt-0.5 text-[12px] leading-relaxed text-[#6B7280]\">\n                      {toast.description}\n                    </BaseToast.Description>\n                  )}\n                  {toast.actionProps && (\n                    <BaseToast.Action\n                      {...actionProps}\n                      onClick={(event) => {\n                        onActionClick?.(event)\n                        if (toast.data?.closeOnAction !== false) close(toast.id)\n                      }}\n                      className={cn(\n                        'mt-2 inline-flex cursor-pointer items-center rounded-full bg-[#F2F3F5] px-3 py-1 text-[12px] font-semibold text-[#1B1F27] hover:bg-[#E8EBF0]',\n                        PRESS_CLASS,\n                      )}\n                    />\n                  )}\n                </div>\n                <BaseToast.Close\n                  aria-label=\"关闭通知\"\n                  className={cn(\n                    'inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#8A90A0] hover:bg-[#F2F3F5] hover:text-[#1B1F27]',\n                    PRESS_CLASS,\n                  )}\n                >\n                  <X size={14} weight=\"bold\" />\n                </BaseToast.Close>\n              </BaseToast.Content>\n            </BaseToast.Root>\n          )\n        })}\n      </BaseToast.Viewport>\n    </BaseToast.Portal>\n  )\n}\n\nfunction AnchoredToastViewport({ className }: { className?: string }) {\n  const { toasts, close } = BaseToast.useToastManager<ToastData>()\n\n  return (\n    <BaseToast.Portal>\n      <BaseToast.Viewport className={cn('glaze-toast-anchored-viewport', className)}>\n        {toasts.map((toast) => {\n          const status = resolveStatus(toast)\n          const token = SEMANTIC_TOKENS[status === 'loading' ? 'info' : status]\n          const Icon = status === 'loading' ? CircleNotch : STATUS_ICON[status]\n          const bump = resolveBump(toast, status)\n          const { onClick: onActionClick, ...actionProps } = toast.actionProps ?? {}\n          const sideOffset = toast.positionerProps?.sideOffset ?? 8\n\n          return (\n            <BaseToast.Positioner\n              key={toast.id}\n              toast={toast}\n              sideOffset={sideOffset}\n              className=\"glaze-toast-positioner\"\n            >\n              <BaseToast.Root\n                toast={toast}\n                data-status={status}\n                data-bump={bump}\n                className=\"glaze-toast-anchored-root\"\n              >\n                <BaseToast.Content className=\"glaze-toast-content flex items-center gap-2.5\">\n                  <span\n                    className=\"inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full\"\n                    style={{ backgroundColor: token.pillBg, color: token.ink }}\n                  >\n                    <Icon\n                      size={14}\n                      weight={status === 'loading' ? 'bold' : 'fill'}\n                      className={status === 'loading' ? 'animate-spin' : undefined}\n                    />\n                  </span>\n                  <div className=\"min-w-0 flex-1\">\n                    {toast.title && (\n                      <BaseToast.Title className=\"text-[13px] font-bold leading-snug text-[#1B1F27]\">\n                        {toast.title}\n                      </BaseToast.Title>\n                    )}\n                    {toast.description && (\n                      <BaseToast.Description className=\"mt-0.5 text-[11.5px] leading-snug text-[#6B7280]\">\n                        {toast.description}\n                      </BaseToast.Description>\n                    )}\n                  </div>\n                  {toast.actionProps && (\n                    <BaseToast.Action\n                      {...actionProps}\n                      onClick={(event) => {\n                        onActionClick?.(event)\n                        if (toast.data?.closeOnAction !== false) close(toast.id)\n                      }}\n                      className={cn(\n                        'inline-flex shrink-0 cursor-pointer items-center rounded-full bg-[#F2F3F5] px-2.5 py-1 text-[11.5px] font-semibold text-[#1B1F27] hover:bg-[#E8EBF0]',\n                        PRESS_CLASS,\n                      )}\n                    />\n                  )}\n                </BaseToast.Content>\n              </BaseToast.Root>\n            </BaseToast.Positioner>\n          )\n        })}\n      </BaseToast.Viewport>\n    </BaseToast.Portal>\n  )\n}\n\nexport interface NotifyOptions {\n  /** 通知标题 */\n  title: React.ReactNode\n  /** 通知描述，支持任意 ReactNode */\n  description?: React.ReactNode\n  /**\n   * 语义状态；`loading` 会显示旋转图标并暂停自动关闭，直到被 `update` 为其它状态。\n   * @default 'info'\n   */\n  status?: ToastStatus\n  /** 自定义 ID：使用已存在的 ID 会原地更新该通知、重置计时并触发缩放提醒动效（去重 / upsert）。 */\n  id?: string\n  /** 本条通知的自动关闭时长（ms），`0` 表示常驻直到手动关闭；默认继承 `ToastProvider.timeout`。 */\n  timeout?: number\n  /**\n   * 读屏播报优先级：`low` 礼貌播报（polite），`high` 立即打断播报（assertive）。\n   * @default 'low'\n   */\n  priority?: 'low' | 'high'\n  /** 操作按钮文案（如「撤销」） */\n  actionLabel?: React.ReactNode\n  /** 点击操作按钮的回调 */\n  onAction?: () => void\n  /**\n   * 点击操作按钮后是否自动关闭本条通知。\n   * @default true\n   */\n  closeOnAction?: boolean\n  /** 通知开始关闭时触发（自动超时、手动关闭、滑动关闭均会触发） */\n  onClose?: () => void\n  /** 通知退场动画结束、从列表中移除后触发 */\n  onRemove?: () => void\n  /** 锚定通知的目标 DOM 元素（配合 `useAnchoredToast()` 使用，对应 `positionerProps.anchor`） */\n  anchor?: Element | null\n  /** 锚定通知相对锚点的停靠方位（默认 `'top'`） */\n  side?: ToastAnchorSide\n  /** 锚定通知相对锚点的对齐方式（默认 `'center'`） */\n  align?: ToastAnchorAlign\n  /** 锚定通知与锚点之间的像素间距（默认 `8`） */\n  sideOffset?: number\n  /** 透传给 Base UI `Toast.Positioner` 的完整定位参数 */\n  positionerProps?: ToastManagerPositionerProps\n}\n\n/** `toast.update(id, options)` 可局部更新的字段 */\nexport type ToastUpdateOptions = Partial<Omit<NotifyOptions, 'id'>>\n\ntype ToastPromiseStage<Arg> =\n  | string\n  | ToastUpdateOptions\n  | ((value: Arg) => string | ToastUpdateOptions)\n\nexport interface ToastPromiseOptions<Value> {\n  /** Promise 进行中的展示内容（自动使用 `loading` 状态） */\n  loading: string | ToastUpdateOptions\n  /** Promise resolve 后的展示内容（默认 `normal` 状态），可传函数读取结果 */\n  success: ToastPromiseStage<Value>\n  /** Promise reject 后的展示内容（默认 `error` 状态），可传函数读取错误 */\n  error: ToastPromiseStage<unknown>\n}\n\nexport interface Toaster {\n  /** 新增一条通知，返回通知 ID */\n  (options: NotifyOptions): string\n  /** 同调用本身：新增一条通知并返回 ID */\n  notify: (options: NotifyOptions) => string\n  /** 局部更新指定通知（标题、描述、状态、计时等） */\n  update: (id: string, options: ToastUpdateOptions) => void\n  /** 关闭指定通知；不传 ID 时关闭全部 */\n  close: (id?: string) => void\n  /** 绑定 Promise：进行中显示 loading，结束后自动切换为成功 / 失败通知 */\n  promise: <Value>(promise: Promise<Value>, options: ToastPromiseOptions<Value>) => Promise<Value>\n  /** 仅 `createToaster()` 返回：底层 Base UI ToastManager，用于传给 `ToastProvider` / `AnchoredToastProvider` */\n  manager?: ToastManager<ToastData>\n}\n\nfunction toManagerOptions(\n  opts: ToastUpdateOptions,\n  prev?: ToastData,\n): ToastManagerUpdateOptions<ToastData> {\n  const out: ToastManagerUpdateOptions<ToastData> = {}\n  if ('title' in opts) out.title = opts.title\n  if ('description' in opts) out.description = opts.description\n  if (opts.timeout !== undefined) out.timeout = opts.timeout\n  if (opts.priority !== undefined) out.priority = opts.priority\n  if (opts.onClose) out.onClose = opts.onClose\n  if (opts.onRemove) out.onRemove = opts.onRemove\n  if (opts.status !== undefined) out.type = opts.status\n  if (opts.status !== undefined || opts.closeOnAction !== undefined) {\n    out.data = {\n      status: opts.status ?? prev?.status,\n      closeOnAction: opts.closeOnAction ?? prev?.closeOnAction,\n    }\n  }\n  if ('actionLabel' in opts || 'onAction' in opts) {\n    out.actionProps = opts.actionLabel\n      ? { children: opts.actionLabel, onClick: () => opts.onAction?.() }\n      : undefined\n  }\n  if (\n    opts.positionerProps !== undefined ||\n    opts.anchor !== undefined ||\n    opts.side !== undefined ||\n    opts.align !== undefined ||\n    opts.sideOffset !== undefined\n  ) {\n    out.positionerProps = {\n      ...opts.positionerProps,\n      ...(opts.anchor !== undefined ? { anchor: opts.anchor } : {}),\n      ...(opts.side !== undefined ? { side: opts.side } : {}),\n      ...(opts.align !== undefined ? { align: opts.align } : {}),\n      ...(opts.sideOffset !== undefined ? { sideOffset: opts.sideOffset } : {}),\n    }\n  }\n  return out\n}\n\nfunction resolveStage<Arg>(\n  stage: ToastPromiseStage<Arg>,\n  value: Arg,\n  status: ToastStatus,\n): ToastManagerUpdateOptions<ToastData> {\n  const resolved = typeof stage === 'function' ? stage(value) : stage\n  const opts = typeof resolved === 'string' ? { title: resolved } : resolved\n  return toManagerOptions({ status, ...opts })\n}\n\nfunction buildToaster(manager: ManagerLike): Toaster {\n  const notify = ({ id, ...opts }: NotifyOptions) =>\n    manager.add({\n      id,\n      ...toManagerOptions({ status: 'info', ...opts }),\n    } as ToastManagerAddOptions<ToastData>)\n\n  return Object.assign(notify, {\n    notify,\n    update: (id: string, opts: ToastUpdateOptions) =>\n      manager.update(id, (prev) => toManagerOptions(opts, prev.data)),\n    close: (id?: string) => manager.close(id),\n    promise: <Value,>(promise: Promise<Value>, options: ToastPromiseOptions<Value>) =>\n      manager.promise<Value, ToastData>(promise, {\n        loading: resolveStage(options.loading, undefined, 'loading'),\n        success: (result) => resolveStage(options.success, result, 'normal'),\n        error: (error) => resolveStage(options.error, error, 'error'),\n      }),\n  })\n}\n\n/**\n * 在 React 组件外部（请求拦截器、Store、工具函数等）触发通知的全局通知器。\n * 需将其传给 `<ToastProvider toastManager={toaster}>` 或 `<AnchoredToastProvider toastManager={toaster}>`。\n */\nexport function createToaster(): Toaster & { manager: ToastManager<ToastData> } {\n  const manager = BaseToast.createToastManager<ToastData>()\n  return Object.assign(buildToaster(manager), { manager })\n}\n\n/** 读取最近的 `ToastProvider`，返回可直接调用的通知器（含 `notify` / `update` / `close` / `promise`）。 */\nexport function useToast(): Toaster {\n  const sharedToaster = React.useContext(ToasterContext)\n  const { add, close, update, promise } = BaseToast.useToastManager<ToastData>()\n  const localToaster = React.useMemo(\n    () => buildToaster({ add, close, update, promise }),\n    [add, close, update, promise],\n  )\n  return sharedToaster ?? localToaster\n}\n\n/**\n * 读取最近的 `AnchoredToastProvider`（`<ToastProvider>` 已自动内置），\n * 用于在按钮、输入框等指定锚点元素附近弹出轻提示（Base UI Anchored Toasts）。\n */\nexport function useAnchoredToast(): Toaster {\n  const anchored = React.useContext(AnchoredToastContext)\n  if (!anchored) {\n    throw new Error('useAnchoredToast must be used within ToastProvider or AnchoredToastProvider')\n  }\n  return anchored\n}\n"
   },
   "progress": {
     "slug": "progress",

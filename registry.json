@@ -1025,7 +1025,7 @@
       "name": "toast",
       "type": "registry:ui",
       "title": "Toast (3D 堆叠通知)",
-      "description": "基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持悬停展开、右滑/下滑手势关闭与 5 种语义状态。",
+      "description": "基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持 6 个停靠方位、锚定元素提示（Anchored Toasts）、悬停展开、全方向滑动关闭、重复触发缩放提醒、Promise 状态流转与跨模块全局通知。",
       "dependencies": [
         "@base-ui/react",
         "@phosphor-icons/react",

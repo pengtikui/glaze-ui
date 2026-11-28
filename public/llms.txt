@@ -69,7 +69,7 @@
 - [Popover (气泡卡片)](/llms/components/popover.md): 点击触发的交互式浮层面板，可包含表单、筛选器与快捷操作。
 - [PreviewCard (悬停预览卡)](/llms/components/preview-card.md): 悬停链接或实体标识时展示的富媒体摘要卡片，内置防误触延迟与平滑进退场。
 - [Tooltip (文字提示)](/llms/components/tooltip.md): 轻量化深色浮层提示，配合 TooltipProvider 实现多提示间零延迟连续切换。
-- [Toast (3D 堆叠通知)](/llms/components/toast.md): 基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持悬停展开、右滑/下滑手势关闭与 5 种语义状态。
+- [Toast (3D 堆叠通知)](/llms/components/toast.md): 基于 Base UI Toast 引擎构建的 3D 层叠通知系统，支持 6 个停靠方位、锚定元素提示（Anchored Toasts）、悬停展开、全方向滑动关闭、重复触发缩放提醒、Promise 状态流转与跨模块全局通知。
 - [Progress (进度条)](/llms/components/progress.md): 支持常规线性进度条（Progress）与多段彩色占比进度条（SegmentedProgress）。
 - [Meter (语义计量条)](/llms/components/meter.md): 用于展示容量/配额/预算等区间占比，可按阈值自动切换正常/注意/异常语义颜色。
 - [Avatar (头像与头像组)](/llms/components/avatar.md): 支持图片加载降级文字缩写、9 组柔彩底色与叠放人数溢出提示的 AvatarGroup。
