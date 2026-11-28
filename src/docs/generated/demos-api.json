@@ -284,6 +284,7 @@
       "@glaze/command",
       "@glaze/context-menu",
       "@glaze/count-badge",
+      "@glaze/data-table",
       "@glaze/dialog",
       "@glaze/drawer",
       "@glaze/dual-series-trend-card",
@@ -313,7 +314,6 @@
       "@glaze/status-pill",
       "@glaze/style",
       "@glaze/switch",
-      "@glaze/table",
       "@glaze/toast",
       "@glaze/tokens",
       "@glaze/tooltip"

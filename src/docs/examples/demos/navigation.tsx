@@ -54,15 +54,17 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { StatusPill } from '@/components/ui/status-pill'
 import { Switch } from '@/components/ui/switch'
+import { createGlazeColumnHelper, DataTable } from '@/components/ui/data-table'
 import {
-  createGlazeColumnHelper,
-  DataTable,
   Table,
   TableBody,
+  TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
+  type TableDensity,
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tile } from '@/components/ui/tile'
@@ -117,6 +119,57 @@ const TABLE_DEMO_COLUMNS = TABLE_DEMO_HELPER.columns([
     meta: { label: '可用率', numeric: true },
   }),
 ])
+
+function TableDensityDemo() {
+  const [density, setDensity] = React.useState<TableDensity>('comfortable')
+  return (
+    <div className="flex w-full flex-col gap-4">
+      <div className="flex justify-end">
+        <SegmentedControl
+          size="sm"
+          ariaLabel="表格密度"
+          value={density}
+          onValueChange={setDensity}
+          options={[
+            { value: 'compact', label: '紧凑 compact' },
+            { value: 'comfortable', label: '标准 comfortable' },
+            { value: 'spacious', label: '宽松 spacious' },
+          ]}
+        />
+      </div>
+      <Table density={density}>
+        <TableHeader>
+          <TableRow>
+            <TableHead>节点</TableHead>
+            <TableHead>角色</TableHead>
+            <TableHead align="right">CPU</TableHead>
+            <TableHead align="right">内存</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="font-bold">k8s-sh-01</TableCell>
+            <TableCell><HueTag hue="periwinkle" size="sm">Ingress</HueTag></TableCell>
+            <TableCell align="right" className="font-glaze-mono">38%</TableCell>
+            <TableCell align="right" className="font-glaze-mono">12.4 GB</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-bold">k8s-sh-02</TableCell>
+            <TableCell><HueTag hue="mint" size="sm">Postgres</HueTag></TableCell>
+            <TableCell align="right" className="font-glaze-mono">64%</TableCell>
+            <TableCell align="right" className="font-glaze-mono">48.2 GB</TableCell>
+          </TableRow>
+          <TableRow selected>
+            <TableCell className="font-bold">k8s-sg-01</TableCell>
+            <TableCell><HueTag hue="aqua" size="sm">Worker</HueTag></TableCell>
+            <TableCell align="right" className="font-glaze-mono">72%</TableCell>
+            <TableCell align="right" className="font-glaze-mono">29.8 GB</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
 
 function DataTableShowcaseDemo() {
   return (
@@ -1319,9 +1372,143 @@ export function Example() {
   table: {
     hero: {
       align: 'start',
+      minHeight: 280,
+      render: () => (
+        <div className="w-full">
+          <Table>
+            <TableCaption>华东 / 亚太核心集群节点实时资源账单（共 3 节点）</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>节点</TableHead>
+                <TableHead>角色</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead align="right">CPU</TableHead>
+                <TableHead align="right">内存</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-bold">k8s-sh-01</TableCell>
+                <TableCell><HueTag hue="periwinkle" size="sm">Ingress</HueTag></TableCell>
+                <TableCell><StatusPill status="normal">在线</StatusPill></TableCell>
+                <TableCell align="right" className="font-glaze-mono">38%</TableCell>
+                <TableCell align="right" className="font-glaze-mono">12.4 GB</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-bold">k8s-sh-02</TableCell>
+                <TableCell><HueTag hue="mint" size="sm">Postgres</HueTag></TableCell>
+                <TableCell><StatusPill status="normal">在线</StatusPill></TableCell>
+                <TableCell align="right" className="font-glaze-mono">64%</TableCell>
+                <TableCell align="right" className="font-glaze-mono">48.2 GB</TableCell>
+              </TableRow>
+              <TableRow selected>
+                <TableCell className="font-bold">k8s-sg-01</TableCell>
+                <TableCell><HueTag hue="aqua" size="sm">Worker</HueTag></TableCell>
+                <TableCell><StatusPill status="warning">高负载</StatusPill></TableCell>
+                <TableCell align="right" className="font-glaze-mono">72%</TableCell>
+                <TableCell align="right" className="font-glaze-mono">29.8 GB</TableCell>
+              </TableRow>
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={3}>集群合计</TableCell>
+                <TableCell align="right" className="font-glaze-mono">58% avg</TableCell>
+                <TableCell align="right" className="font-glaze-mono">90.4 GB</TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </div>
+      ),
+      code: `import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { HueTag } from '@/components/ui/hue-tag'
+import { StatusPill } from '@/components/ui/status-pill'
+
+export function Example() {
+  return (
+    <Table>
+      <TableCaption>核心集群节点实时资源账单</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>节点</TableHead>
+          <TableHead>角色</TableHead>
+          <TableHead>状态</TableHead>
+          <TableHead align="right">CPU</TableHead>
+          <TableHead align="right">内存</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell className="font-bold">k8s-sh-01</TableCell>
+          <TableCell><HueTag hue="periwinkle" size="sm">Ingress</HueTag></TableCell>
+          <TableCell><StatusPill status="normal">在线</StatusPill></TableCell>
+          <TableCell align="right" className="font-glaze-mono">38%</TableCell>
+          <TableCell align="right" className="font-glaze-mono">12.4 GB</TableCell>
+        </TableRow>
+        <TableRow selected>
+          <TableCell className="font-bold">k8s-sg-01</TableCell>
+          <TableCell><HueTag hue="aqua" size="sm">Worker</HueTag></TableCell>
+          <TableCell><StatusPill status="warning">高负载</StatusPill></TableCell>
+          <TableCell align="right" className="font-glaze-mono">72%</TableCell>
+          <TableCell align="right" className="font-glaze-mono">29.8 GB</TableCell>
+        </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={3}>集群合计</TableCell>
+          <TableCell align="right" className="font-glaze-mono">58% avg</TableCell>
+          <TableCell align="right" className="font-glaze-mono">90.4 GB</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
+  )
+}`,
+    },
+    examples: [
+      {
+        id: 'density-variants',
+        title: '密度上下文（compact / comfortable / spacious）',
+        description: '在根组件 Table 上指定 density，所有 TableHead 与 TableCell 自动通过 Context 同步内边距。',
+        align: 'start',
+        render: () => <TableDensityDemo />,
+        code: `import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+export function Example() {
+  return (
+    <Table density="compact">
+      <TableHeader>
+        <TableRow>
+          <TableHead>节点</TableHead>
+          <TableHead align="right">CPU</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell className="font-bold">k8s-sh-01</TableCell>
+          <TableCell align="right" className="font-glaze-mono">38%</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  )
+}`,
+      },
+    ],
+  },
+
+  'data-table': {
+    hero: {
+      align: 'start',
       minHeight: 360,
       render: () => <DataTableShowcaseDemo />,
-      code: `import { createGlazeColumnHelper, DataTable } from '@/components/ui/table'
+      code: `import { createGlazeColumnHelper, DataTable } from '@/components/ui/data-table'
 import { HueTag } from '@/components/ui/hue-tag'
 import { StatusPill } from '@/components/ui/status-pill'
 
@@ -1358,62 +1545,37 @@ export function Example() {
     },
     examples: [
       {
-        id: 'semantic-primitives',
-        title: '语义化基础表格原语（Table / TableRow / TableCell）',
-        description: '不需要复杂交互时，可直接组合语义化原语，自动继承密度上下文与等宽数字排版。',
+        id: 'compact-embedded',
+        title: '精简嵌入式模式（embedded + 斑马纹）',
+        description: '开启 embedded 去掉外层 Tile 容器，关闭分页和搜索，适合嵌入抽屉、弹窗或仪表盘卡片内部。',
         align: 'start',
         render: () => (
           <div className="w-full">
-            <Table density="compact">
-              <TableHeader>
-                <tr>
-                  <TableHead>节点</TableHead>
-                  <TableHead>角色</TableHead>
-                  <TableHead align="right">CPU</TableHead>
-                  <TableHead align="right">内存</TableHead>
-                </tr>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-bold">k8s-sh-01</TableCell>
-                  <TableCell><HueTag hue="periwinkle" size="sm">Ingress</HueTag></TableCell>
-                  <TableCell align="right" className="font-glaze-mono">38%</TableCell>
-                  <TableCell align="right" className="font-glaze-mono">12.4 GB</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-bold">k8s-sh-02</TableCell>
-                  <TableCell><HueTag hue="mint" size="sm">Postgres</HueTag></TableCell>
-                  <TableCell align="right" className="font-glaze-mono">64%</TableCell>
-                  <TableCell align="right" className="font-glaze-mono">48.2 GB</TableCell>
-                </TableRow>
-                <TableRow selected>
-                  <TableCell className="font-bold">k8s-sg-01</TableCell>
-                  <TableCell><HueTag hue="aqua" size="sm">Worker</HueTag></TableCell>
-                  <TableCell align="right" className="font-glaze-mono">72%</TableCell>
-                  <TableCell align="right" className="font-glaze-mono">29.8 GB</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <DataTable
+              embedded
+              striped
+              density="compact"
+              searchable={false}
+              enablePagination={false}
+              data={TABLE_DEMO_DATA.slice(0, 4)}
+              columns={TABLE_DEMO_COLUMNS}
+              getRowId={(r) => r.id}
+            />
           </div>
         ),
-        code: `import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+        code: `import { createGlazeColumnHelper, DataTable } from '@/components/ui/data-table'
 
-export function Example() {
+export function CompactExample() {
   return (
-    <Table density="compact">
-      <TableHeader>
-        <tr>
-          <TableHead>节点</TableHead>
-          <TableHead align="right">CPU</TableHead>
-        </tr>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="font-bold">k8s-sh-01</TableCell>
-          <TableCell align="right">38%</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+    <DataTable
+      embedded
+      striped
+      density="compact"
+      searchable={false}
+      enablePagination={false}
+      data={rows}
+      columns={columns}
+    />
   )
 }`,
       },

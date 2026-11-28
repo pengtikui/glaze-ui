@@ -792,12 +792,11 @@ export const COMPONENTS_CATALOG = [
   {
     slug: 'table',
     title: 'Table',
-    cnTitle: '数据表格',
+    cnTitle: '语义表格',
     category: 'navigation',
     kind: 'primitive',
-    description: '基于 TanStack Table v9 封装的完备数据表格组件，提供语义化表格原语与开箱即用的 DataTable（排序、搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页）。',
+    description: '纯 HTML 语义表格标签与 Glaze 样式原语（Table / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell / TableCaption），支持紧凑/标准/宽松密度上下文、表头吸顶、行选中态与等宽数字排版，零重依赖。',
     parts: [
-      'DataTable',
       'Table',
       'TableHeader',
       'TableBody',
@@ -806,6 +805,22 @@ export const COMPONENTS_CATALOG = [
       'TableHead',
       'TableCell',
       'TableCaption',
+    ],
+    dataAttributes: [
+      { attr: 'data-density', desc: '表格密度（compact | comfortable | spacious）' },
+      { attr: 'data-selected', desc: '当前行处于选中高亮态' },
+    ],
+    cssVars: [],
+  },
+  {
+    slug: 'data-table',
+    title: 'DataTable',
+    cnTitle: '数据表格',
+    category: 'navigation',
+    kind: 'primitive',
+    description: '基于 Table 语义原语与 TanStack Table v9 封装的完备数据表格组件，内置排序、全局搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页。',
+    parts: [
+      'DataTable',
       'createGlazeColumnHelper',
       'glazeTableFeatures',
     ],

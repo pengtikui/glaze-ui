@@ -114,7 +114,7 @@ import {
 import { StatusDot } from '@/components/ui/status-dot'
 import { StatusPill } from '@/components/ui/status-pill'
 import { Switch } from '@/components/ui/switch'
-import { createGlazeColumnHelper, DataTable } from '@/components/ui/table'
+import { createGlazeColumnHelper, DataTable } from '@/components/ui/data-table'
 import { useToast } from '@/components/ui/toast'
 import { Tooltip } from '@/components/ui/tooltip'
 import { HUE_PALETTES, type Hue, type Status } from '@/lib/tokens'

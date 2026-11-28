@@ -1231,8 +1231,26 @@
     {
       "name": "table",
       "type": "registry:ui",
-      "title": "Table (数据表格)",
-      "description": "基于 TanStack Table v9 封装的完备数据表格组件，提供语义化表格原语与开箱即用的 DataTable（排序、搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页）。",
+      "title": "Table (语义表格)",
+      "description": "纯 HTML 语义表格标签与 Glaze 样式原语（Table / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell / TableCaption），支持紧凑/标准/宽松密度上下文、表头吸顶、行选中态与等宽数字排版，零重依赖。",
+      "dependencies": [
+        "cn"
+      ],
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "registry/glaze/ui/table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "DataTable (数据表格)",
+      "description": "基于 Table 语义原语与 TanStack Table v9 封装的完备数据表格组件，内置排序、全局搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页。",
       "dependencies": [
         "@phosphor-icons/react",
         "@tanstack/react-table",
@@ -1247,6 +1265,7 @@
         "@glaze/segmented-control",
         "@glaze/select",
         "@glaze/style",
+        "@glaze/table",
         "@glaze/tile",
         "@glaze/tokens"
       ],
@@ -1255,7 +1274,7 @@
       ],
       "files": [
         {
-          "path": "registry/glaze/ui/table.tsx",
+          "path": "registry/glaze/ui/data-table.tsx",
           "type": "registry:ui"
         }
       ]
@@ -5355,6 +5374,7 @@
         "@glaze/command",
         "@glaze/context-menu",
         "@glaze/count-badge",
+        "@glaze/data-table",
         "@glaze/dialog",
         "@glaze/drawer",
         "@glaze/dual-series-trend-card",
@@ -5384,7 +5404,6 @@
         "@glaze/status-pill",
         "@glaze/style",
         "@glaze/switch",
-        "@glaze/table",
         "@glaze/toast",
         "@glaze/tokens",
         "@glaze/tooltip"

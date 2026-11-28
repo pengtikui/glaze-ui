@@ -1032,12 +1032,11 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 - Import: `import { DirectionProvider } from '@/components/ui/direction-provider'`
 - Base UI: `@base-ui/react/direction-provider` (https://base-ui.com/react/components/direction-provider)
 
-## Table (数据表格) — `@glaze/table`
+## Table (语义表格) — `@glaze/table`
 
-基于 TanStack Table v9 封装的完备数据表格组件，提供语义化表格原语与开箱即用的 DataTable（排序、搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页）。
+纯 HTML 语义表格标签与 Glaze 样式原语（Table / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell / TableCaption），支持紧凑/标准/宽松密度上下文、表头吸顶、行选中态与等宽数字排版，零重依赖。
 - Install: `npx shadcn@latest add @glaze/table`
-- Import: `import { createGlazeColumnHelper, Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption, DataTable } from '@/components/ui/table'`
-- Registry Deps: @glaze/button, @glaze/checkbox, @glaze/input, @glaze/motion, @glaze/popover, @glaze/segmented-control, @glaze/select, @glaze/style, @glaze/tile, @glaze/tokens
+- Import: `import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from '@/components/ui/table'`
 
 **Table Props:**
 - `density: TableDensity` = 'comfortable' — Row vertical padding density
@@ -1045,15 +1044,24 @@ Glaze 4 列 dense 自动排布栅格容器，桌面 4 列 / 平板 2 列 / 手�
 - `containerClassName: string` — Extra classes on the scrollable container
 
 **TableRow Props:**
-- `selected: boolean` = false
-- `interactive: boolean` = false
+- `selected: boolean` = false — Highlight row as selected
+- `interactive: boolean` = false — Show pointer cursor for clickable rows
 
 **TableHead Props:**
-- `align: 'left' | 'center' | 'right'` = 'left'
-- `sticky: boolean` = false
+- `align: 'left' | 'center' | 'right'` = 'left' — Horizontal alignment of header text
+- `sticky: boolean` = false — Stick header cell to top when scrolling vertically
 
 **TableCell Props:**
-- `align: 'left' | 'center' | 'right'` = 'left'
+- `align: 'left' | 'center' | 'right'` = 'left' — Horizontal alignment of cell content
+
+**Data Attributes:** `data-density` (表格密度（compact | comfortable | spacious）), `data-selected` (当前行处于选中高亮态)
+
+## DataTable (数据表格) — `@glaze/data-table`
+
+基于 Table 语义原语与 TanStack Table v9 封装的完备数据表格组件，内置排序、全局搜索、分段筛选、多选批量操作、行展开、列显隐、密度切换与分页。
+- Install: `npx shadcn@latest add @glaze/data-table`
+- Import: `import { createGlazeColumnHelper, DataTable } from '@/components/ui/data-table'`
+- Registry Deps: @glaze/button, @glaze/checkbox, @glaze/input, @glaze/motion, @glaze/popover, @glaze/segmented-control, @glaze/select, @glaze/style, @glaze/table, @glaze/tile, @glaze/tokens
 
 **DataTable Props:**
 - `data: TData[]` (required) — Data array (keep memoized or state-backed for stable row models)
